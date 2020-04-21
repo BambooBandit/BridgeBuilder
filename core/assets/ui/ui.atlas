@@ -1,0 +1,261 @@
+
+ui.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+amulet
+  rotate: false
+  xy: 912, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+arm
+  rotate: false
+  xy: 2, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+belt
+  rotate: false
+  xy: 1302, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+button.down
+  rotate: false
+  xy: 1699, 224
+  size: 30, 30
+  split: 17, 12, 15, 14
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+button.up
+  rotate: false
+  xy: 140, 94
+  size: 30, 30
+  split: 14, 15, 14, 15
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+checkbox.on
+  rotate: false
+  xy: 1665, 222
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+checkbox.over
+  rotate: false
+  xy: 106, 92
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+checkbox.off
+  rotate: false
+  xy: 106, 92
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+chest
+  rotate: false
+  xy: 1172, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+cursor
+  rotate: false
+  xy: 15, 10
+  size: 5, 10
+  orig: 5, 10
+  offset: 0, 0
+  index: -1
+default-round
+  rotate: false
+  xy: 1626, 202
+  size: 17, 17
+  split: 0, 0, 0, 0
+  orig: 17, 17
+  offset: 0, 0
+  index: -1
+default-round-down
+  rotate: false
+  xy: 1600, 173
+  size: 17, 17
+  split: 0, 0, 0, 0
+  orig: 17, 17
+  offset: 0, 0
+  index: -1
+default-select
+  rotate: false
+  xy: 1562, 192
+  size: 62, 62
+  split: 13, 42, 18, 16
+  pad: 16, 45, 18, 17
+  orig: 62, 62
+  offset: 0, 0
+  index: -1
+default-select-selection
+  rotate: false
+  xy: 68, 60
+  size: 3, 3
+  split: 1, 1, 1, 1
+  orig: 3, 3
+  offset: 0, 0
+  index: -1
+default-slider
+  rotate: false
+  xy: 172, 94
+  size: 30, 30
+  split: 13, 15, 14, 14
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+default-slider-knob
+  rotate: false
+  xy: 1626, 221
+  size: 37, 33
+  split: 10, 26, 10, 22
+  orig: 37, 33
+  offset: 0, 0
+  index: -1
+default-window
+  rotate: false
+  xy: 1562, 131
+  size: 36, 59
+  split: 14, 14, 40, 17
+  orig: 36, 59
+  offset: 0, 0
+  index: -1
+feet
+  rotate: false
+  xy: 522, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+hand
+  rotate: false
+  xy: 652, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+head
+  rotate: false
+  xy: 132, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+inventoryItem-window
+  rotate: false
+  xy: 68, 65
+  size: 36, 59
+  split: 14, 14, 40, 17
+  orig: 36, 59
+  offset: 0, 0
+  index: -1
+item-window
+  rotate: false
+  xy: 2, 22
+  size: 36, 36
+  split: 17, 17, 17, 17
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+knob-horizontal
+  rotate: false
+  xy: 2, 2
+  size: 11, 18
+  split: 0, 11, 7, 7
+  orig: 11, 18
+  offset: 0, 0
+  index: -1
+knob-vertical
+  rotate: false
+  xy: 204, 113
+  size: 18, 11
+  split: 7, 7, 0, 11
+  orig: 18, 11
+  offset: 0, 0
+  index: -1
+legs
+  rotate: false
+  xy: 262, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+load-background
+  rotate: false
+  xy: 40, 41
+  size: 17, 17
+  split: 10, 2, 10, 2
+  orig: 17, 17
+  offset: 0, 0
+  index: -1
+load-foreground
+  rotate: false
+  xy: 1731, 239
+  size: 15, 15
+  split: 7, 7, 7, 7
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
+none
+  rotate: false
+  xy: 2, 60
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+onehand
+  rotate: false
+  xy: 1042, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ring
+  rotate: false
+  xy: 782, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+selection
+  rotate: false
+  xy: 1562, 128
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+shield
+  rotate: false
+  xy: 392, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+shoulder
+  rotate: false
+  xy: 1432, 126
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+textfield
+  rotate: false
+  xy: 106, 74
+  size: 16, 16
+  split: 5, 5, 5, 5
+  orig: 16, 16
+  offset: 0, 0
+  index: -1

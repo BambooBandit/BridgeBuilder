@@ -1,0 +1,53 @@
+{
+  com.badlogic.gdx.graphics.Color: {
+    white: { r: 1, g: 1, b: 1, a: 1 },
+    black: { r: 0, g: 0, b: 0, a: 1 },
+    gray:  { r: 0.3, g: 0.3, b: 0.3, a: 1 },
+    red:   { r: 1, g: 0, b: 0, a: 1 },
+    green: { r: 0, g: 1, b: 0, a: 1 },
+    blue:  { r: 0, g: 0, b: 1, a: 1 }
+  },
+    com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+    default: { font: default-font},
+    header:  { font: header-font},
+    small:  { font: small-font},
+    name-tag: { font: small-font, fontColor: white, background: none}
+  },
+    com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+    default: { up: button.up, down: button.down, font: default-font, pressedOffsetX: 1, pressedOffsetY: -1 },
+    checked: { up: button.up, down: button.down, checked: button.down, font: default-font, pressedOffsetX: 1, pressedOffsetY: -1 }
+  },
+    com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+    default: { font: default-font, checkboxOn: checkbox.on, checkboxOff: checkbox.off, checkboxOver: checkbox.over }
+  },
+    com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+    default: { selection: selection, background: textfield, font: default-font, fontColor: white, cursor: cursor }
+  },
+    com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
+    default: { hScrollKnob: button.up, vScrollKnob: button.up }
+  },
+    com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+    default: { down: default-round-down, up: default-round }
+  },
+    com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle:  {
+    default: { titleFont: default-font, background: default-window, titleFontColor: white },
+    normal-item: { titleFont: default-font, background: item-window, titleFontColor: white },
+    inventory-item: { titleFont: default-font, background: inventoryItem-window, titleFontColor: white }
+  },
+  com.bamboo.bridgebuilder.ui.NotchedKnobDrawable: {
+    default: { stretchHorizontally: false},
+    knob-drawable-vertical: { knob: knob-vertical, bg: load-foreground, stretchHorizontally: true},
+    knob-drawable-horizontal: { knob: knob-horizontal, bg: load-foreground, stretchHorizontally: false}
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
+    default-horizontal: { background: default-slider, knob: knob-drawable-horizontal},
+    default-vertical: { background: default-slider, knob: knob-drawable-vertical}
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
+    default: {
+      font: default-font, fontColor: black, background: default-select,
+      scrollStyle: default,
+      listStyle: { font: default-font, selection: default-select-selection, background: none }
+    }
+  }
+}
