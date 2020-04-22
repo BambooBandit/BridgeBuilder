@@ -34,8 +34,8 @@ public class FileMenu extends Group
     private TextButton openButton;
     private TextButton saveButton;
     private TextButton saveAsButton;
-    private TextButton saveFLMDefaultsButton;
-    private TextButton setFLMDefaultsButton;
+    private TextButton saveBBMDefaultsButton;
+    private TextButton setBBMDefaultsButton;
     private TextButton undoButton;
     private TextButton redoButton;
 
@@ -49,8 +49,8 @@ public class FileMenu extends Group
         this.openButton = new TextButton("Open", skin);
         this.saveButton = new TextButton("Save", skin);
         this.saveAsButton = new TextButton("Save As", skin);
-        this.saveFLMDefaultsButton = new TextButton("Save FLM Defaults", skin);
-        this.setFLMDefaultsButton = new TextButton("Set FLM Defaults", skin);
+        this.saveBBMDefaultsButton = new TextButton("Save BBM Defaults", skin);
+        this.setBBMDefaultsButton = new TextButton("Set BBM Defaults", skin);
         this.undoButton = new TextButton("Undo", skin);
         this.redoButton = new TextButton("Redo", skin);
 
@@ -59,8 +59,8 @@ public class FileMenu extends Group
         this.openButton.getLabel().setColor(Color.BLACK);
         this.saveButton.getLabel().setColor(Color.BLACK);
         this.saveAsButton.getLabel().setColor(Color.BLACK);
-        this.saveFLMDefaultsButton.getLabel().setColor(Color.BLACK);
-        this.setFLMDefaultsButton.getLabel().setColor(Color.BLACK);
+        this.saveBBMDefaultsButton.getLabel().setColor(Color.BLACK);
+        this.setBBMDefaultsButton.getLabel().setColor(Color.BLACK);
         this.undoButton.getLabel().setColor(Color.BLACK);
         this.redoButton.getLabel().setColor(Color.BLACK);
 
@@ -70,7 +70,7 @@ public class FileMenu extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                new AreYouSureDialog("Create a new map with FLM default settings/properties?", FileMenu.this.editor.stage, "", EditorAssets.getUISkin(), true)
+                new AreYouSureDialog("Create a new map with BBM default settings/properties?", FileMenu.this.editor.stage, "", EditorAssets.getUISkin(), true)
                 {
                     Map newMap;
                     @Override
@@ -109,14 +109,14 @@ public class FileMenu extends Group
             {
             }
         });
-        this.saveFLMDefaultsButton.addListener(new ClickListener()
+        this.saveBBMDefaultsButton.addListener(new ClickListener()
         {
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
             }
         });
-        this.setFLMDefaultsButton.addListener(new ClickListener()
+        this.setBBMDefaultsButton.addListener(new ClickListener()
         {
             @Override
             public void clicked(InputEvent event, float x, float y)
@@ -144,8 +144,8 @@ public class FileMenu extends Group
         this.buttonTable.add(this.openButton);
         this.buttonTable.add(this.saveButton);
         this.buttonTable.add(this.saveAsButton);
-        this.buttonTable.add(this.saveFLMDefaultsButton);
-        this.buttonTable.add(this.setFLMDefaultsButton);
+        this.buttonTable.add(this.saveBBMDefaultsButton);
+        this.buttonTable.add(this.setBBMDefaultsButton);
         this.buttonTable.add(this.undoButton);
         this.buttonTable.add(this.redoButton);
 
@@ -163,11 +163,11 @@ public class FileMenu extends Group
     {
     }
 
-    public void saveFLMDefaults(Map map)
+    public void saveBBMDefaults(Map map)
     {
     }
 
-    public void setFLMDefaults(Map map)
+    public void setBBMDefaults(Map map)
     {
     }
 
@@ -183,8 +183,8 @@ public class FileMenu extends Group
         this.buttonTable.getCell(this.openButton).size(buttonWidth, buttonHeight);
         this.buttonTable.getCell(this.saveButton).size(buttonWidth, buttonHeight);
         this.buttonTable.getCell(this.saveAsButton).size(buttonWidth, buttonHeight);
-        this.buttonTable.getCell(this.saveFLMDefaultsButton).size(buttonWidth, buttonHeight);
-        this.buttonTable.getCell(this.setFLMDefaultsButton).size(buttonWidth, buttonHeight);
+        this.buttonTable.getCell(this.saveBBMDefaultsButton).size(buttonWidth, buttonHeight);
+        this.buttonTable.getCell(this.setBBMDefaultsButton).size(buttonWidth, buttonHeight);
         this.buttonTable.getCell(this.undoButton).size(buttonWidth, buttonHeight);
         this.buttonTable.getCell(this.redoButton).size(buttonWidth, buttonHeight);
         this.buttonTable.invalidateHierarchy();
