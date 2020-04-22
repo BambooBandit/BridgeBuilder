@@ -16,6 +16,7 @@ public class Utils
     private static Vector3 unprojector = new Vector3();
     public static Vector2 centerOrigin = new Vector2();
     public static Vector2 positionDifference = new Vector2();
+    public static Vector2 spritePositionCopy = new Vector2();
     public static boolean print = true;
 
     public static float degreeAngleFix(float angle)

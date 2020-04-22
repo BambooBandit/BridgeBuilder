@@ -39,6 +39,11 @@ public class EditorAssets
             uiSkin = new Skin();
             initFonts();
             loadAssets();
+            setGameAtlas("map", getAssets().get("editorMap.atlas"));
+            setGameAtlas("flatMap", getAssets().get("flatMap.atlas"));
+            setGameAtlas("canyonMap", getAssets().get("canyonMap.atlas"));
+            setGameAtlas("canyonBackdrop", getAssets().get("canyonBackdrop.atlas"));
+            setGameAtlas("mesaMap", getAssets().get("mesaMap.atlas"));
         }
         return editorAssets;
     }
@@ -58,6 +63,11 @@ public class EditorAssets
         uiSkin.add("header-font", headerFont);
         uiSkin.add("small-font", smallFont);
         uiSkin.load(Gdx.files.internal("ui/ui.json"));
+        assets.load("editorMap.atlas", TextureAtlas.class);
+        assets.load("flatMap.atlas", TextureAtlas.class);
+        assets.load("canyonMap.atlas", TextureAtlas.class);
+        assets.load("canyonBackdrop.atlas", TextureAtlas.class);
+        assets.load("mesaMap.atlas", TextureAtlas.class);
         assets.finishLoading();
     }
 

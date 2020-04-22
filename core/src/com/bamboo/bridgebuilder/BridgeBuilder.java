@@ -2,7 +2,6 @@ package com.bamboo.bridgebuilder;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,6 +9,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.fileMenu.FileMenu;
+import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
+import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
+import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
+import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 public class BridgeBuilder extends Game
 {
@@ -100,5 +103,10 @@ public class BridgeBuilder extends Game
 	public void addToMaps(Map map)
 	{
 		this.fileMenu.mapTabPane.addMap(map);
+	}
+
+	public Tool getFileTool()
+	{
+		return this.fileMenu.toolPane.getTool();
 	}
 }
