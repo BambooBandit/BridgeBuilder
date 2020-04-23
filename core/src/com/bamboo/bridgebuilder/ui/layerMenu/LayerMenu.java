@@ -1,5 +1,7 @@
 package com.bamboo.bridgebuilder.ui.layerMenu;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -93,9 +95,12 @@ public class LayerMenu extends Group
             public void clicked(InputEvent event, float x, float y)
             {
                 unselectAll();
-                layer.select();
-                selectedMap.selectedLayer = layer.mapLayer;
-                selectedMap.propertyMenu.rebuild();
+                if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+                {
+                    layer.select();
+                    selectedMap.selectedLayer = layer.mapLayer;
+                    selectedMap.propertyMenu.rebuild();
+                }
             }
         };
         layer.layerName.addListener(listener);
