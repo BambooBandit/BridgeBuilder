@@ -27,9 +27,9 @@ public class LayerPropertyPanel extends Group
     private ButtonGroup<TextButton> buttonDirectionLeftRightGroup;
     public TextButton down, up, right, left, apply; // Dictates which direction the map grows
 
-    public LayerPropertyPanel(Skin skin, PropertyMenu menu, BridgeBuilder fadelandEditor)
+    public LayerPropertyPanel(Skin skin, PropertyMenu menu, BridgeBuilder editor)
     {
-        this.editor = fadelandEditor;
+        this.editor = editor;
         this.menu = menu;
 
         this.background = new Image(EditorAssets.getUIAtlas().createPatch("load-background"));

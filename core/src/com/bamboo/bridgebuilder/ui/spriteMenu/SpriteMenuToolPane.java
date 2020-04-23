@@ -39,7 +39,7 @@ public class SpriteMenuToolPane extends Group
         this.toolTable.add(this.lines).padRight(1);
 
         this.sprites.select();
-        selectMultipleTiles();
+        selectMultipleSprites();
 
         this.editor = editor;
         this.skin = skin;
@@ -68,7 +68,7 @@ public class SpriteMenuToolPane extends Group
         super.setSize(width, height);
     }
 
-    /** Tool was clicked on. If it's a tile, see if CONTROL was being held down to handle selecting or removing multiple tiles. */
+    /** Tool was clicked on. If it's a sprite, see if CONTROL was being held down to handle selecting or removing multiple sprites. */
     public void selectTool(SpriteMenuTool selectedTool)
     {
         if(selectedTool.tool == SpriteMenuTools.LINES)
@@ -81,7 +81,7 @@ public class SpriteMenuToolPane extends Group
         if(selectedTool.tool == SpriteMenuTools.SPRITESELECT)
         {
             this.sprites.select();
-            selectMultipleTiles();
+            selectMultipleSprites();
         }
         if(selectedTool.tool == SpriteMenuTools.SPRITE)
         {
@@ -127,8 +127,8 @@ public class SpriteMenuToolPane extends Group
         this.menu.selectedSpriteTools.sort();
     }
 
-    /** Used to select all the selected tiles/sprites when switching from tiles to sprites panels*/
-    private void selectMultipleTiles()
+    /** Used to select all the selected sprites when switching from sprites panels*/
+    private void selectMultipleSprites()
     {
         this.menu.selectedSpriteTools.clear();
         if(this.sprites.isSelected)
@@ -146,7 +146,7 @@ public class SpriteMenuToolPane extends Group
             this.map.propertyMenu.rebuild();
     }
 
-    /** Draws preview sprites to show how the tiles/sprites would look like if placed. */
+    /** Draws preview sprites to show how the sprites would look like if placed. */
     private void buildPreviewSprites()
     {
 

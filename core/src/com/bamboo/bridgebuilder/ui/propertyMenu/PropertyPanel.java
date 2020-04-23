@@ -191,18 +191,23 @@ public class PropertyPanel extends Group
     public void rebuild()
     {
         this.table.clearChildren();
-
+        // Selecting one sprite tool
         if(map.spriteMenu.selectedSpriteTools.size == 1)
         {
+            menu.propertyTypeLabel.setText("Sprite Tool Custom Properties");
+            this.table.add(this.menu.propertyTypeLabel).row();
             Array<PropertyField> properties = map.spriteMenu.selectedSpriteTools.first().properties;
             for (int i = 0; i < properties.size; i++)
                 this.table.add(properties.get(i)).padBottom(1).row();
         }
+        // Selecting more than one sprite tool
         else if(map.spriteMenu.selectedSpriteTools.size > 1) // Only add common properties and locked properties
         {
+            menu.propertyTypeLabel.setText("Sprite Tools Custom Properties");
             SpriteTool firstTool = map.spriteMenu.selectedSpriteTools.first();
             for(int i = 0; i < firstTool.lockedProperties.size; i ++)
                 this.table.add(firstTool.lockedProperties.get(i)).padBottom(1).row();
+            this.table.add(this.menu.propertyTypeLabel).row();
             for(int i = 0; i < firstTool.properties.size; i ++)
             {
                 boolean commonProperty = true;
@@ -218,14 +223,20 @@ public class PropertyPanel extends Group
                     this.table.add(firstTool.properties.get(i)).padBottom(1).row();
             }
         }
+        // Selecting one object
         else if(map.selectedObjects.size == 1)
         {
+            menu.propertyTypeLabel.setText("Object Custom Properties");
+            this.table.add(this.menu.propertyTypeLabel).row();
             Array<PropertyField> properties = map.selectedObjects.first().properties;
             for (int i = 0; i < properties.size; i++)
                 this.table.add(properties.get(i)).padBottom(1).row();
         }
+        // Selecting more than one object
         else if(map.selectedObjects.size > 1) // Only add common properties
         {
+            menu.propertyTypeLabel.setText("Objects Custom Properties");
+            this.table.add(this.menu.propertyTypeLabel).row();
             MapObject mapObject = map.selectedObjects.first();
             for(int i = 0; i < mapObject.properties.size; i ++)
             {
@@ -242,8 +253,11 @@ public class PropertyPanel extends Group
                     this.table.add(mapObject.properties.get(i)).padBottom(1).row();
             }
         }
+        // Selecting nothing, show map properties
         else
         {
+            menu.propertyTypeLabel.setText("Map Custom Properties");
+            this.table.add(this.menu.propertyTypeLabel).row();
             for(int i = 0; i < map.propertyMenu.mapPropertyPanel.properties.size; i ++)
             {
                 this.table.add(map.propertyMenu.mapPropertyPanel.properties.get(i)).padBottom(1).row();

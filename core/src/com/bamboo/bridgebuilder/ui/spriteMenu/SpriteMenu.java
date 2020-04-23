@@ -28,9 +28,9 @@ public class SpriteMenu extends Group
 
     public Array<SpriteTool> selectedSpriteTools;
 
-    public SpriteMenu(Skin skin, BridgeBuilder fadelandEditor, Map map)
+    public SpriteMenu(Skin skin, BridgeBuilder editor, Map map)
     {
-        this.editor = fadelandEditor;
+        this.editor = editor;
         this.map = map;
 
         this.selectedSpriteTools = new Array<>();
@@ -55,9 +55,9 @@ public class SpriteMenu extends Group
                     table.getCells().get(i).size(table.getCells().get(i).getMinWidth() - (table.getCells().get(i).getMinWidth() / (amount * 3f)), table.getCells().get(i).getMinHeight() - (table.getCells().get(i).getMinHeight() / (amount * 3f)));
                     if(table.getCells().get(i).getActor() instanceof SpriteTool)
                     {
-                        SpriteTool tileTool = (SpriteTool) table.getCells().get(i).getActor();
-                        tileTool.image.setSize(table.getCells().get(i).getMinWidth(), table.getCells().get(i).getMinHeight());
-                        tileTool.setSize(table.getCells().get(i).getMinWidth(), table.getCells().get(i).getMinHeight());
+                        SpriteTool spriteTool = (SpriteTool) table.getCells().get(i).getActor();
+                        spriteTool.image.setSize(table.getCells().get(i).getMinWidth(), table.getCells().get(i).getMinHeight());
+                        spriteTool.setSize(table.getCells().get(i).getMinWidth(), table.getCells().get(i).getMinHeight());
                         table.invalidateHierarchy();
                         table.pack();
                     }
@@ -70,7 +70,7 @@ public class SpriteMenu extends Group
 
         this.stack = new Stack();
         this.background = new Image(EditorAssets.getUIAtlas().createPatch("load-background"));
-        this.toolPane = new SpriteMenuToolPane(editor, this, map, skin);
+        this.toolPane = new SpriteMenuToolPane(this.editor, this, map, skin);
 
         int id;
         id = createSpriteSheet(SheetTools.MAP, skin, 0);
@@ -125,23 +125,6 @@ public class SpriteMenu extends Group
         super.setSize(width, height);
     }
 
-    public SpriteTool getTileTool(SpriteMenuTools spriteMenuTools, int id)
-    {
-        if(spriteMenuTools == SpriteMenuTools.SPRITE)
-        {
-            for(int i = 0; i < spriteTable.getChildren().size; i ++)
-            {
-                if(spriteTable.getChildren().get(i) instanceof SpriteTool)
-                {
-                    SpriteTool tileTool = (SpriteTool) spriteTable.getChildren().get(i);
-                    if (tileTool.id == id)
-                        return tileTool;
-                }
-            }
-        }
-        return null;
-    }
-
     public SpriteTool getSpriteTool(SpriteMenuTools spriteMenuTools, String name, String sheetName)
     {
         if(spriteMenuTools == SpriteMenuTools.SPRITE)
@@ -150,30 +133,9 @@ public class SpriteMenu extends Group
             {
                 if(spriteTable.getChildren().get(i) instanceof SpriteTool)
                 {
-                    SpriteTool tileTool = (SpriteTool) spriteTable.getChildren().get(i);
-                    if (tileTool.name.equals(name) && tileTool.sheetTool.name.equals(sheetName))
-                        return tileTool;
-                }
-            }
-        }
-        return null;
-    }
-
-    public SpriteTool getTileTool(String type, int id, String spriteName, String sheetName)
-    {
-        SpriteMenuTools spriteMenuTools = null;
-        if(type.equals("sprite"))
-            spriteMenuTools = SpriteMenuTools.SPRITE;
-
-        if(spriteMenuTools == SpriteMenuTools.SPRITE)
-        {
-            for(int i = 0; i < spriteTable.getChildren().size; i ++)
-            {
-                if(spriteTable.getChildren().get(i) instanceof SpriteTool)
-                {
-                    SpriteTool tileTool = (SpriteTool) spriteTable.getChildren().get(i);
-                    if (tileTool.name.equals(spriteName) && tileTool.sheetTool.name.equals(sheetName))
-                        return tileTool;
+                    SpriteTool spriteTool = (SpriteTool) spriteTable.getChildren().get(i);
+                    if (spriteTool.name.equals(name) && spriteTool.sheetTool.name.equals(sheetName))
+                        return spriteTool;
                 }
             }
         }

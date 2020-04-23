@@ -27,9 +27,9 @@ public class Map implements Screen
 {
     public BridgeBuilder editor;
     public static int untitledCount = 0;
-    public float r = Utils.randomFloat(0, .5f);
-    public float g = Utils.randomFloat(0, .5f);
-    public float b = Utils.randomFloat(0, .5f);
+    public float r = Utils.randomFloat(.25f, .75f);
+    public float g = Utils.randomFloat(.25f, .75f);
+    public float b = Utils.randomFloat(.25f, .75f);
     public String name;
     public TextButton mapPaneButton;
     public boolean changed = false; // Any changes since the last save/opening/creating the file?
@@ -78,7 +78,7 @@ public class Map implements Screen
         this.camera.position.y = 150;
 
         this.stage = new Stage(new ScreenViewport());
-        // tileMenu
+        // spriteMenu
         this.spriteMenu = new SpriteMenu(EditorAssets.getUISkin(), editor, this);
         this.spriteMenu.setVisible(true);
         this.stage.addActor(this.spriteMenu);

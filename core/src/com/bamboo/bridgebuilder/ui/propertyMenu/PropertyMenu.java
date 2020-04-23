@@ -19,8 +19,8 @@ public class PropertyMenu extends Group
 
     public MapPropertyPanel mapPropertyPanel;
     public LayerPropertyPanel layerPropertyPanel;
-    public RemoveablePropertyPanel tilePropertyPanel;
     public RemoveablePropertyPanel spritePropertyPanel;
+    public Label propertyTypeLabel;
     private PropertyPanel propertyPanel; // Custom properties
     private PropertyToolPane toolPane;
 
@@ -40,22 +40,20 @@ public class PropertyMenu extends Group
         this.stack = new Stack();
         this.background = new Image(EditorAssets.getUIAtlas().createPatch("load-background"));
         this.mapPropertyPanel = new MapPropertyPanel(skin, this, this.editor);
-        this.mapPropertyPanel.removeablePropertyPanel.setVisible(false);
         this.layerPropertyPanel = new LayerPropertyPanel(skin, this, this.editor);
         this.layerPropertyPanel.setVisible(false);
-        this.tilePropertyPanel = new RemoveablePropertyPanel(skin, this, this.editor);
         this.spritePropertyPanel = new RemoveablePropertyPanel(skin, this, this.editor);
         this.spritePropertyPanel.setVisible(false);
         this.propertyPanel = new PropertyPanel(skin, this, this.editor, map);
         this.toolPane = new PropertyToolPane(this.editor, this, skin);
+
+        this.propertyTypeLabel = new Label("", skin);
 
         this.propertyTable = new Table();
         this.propertyTable.left().bottom();
         this.propertyTable.add(this.mapPropertyPanel).padBottom(5).row();
         this.propertyTable.add(this.layerPropertyPanel).padBottom(5).row();
         this.propertyTable.add(this.spritePropertyPanel).padBottom(5).row();
-        this.propertyTable.add(this.tilePropertyPanel).padBottom(5).row();
-        this.propertyTable.add(this.mapPropertyPanel.removeablePropertyPanel).padBottom(5).row();
         this.propertyTable.add(this.propertyPanel);
 
         setSpriteProperties();
@@ -73,10 +71,8 @@ public class PropertyMenu extends Group
     {
         this.background.setBounds(0, 0, width, height - toolHeight);
         this.mapPropertyPanel.setSize(width, toolHeight);
-        this.tilePropertyPanel.setSize(width, toolHeight);
         this.layerPropertyPanel.setSize(width, toolHeight);
         this.spritePropertyPanel.setSize(width, toolHeight);
-        this.mapPropertyPanel.removeablePropertyPanel.setSize(width, toolHeight);
         float propertyPanelStackHeight = mapPropertyPanel.getHeight();
 
         if(this.layerPropertyPanel.isVisible())
@@ -84,28 +80,15 @@ public class PropertyMenu extends Group
         else
             this.layerPropertyPanel.setSize(width, 0);
 
-        if(this.tilePropertyPanel.isVisible())
-            propertyPanelStackHeight += this.tilePropertyPanel.getHeight();
-        else
-            this.tilePropertyPanel.setSize(width, 0);
-
         if(this.spritePropertyPanel.isVisible())
             propertyPanelStackHeight += this.spritePropertyPanel.getHeight();
         else
             this.spritePropertyPanel.setSize(width, 0);
 
-        if(this.mapPropertyPanel.removeablePropertyPanel.isVisible())
-            propertyPanelStackHeight += this.mapPropertyPanel.removeablePropertyPanel.getHeight();
-        else
-            this.mapPropertyPanel.removeablePropertyPanel.setSize(width, 0);
-
         this.propertyPanel.setSize(width, height - toolHeight - 5 - 5 - 5 - propertyPanelStackHeight);
         this.propertyPanel.setPosition(0, toolHeight);
         this.propertyTable.invalidateHierarchy();
         this.toolPane.setSize(width, toolHeight);
-
-//        this.propertyPanelStack.setSize(width, this.propertyPanelStack.getMinHeight());
-//        this.propertyPanelStack.invalidateHierarchy();
 
         this.stack.setSize(width, height - toolHeight);
         this.stack.invalidateHierarchy();
@@ -176,13 +159,11 @@ public class PropertyMenu extends Group
         this.propertyTable.invalidateHierarchy();
     }
 
-    /** Upon selecting a new tile tool, rebuild property menu to only show the properties of that tile.
-     * If multiple tiles are selected, only show the common properties. A common property has the same property and value. */
+    /** Upon selecting a new sprite tool, rebuild property menu to only show the properties of that sprite tool.
+     * If multiple sprite tools are selected, only show the common properties. A common property has the same property and value. */
     public void rebuild()
     {
-        this.tilePropertyPanel.table.clearChildren();
         this.spritePropertyPanel.table.clearChildren();
-        this.mapPropertyPanel.removeablePropertyPanel.table.clearChildren();
         if(map.selectedLayer != null)
         {
             this.layerPropertyPanel.setVisible(true);
@@ -209,30 +190,15 @@ public class PropertyMenu extends Group
                 this.spritePropertyPanel.table.add(spriteProperties.get(i)).padBottom(1).row();
             this.spritePropertyPanel.setVisible(true);
         }
-        if(map.selectedSprites.size == 0 && map.spriteMenu.selectedSpriteTools.size == 0)
-        {
-            for(int i = 0; i < mapPropertyPanel.properties.size; i ++)
-            {
-                this.mapPropertyPanel.removeablePropertyPanel.table.add(mapPropertyPanel.properties.get(i)).padBottom(1).row();
-            }
-            this.mapPropertyPanel.removeablePropertyPanel.setVisible(true);
-        }
+
         if(this.layerPropertyPanel.isVisible())
             this.layerPropertyPanel.setSize(getWidth(), toolHeight);
         else
             this.layerPropertyPanel.setSize(getWidth(), 0);
-        if(this.tilePropertyPanel.isVisible())
-            this.tilePropertyPanel.setSize(getWidth(), toolHeight);
-        else
-            this.tilePropertyPanel.setSize(getWidth(), 0);
         if(this.spritePropertyPanel.isVisible())
             this.spritePropertyPanel.setSize(getWidth(), toolHeight);
         else
             this.spritePropertyPanel.setSize(getWidth(), 0);
-        if(this.mapPropertyPanel.removeablePropertyPanel.isVisible())
-            this.mapPropertyPanel.removeablePropertyPanel.setSize(getWidth(), toolHeight);
-        else
-            this.mapPropertyPanel.removeablePropertyPanel.setSize(getWidth(), 0);
 
         this.propertyPanel.rebuild();
         this.propertyTable.invalidateHierarchy();

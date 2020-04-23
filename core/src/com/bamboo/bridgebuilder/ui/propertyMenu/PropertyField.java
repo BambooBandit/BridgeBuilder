@@ -357,7 +357,7 @@ public class PropertyField extends Group
             return this.value.getText().hashCode();
     }
 
-    /** Any changes you make to one removeable property will change all other identical properties in a selection of objects or tiles*/
+    /** Any changes you make to one removeable property will change all other identical properties in a selection of objects or sprites*/
     private void addRemoveableListener()
     {
         final Map map = menu.map;
@@ -723,7 +723,7 @@ public class PropertyField extends Group
         }
     }
 
-    /** Any changes you make to one locked property will change all other identical properties in a selection of objects or tiles*/
+    /** Any changes you make to one locked property will change all other identical properties in a selection of objects or sprites*/
     private void addLockedListener()
     {
         final Map map = menu.map;

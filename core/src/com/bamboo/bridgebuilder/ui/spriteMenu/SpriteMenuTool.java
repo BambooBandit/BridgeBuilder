@@ -23,7 +23,7 @@ public class SpriteMenuTool extends Group
     public SpriteMenuTools tool;
     public SheetTools sheetTool;
 
-    /** For tile menu tools */
+    /** For sprite menu tools */
     public SpriteMenuTool(SpriteMenuTools tool, final SpriteMenuToolPane spriteMenuToolPane, Skin skin)
     {
         this.tool = tool;
@@ -48,7 +48,7 @@ public class SpriteMenuTool extends Group
         });
     }
 
-    /** For tiles */
+    /** For sprite tools */
     public SpriteMenuTool(SpriteMenuTools tool, SheetTools sheetTool, Image image, final SpriteMenuToolPane spriteMenuToolPane, Skin skin)
     {
         this.tool = tool;

@@ -156,7 +156,7 @@ public class LayerMenu extends Group
         rebuild();
     }
 
-    /** Fixes the TileMap array to draw in the correct order. */
+    /** Fixes the Map array to draw in the correct order. */
     public void rearrangeLayers()
     {
         this.map.layers.clear();

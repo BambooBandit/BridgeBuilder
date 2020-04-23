@@ -24,8 +24,6 @@ public class MapPropertyPanel extends Group
 
     public TextButton apply;
 
-    public RemoveablePropertyPanel removeablePropertyPanel;
-
 
     public MapPropertyPanel(Skin skin, PropertyMenu menu, BridgeBuilder editor)
     {
@@ -36,8 +34,6 @@ public class MapPropertyPanel extends Group
         this.stack = new Stack();
         this.table = new Table();
         this.table.left().top();
-
-        this.removeablePropertyPanel = new RemoveablePropertyPanel(skin, menu, this.editor);
 
         this.lockedProperties = new Array<>();
         PropertyField mapRGBAProperty = new PropertyField(skin, menu, false, 0, 0, 0, 1);
