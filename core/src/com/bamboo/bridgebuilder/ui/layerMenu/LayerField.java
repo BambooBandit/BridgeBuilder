@@ -7,7 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.BridgeBuilder;
-import com.bamboo.bridgebuilder.map.*;
+import com.bamboo.bridgebuilder.commands.MoveLayerIndex;
+import com.bamboo.bridgebuilder.commands.RemoveLayer;
+import com.bamboo.bridgebuilder.map.Layer;
+import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.map.ObjectLayer;
+import com.bamboo.bridgebuilder.map.SpriteLayer;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
 
@@ -90,7 +95,12 @@ public class LayerField extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                menu.moveLayerUp(layer);
+                int oldIndex = map.layerMenu.layers.indexOf(layer, true);
+                int newIndex = oldIndex - 1;
+                if(newIndex < 0)
+                    return;
+                MoveLayerIndex moveLayerIndex = new MoveLayerIndex(map, layer.mapLayer, oldIndex, newIndex);
+                map.executeCommand(moveLayerIndex);
             }
         });
         this.down.addListener(new ClickListener()
@@ -98,7 +108,12 @@ public class LayerField extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                menu.moveLayerDown(layer);
+                int oldIndex = map.layerMenu.layers.indexOf(layer, true);
+                int newIndex = oldIndex + 1;
+                if(newIndex >= map.layerMenu.layers.size)
+                    return;
+                MoveLayerIndex moveLayerIndex = new MoveLayerIndex(map, layer.mapLayer, oldIndex, newIndex);
+                map.executeCommand(moveLayerIndex);
             }
         });
         this.visibleImg.addListener(new ClickListener()
@@ -145,7 +160,8 @@ public class LayerField extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                menu.removeLayer(layer);
+                RemoveLayer removeLayer = new RemoveLayer(map, layer.mapLayer);
+                map.executeCommand(removeLayer);
             }
         });
 

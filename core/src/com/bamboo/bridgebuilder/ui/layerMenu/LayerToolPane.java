@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.map.Map;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
 
@@ -23,12 +24,12 @@ public class LayerToolPane extends Group
 
     public LayerMenu menu;
 
-    public LayerToolPane(BridgeBuilder editor, LayerMenu menu, Skin skin)
+    public LayerToolPane(BridgeBuilder editor, LayerMenu menu, Skin skin, Map map)
     {
         this.menu = menu;
         this.toolTable = new Table();
-        this.newSpriteLayer = new LayerTool(LayerTools.NEWSPRITE, this, skin);
-        this.newObjectLayer = new LayerTool(LayerTools.NEWOBJECT, this, skin);
+        this.newSpriteLayer = new LayerTool(LayerTools.NEWSPRITE, this, skin, map);
+        this.newObjectLayer = new LayerTool(LayerTools.NEWOBJECT, this, skin, map);
         this.toolTable.left();
         this.toolTable.add(this.newSpriteLayer).padRight(1);
         this.toolTable.add(this.newObjectLayer).padRight(1);

@@ -20,7 +20,7 @@ public class LayerMenu extends Group
     private BridgeBuilder editor;
     private Map map;
 
-    private Skin skin;
+    public Skin skin;
     private Image background;
     private LayerToolPane toolPane;
     private ScrollPane scrollPane;
@@ -39,7 +39,7 @@ public class LayerMenu extends Group
 
         this.stack = new Stack();
         this.background = new Image(EditorAssets.getUIAtlas().createPatch("load-background"));
-        this.toolPane = new LayerToolPane(this.editor, this, skin);
+        this.toolPane = new LayerToolPane(this.editor, this, skin, map);
 
         this.table = new Table();
         this.table.left().top();
@@ -81,6 +81,7 @@ public class LayerMenu extends Group
     public Layer newLayer(LayerTypes type)
     {
         final Map selectedMap = this.map;
+
         final LayerField layer = new LayerField(type.name, type, editor, map, skin, this);
         this.table.add(layer).padBottom(1).row();
         this.layers.add(layer);
@@ -104,6 +105,16 @@ public class LayerMenu extends Group
         return layer.mapLayer;
     }
 
+    public void addLayer(Layer layer, int index)
+    {
+        this.table.add(layer.layerField).padBottom(1).row();
+        this.layers.insert(index, layer.layerField);
+        this.map.layers.insert(index, layer);
+
+        rearrangeLayers();
+        rebuild();
+    }
+
     public void addLayer(Layer layer)
     {
         this.table.add(layer.layerField).padBottom(1).row();
@@ -111,27 +122,13 @@ public class LayerMenu extends Group
         this.map.layers.add(layer);
 
         rearrangeLayers();
-
-        setSize(getWidth(), getHeight()); // Resize to fit the new field
-    }
-
-    public void moveLayerUp(LayerField layer)
-    {
-        int index = this.layers.indexOf(layer, false);
-        if(index - 1 < 0)
-            return;
-        this.layers.swap(index, index - 1);
-
-        rearrangeLayers();
         rebuild();
     }
 
-    public void moveLayerDown(LayerField layer)
+    public void moveLayer(int toIndex, LayerField layer)
     {
         int index = this.layers.indexOf(layer, false);
-        if(index + 1 >= this.layers.size)
-            return;
-        this.layers.swap(index, index + 1);
+        this.layers.swap(index, toIndex);
         rearrangeLayers();
         rebuild();
     }
