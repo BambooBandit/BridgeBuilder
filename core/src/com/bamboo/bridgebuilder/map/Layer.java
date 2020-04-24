@@ -5,6 +5,7 @@ import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerField;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public abstract class Layer<T extends LayerChild>
 {
@@ -22,6 +23,8 @@ public abstract class Layer<T extends LayerChild>
     public MapSprite overrideSprite; // If null, render layer in the order its in. If not, when pressing layer ^ override or something, set this to equal the top sprite of the sprite layer beneath this layer. This will always be drawn before that sprite. Keep going down to do it to even lower layers.
     public byte floor;
 
+    public Array<PropertyField> properties;
+
     public Layer(BridgeBuilder editor, Map map, LayerTypes type, LayerField layerField)
     {
         this.width = 5;
@@ -32,6 +35,8 @@ public abstract class Layer<T extends LayerChild>
         this.map = map;
         this.type = type;
         this.layerField = layerField;
+
+        this.properties = new Array<>();
 
         this.moveBox = new MoveBox();
         this.moveBox.setPosition(x + (this.width), y + (this.height));

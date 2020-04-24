@@ -81,6 +81,8 @@ public class PropertyPanel extends Group
             for (int i = 0; i < map.spriteMenu.selectedSpriteTools.size; i++)
                 addPropertyToList(light, this.map.spriteMenu.selectedSpriteTools.get(i).properties);
         }
+        else if(map.selectedLayer != null)
+            addPropertyToList(light, this.map.selectedLayer.properties);
         else
             addPropertyToList(light, this.map.propertyMenu.mapPropertyPanel.properties);
     }
@@ -108,10 +110,10 @@ public class PropertyPanel extends Group
             for (int i = 0; i < map.spriteMenu.selectedSpriteTools.size; i++)
                 this.map.spriteMenu.selectedSpriteTools.get(i).properties.add(new FieldFieldPropertyValuePropertyField(property, value, this.skin, menu, true));
         }
+        else if(map.selectedLayer != null)
+            this.map.selectedLayer.properties.add(new FieldFieldPropertyValuePropertyField(property, value, this.skin, menu, true));
         else
-        {
             this.map.propertyMenu.mapPropertyPanel.properties.add(new FieldFieldPropertyValuePropertyField(property, value, this.skin, menu, true));
-        }
     }
 
     public void newProperty(float r, float g, float b, float a)
@@ -126,10 +128,10 @@ public class PropertyPanel extends Group
             for (int i = 0; i < map.spriteMenu.selectedSpriteTools.size; i++)
                 this.map.spriteMenu.selectedSpriteTools.get(i).properties.add(new ColorPropertyField(this.skin, menu, true, r, g, b, a));
         }
+        else if(map.selectedLayer != null)
+            this.map.selectedLayer.properties.add(new ColorPropertyField(this.skin, menu, true, r, g, b, a));
         else
-        {
             this.map.propertyMenu.mapPropertyPanel.properties.add(new ColorPropertyField(this.skin, menu, true, r, g, b, a));
-        }
     }
 
     public void newProperty(float r, float g, float b, float a, float distance, int rayAmount)
@@ -144,6 +146,8 @@ public class PropertyPanel extends Group
             for (int i = 0; i < map.spriteMenu.selectedSpriteTools.size; i++)
                 this.map.spriteMenu.selectedSpriteTools.get(i).properties.add(new LightPropertyField(this.skin, menu, true, r, g, b, a, distance, rayAmount));
         }
+        else if(map.selectedLayer != null)
+            this.map.selectedLayer.properties.add(new LightPropertyField(this.skin, menu, true, r, g, b, a, distance, rayAmount));
         else
             this.map.propertyMenu.mapPropertyPanel.properties.add(new LightPropertyField(this.skin, menu, true, r, g, b, a, distance, rayAmount));
     }
@@ -247,15 +251,21 @@ public class PropertyPanel extends Group
                     this.table.add(mapObject.properties.get(i)).padBottom(1).row();
             }
         }
+        // Selecting a layer
+        else if(map.selectedLayer != null)
+        {
+            menu.propertyTypeLabel.setText("Layer Custom Properties");
+            this.table.add(this.menu.propertyTypeLabel).row();
+            for(int i = 0; i < map.selectedLayer.properties.size; i ++)
+                this.table.add((PropertyField) map.selectedLayer.properties.get(i)).padBottom(1).row();
+        }
         // Selecting nothing, show map properties
         else
         {
             menu.propertyTypeLabel.setText("Map Custom Properties");
             this.table.add(this.menu.propertyTypeLabel).row();
             for(int i = 0; i < map.propertyMenu.mapPropertyPanel.properties.size; i ++)
-            {
                 this.table.add(map.propertyMenu.mapPropertyPanel.properties.get(i)).padBottom(1).row();
-            }
         }
         setSize(getWidth(), getHeight()); // Resize to fit the fields
     }
