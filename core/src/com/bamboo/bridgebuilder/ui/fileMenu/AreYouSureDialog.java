@@ -51,10 +51,10 @@ public class AreYouSureDialog extends Dialog
         }
 
         this.getContentTable().add(areYouSureLabel).row();
-        this.yesNoTable.add(yes);
-        this.yesNoTable.add(no);
+        this.yesNoTable.add(yes).padRight(10).padLeft(10);
+        this.yesNoTable.add(no).padRight(10).padLeft(10);
         if(hasCancelButton)
-            this.yesNoTable.add(cancel);
+            this.yesNoTable.add(cancel).padRight(10).padLeft(10);
         this.getContentTable().add(yesNoTable);
 
         setSize(getPrefWidth(), getPrefHeight());

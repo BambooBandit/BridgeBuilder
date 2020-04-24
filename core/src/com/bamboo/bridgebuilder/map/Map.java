@@ -3,8 +3,10 @@ package com.bamboo.bridgebuilder.map;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -34,6 +36,10 @@ public class Map implements Screen
     public float g = Utils.randomFloat(.25f, .75f);
     public float b = Utils.randomFloat(.25f, .75f);
 
+    // Game window size
+    public static float virtualHeight;
+    public static float virtualWidth;
+
     public String name; // Map name
     public TextButton mapPaneButton; // Shown in file menu
     public boolean changed = false; // Any changes since the last save/opening/creating the file?
@@ -43,7 +49,6 @@ public class Map implements Screen
     public PropertyMenu propertyMenu;
     public LayerMenu layerMenu;
     public OrthographicCamera camera;
-    public Viewport viewport;
 
     // Optional libgdx box2d/lights
     public World world;
@@ -68,6 +73,10 @@ public class Map implements Screen
 
     private void init()
     {
+        // Game screen size
+        virtualHeight = 20f;
+        virtualWidth = virtualHeight * Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
+
         b2dr = new Box2DDebugRenderer();
 
         this.input = new MapInput(editor, this);
@@ -77,13 +86,14 @@ public class Map implements Screen
         this.selectedObjects = new Array<>();
 
         this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.setToOrtho(false, virtualHeight * Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight(), virtualHeight);
         this.camera.zoom = this.zoom;
-        this.viewport = new ScreenViewport(this.camera);
-        this.viewport.apply();
-        this.camera.position.x = 160;
-        this.camera.position.y = 150;
+        this.camera.position.x = 2.5f;
+        this.camera.position.y = 2.5f;
+        camera.update();
 
-        this.stage = new Stage(new ScreenViewport());
+
+        this.stage = new Stage(new ScreenViewport(), editor.batch);
         // spriteMenu
         this.spriteMenu = new SpriteMenu(EditorAssets.getUISkin(), editor, this);
         this.spriteMenu.setVisible(true);
@@ -125,7 +135,37 @@ public class Map implements Screen
         if(!editor.fileMenu.toolPane.parallax.selected)
             this.camera.zoom = this.zoom;
         this.camera.update();
+
         this.editor.batch.setProjectionMatrix(camera.combined);
+        this.editor.batch.begin();
+        this.editor.batch.end();
+
+        this.editor.shapeRenderer.setProjectionMatrix(camera.combined);
+        this.editor.shapeRenderer.setAutoShapeType(true);
+        this.editor.shapeRenderer.setColor(Color.BLACK);
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        this.editor.shapeRenderer.begin();
+        this.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        if(selectedLayer != null)
+        {
+            int layerWidth = selectedLayer.width;
+            int layerHeight = selectedLayer.height;
+            this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y, selectedLayer.x, selectedLayer.y + layerHeight);
+            this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y, selectedLayer.x + layerWidth, selectedLayer.y);
+            this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y + layerHeight, selectedLayer.x + layerWidth, selectedLayer.y + layerHeight);
+            this.editor.shapeRenderer.line(selectedLayer.x + layerWidth, selectedLayer.y, selectedLayer.x + layerWidth, selectedLayer.y + layerHeight);
+
+            if (editor.fileMenu.toolPane.lines.selected)
+            {
+                for (int y = 1; y < layerHeight; y++)
+                    this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y + y, selectedLayer.x + layerWidth, selectedLayer.y + y);
+                for (int x = 1; x < layerWidth; x++)
+                    this.editor.shapeRenderer.line(selectedLayer.x + x, selectedLayer.y, selectedLayer.x + x, selectedLayer.y + layerHeight);
+            }
+        }
+        this.editor.shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
 
         this.stage.act();
         this.stage.draw();
@@ -148,6 +188,11 @@ public class Map implements Screen
     @Override
     public void resize(int width, int height)
     {
+        virtualWidth = virtualHeight * stage.getWidth() / stage.getHeight();
+        camera.viewportWidth = virtualHeight * width / (float) height;
+        camera.viewportHeight = virtualHeight;
+        camera.update();
+
         this.stage.getViewport().update(width, height, true);
         this.spriteMenu.setSize(Gdx.graphics.getWidth() / 6, (Gdx.graphics.getHeight() - this.editor.fileMenu.getHeight()) / 2);
         this.spriteMenu.setPosition(Gdx.graphics.getWidth() - this.spriteMenu.getWidth(), 0);
@@ -157,10 +202,6 @@ public class Map implements Screen
 
         this.layerMenu.setSize(Gdx.graphics.getWidth() / 6, (Gdx.graphics.getHeight() - this.editor.fileMenu.getHeight()) / 2);
         this.layerMenu.setPosition(Gdx.graphics.getWidth() - this.spriteMenu.getWidth(), this.spriteMenu.getHeight());
-
-        this.camera.viewportWidth = width;
-        this.camera.viewportHeight = height;
-        this.viewport.update(width, height);
     }
 
     @Override
