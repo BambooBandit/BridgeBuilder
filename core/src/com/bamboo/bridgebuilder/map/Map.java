@@ -132,8 +132,7 @@ public class Map implements Screen
 
         this.world.step(delta, 1, 1);
 
-        if(!editor.fileMenu.toolPane.parallax.selected)
-            this.camera.zoom = this.zoom;
+        this.camera.zoom = this.zoom;
         this.camera.update();
 
         this.editor.batch.setProjectionMatrix(camera.combined);
@@ -147,15 +146,21 @@ public class Map implements Screen
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         this.editor.shapeRenderer.begin();
         this.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        drawLayerOutline();
+        drawGrid();
+        this.editor.shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
+        this.stage.act();
+        this.stage.draw();
+    }
+
+    private void drawGrid()
+    {
         if(selectedLayer != null)
         {
             int layerWidth = selectedLayer.width;
             int layerHeight = selectedLayer.height;
-            this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y, selectedLayer.x, selectedLayer.y + layerHeight);
-            this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y, selectedLayer.x + layerWidth, selectedLayer.y);
-            this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y + layerHeight, selectedLayer.x + layerWidth, selectedLayer.y + layerHeight);
-            this.editor.shapeRenderer.line(selectedLayer.x + layerWidth, selectedLayer.y, selectedLayer.x + layerWidth, selectedLayer.y + layerHeight);
-
             if (editor.fileMenu.toolPane.lines.selected)
             {
                 for (int y = 1; y < layerHeight; y++)
@@ -164,11 +169,19 @@ public class Map implements Screen
                     this.editor.shapeRenderer.line(selectedLayer.x + x, selectedLayer.y, selectedLayer.x + x, selectedLayer.y + layerHeight);
             }
         }
-        this.editor.shapeRenderer.end();
-        Gdx.gl.glDisable(GL20.GL_BLEND);
+    }
 
-        this.stage.act();
-        this.stage.draw();
+    private void drawLayerOutline()
+    {
+        if(selectedLayer != null)
+        {
+            int layerWidth = selectedLayer.width;
+            int layerHeight = selectedLayer.height;
+            this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y, selectedLayer.x, selectedLayer.y + layerHeight);
+            this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y, selectedLayer.x + layerWidth, selectedLayer.y);
+            this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y + layerHeight, selectedLayer.x + layerWidth, selectedLayer.y + layerHeight);
+            this.editor.shapeRenderer.line(selectedLayer.x + layerWidth, selectedLayer.y, selectedLayer.x + layerWidth, selectedLayer.y + layerHeight);
+        }
     }
 
     public void setChanged(boolean changed)
