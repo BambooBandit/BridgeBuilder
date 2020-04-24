@@ -1,21 +1,11 @@
 package com.bamboo.bridgebuilder.map;
 
-import box2dLight.PointLight;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
-import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
-import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public abstract class MapObject extends LayerChild
 {
-//    protected float rotation;
-//    public RotationBox rotationBox;
     public MoveBox moveBox;
     private boolean selected;
     public Array<PropertyField> properties;
@@ -48,6 +38,7 @@ public abstract class MapObject extends LayerChild
     {
         this.selected = true;
     }
+
     public void unselect()
     {
         this.selected = false;

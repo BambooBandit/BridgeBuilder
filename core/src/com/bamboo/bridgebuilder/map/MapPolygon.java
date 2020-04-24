@@ -3,6 +3,8 @@ package com.bamboo.bridgebuilder.map;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public class MapPolygon extends MapObject
 {
@@ -27,18 +29,17 @@ public class MapPolygon extends MapObject
     {
         map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
 
-        for(int i = 0; i < properties.size; i ++)
+        PropertyField propertyField = Utils.getPropertyField(properties, "angle");
+        if(propertyField != null)
         {
-            if (properties.get(i).getProperty().equals("angle"))
+            FieldFieldPropertyValuePropertyField angleProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
             {
-                try
-                {
-                    float angle = (float) Math.toRadians(Float.parseFloat(properties.get(i).getValue()));
-                    drawCentroidAndAngle(angle);
-                    return;
-                }
-                catch (NumberFormatException e){return;}
+                float angle = (float) Math.toRadians(Float.parseFloat(angleProperty.getValue()));
+                drawCentroidAndAngle(angle);
+                return;
             }
+            catch (NumberFormatException e){return;}
         }
     }
 
@@ -52,14 +53,9 @@ public class MapPolygon extends MapObject
     public void setPosition(float x, float y)
     {
         this.polygon.setPosition(x, y);
-        float rotation = 0;
-        float width = 0, height = 0;
         if(this.attachedSprite != null && this.attachedSprite instanceof MapSprite)
         {
             MapSprite mapSprite = (MapSprite) this.attachedSprite;
-            width = mapSprite.width;
-            height = mapSprite.height;
-            rotation = (float) Math.toRadians(mapSprite.rotation);
             polygon.setRotation(mapSprite.rotation);
         }
         computeCentroid();

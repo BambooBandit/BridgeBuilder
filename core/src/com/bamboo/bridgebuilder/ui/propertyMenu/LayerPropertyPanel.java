@@ -6,6 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public class LayerPropertyPanel extends Group
 {
@@ -18,9 +20,9 @@ public class LayerPropertyPanel extends Group
     private Stack stack;
     public Table table; // Holds all the text fields
 
-    public PropertyField layerWidthProperty;
-    public PropertyField layerHeightProperty;
-    public PropertyField layerZProperty;
+    public LabelFieldPropertyValuePropertyField layerWidthProperty;
+    public LabelFieldPropertyValuePropertyField layerHeightProperty;
+    public LabelFieldPropertyValuePropertyField layerZProperty;
 
     private Table buttonDirectionTable;
     private ButtonGroup<TextButton> buttonDirectionUpDownGroup;
@@ -39,11 +41,11 @@ public class LayerPropertyPanel extends Group
 
         TextField.TextFieldFilter.DigitsOnlyFilter filter = new TextField.TextFieldFilter.DigitsOnlyFilter();
 
-        this.layerWidthProperty = new PropertyField("Layer Width", "5", skin, menu, false);
+        this.layerWidthProperty = new LabelFieldPropertyValuePropertyField("Layer Width", "5", skin, menu, false);
         this.layerWidthProperty.value.setTextFieldFilter(filter);
-        this.layerHeightProperty = new PropertyField("Layer Height", "5", skin, menu, false);
+        this.layerHeightProperty = new LabelFieldPropertyValuePropertyField("Layer Height", "5", skin, menu, false);
         this.layerHeightProperty.value.setTextFieldFilter(filter);
-        this.layerZProperty = new PropertyField("Layer Z", "0", skin, menu, false);
+        this.layerZProperty = new LabelFieldPropertyValuePropertyField("Layer Z", "0", skin, menu, false);
         this.layerZProperty.value.setTextFieldFilter(new TextField.TextFieldFilter()
         {
             @Override

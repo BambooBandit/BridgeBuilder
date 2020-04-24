@@ -7,6 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public class MapPropertyPanel extends Group
 {
@@ -36,7 +39,7 @@ public class MapPropertyPanel extends Group
         this.table.left().top();
 
         this.lockedProperties = new Array<>();
-        PropertyField mapRGBAProperty = new PropertyField(skin, menu, false, 0, 0, 0, 1);
+        ColorPropertyField mapRGBAProperty = new ColorPropertyField(skin, menu, false, 0, 0, 0, 1);
         this.lockedProperties.add(mapRGBAProperty);
         this.properties = new Array<>();
 
@@ -46,7 +49,7 @@ public class MapPropertyPanel extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                PropertyField mapRGBAProperty = getLockedColorField();
+                ColorPropertyField mapRGBAProperty = Utils.getLockedColorField(lockedProperties);
                 menu.map.rayHandler.setAmbientLight(Float.parseFloat(mapRGBAProperty.rValue.getText()), Float.parseFloat(mapRGBAProperty.gValue.getText()), Float.parseFloat(mapRGBAProperty.bValue.getText()), Float.parseFloat(mapRGBAProperty.aValue.getText()));
             }
         });
@@ -79,29 +82,5 @@ public class MapPropertyPanel extends Group
             super.setSize(0, 0);
         else
             super.setSize(width, newHeight);
-    }
-
-    public PropertyField getLockedColorField()
-    {
-        for(int i = 0; i < this.lockedProperties.size; i ++)
-            if(this.lockedProperties.get(i).rgba)
-                return this.lockedProperties.get(i);
-        return null;
-    }
-
-    public PropertyField getPropertyField(String propertyName)
-    {
-        for(int i = 0; i < this.lockedProperties.size; i ++)
-        {
-            if(this.lockedProperties.get(i).getProperty() != null && this.lockedProperties.get(i).getProperty().equals(propertyName))
-                return this.lockedProperties.get(i);
-        }
-
-        for(int i = 0; i < this.properties.size; i ++)
-        {
-            if(this.properties.get(i).getProperty() != null && this.properties.get(i).getProperty().equals(propertyName))
-                return this.properties.get(i);
-        }
-        return null;
     }
 }

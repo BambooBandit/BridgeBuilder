@@ -24,13 +24,14 @@ public class MapPoint extends MapObject
             float angle = (float) Math.toRadians(this.attachedSprite.sprite.getRotation()); // Convert to radians
 
             float rotatedX = (float) (Math.cos(angle) * (position.x - centerX) - Math.sin(angle) * (position.y - centerY) + centerX);
-
             float rotatedY = (float) (Math.sin(angle) * (position.x - centerX) + Math.cos(angle) * (position.y - centerY) + centerY);
             x = rotatedX;
             y = rotatedY;
             float scaledX = rotatedX + (centerX - rotatedX) * (1 - attachedSprite.sprite.getScaleX());
             float scaledY = rotatedY + (centerY - rotatedY) * (1 - attachedSprite.sprite.getScaleY());
             super.setPosition(scaledX, scaledY);
+
+            this.moveBox.setPosition(x, y);
         }
     }
 

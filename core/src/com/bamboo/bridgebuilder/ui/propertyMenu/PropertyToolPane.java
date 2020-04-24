@@ -6,10 +6,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.map.SpriteLayer;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
@@ -90,14 +94,15 @@ public class PropertyToolPane extends Group
             {
                 SpriteTool spriteTool = (SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i);
                 // top
-                PropertyField topProperty = spriteTool.getPropertyField("top");
-                if (topProperty == null)
-                    spriteTool.setTopSprites("");
-                else
+                PropertyField propertyField = Utils.getPropertyField(spriteTool.properties, "top");
+                if(propertyField != null)
                 {
+                    FieldFieldPropertyValuePropertyField topProperty = (FieldFieldPropertyValuePropertyField) propertyField;
                     String topValue = topProperty.value.getText();
                     spriteTool.setTopSprites(topValue);
                 }
+                else
+                    spriteTool.setTopSprites("");
             }
         }
 
@@ -109,15 +114,9 @@ public class PropertyToolPane extends Group
                 SpriteLayer spriteLayer = (SpriteLayer) map.layers.get(i);
                 for(int k = 0; k < spriteLayer.children.size; k ++)
                 {
-                    MapSprite mapSprite = (MapSprite) spriteLayer.children.get(k);
-                    for(int s = 0; s < mapSprite.lockedProperties.size; s++)
-                    {
-                        if(mapSprite.lockedProperties.get(s).rgba)
-                        {
-                            PropertyField colorProperty = mapSprite.lockedProperties.get(s);
-                            mapSprite.setColor(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
-                        }
-                    }
+                    MapSprite mapSprite = spriteLayer.children.get(k);
+                    ColorPropertyField colorProperty = Utils.getLockedColorField(mapSprite.lockedProperties);
+                    mapSprite.setColor(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
                 }
             }
         }

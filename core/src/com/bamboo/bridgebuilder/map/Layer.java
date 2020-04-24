@@ -8,20 +8,17 @@ import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
 
 public abstract class Layer<T extends LayerChild>
 {
-    public Array<T> children;
+    protected BridgeBuilder editor;
+    public Map map;
 
+    public Array<T> children;
     public int width;
     public int height;
     public float z;
-
-    protected BridgeBuilder editor;
-    public Map map;
-    public LayerField layerField;
-    public LayerTypes type;
-
     public float x, y;
     public MoveBox moveBox;
-
+    public LayerField layerField;
+    public LayerTypes type;
     public MapSprite overrideSprite; // If null, render layer in the order its in. If not, when pressing layer ^ override or something, set this to equal the top sprite of the sprite layer beneath this layer. This will always be drawn before that sprite. Keep going down to do it to even lower layers.
     public byte floor;
 
@@ -58,11 +55,6 @@ public abstract class Layer<T extends LayerChild>
     }
 
     public abstract void draw();
-
-    protected void resize()
-    {
-        this.moveBox.setPosition(x + (this.width), y + (this.height));
-    }
 
     public void resize(int width, int height, boolean down, boolean right)
     {
@@ -107,7 +99,7 @@ public abstract class Layer<T extends LayerChild>
                     children.get(i).setPosition(children.get(i).position.x, children.get(i).position.y - heightShrink);
             }
         }
-        resize();
+        this.moveBox.setPosition(x + (this.width), y + (this.height));
     }
 
     public void setZ(float z)

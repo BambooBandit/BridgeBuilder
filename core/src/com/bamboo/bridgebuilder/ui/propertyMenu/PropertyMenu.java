@@ -6,6 +6,9 @@ import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
@@ -126,7 +129,7 @@ public class PropertyMenu extends Group
         {
             if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof SpriteTool)
             {
-                PropertyField probability = new PropertyField("Probability", "1.0", skin, this, false);
+                LabelFieldPropertyValuePropertyField probability = new LabelFieldPropertyValuePropertyField("Probability", "1.0", skin, this, false);
                 probability.value.setTextFieldFilter(new TextField.TextFieldFilter()
                 {
                     @Override
@@ -137,9 +140,9 @@ public class PropertyMenu extends Group
                 });
 
                 ((SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i)).lockedProperties.add(probability);
-                PropertyField type = new PropertyField("Type", "", skin, this, false);
+                LabelFieldPropertyValuePropertyField type = new LabelFieldPropertyValuePropertyField("Type", "", skin, this, false);
                 ((SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i)).lockedProperties.add(type);
-                PropertyField z = new PropertyField("spawnZ", "", skin, this, false);
+                LabelFieldPropertyValuePropertyField z = new LabelFieldPropertyValuePropertyField("spawnZ", "", skin, this, false);
                 ((SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i)).lockedProperties.add(z);
             }
         }

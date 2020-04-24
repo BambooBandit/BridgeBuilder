@@ -99,8 +99,22 @@ public class SpriteMenu extends Group
             TextureAtlas.AtlasRegion spriteRegion = EditorAssets.getGameAtlas(sheetTool.name).getRegions().get(i);
 
             SpriteTool sprite = new SpriteTool(SpriteMenuTools.SPRITE, sheetTool, new Image(spriteRegion), spriteRegion, spriteRegion.name, id, 0, 0, toolPane, skin);
+            float minSideLength = 100;
             float newWidth = sprite.image.getWidth() / 5;
             float newHeight = sprite.image.getHeight() / 5;
+
+            if(newWidth < minSideLength)
+            {
+                float multiplier = minSideLength / newWidth;
+                newWidth = minSideLength;
+                newHeight *= multiplier;
+            }
+            if(newHeight < minSideLength)
+            {
+                float multiplier = minSideLength / newHeight;
+                newHeight = minSideLength;
+                newWidth *= multiplier;
+            }
             sprite.image.setSize(newWidth, newHeight);
             sprite.setSize(newWidth, newHeight);
             id ++;

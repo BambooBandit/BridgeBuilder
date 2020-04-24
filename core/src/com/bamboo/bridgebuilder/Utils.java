@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -114,4 +116,110 @@ public class Utils
         return (float) Math.hypot(x1-x2, y1-y2);
     }
 
+    public LightPropertyField getLockedLightField(Array<PropertyField> lockedProperties)
+    {
+        for(int i = 0; i < lockedProperties.size; i ++)
+        {
+            PropertyField propertyField = lockedProperties.get(i);
+            if (propertyField instanceof LightPropertyField)
+                return (LightPropertyField) propertyField;
+        }
+        return null;
+    }
+
+    public static ColorPropertyField getLockedColorField(Array<PropertyField> lockedProperties)
+    {
+        for(int i = 0; i < lockedProperties.size; i ++)
+        {
+            PropertyField propertyField = lockedProperties.get(i);
+            if (propertyField instanceof ColorPropertyField)
+                return (ColorPropertyField) propertyField;
+        }
+        return null;
+    }
+
+    public static LightPropertyField getLightField(Array<PropertyField> properties)
+    {
+        for(int i = 0; i < properties.size; i ++)
+        {
+            PropertyField propertyField = properties.get(i);
+            if (propertyField instanceof LightPropertyField)
+                return (LightPropertyField) propertyField;
+        }
+        return null;
+    }
+
+    public static LabelFieldPropertyValuePropertyField getLockedPropertyField(Array<PropertyField> lockedProperties, String propertyName)
+    {
+        for(int i = 0; i < lockedProperties.size; i ++)
+        {
+            PropertyField property = lockedProperties.get(i);
+            if(property instanceof LabelFieldPropertyValuePropertyField)
+            {
+                LabelFieldPropertyValuePropertyField labelFieldProperty = (LabelFieldPropertyValuePropertyField) property;
+                if(labelFieldProperty.getProperty() != null && labelFieldProperty.getProperty().equals(propertyName))
+                    return labelFieldProperty;
+            }
+        }
+        return null;
+    }
+
+    public static PropertyField getPropertyField(Array<PropertyField> properties, Array<PropertyField> lockedProperties, String propertyName)
+    {
+        for(int i = 0; i < lockedProperties.size; i ++)
+        {
+            PropertyField property = lockedProperties.get(i);
+            if(property instanceof FieldFieldPropertyValuePropertyField)
+            {
+                FieldFieldPropertyValuePropertyField fieldFieldProperty = (FieldFieldPropertyValuePropertyField) property;
+                if(fieldFieldProperty.getProperty() != null && fieldFieldProperty.getProperty().equals(propertyName))
+                    return fieldFieldProperty;
+            }
+            if(property instanceof LabelFieldPropertyValuePropertyField)
+            {
+                LabelFieldPropertyValuePropertyField labelFieldProperty = (LabelFieldPropertyValuePropertyField) property;
+                if(labelFieldProperty.getProperty() != null && labelFieldProperty.getProperty().equals(propertyName))
+                    return labelFieldProperty;
+            }
+        }
+
+        for(int i = 0; i < properties.size; i ++)
+        {
+            PropertyField property = properties.get(i);
+            if(property instanceof FieldFieldPropertyValuePropertyField)
+            {
+                FieldFieldPropertyValuePropertyField fieldFieldProperty = (FieldFieldPropertyValuePropertyField) property;
+                if(fieldFieldProperty.getProperty() != null && fieldFieldProperty.getProperty().equals(propertyName))
+                    return fieldFieldProperty;
+            }
+            if(property instanceof LabelFieldPropertyValuePropertyField)
+            {
+                LabelFieldPropertyValuePropertyField labelFieldProperty = (LabelFieldPropertyValuePropertyField) property;
+                if(labelFieldProperty.getProperty() != null && labelFieldProperty.getProperty().equals(propertyName))
+                    return labelFieldProperty;
+            }
+        }
+        return null;
+    }
+
+    public static PropertyField getPropertyField(Array<PropertyField> properties, String propertyName)
+    {
+        for(int i = 0; i < properties.size; i ++)
+        {
+            PropertyField property = properties.get(i);
+            if(property instanceof FieldFieldPropertyValuePropertyField)
+            {
+                FieldFieldPropertyValuePropertyField fieldFieldProperty = (FieldFieldPropertyValuePropertyField) property;
+                if(fieldFieldProperty.getProperty() != null && fieldFieldProperty.getProperty().equals(propertyName))
+                    return fieldFieldProperty;
+            }
+            if(property instanceof LabelFieldPropertyValuePropertyField)
+            {
+                LabelFieldPropertyValuePropertyField labelFieldProperty = (LabelFieldPropertyValuePropertyField) property;
+                if(labelFieldProperty.getProperty() != null && labelFieldProperty.getProperty().equals(propertyName))
+                    return labelFieldProperty;
+            }
+        }
+        return null;
+    }
 }

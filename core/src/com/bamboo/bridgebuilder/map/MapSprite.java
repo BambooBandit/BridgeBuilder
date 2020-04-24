@@ -6,35 +6,36 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
 import com.bamboo.bridgebuilder.ui.manipulators.RotationBox;
 import com.bamboo.bridgebuilder.ui.manipulators.ScaleBox;
-import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 public class MapSprite extends LayerChild
 {
     public float rotation, scale, perspectiveScale;
-    public EditorPolygon polygon;
+    public EditorPolygon polygon; // Used to show the sprite bounds even when scaled and rotated
     public RotationBox rotationBox;
     public MoveBox moveBox;
     public ScaleBox scaleBox;
     public boolean selected;
     public Array<PropertyField> lockedProperties; // properties such as rotation. They belong to all sprites
     public float z;
-    public int id;
+    public int id; // Used to be able to set any sprites id and specifically retrieve it in the game
     public Sprite sprite;
     public SpriteTool tool;
     public float width, height;
 
     public int layerOverrideIndex; // Only used to keep the reloading simple. When the MapSprite is made, store the index of the override layer here and use it later to set the bottom variable once all layers are created. 0 means no override. Index starts at 1.
-    public Layer layerOverride; // If this is not null, before drawing this sprite, draw that whole layer.
+    public Layer layerOverride; // If this is not null, before drawing this sprite, draw that whole layer. Used to organize different layer heights
 
-    float[] verts;
+    float[] verts; // Used to pass to the sprite batch for skewable drawing
 
     public MapSprite(Map map, Layer layer, SpriteTool tool, float x, float y)
     {
@@ -90,7 +91,6 @@ public class MapSprite extends LayerChild
         if(sprite instanceof TextureAtlas.AtlasSprite)
             tinyHeight = ((TextureAtlas.AtlasSprite) sprite).getAtlasRegion().offsetY - lowestYOffset;
 
-
         float u = sprite.getU();
         float v = sprite.getV();
         float u2 = sprite.getU2();
@@ -142,7 +142,6 @@ public class MapSprite extends LayerChild
         verts[19] = v2;
 
         map.editor.batch.draw(sprite.getTexture(), verts, 0, verts.length);
-//        sprite.draw(map.editor.batch);
 
         if(map.editor.fileMenu.toolPane.top.selected)
         {
@@ -207,7 +206,6 @@ public class MapSprite extends LayerChild
                     verts[19] = v2;
 
                     map.editor.batch.draw(tool.topSprites.get(i).getTexture(), verts, 0, verts.length);
-//                tool.topSprites.get(i).draw(map.editor.batch);
                 }
             }
         }
@@ -250,10 +248,15 @@ public class MapSprite extends LayerChild
     {
         for(int i = 0; i < lockedProperties.size; i ++)
         {
-            if(lockedProperties.get(i).getProperty().equals("ID"))
+            PropertyField propertyField = lockedProperties.get(i);
+            if(propertyField instanceof LabelFieldPropertyValuePropertyField)
             {
-                lockedProperties.get(i).value.setText(Integer.toString(id));
-                break;
+                LabelFieldPropertyValuePropertyField labelFieldProperty = (LabelFieldPropertyValuePropertyField) propertyField;
+                if(labelFieldProperty.getProperty().equals("ID"))
+                {
+                    labelFieldProperty.value.setText(Integer.toString(id));
+                    break;
+                }
             }
         }
         this.id = id;
@@ -263,10 +266,15 @@ public class MapSprite extends LayerChild
     {
         for(int i = 0; i < lockedProperties.size; i ++)
         {
-            if(lockedProperties.get(i).getProperty().equals("Z"))
+            PropertyField propertyField = lockedProperties.get(i);
+            if(propertyField instanceof LabelFieldPropertyValuePropertyField)
             {
-                lockedProperties.get(i).value.setText(Float.toString(z));
-                break;
+                LabelFieldPropertyValuePropertyField labelFieldProperty = (LabelFieldPropertyValuePropertyField) propertyField;
+                if(labelFieldProperty.getProperty().equals("z"))
+                {
+                    labelFieldProperty.value.setText(Float.toString(z));
+                    break;
+                }
             }
         }
         this.z = z;
@@ -275,17 +283,11 @@ public class MapSprite extends LayerChild
     public void setColor(float r, float g, float b, float a)
     {
         this.sprite.setColor(r, g, b, a);
-        for(int i = 0; i < lockedProperties.size; i ++)
-        {
-            if(lockedProperties.get(i).rgba)
-            {
-                PropertyField colorProperty = lockedProperties.get(i);
-                colorProperty.rValue.setText(Float.toString(r));
-                colorProperty.gValue.setText(Float.toString(g));
-                colorProperty.bValue.setText(Float.toString(b));
-                colorProperty.aValue.setText(Float.toString(a));
-            }
-        }
+        ColorPropertyField colorProperty = Utils.getLockedColorField(this.lockedProperties);
+        colorProperty.rValue.setText(Float.toString(r));
+        colorProperty.gValue.setText(Float.toString(g));
+        colorProperty.bValue.setText(Float.toString(b));
+        colorProperty.aValue.setText(Float.toString(a));
     }
 
     public void setRotation(float degree)
@@ -298,14 +300,8 @@ public class MapSprite extends LayerChild
             for(int i = 0; i < this.tool.topSprites.size; i++)
                 this.tool.topSprites.get(i).setRotation(degree);
         }
-        for(int i = 0; i < lockedProperties.size; i ++)
-        {
-            if(lockedProperties.get(i).getProperty().equals("Rotation"))
-            {
-                lockedProperties.get(i).value.setText(Float.toString(this.rotation));
-                break;
-            }
-        }
+        LabelFieldPropertyValuePropertyField labelFieldProperty = Utils.getLockedPropertyField(this.lockedProperties, "Rotation");
+        labelFieldProperty.value.setText(Float.toString(this.rotation));
     }
 
     public void rotate(float degree)
@@ -322,19 +318,12 @@ public class MapSprite extends LayerChild
                 this.tool.topSprites.get(i).rotate(degree);
         }
 
-        for(int i = 0; i < lockedProperties.size; i ++)
-        {
-            if(lockedProperties.get(i).getProperty().equals("Rotation"))
-            {
-                lockedProperties.get(i).value.setText(Float.toString(this.rotation));
-                break;
-            }
-        }
+        LabelFieldPropertyValuePropertyField labelFieldProperty = Utils.getLockedPropertyField(this.lockedProperties, "Rotation");
+        labelFieldProperty.value.setText(Float.toString(this.rotation));
     }
 
     public void setScale(float scale)
     {
-        // TODO do undo
         if(scale <= 0)
             return;
         this.scale = scale;
@@ -346,14 +335,8 @@ public class MapSprite extends LayerChild
                 this.tool.topSprites.get(i).setScale(scale);
         }
 
-        for(int i = 0; i < lockedProperties.size; i ++)
-        {
-            if(lockedProperties.get(i).getProperty().equals("Scale"))
-            {
-                lockedProperties.get(i).value.setText(Float.toString(scale));
-                break;
-            }
-        }
+        LabelFieldPropertyValuePropertyField labelFieldProperty = Utils.getLockedPropertyField(this.lockedProperties, "Scale");
+        labelFieldProperty.value.setText(Float.toString(this.scale));
     }
 
     public void select()
@@ -367,32 +350,30 @@ public class MapSprite extends LayerChild
 
     public void updatePerspectiveScale()
     {
-        if(map.propertyMenu.mapPropertyPanel.getPropertyField("perspectiveMinScale") == null || map.propertyMenu.mapPropertyPanel.getPropertyField("perspectiveMaxScale") == null)
-            return;
-        float perspectiveMinScale = Float.parseFloat(map.propertyMenu.mapPropertyPanel.getPropertyField("perspectiveMinScale").value.getText());
-        float perspectiveMaxScale = Float.parseFloat(map.propertyMenu.mapPropertyPanel.getPropertyField("perspectiveMaxScale").value.getText());
-        float mapHeight = layer.height;
-        float positionY = position.y;
-
-        float coeff = positionY / mapHeight;
-
-        float delta = perspectiveMinScale - perspectiveMaxScale;
-
-        this.perspectiveScale = perspectiveMaxScale + coeff * delta;
-
-
-
-        float totalScale = scale + perspectiveScale;
-
-        if(totalScale <= 0)
-            return;
-
-        this.sprite.setScale(totalScale);
-        this.polygon.setScale(totalScale, totalScale);
-        if(this.tool.topSprites != null)
-        {
-            for(int i = 0; i < this.tool.topSprites.size; i ++)
-                this.tool.topSprites.get(i).setScale(totalScale);
-        }
+//        if(map.propertyMenu.mapPropertyPanel.getPropertyField("perspectiveMinScale") == null || map.propertyMenu.mapPropertyPanel.getPropertyField("perspectiveMaxScale") == null)
+//            return;
+//        float perspectiveMinScale = Float.parseFloat(map.propertyMenu.mapPropertyPanel.getPropertyField("perspectiveMinScale").value.getText());
+//        float perspectiveMaxScale = Float.parseFloat(map.propertyMenu.mapPropertyPanel.getPropertyField("perspectiveMaxScale").value.getText());
+//        float mapHeight = layer.height;
+//        float positionY = position.y;
+//
+//        float coeff = positionY / mapHeight;
+//
+//        float delta = perspectiveMinScale - perspectiveMaxScale;
+//
+//        this.perspectiveScale = perspectiveMaxScale + coeff * delta;
+//
+//        float totalScale = scale + perspectiveScale;
+//
+//        if(totalScale <= 0)
+//            return;
+//
+//        this.sprite.setScale(totalScale);
+//        this.polygon.setScale(totalScale, totalScale);
+//        if(this.tool.topSprites != null)
+//        {
+//            for(int i = 0; i < this.tool.topSprites.size; i ++)
+//                this.tool.topSprites.get(i).setScale(totalScale);
+//        }
     }
 }

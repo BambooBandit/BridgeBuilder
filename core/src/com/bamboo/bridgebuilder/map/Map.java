@@ -26,23 +26,29 @@ import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 public class Map implements Screen
 {
     public BridgeBuilder editor;
-    public static int untitledCount = 0;
+
+    public static int untitledCount = 0; // For new map name
+
+    // Background color
     public float r = Utils.randomFloat(.25f, .75f);
     public float g = Utils.randomFloat(.25f, .75f);
     public float b = Utils.randomFloat(.25f, .75f);
-    public String name;
-    public TextButton mapPaneButton;
+
+    public String name; // Map name
+    public TextButton mapPaneButton; // Shown in file menu
     public boolean changed = false; // Any changes since the last save/opening/creating the file?
 
     public Stage stage;
     public SpriteMenu spriteMenu;
     public PropertyMenu propertyMenu;
     public LayerMenu layerMenu;
+    public OrthographicCamera camera;
+    public Viewport viewport;
+
+    // Optional libgdx box2d/lights
     public World world;
     public Box2DDebugRenderer b2dr;
     public RayHandler rayHandler;
-    public OrthographicCamera camera;
-    public Viewport viewport;
 
     public Array<Layer> layers;
     public Layer selectedLayer;
@@ -220,11 +226,11 @@ public class Map implements Screen
         float totalSum = 0;
         float partialSum = 0;
         for(int i = 0; i < getAllSelectedSpriteTools().size; i ++)
-            totalSum += Float.parseFloat(getAllSelectedSpriteTools().get(i).getPropertyField("Probability").value.getText());
+            totalSum += Float.parseFloat(Utils.getLockedPropertyField(getAllSelectedSpriteTools().get(i).lockedProperties, "Probability").value.getText());
         float random = Utils.randomFloat(0, totalSum);
         for(int i = 0; i < getAllSelectedSpriteTools().size; i ++)
         {
-            partialSum += Float.parseFloat(getAllSelectedSpriteTools().get(i).getPropertyField("Probability").value.getText());
+            partialSum += Float.parseFloat(Utils.getLockedPropertyField(getAllSelectedSpriteTools().get(i).lockedProperties, "Probability").value.getText());
             if(partialSum >= random)
             {
                 randomSpriteIndex = i;

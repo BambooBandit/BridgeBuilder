@@ -19,16 +19,12 @@ public class LayerMenu extends Group
     private BridgeBuilder editor;
     private Map map;
 
+    private Skin skin;
     private Image background;
-
     private LayerToolPane toolPane;
-
     private ScrollPane scrollPane;
-
     private Stack stack;
     public Table table;
-
-    private Skin skin;
 
     public Array<LayerField> layers;
 
@@ -126,11 +122,9 @@ public class LayerMenu extends Group
     public void moveLayerUp(LayerField layer)
     {
         int index = this.layers.indexOf(layer, false);
-        index --;
-        if(index < 0)
-            index = 0;
-        this.layers.removeValue(layer, false);
-        this.layers.insert(index, layer);
+        if(index - 1 < 0)
+            return;
+        this.layers.swap(index, index - 1);
 
         rearrangeLayers();
         rebuild();
@@ -139,12 +133,9 @@ public class LayerMenu extends Group
     public void moveLayerDown(LayerField layer)
     {
         int index = this.layers.indexOf(layer, false);
-        index ++;
-        if(index >= this.layers.size)
-            index = this.layers.size - 1;
-        this.layers.removeValue(layer, false);
-        this.layers.insert(index, layer);
-
+        if(index + 1 >= this.layers.size)
+            return;
+        this.layers.swap(index, index + 1);
         rearrangeLayers();
         rebuild();
     }

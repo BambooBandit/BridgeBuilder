@@ -65,11 +65,6 @@ public class MapInput implements InputProcessor
         return false;
     }
 
-    private boolean drag(int screenX, int screenY, int pointer)
-    {
-        return false;
-    }
-
     @Override
     public boolean mouseMoved(int screenX, int screenY)
     {

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.EditorAssets;
 
@@ -16,15 +15,13 @@ public class Tool extends Group
     private Image background;
     private Image image;
 
-    private ToolPane toolPane;
-
     public boolean selected;
 
     public Tools tool;
 
     public boolean isToggleable;
 
-    public Tool(Tools tool, final ToolPane toolPane, Skin skin, boolean isToggleable)
+    public Tool(Tools tool, final ToolPane toolPane, boolean isToggleable)
     {
         this.isToggleable = isToggleable;
         this.tool = tool;

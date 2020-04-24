@@ -16,8 +16,6 @@ public class ToolPane extends Group
     private Stack pane;
     private Table toolTable;
     private Image background;
-    private Skin skin;
-    private BridgeBuilder editor;
 
     private Tool brush;
     private Tool eraser;
@@ -54,26 +52,26 @@ public class ToolPane extends Group
     public ToolPane(BridgeBuilder editor, Skin skin)
     {
         this.toolTable = new Table();
-        this.brush = new Tool(Tools.BRUSH, this, skin, false);
-        this.eraser = new Tool(Tools.ERASER, this, skin, false);
-        this.fill = new Tool(Tools.FILL, this, skin, false);
-        this.bind = new Tool(Tools.BIND, this, skin, false);
-        this.stamp = new Tool(Tools.STAMP, this, skin, false);
-        this.drawPoint = new Tool(Tools.DRAWPOINT, this, skin, false);
-        this.drawObject = new Tool(Tools.DRAWOBJECT, this, skin, false);
-        this.objectVerticeSelect = new Tool(Tools.OBJECTVERTICESELECT, this, skin, false);
-        this.boxSelect = new Tool(Tools.BOXSELECT, this, skin, false);
-        this.select = new Tool(Tools.SELECT, this, skin, false);
-        this.grab = new Tool(Tools.GRAB, this, skin, false);
-        this.random = new Tool(Tools.RANDOM, this, skin, true);
-        this.blocked = new Tool(Tools.BLOCKED, this, skin, true);
-        this.parallax = new Tool(Tools.PARALLAX, this, skin, true);
+        this.brush = new Tool(Tools.BRUSH, this, false);
+        this.eraser = new Tool(Tools.ERASER, this, false);
+        this.fill = new Tool(Tools.FILL, this, false);
+        this.bind = new Tool(Tools.BIND, this, false);
+        this.stamp = new Tool(Tools.STAMP, this, false);
+        this.drawPoint = new Tool(Tools.DRAWPOINT, this, false);
+        this.drawObject = new Tool(Tools.DRAWOBJECT, this, false);
+        this.objectVerticeSelect = new Tool(Tools.OBJECTVERTICESELECT, this, false);
+        this.boxSelect = new Tool(Tools.BOXSELECT, this, false);
+        this.select = new Tool(Tools.SELECT, this, false);
+        this.grab = new Tool(Tools.GRAB, this, false);
+        this.random = new Tool(Tools.RANDOM, this, true);
+        this.blocked = new Tool(Tools.BLOCKED, this, true);
+        this.parallax = new Tool(Tools.PARALLAX, this, true);
         this.parallax.select();
-        this.perspective = new Tool(Tools.PERSPECTIVE, this, skin, true);
-        this.top = new Tool(Tools.TOP, this, skin, true);
+        this.perspective = new Tool(Tools.PERSPECTIVE, this, true);
+        this.top = new Tool(Tools.TOP, this, true);
         this.top.select();
-        this.lines = new Tool(Tools.LINES, this, skin, true);
-        this.b2drender = new Tool(Tools.B2DR, this, skin, true);
+        this.lines = new Tool(Tools.LINES, this, true);
+        this.b2drender = new Tool(Tools.B2DR, this, true);
         this.bringUp = new TextButton("^", skin);
         this.bringDown = new TextButton("v", skin);
         this.bringTop = new TextButton("^^", skin);
@@ -117,8 +115,6 @@ public class ToolPane extends Group
         this.toolTable.add(this.minMaxButton).padRight(5);
         this.toolTable.add(this.fps).padRight(1);
 
-        this.editor = editor;
-        this.skin = skin;
         this.pane = new Stack();
 
         this.background = new Image(EditorAssets.getUIAtlas().createPatch("load-background"));

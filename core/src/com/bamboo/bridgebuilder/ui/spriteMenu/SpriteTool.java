@@ -8,8 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.EditorAssets;
-import com.bamboo.bridgebuilder.map.MapObject;
-import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 
 /** The sprite buttons in the SpriteMenu. Holds data that belongs with the sprite, such as locked properties.*/
 public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
@@ -77,38 +76,6 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
         else if(id < o.id)
             return -1;
         return 0;
-    }
-
-    public PropertyField getLockedLightField()
-    {
-        for(int i = 0; i < this.lockedProperties.size; i ++)
-            if(this.lockedProperties.get(i).rgbaDistanceRayAmount)
-                return this.lockedProperties.get(i);
-        return null;
-    }
-
-    public PropertyField getLockedColorField()
-    {
-        for(int i = 0; i < this.lockedProperties.size; i ++)
-            if(this.lockedProperties.get(i).rgba)
-                return this.lockedProperties.get(i);
-        return null;
-    }
-
-    public PropertyField getPropertyField(String propertyName)
-    {
-        for(int i = 0; i < this.lockedProperties.size; i ++)
-        {
-            if(this.lockedProperties.get(i).getProperty() != null && this.lockedProperties.get(i).getProperty().equals(propertyName))
-                return this.lockedProperties.get(i);
-        }
-
-        for(int i = 0; i < this.properties.size; i ++)
-        {
-            if(this.properties.get(i).getProperty() != null && this.properties.get(i).getProperty().equals(propertyName))
-                return this.properties.get(i);
-        }
-        return null;
     }
 
     public void setTopSprites(String topSpriteName)
