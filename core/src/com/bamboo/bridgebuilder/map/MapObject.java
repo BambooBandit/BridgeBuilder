@@ -43,6 +43,4 @@ public abstract class MapObject extends LayerChild
     {
         this.selected = false;
     }
-
-    public abstract boolean isHoveredOver(float x, float y);
 }

@@ -2,6 +2,7 @@ package com.bamboo.bridgebuilder.map;
 
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.BridgeBuilder;
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerField;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
@@ -23,7 +24,7 @@ public class SpriteLayer extends Layer
         for(int i = 0; i < this.children.size; i ++)
             this.children.get(i).draw();
 
-        if(map.selectedLayer == this && layerField.visibleImg.isVisible() && editor.getFileTool() != null && editor.getFileTool().tool == Tools.BRUSH && this.map.getSpriteToolFromSelectedTools() != null)
+        if(map.selectedLayer == this && layerField.visibleImg.isVisible() && Utils.isFileToolThisType(editor, Tools.BRUSH) && this.map.getSpriteToolFromSelectedTools() != null)
         {
             for(int i = 0; i < this.map.getSpriteToolFromSelectedTools().previewSprites.size; i ++)
             {

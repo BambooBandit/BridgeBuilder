@@ -1,9 +1,6 @@
 package com.bamboo.bridgebuilder.map;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 public abstract class LayerChild
 {
@@ -19,9 +16,14 @@ public abstract class LayerChild
     }
 
     public abstract void draw();
+    public abstract void drawHoverOutline();
+    public abstract void drawSelectedOutline();
+    public abstract void drawSelectedHoveredOutline();
 
     public void setPosition(float x, float y)
     {
         this.position.set(x, y);
     }
+
+    public abstract boolean isHoveredOver(float x, float y);
 }

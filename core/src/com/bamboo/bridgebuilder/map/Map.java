@@ -15,10 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
@@ -57,6 +57,7 @@ public class Map implements Screen
 
     public Array<Layer> layers;
     public Layer selectedLayer;
+    public LayerChild hoveredChild; // Whatever the mouse is hovering when SELECT tool is selected
     public Array<MapSprite> selectedSprites;
     public Array<MapObject> selectedObjects;
     public int randomSpriteIndex;
@@ -137,7 +138,9 @@ public class Map implements Screen
 
         this.editor.batch.setProjectionMatrix(camera.combined);
         this.editor.batch.begin();
-        drawLayers();
+        //spritebatch begin
+        drawSpriteLayers();
+        //spritebatch end
         this.editor.batch.end();
 
         this.editor.shapeRenderer.setProjectionMatrix(camera.combined);
@@ -146,9 +149,13 @@ public class Map implements Screen
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         this.editor.shapeRenderer.begin();
-        this.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        //shaperenderer begin
         drawLayerOutline();
         drawGrid();
+        drawObjectLayers();
+        drawHoveredOutline();
+        drawSelectedOutlines();
+        //shaperenderer end
         this.editor.shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
@@ -156,7 +163,41 @@ public class Map implements Screen
         this.stage.draw();
     }
 
-    private void drawLayers()
+    private void drawSelectedOutlines()
+    {
+        if(!Utils.isFileToolThisType(editor, Tools.SELECT))
+            return;
+
+        for(int i = 0; i < this.selectedSprites.size; i ++)
+        {
+            MapSprite selectedSprite = this.selectedSprites.get(i);
+            if(selectedSprite == this.hoveredChild)
+                selectedSprite.drawSelectedHoveredOutline();
+            else
+                selectedSprite.drawSelectedOutline();
+        }
+
+        for(int i = 0; i < this.selectedObjects.size; i ++)
+        {
+            MapObject selectedObject = this.selectedObjects.get(i);
+            if(selectedObject == this.hoveredChild)
+                selectedObject.drawSelectedHoveredOutline();
+            else
+                selectedObject.drawSelectedOutline();
+        }
+    }
+
+    private void drawHoveredOutline()
+    {
+        if(!Utils.isFileToolThisType(editor, Tools.SELECT))
+            return;
+
+        if(this.hoveredChild == null)
+            return;
+        this.hoveredChild.drawHoverOutline();
+    }
+
+    private void drawSpriteLayers()
     {
         for(int i = 0; i < this.layers.size; i ++)
         {
@@ -168,10 +209,23 @@ public class Map implements Screen
         }
     }
 
+    private void drawObjectLayers()
+    {
+        for(int i = 0; i < this.layers.size; i ++)
+        {
+            if(this.layers.get(i) instanceof ObjectLayer)
+            {
+                if (this.layers.get(i).layerField.visibleImg.isVisible() && this.layers.get(i).overrideSprite == null)
+                    this.layers.get(i).draw();
+            }
+        }
+    }
+
     private void drawGrid()
     {
         if(selectedLayer != null)
         {
+            this.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
             int layerWidth = selectedLayer.width;
             int layerHeight = selectedLayer.height;
             if (editor.fileMenu.toolPane.lines.selected)
@@ -188,6 +242,7 @@ public class Map implements Screen
     {
         if(selectedLayer != null)
         {
+            this.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
             int layerWidth = selectedLayer.width;
             int layerHeight = selectedLayer.height;
             this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y, selectedLayer.x, selectedLayer.y + layerHeight);

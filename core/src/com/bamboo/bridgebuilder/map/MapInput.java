@@ -4,20 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.FloatArray;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
-
-import java.util.Stack;
 
 
 public class MapInput implements InputProcessor
@@ -64,6 +56,9 @@ public class MapInput implements InputProcessor
         Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
         this.dragOrigin.set(coords.x, coords.y);
 
+        handleBrushClick(coords.x, coords.y);
+        handleSelect();
+
         return false;
     }
 
@@ -90,6 +85,7 @@ public class MapInput implements InputProcessor
     {
         Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
         handlePreviewSpritePositionUpdate(coords.x, coords.y);
+        handleHoveredLayerChildUpdate(coords.x, coords.y);
         return false;
     }
 
@@ -98,6 +94,72 @@ public class MapInput implements InputProcessor
     {
         handleCameraZoom(amount);
         return false;
+    }
+
+    private void handleHoveredLayerChildUpdate(float x, float y)
+    {
+        if(map.selectedLayer != null && Utils.isFileToolThisType(editor, Tools.SELECT))
+        {
+            for (int i = map.selectedLayer.children.size - 1; i >= 0; i--)
+            {
+                LayerChild layerChild = (LayerChild) map.selectedLayer.children.get(i);
+                if (layerChild.isHoveredOver(x, y))
+                {
+                    map.hoveredChild = layerChild;
+                    return;
+                }
+            }
+        }
+        map.hoveredChild = null;
+    }
+
+    private void handleBrushClick(float x, float y)
+    {
+        if(!Utils.isFileToolThisType(editor, Tools.BRUSH) || map.selectedLayer == null || !(map.selectedLayer instanceof SpriteLayer))
+            return;
+
+        SpriteLayer layer = (SpriteLayer) map.selectedLayer;
+        SpriteTool spriteTool = map.getSpriteToolFromSelectedTools();
+        MapSprite mapSprite = new MapSprite(map, layer, spriteTool, x, y);
+        layer.addMapSprite(mapSprite);
+    }
+
+    private void handleSelect()
+    {
+        if(!Utils.isFileToolThisType(editor, Tools.SELECT) || map.selectedLayer == null)
+            return;
+        if(map.hoveredChild instanceof MapSprite)
+        {
+            MapSprite hoveredMapSprite = (MapSprite) map.hoveredChild;
+            if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+            {
+                if(map.selectedSprites.contains(hoveredMapSprite, true))
+                    map.selectedSprites.removeValue(hoveredMapSprite, true);
+                else
+                    map.selectedSprites.add(hoveredMapSprite);
+            }
+            else
+            {
+                map.selectedSprites.clear();
+                map.selectedSprites.add(hoveredMapSprite);
+            }
+        }
+        else if(map.hoveredChild instanceof MapObject)
+        {
+            MapObject hoveredMapObject = (MapObject) map.hoveredChild;
+            if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+            {
+                if(map.selectedObjects.contains(hoveredMapObject, true))
+                    map.selectedObjects.removeValue(hoveredMapObject, true);
+                else
+                    map.selectedObjects.add(hoveredMapObject);
+            }
+            else
+            {
+                map.selectedObjects.clear();
+                map.selectedObjects.add(hoveredMapObject);
+            }
+        }
     }
 
     private void handlePreviewSpritePositionUpdate(float x, float y)
@@ -123,12 +185,11 @@ public class MapInput implements InputProcessor
 
     private void handleCameraDrag()
     {
-        if(editor.getFileTool() != null && editor.getFileTool().tool == Tools.GRAB)
-        {
-            this.map.camera.position.x -= this.pos.x;
-            this.map.camera.position.y -= this.pos.y;
-            this.map.camera.update();
-        }
+        if(!Utils.isFileToolThisType(editor, Tools.GRAB))
+            return;
+        this.map.camera.position.x -= this.pos.x;
+        this.map.camera.position.y -= this.pos.y;
+        this.map.camera.update();
     }
 
     private int sign (int x) {

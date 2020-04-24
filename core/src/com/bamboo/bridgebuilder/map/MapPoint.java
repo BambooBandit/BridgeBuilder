@@ -1,8 +1,7 @@
 package com.bamboo.bridgebuilder.map;
 
-import box2dLight.PointLight;
-import com.badlogic.gdx.utils.Array;
-import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class MapPoint extends MapObject
 {
@@ -38,6 +37,62 @@ public class MapPoint extends MapObject
     @Override
     public void draw()
     {
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.CYAN);
+        pointShape[0] = position.x + 0;
+        pointShape[1] = position.y + 0;
+        pointShape[2] = position.x - 4;
+        pointShape[3] = position.y + 8;
+        pointShape[4] = position.x - 1;
+        pointShape[5] = position.y + 11;
+        pointShape[6] = position.x + 1;
+        pointShape[7] = position.y + 11;
+        pointShape[8] = position.x + 4;
+        pointShape[9] = position.y + 8;
+        map.editor.shapeRenderer.polygon(pointShape);
+    }
+
+    @Override
+    public void drawHoverOutline()
+    {
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.ORANGE);
+        pointShape[0] = position.x + 0;
+        pointShape[1] = position.y + 0;
+        pointShape[2] = position.x - 4;
+        pointShape[3] = position.y + 8;
+        pointShape[4] = position.x - 1;
+        pointShape[5] = position.y + 11;
+        pointShape[6] = position.x + 1;
+        pointShape[7] = position.y + 11;
+        pointShape[8] = position.x + 4;
+        pointShape[9] = position.y + 8;
+        map.editor.shapeRenderer.polygon(pointShape);
+    }
+
+    @Override
+    public void drawSelectedOutline()
+    {
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.GREEN);
+        pointShape[0] = position.x + 0;
+        pointShape[1] = position.y + 0;
+        pointShape[2] = position.x - 4;
+        pointShape[3] = position.y + 8;
+        pointShape[4] = position.x - 1;
+        pointShape[5] = position.y + 11;
+        pointShape[6] = position.x + 1;
+        pointShape[7] = position.y + 11;
+        pointShape[8] = position.x + 4;
+        pointShape[9] = position.y + 8;
+        map.editor.shapeRenderer.polygon(pointShape);
+    }
+
+    @Override
+    public void drawSelectedHoveredOutline()
+    {
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.YELLOW);
         pointShape[0] = position.x + 0;
         pointShape[1] = position.y + 0;
         pointShape[2] = position.x - 4;

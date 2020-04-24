@@ -1,6 +1,7 @@
 package com.bamboo.bridgebuilder.map;
 
-import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
@@ -27,6 +28,8 @@ public class MapPolygon extends MapObject
     @Override
     public void draw()
     {
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.CYAN);
         map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
 
         PropertyField propertyField = Utils.getPropertyField(properties, "angle");
@@ -41,6 +44,30 @@ public class MapPolygon extends MapObject
             }
             catch (NumberFormatException e){return;}
         }
+    }
+
+    @Override
+    public void drawHoverOutline()
+    {
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.ORANGE);
+        map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
+    }
+
+    @Override
+    public void drawSelectedOutline()
+    {
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.GREEN);
+        map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
+    }
+
+    @Override
+    public void drawSelectedHoveredOutline()
+    {
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.YELLOW);
+        map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
     }
 
     private void drawCentroidAndAngle(float angle)

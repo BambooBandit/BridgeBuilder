@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.EditorPolygon;
@@ -212,6 +213,30 @@ public class MapSprite extends LayerChild
         }
     }
 
+    @Override
+    public void drawHoverOutline()
+    {
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.ORANGE);
+        map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
+    }
+
+    @Override
+    public void drawSelectedOutline()
+    {
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.GREEN);
+        map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
+    }
+
+    @Override
+    public void drawSelectedHoveredOutline()
+    {
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.YELLOW);
+        map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
+    }
+
     public void drawTopSprites()
     {
         if(this.sprite != null)
@@ -238,11 +263,6 @@ public class MapSprite extends LayerChild
     {
         if(selected)
             scaleBox.sprite.draw(map.editor.batch);
-    }
-
-    public void drawOutline()
-    {
-        map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
     }
 
     public void setID(int id)
@@ -376,5 +396,11 @@ public class MapSprite extends LayerChild
 //            for(int i = 0; i < this.tool.topSprites.size; i ++)
 //                this.tool.topSprites.get(i).setScale(totalScale);
 //        }
+    }
+
+    @Override
+    public boolean isHoveredOver(float x, float y)
+    {
+        return this.polygon.contains(x, y);
     }
 }

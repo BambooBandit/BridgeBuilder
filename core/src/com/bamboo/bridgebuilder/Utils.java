@@ -2,15 +2,13 @@ package com.bamboo.bridgebuilder;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
+import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
-
-import java.util.ArrayList;
-import java.util.Stack;
 
 public class Utils
 {
@@ -147,6 +145,18 @@ public class Utils
                 return (LightPropertyField) propertyField;
         }
         return null;
+    }
+
+    public static boolean isFileToolThisType(BridgeBuilder editor, Tools toolType)
+    {
+        Tool fileTool = editor.getFileTool();
+        if(toolType == null && fileTool == null)
+            return true;
+        if(fileTool == null)
+            return false;
+        if(fileTool.tool == toolType)
+            return true;
+        return false;
     }
 
     public static LabelFieldPropertyValuePropertyField getLockedPropertyField(Array<PropertyField> lockedProperties, String propertyName)
