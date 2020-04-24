@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.commands.SelectLayer;
 import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 
@@ -90,13 +91,8 @@ public class LayerMenu extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                unselectAll();
-                if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
-                {
-                    layer.select();
-                    selectedMap.selectedLayer = layer.mapLayer;
-                    selectedMap.propertyMenu.rebuild();
-                }
+            SelectLayer selectLayer = new SelectLayer(selectedMap, selectedMap.selectedLayer, layer.mapLayer, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+            selectedMap.executeCommand(selectLayer);
             }
         };
         layer.layerName.addListener(listener);

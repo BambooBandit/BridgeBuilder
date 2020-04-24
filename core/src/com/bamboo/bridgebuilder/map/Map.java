@@ -18,12 +18,15 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.commands.Command;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
+
+import java.util.Stack;
 
 public class Map implements Screen
 {
@@ -64,6 +67,11 @@ public class Map implements Screen
     public float zoom = 1;
 
     public MapInput input;
+
+    // For undo/redo
+    private int undoRedoPointer = -1;
+    private Stack<Command> commandStack = new Stack<>();
+    private int stackThreshold = 75;
 
     public Map(BridgeBuilder editor, String name)
     {
@@ -371,5 +379,45 @@ public class Map implements Screen
                 spriteTool.previewSprites.get(i).setPosition(coords.x - spriteTool.previewSprites.get(i).getWidth() / 2, coords.y - spriteTool.previewSprites.get(i).getHeight() / 2);
             }
         }
+    }
+
+    public void executeCommand(Command command)
+    {
+        deleteElementsAfterPointer(undoRedoPointer);
+        command.execute();
+        commandStack.push(command);
+        undoRedoPointer ++;
+
+        if(commandStack.size() > stackThreshold)
+        {
+            undoRedoPointer --;
+            commandStack.remove(0);
+        }
+    }
+
+    private void deleteElementsAfterPointer(int undoRedoPointer)
+    {
+        if(commandStack.size() < 1)
+            return;
+        for(int i = commandStack.size() - 1; i > undoRedoPointer; i --)
+            commandStack.remove(i);
+    }
+
+    public void undo()
+    {
+        if(undoRedoPointer < 0)
+            return;
+        Command command = commandStack.get(undoRedoPointer);
+        command.undo();
+        undoRedoPointer --;
+    }
+
+    public void redo()
+    {
+        if(undoRedoPointer == commandStack.size() - 1)
+            return;
+        undoRedoPointer ++;
+        Command command = commandStack.get(undoRedoPointer);
+        command.execute();
     }
 }

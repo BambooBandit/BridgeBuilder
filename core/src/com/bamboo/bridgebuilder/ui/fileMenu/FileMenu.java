@@ -1,6 +1,5 @@
 package com.bamboo.bridgebuilder.ui.fileMenu;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -12,14 +11,6 @@ import com.badlogic.gdx.utils.Json;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.map.Map;
-
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
 
 import static com.bamboo.bridgebuilder.map.Map.untitledCount;
 
@@ -128,6 +119,11 @@ public class FileMenu extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                if(editor.getScreen() != null)
+                {
+                    Map map = (Map) editor.getScreen();
+                    map.undo();
+                }
             }
         });
         this.redoButton.addListener(new ClickListener()
@@ -135,6 +131,11 @@ public class FileMenu extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                if(editor.getScreen() != null)
+                {
+                    Map map = (Map) editor.getScreen();
+                    map.redo();
+                }
             }
         });
 
