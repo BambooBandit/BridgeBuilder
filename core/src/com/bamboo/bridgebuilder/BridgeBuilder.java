@@ -78,6 +78,8 @@ public class BridgeBuilder extends Game
 			stage.draw();
 		} catch(Exception e){
 			e.printStackTrace();
+			Gdx.app.exit();
+			System.exit(0);
 //			crashRecovery();
 		}
 	}

@@ -7,10 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.BridgeBuilder;
-import com.bamboo.bridgebuilder.map.Layer;
-import com.bamboo.bridgebuilder.map.Map;
-import com.bamboo.bridgebuilder.map.ObjectLayer;
-import com.bamboo.bridgebuilder.map.SpriteLayer;
+import com.bamboo.bridgebuilder.map.*;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
 

@@ -30,10 +30,14 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
         super(tool, sheetTool, image, spriteMenuToolPane, skin);
         this.textureRegion = textureRegion;
         this.previewSprites = new Array();
+        Sprite sprite;
         if(textureRegion instanceof TextureAtlas.AtlasRegion)
-            this.previewSprites.add(new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) textureRegion));
+            sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) textureRegion);
         else
-            this.previewSprites.add(new Sprite(textureRegion));
+            sprite = new Sprite(textureRegion);
+        sprite.setSize(sprite.getWidth() / 64, sprite.getHeight() / 64);
+        this.previewSprites.add(sprite);
+
         this.lockedProperties = new Array<>();
         this.properties = new Array<>();
         this.name = name;
@@ -98,8 +102,9 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
             TextureRegion textureRegion = EditorAssets.getTextureRegion(sheetTool.name, topSpriteName);
             if (textureRegion == null)
                 return;
-            Sprite sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) textureRegion);
-            this.topSprites.add((TextureAtlas.AtlasSprite) sprite);
+            TextureAtlas.AtlasSprite sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) textureRegion);
+            sprite.setSize(sprite.getWidth() / 64, sprite.getHeight() / 64);
+            this.topSprites.add(sprite);
             this.previewSprites.add(sprite);
         }
         else
@@ -109,8 +114,12 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
             TextureRegion textureRegion = EditorAssets.getTextureRegion(sheetTool.name, topSpriteName);
             while(textureRegion != null)
             {
-                this.topSprites.add(new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) textureRegion));
-                this.previewSprites.add(new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) textureRegion));
+                TextureAtlas.AtlasSprite sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) textureRegion);
+                sprite.setSize(sprite.getWidth() / 64, sprite.getHeight() / 64);
+                this.topSprites.add(sprite);
+                sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) textureRegion);
+                sprite.setSize(sprite.getWidth() / 64, sprite.getHeight() / 64);
+                this.previewSprites.add(sprite);
                 number ++;
                 textureRegion = EditorAssets.getTextureRegion(sheetTool.name, (topSpriteNoDigits + number));
             }

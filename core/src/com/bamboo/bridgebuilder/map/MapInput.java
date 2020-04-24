@@ -3,6 +3,7 @@ package com.bamboo.bridgebuilder.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -57,6 +58,9 @@ public class MapInput implements InputProcessor
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button)
     {
+        map.stage.unfocusAll();
+        editor.stage.unfocusAll();
+
         Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
         this.dragOrigin.set(coords.x, coords.y);
 
@@ -84,6 +88,8 @@ public class MapInput implements InputProcessor
     @Override
     public boolean mouseMoved(int screenX, int screenY)
     {
+        Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
+        handlePreviewSpritePositionUpdate(coords.x, coords.y);
         return false;
     }
 
@@ -92,6 +98,18 @@ public class MapInput implements InputProcessor
     {
         handleCameraZoom(amount);
         return false;
+    }
+
+    private void handlePreviewSpritePositionUpdate(float x, float y)
+    {
+        SpriteTool spriteTool = map.getSpriteToolFromSelectedTools();
+        if(spriteTool == null)
+            return;
+        for(int i = 0; i < spriteTool.previewSprites.size; i ++)
+        {
+            Sprite previewSprite = spriteTool.previewSprites.get(i);
+            previewSprite.setPosition(x - previewSprite.getWidth() / 2, y - previewSprite.getHeight() / 2);
+        }
     }
 
     private void handleCameraZoom(int amount)

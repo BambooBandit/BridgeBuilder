@@ -42,6 +42,7 @@ public class MapSprite extends LayerChild
         super(map, layer, x, y);
         this.lockedProperties = new Array<>();
         this.sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) tool.textureRegion);
+        this.sprite.setSize(this.sprite.getWidth() / 64, this.sprite.getHeight() / 64);
         x -= this.sprite.getWidth() / 2;
         y -= this.sprite.getHeight() / 2;
         this.position.set(x, y);

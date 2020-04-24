@@ -137,6 +137,7 @@ public class Map implements Screen
 
         this.editor.batch.setProjectionMatrix(camera.combined);
         this.editor.batch.begin();
+        drawLayers();
         this.editor.batch.end();
 
         this.editor.shapeRenderer.setProjectionMatrix(camera.combined);
@@ -153,6 +154,18 @@ public class Map implements Screen
 
         this.stage.act();
         this.stage.draw();
+    }
+
+    private void drawLayers()
+    {
+        for(int i = 0; i < this.layers.size; i ++)
+        {
+            if(this.layers.get(i) instanceof SpriteLayer)
+            {
+                if (this.layers.get(i).layerField.visibleImg.isVisible() && this.layers.get(i).overrideSprite == null)
+                    this.layers.get(i).draw();
+            }
+        }
     }
 
     private void drawGrid()
