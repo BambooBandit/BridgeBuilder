@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public class LayerPropertyPanel extends Group
 {
@@ -41,11 +40,11 @@ public class LayerPropertyPanel extends Group
 
         TextField.TextFieldFilter.DigitsOnlyFilter filter = new TextField.TextFieldFilter.DigitsOnlyFilter();
 
-        this.layerWidthProperty = new LabelFieldPropertyValuePropertyField("Layer Width", "5", skin, menu, false);
+        this.layerWidthProperty = new LabelFieldPropertyValuePropertyField("Layer Width", "5", skin, menu, null, false);
         this.layerWidthProperty.value.setTextFieldFilter(filter);
-        this.layerHeightProperty = new LabelFieldPropertyValuePropertyField("Layer Height", "5", skin, menu, false);
+        this.layerHeightProperty = new LabelFieldPropertyValuePropertyField("Layer Height", "5", skin, menu, null, false);
         this.layerHeightProperty.value.setTextFieldFilter(filter);
-        this.layerZProperty = new LabelFieldPropertyValuePropertyField("Layer Z", "0", skin, menu, false);
+        this.layerZProperty = new LabelFieldPropertyValuePropertyField("Layer Z", "0", skin, menu, null, false);
         this.layerZProperty.value.setTextFieldFilter(new TextField.TextFieldFilter()
         {
             @Override

@@ -61,7 +61,7 @@ public class FileMenu extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                new AreYouSureDialog("Create a new map with BBM default settings/properties?", FileMenu.this.editor.stage, "", EditorAssets.getUISkin(), true)
+                new YesNoDialog("Create a new map with BBM default settings/properties?", FileMenu.this.editor.stage, "", EditorAssets.getUISkin(), true)
                 {
                     Map newMap;
                     @Override

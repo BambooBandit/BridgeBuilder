@@ -34,5 +34,7 @@ public class RemoveLayer implements Command
     public void undo()
     {
         this.map.layerMenu.addLayer(this.layer, this.layerIndex);
+        if(this.layer.layerField.isSelected)
+            this.map.selectedLayer = this.layer;
     }
 }

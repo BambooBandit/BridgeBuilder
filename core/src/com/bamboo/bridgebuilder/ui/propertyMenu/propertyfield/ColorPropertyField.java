@@ -2,21 +2,26 @@ package com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.commands.RemoveProperty;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 
 public class ColorPropertyField extends PropertyField
 {
-    public TextField rValue; // Null if rgba and rgbaDistanceRayAmount is false
-    public TextField gValue; // Null if rgba and rgbaDistanceRayAmount is false
-    public TextField bValue; // Null if rgba and rgbaDistanceRayAmount is false
-    public TextField aValue; // Null if rgba and rgbaDistanceRayAmount is false
+    public TextField rValue;
+    public TextField gValue;
+    public TextField bValue;
+    public TextField aValue;
 
-    public ColorPropertyField(Skin skin, final PropertyMenu menu, boolean removeable, float r, float g, float b, float a)
+    public ColorPropertyField(Skin skin, final PropertyMenu menu, Array<PropertyField> properties, boolean removeable, float r, float g, float b, float a)
     {
-        super(menu, removeable);
+        super(menu, properties, removeable);
 
         TextField.TextFieldFilter filter = new TextField.TextFieldFilter()
         {
@@ -56,7 +61,8 @@ public class ColorPropertyField extends PropertyField
                 @Override
                 public void clicked(InputEvent event, float x, float y)
                 {
-                    menu.removeProperty(removeableField);
+                    RemoveProperty removeProperty = new RemoveProperty(menu.map, removeableField, properties);
+                    menu.map.executeCommand(removeProperty);
                 }
             });
 
@@ -528,26 +534,28 @@ public class ColorPropertyField extends PropertyField
         this.aValue.setText(Float.toString(a));
     }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if(o instanceof ColorPropertyField)
-        {
-            ColorPropertyField toCompare = (ColorPropertyField) o;
-            return this.rValue.getText().equals(toCompare.rValue.getText()) &&
-                    this.gValue.getText().equals(toCompare.gValue.getText()) &&
-                    this.bValue.getText().equals(toCompare.bValue.getText()) &&
-                    this.aValue.getText().equals(toCompare.aValue.getText());
-        }
-        return false;
-    }
 
-    @Override
-    public int hashCode() {
-        return this.rValue.getText().hashCode() +
-                this.gValue.getText().hashCode() +
-                this.bValue.getText().hashCode() +
-                this.aValue.getText().hashCode() +
-                (this.removeable ? 0 : 1);
-    }
+    //TODO commenting below fixes some issues but stops common property panel from working
+//    @Override
+//    public boolean equals(Object o)
+//    {
+//        if(o instanceof ColorPropertyField)
+//        {
+//            ColorPropertyField toCompare = (ColorPropertyField) o;
+//            return this.rValue.getText().equals(toCompare.rValue.getText()) &&
+//                    this.gValue.getText().equals(toCompare.gValue.getText()) &&
+//                    this.bValue.getText().equals(toCompare.bValue.getText()) &&
+//                    this.aValue.getText().equals(toCompare.aValue.getText());
+//        }
+//        return false;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return this.rValue.getText().hashCode() +
+//                this.gValue.getText().hashCode() +
+//                this.bValue.getText().hashCode() +
+//                this.aValue.getText().hashCode() +
+//                (this.removeable ? 0 : 1);
+//    }
 }

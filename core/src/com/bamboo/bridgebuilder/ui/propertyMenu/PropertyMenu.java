@@ -5,8 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
@@ -48,7 +49,7 @@ public class PropertyMenu extends Group
         this.spritePropertyPanel = new RemoveablePropertyPanel(skin, this, this.editor);
         this.spritePropertyPanel.setVisible(false);
         this.propertyPanel = new PropertyPanel(skin, this, this.editor, map);
-        this.toolPane = new PropertyToolPane(this.editor, this, skin);
+        this.toolPane = new PropertyToolPane(this.editor, map,this, skin);
 
         this.propertyTypeLabel = new Label("", skin);
 
@@ -99,9 +100,9 @@ public class PropertyMenu extends Group
         super.setSize(width, height);
     }
 
-    public void newProperty(boolean light)
+    public void newProperty(boolean light, Layer selectedLayer, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObject)
     {
-        this.propertyPanel.newProperty(light);
+        this.propertyPanel.newProperty(light, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects);
         rebuild();
     }
 
@@ -129,7 +130,7 @@ public class PropertyMenu extends Group
         {
             if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof SpriteTool)
             {
-                LabelFieldPropertyValuePropertyField probability = new LabelFieldPropertyValuePropertyField("Probability", "1.0", skin, this, false);
+                LabelFieldPropertyValuePropertyField probability = new LabelFieldPropertyValuePropertyField("Probability", "1.0", skin, this, null,false);
                 probability.value.setTextFieldFilter(new TextField.TextFieldFilter()
                 {
                     @Override
@@ -140,9 +141,9 @@ public class PropertyMenu extends Group
                 });
 
                 ((SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i)).lockedProperties.add(probability);
-                LabelFieldPropertyValuePropertyField type = new LabelFieldPropertyValuePropertyField("Type", "", skin, this, false);
+                LabelFieldPropertyValuePropertyField type = new LabelFieldPropertyValuePropertyField("Type", "", skin, this, null, false);
                 ((SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i)).lockedProperties.add(type);
-                LabelFieldPropertyValuePropertyField z = new LabelFieldPropertyValuePropertyField("spawnZ", "", skin, this, false);
+                LabelFieldPropertyValuePropertyField z = new LabelFieldPropertyValuePropertyField("spawnZ", "", skin, this, null, false);
                 ((SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i)).lockedProperties.add(z);
             }
         }

@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.commands.AddProperty;
+import com.bamboo.bridgebuilder.map.Map;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
 
@@ -19,7 +21,7 @@ public class PropertyTool extends Group
 
     public PropertyTools tool;
 
-    public PropertyTool(PropertyTools tool, final PropertyToolPane propertyToolPane, Skin skin)
+    public PropertyTool(Map map, PropertyTools tool, final PropertyToolPane propertyToolPane, Skin skin)
     {
         this.tool = tool;
         this.propertyToolPane = propertyToolPane;
@@ -37,10 +39,8 @@ public class PropertyTool extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                if(tool == PropertyTools.NEW)
-                    propertyToolPane.menu.newProperty(false);
-                else
-                    propertyToolPane.menu.newProperty(true);
+                AddProperty addProperty = new AddProperty(map, tool, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects);
+                map.executeCommand(addProperty);
             }
         });
     }

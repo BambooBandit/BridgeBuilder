@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
-public class AreYouSureDialog extends Dialog
+public class YesNoDialog extends Dialog
 {
     private Label areYouSureLabel;
     private Table yesNoTable;
@@ -15,7 +15,7 @@ public class AreYouSureDialog extends Dialog
     private TextButton no;
     private TextButton cancel;
 
-    public AreYouSureDialog(String action, Stage stage, String title, Skin skin, boolean hasCancelButton)
+    public YesNoDialog(String action, Stage stage, String title, Skin skin, boolean hasCancelButton)
     {
         super(title, skin);
 
@@ -51,14 +51,15 @@ public class AreYouSureDialog extends Dialog
         }
 
         this.getContentTable().add(areYouSureLabel).row();
-        this.yesNoTable.add(yes).padRight(10).padLeft(10);
-        this.yesNoTable.add(no).padRight(10).padLeft(10);
+        setWidth(getPrefWidth());
+        this.yesNoTable.add(yes).width(getWidth() / 5).padRight(15).padLeft(15);
+        this.yesNoTable.add(no).width(getWidth() / 5).padRight(15).padLeft(15);
         if(hasCancelButton)
-            this.yesNoTable.add(cancel).padRight(10).padLeft(10);
+        {
+            this.yesNoTable.add(cancel).width(getWidth() / 5).padRight(15).padLeft(15);
+        }
         this.getContentTable().add(yesNoTable);
-
-        setSize(getPrefWidth(), getPrefHeight());
-
+        setHeight(getPrefHeight());
         this.setPosition((stage.getWidth() / 2), (stage.getHeight() / 2), Align.center);
 
         stage.addActor(this);

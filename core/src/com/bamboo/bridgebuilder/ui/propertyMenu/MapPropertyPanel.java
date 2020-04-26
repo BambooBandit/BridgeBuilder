@@ -40,8 +40,8 @@ public class MapPropertyPanel extends Group
         this.table = new Table();
         this.table.left().top();
 
-        ColorPropertyField mapRGBAProperty = new ColorPropertyField(skin, menu, false, 0, 0, 0, 1);
-        LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = new LabelFieldPropertyValuePropertyField("Virtual Height", "20", skin, menu, false);
+        ColorPropertyField mapRGBAProperty = new ColorPropertyField(skin, menu, this.properties, false, 0, 0, 0, 1);
+        LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = new LabelFieldPropertyValuePropertyField("Virtual Height", "20", skin, menu, properties, false);
         this.lockedProperties = new Array<>();
         this.lockedProperties.add(mapRGBAProperty);
         this.lockedProperties.add(mapVirtualHeightProperty);

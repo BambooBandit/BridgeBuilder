@@ -1,14 +1,10 @@
 package com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.TextFieldAction;
-import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 
 public abstract class PropertyField extends Group
@@ -17,12 +13,14 @@ public abstract class PropertyField extends Group
     protected TextButton remove; // Null if removeable is false
     protected boolean removeable;
     protected PropertyMenu menu;
+    protected Array<PropertyField> properties; // properties of the object holding this property field. Null if locked properties
 
     protected static Array<TextFieldAction> textFieldActions = new Array<>();
 
-    public PropertyField(final PropertyMenu menu, boolean removeable)
+    public PropertyField(final PropertyMenu menu, Array<PropertyField> properties, boolean removeable)
     {
         this.menu = menu;
+        this.properties = properties;
         this.removeable = removeable;
     }
 

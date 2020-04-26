@@ -1,7 +1,5 @@
 package com.bamboo.bridgebuilder.commands;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 
@@ -24,7 +22,7 @@ public class SelectLayer implements Command
     public void execute()
     {
         this.map.layerMenu.unselectAll();
-        if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+        if (!ctrlHeld)
         {
             this.newLayer.layerField.select();
             map.selectedLayer = this.newLayer;
@@ -36,7 +34,7 @@ public class SelectLayer implements Command
     public void undo()
     {
         this.map.layerMenu.unselectAll();
-        if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+        if (!ctrlHeld)
         {
             if(this.oldLayer != null)
             {

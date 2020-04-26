@@ -2,19 +2,24 @@ package com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.commands.RemoveProperty;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 
 public class FieldFieldPropertyValuePropertyField extends PropertyField
 {
-    public TextField property; // Null if removeable is false, or rgba or rgbaDistanceRayAmount is true
-    public TextField value; // Null if rgba, or rgbaDistanceRayAmount is true
+    public TextField property;
+    public TextField value;
 
-    public FieldFieldPropertyValuePropertyField(String property, String value, Skin skin, final PropertyMenu menu, boolean removeable)
+    public FieldFieldPropertyValuePropertyField(String property, String value, Skin skin, final PropertyMenu menu, Array<PropertyField> properties, boolean removeable)
     {
-        super(menu, removeable);
+        super(menu, properties, removeable);
 
 
         if (removeable)
@@ -36,7 +41,8 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
                 @Override
                 public void clicked(InputEvent event, float x, float y)
                 {
-                    menu.removeProperty(removeableField);
+                    RemoveProperty removeProperty = new RemoveProperty(menu.map, removeableField, properties);
+                    menu.map.executeCommand(removeProperty);
                 }
             });
 
@@ -295,22 +301,23 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
         super.setSize(width, height);
     }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if(o instanceof FieldFieldPropertyValuePropertyField)
-        {
-            FieldFieldPropertyValuePropertyField toCompare = (FieldFieldPropertyValuePropertyField) o;
-            return this.property.getText().equals(toCompare.property.getText()) && this.value.getText().equals(toCompare.value.getText());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.property.getText().hashCode() +
-                this.property.getClass().hashCode() +
-                this.value.getText().hashCode() +
-                (this.removeable ? 0 : 1);
-    }
+    //TODO commenting below fixes some issues but stops common property panel from working
+//    @Override
+//    public boolean equals(Object o)
+//    {
+//        if(o instanceof FieldFieldPropertyValuePropertyField)
+//        {
+//            FieldFieldPropertyValuePropertyField toCompare = (FieldFieldPropertyValuePropertyField) o;
+//            return this.property.getText().equals(toCompare.property.getText()) && this.value.getText().equals(toCompare.value.getText());
+//        }
+//        return false;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return this.property.getText().hashCode() +
+//                this.property.getClass().hashCode() +
+//                this.value.getText().hashCode() +
+//                (this.removeable ? 0 : 1);
+//    }
 }

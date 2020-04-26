@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.commands.SelectSpriteTool;
 import com.bamboo.bridgebuilder.map.Map;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
@@ -85,44 +86,8 @@ public class SpriteMenuToolPane extends Group
         }
         if(selectedTool.tool == SpriteMenuTools.SPRITE)
         {
-            for(int i = 0; i < this.menu.spriteTable.getChildren().size; i ++)
-            {
-                if(this.menu.spriteTable.getChildren().get(i) instanceof SpriteTool)
-                {
-                    SpriteTool tool = (SpriteTool) this.menu.spriteTable.getChildren().get(i);
-                    if (tool == selectedTool)
-                    {
-                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
-                        {
-                            if (tool.isSelected)
-                            {
-                                this.menu.selectedSpriteTools.removeValue(tool, false);
-                                this.map.propertyMenu.rebuild();
-                                tool.unselect();
-                            } else
-                            {
-                                this.menu.selectedSpriteTools.add(tool);
-                                this.map.propertyMenu.rebuild();
-                                tool.select();
-                            }
-                        } else
-                        {
-                            this.menu.selectedSpriteTools.clear();
-                            this.menu.selectedSpriteTools.add(tool);
-                            this.map.propertyMenu.rebuild();
-                            tool.select();
-                        }
-                    } else if (tool.tool == SpriteMenuTools.SPRITE)
-                    {
-                        if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
-                        {
-                            this.menu.selectedSpriteTools.removeValue(tool, false);
-                            this.map.propertyMenu.rebuild();
-                            tool.unselect();
-                        }
-                    }
-                }
-            }
+            SelectSpriteTool selectSpriteTool = new SelectSpriteTool(map, (SpriteTool) selectedTool, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+            map.executeCommand(selectSpriteTool);
         }
         this.menu.selectedSpriteTools.sort();
     }

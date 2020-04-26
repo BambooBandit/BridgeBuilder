@@ -32,12 +32,12 @@ public class PropertyToolPane extends Group
 
     public PropertyMenu menu;
 
-    public PropertyToolPane(BridgeBuilder editor, PropertyMenu menu, Skin skin)
+    public PropertyToolPane(BridgeBuilder editor, Map map, PropertyMenu menu, Skin skin)
     {
         this.menu = menu;
         this.toolTable = new Table();
-        this.newProperty = new PropertyTool(PropertyTools.NEW, this, skin);
-        this.newLightProperty = new PropertyTool(PropertyTools.NEWLIGHT, this, skin);
+        this.newProperty = new PropertyTool(map, PropertyTools.NEW, this, skin);
+        this.newLightProperty = new PropertyTool(map, PropertyTools.NEWLIGHT, this, skin);
         this.apply = new TextButton("Apply", skin);
         setApplyListener();
         this.toolTable.left();

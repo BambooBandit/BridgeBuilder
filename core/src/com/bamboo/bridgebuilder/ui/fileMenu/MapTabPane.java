@@ -87,7 +87,7 @@ public class MapTabPane extends Group
             {
                 if(map.changed)
                 {
-                    new AreYouSureDialog("Save before closing " + map.name + "?", map.editor.stage, "", skin, true)
+                    new YesNoDialog("Save before closing " + map.name + "?", map.editor.stage, "", skin, true)
                     {
 //                        @Override
 //                        public void yes() { map.editor.fileMenu.save(map, true, false); }

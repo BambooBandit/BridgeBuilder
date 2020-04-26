@@ -5,23 +5,25 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.commands.RemoveProperty;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 
 public class LightPropertyField extends PropertyField
 {
-    private Label distanceLabel; // Null if rgbaDistanceRayAmount is false
-    private Label rayAmountLabel; // Null if rgbaDistanceRayAmount is false
-    public TextField rValue; // Null if rgba and rgbaDistanceRayAmount is false
-    public TextField gValue; // Null if rgba and rgbaDistanceRayAmount is false
-    public TextField bValue; // Null if rgba and rgbaDistanceRayAmount is false
-    public TextField aValue; // Null if rgba and rgbaDistanceRayAmount is false
-    public TextField distanceValue; // Null if rgbaDistanceRayAmount is false
-    public TextField rayAmountValue; // Null if rgbaDistanceRayAmount is false
+    private Label distanceLabel;
+    private Label rayAmountLabel;
+    public TextField rValue;
+    public TextField gValue;
+    public TextField bValue;
+    public TextField aValue;
+    public TextField distanceValue;
+    public TextField rayAmountValue;
 
-    public LightPropertyField(Skin skin, final PropertyMenu menu, boolean removeable, float r, float g, float b, float a, float distance, int rayAmount)
+    public LightPropertyField(Skin skin, final PropertyMenu menu, Array<PropertyField> properties, boolean removeable, float r, float g, float b, float a, float distance, int rayAmount)
     {
-        super(menu, removeable);
+        super(menu, properties, removeable);
 
         TextField.TextFieldFilter filter = new TextField.TextFieldFilter()
         {
@@ -73,7 +75,8 @@ public class LightPropertyField extends PropertyField
                 @Override
                 public void clicked(InputEvent event, float x, float y)
                 {
-                    menu.removeProperty(removeableField);
+                    RemoveProperty removeProperty = new RemoveProperty(menu.map, removeableField, properties);
+                    menu.map.executeCommand(removeProperty);
                 }
             });
 
@@ -764,30 +767,31 @@ public class LightPropertyField extends PropertyField
         super.setSize(width, height);
     }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if(o instanceof LightPropertyField)
-        {
-            LightPropertyField toCompare = (LightPropertyField) o;
-            return this.rValue.getText().equals(toCompare.rValue.getText()) &&
-                    this.gValue.getText().equals(toCompare.gValue.getText()) &&
-                    this.bValue.getText().equals(toCompare.bValue.getText()) &&
-                    this.aValue.getText().equals(toCompare.aValue.getText()) &&
-                    this.distanceValue.getText().equals(toCompare.distanceValue.getText()) &&
-                    this.rayAmountValue.getText().equals(toCompare.rayAmountValue.getText());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.rValue.getText().hashCode() +
-                this.gValue.getText().hashCode() +
-                this.bValue.getText().hashCode() +
-                this.aValue.getText().hashCode() +
-                this.distanceValue.getText().hashCode() +
-                this.rayAmountValue.getText().hashCode() +
-                (this.removeable ? 0 : 1);
-    }
+    //TODO commenting below fixes some issues but stops common property panel from working
+//    @Override
+//    public boolean equals(Object o)
+//    {
+//        if(o instanceof LightPropertyField)
+//        {
+//            LightPropertyField toCompare = (LightPropertyField) o;
+//            return this.rValue.getText().equals(toCompare.rValue.getText()) &&
+//                    this.gValue.getText().equals(toCompare.gValue.getText()) &&
+//                    this.bValue.getText().equals(toCompare.bValue.getText()) &&
+//                    this.aValue.getText().equals(toCompare.aValue.getText()) &&
+//                    this.distanceValue.getText().equals(toCompare.distanceValue.getText()) &&
+//                    this.rayAmountValue.getText().equals(toCompare.rayAmountValue.getText());
+//        }
+//        return false;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return this.rValue.getText().hashCode() +
+//                this.gValue.getText().hashCode() +
+//                this.bValue.getText().hashCode() +
+//                this.aValue.getText().hashCode() +
+//                this.distanceValue.getText().hashCode() +
+//                this.rayAmountValue.getText().hashCode() +
+//                (this.removeable ? 0 : 1);
+//    }
 }

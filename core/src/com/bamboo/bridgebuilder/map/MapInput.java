@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.commands.DrawMapSprite;
+import com.bamboo.bridgebuilder.commands.SelectMapSprite;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
@@ -56,7 +58,7 @@ public class MapInput implements InputProcessor
         Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
         this.dragOrigin.set(coords.x, coords.y);
 
-        handleBrushClick(coords.x, coords.y);
+        createMapSprite(coords.x, coords.y);
         handleSelect();
 
         return false;
@@ -113,53 +115,22 @@ public class MapInput implements InputProcessor
         map.hoveredChild = null;
     }
 
-    private void handleBrushClick(float x, float y)
+    private void createMapSprite(float x, float y)
     {
         if(!Utils.isFileToolThisType(editor, Tools.BRUSH) || map.selectedLayer == null || !(map.selectedLayer instanceof SpriteLayer))
             return;
 
-        SpriteLayer layer = (SpriteLayer) map.selectedLayer;
-        SpriteTool spriteTool = map.getSpriteToolFromSelectedTools();
-        MapSprite mapSprite = new MapSprite(map, layer, spriteTool, x, y);
-        layer.addMapSprite(mapSprite);
+        DrawMapSprite drawMapSprite = new DrawMapSprite(map, (SpriteLayer) map.selectedLayer, x, y);
+        map.executeCommand(drawMapSprite);
     }
 
     private void handleSelect()
     {
         if(!Utils.isFileToolThisType(editor, Tools.SELECT) || map.selectedLayer == null)
             return;
-        if(map.hoveredChild instanceof MapSprite)
-        {
-            MapSprite hoveredMapSprite = (MapSprite) map.hoveredChild;
-            if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-            {
-                if(map.selectedSprites.contains(hoveredMapSprite, true))
-                    map.selectedSprites.removeValue(hoveredMapSprite, true);
-                else
-                    map.selectedSprites.add(hoveredMapSprite);
-            }
-            else
-            {
-                map.selectedSprites.clear();
-                map.selectedSprites.add(hoveredMapSprite);
-            }
-        }
-        else if(map.hoveredChild instanceof MapObject)
-        {
-            MapObject hoveredMapObject = (MapObject) map.hoveredChild;
-            if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-            {
-                if(map.selectedObjects.contains(hoveredMapObject, true))
-                    map.selectedObjects.removeValue(hoveredMapObject, true);
-                else
-                    map.selectedObjects.add(hoveredMapObject);
-            }
-            else
-            {
-                map.selectedObjects.clear();
-                map.selectedObjects.add(hoveredMapObject);
-            }
-        }
+
+        SelectMapSprite selectMapSprite = new SelectMapSprite(map, map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+        map.executeCommand(selectMapSprite);
     }
 
     private void handlePreviewSpritePositionUpdate(float x, float y)
