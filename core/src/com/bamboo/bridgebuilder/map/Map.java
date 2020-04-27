@@ -167,6 +167,7 @@ public class Map implements Screen
         this.editor.shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
+        this.stage.getBatch().enableBlending();
         this.stage.act();
         this.stage.draw();
     }

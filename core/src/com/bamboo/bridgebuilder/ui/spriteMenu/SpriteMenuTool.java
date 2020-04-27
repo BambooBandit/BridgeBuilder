@@ -58,16 +58,6 @@ public class SpriteMenuTool extends Group
 
         addActor(image);
         setSize(image.getWidth(), image.getHeight());
-
-        final SpriteMenuTool selectedTool = this;
-        addListener(new ClickListener()
-        {
-            @Override
-            public void clicked(InputEvent event, float x, float y)
-            {
-                spriteMenuToolPane.selectTool(selectedTool);
-            }
-        });
     }
 
     public void select()

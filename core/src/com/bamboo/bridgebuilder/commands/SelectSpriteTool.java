@@ -1,5 +1,6 @@
 package com.bamboo.bridgebuilder.commands;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
@@ -33,9 +34,10 @@ public class SelectSpriteTool implements Command
 
         for(int i = 0; i < map.spriteMenu.spriteTable.getChildren().size; i ++)
         {
-            if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof SpriteTool)
+            if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof Table)
             {
-                SpriteTool tool = (SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i);
+                Table cellTable = (Table) map.spriteMenu.spriteTable.getChildren().get(i);
+                SpriteTool tool = cellTable.findActor("spriteTool");
                 if (tool == clickedSpriteTool)
                 {
                     if (this.ctrlHeld)

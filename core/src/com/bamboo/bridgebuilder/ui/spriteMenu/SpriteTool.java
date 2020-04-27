@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.EditorAssets;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 /** The sprite buttons in the SpriteMenu. Holds data that belongs with the sprite, such as locked properties.*/
 public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
@@ -51,6 +53,14 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
     {
         this.image.setColor(Color.GREEN);
 
+        Table cellTable = (Table) this.image.getParent().getParent();
+        SpriteDrawable background = (SpriteDrawable) cellTable.getBackground();
+        Color backgroundColor = background.getSprite().getColor();
+        if(backgroundColor.equals(Color.WHITE))
+            background.getSprite().setColor(Color.GREEN);
+        else if(backgroundColor.equals(Color.LIGHT_GRAY))
+            background.getSprite().setColor(Color.FOREST);
+
         this.isSelected = true;
 
         if(this.tool == SpriteMenuTools.LINES)
@@ -63,6 +73,14 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
     public void unselect()
     {
         this.image.setColor(Color.WHITE);
+
+        Table cellTable = (Table) this.image.getParent().getParent();
+        SpriteDrawable background = (SpriteDrawable) cellTable.getBackground();
+        Color backgroundColor = background.getSprite().getColor();
+        if(backgroundColor.equals(Color.GREEN))
+            background.getSprite().setColor(Color.WHITE);
+        else if(backgroundColor.equals(Color.FOREST))
+            background.getSprite().setColor(Color.LIGHT_GRAY);
 
         this.isSelected = false;
 
