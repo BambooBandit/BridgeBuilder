@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.BBColors;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
@@ -56,7 +57,7 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
         Table cellTable = (Table) this.image.getParent().getParent();
         SpriteDrawable background = (SpriteDrawable) cellTable.getBackground();
         Color backgroundColor = background.getSprite().getColor();
-        if(backgroundColor.equals(Color.WHITE) || backgroundColor.equals(Color.DARK_GRAY))
+        if(backgroundColor.equals(Color.WHITE) || backgroundColor.equals(BBColors.darkDarkGrey))
             background.getSprite().setColor(Color.LIME);
         else if(backgroundColor.equals(Color.LIGHT_GRAY) || backgroundColor.equals(Color.BLACK))
             background.getSprite().setColor(Color.FOREST);
@@ -80,7 +81,7 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
         if(backgroundColor.equals(Color.LIME))
         {
             if(spriteMenuToolPane.darkMode.isSelected)
-                background.getSprite().setColor(Color.DARK_GRAY);
+                background.getSprite().setColor(BBColors.darkDarkGrey);
             else
                 background.getSprite().setColor(Color.WHITE);
         }

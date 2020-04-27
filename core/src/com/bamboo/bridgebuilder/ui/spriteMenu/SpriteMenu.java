@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.BBColors;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.map.Map;
@@ -203,7 +204,7 @@ public class SpriteMenu extends Group
                         if (checkerDark)
                             sprite.setColor(Color.BLACK);
                         else
-                            sprite.setColor(Color.DARK_GRAY);
+                            sprite.setColor(BBColors.darkDarkGrey);
                     }
                     else
                     {
