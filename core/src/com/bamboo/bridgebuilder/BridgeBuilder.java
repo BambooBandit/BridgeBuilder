@@ -61,18 +61,7 @@ public class BridgeBuilder extends Game
 
 		try{
 			fileMenu.toolPane.fps.setText(Gdx.graphics.getFramesPerSecond());
-			if(Gdx.input.isKeyJustPressed(Input.Keys.Z) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
-			{
-				Map map = (Map) getScreen();
-				if(map != null)
-					map.undo();
-			}
-			else if(Gdx.input.isKeyJustPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
-			{
-				Map map = (Map) getScreen();
-				if(map != null)
-					map.redo();
-			}
+			handleShortcutKeys();
 
 			if(activeMap == null)
 			{
@@ -119,5 +108,61 @@ public class BridgeBuilder extends Game
 	public Tool getFileTool()
 	{
 		return this.fileMenu.toolPane.getTool();
+	}
+
+	private void handleShortcutKeys()
+	{
+		if(Gdx.input.isKeyJustPressed(Input.Keys.N) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+		{
+			this.fileMenu.newMap();
+		}
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.Z) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+		{
+			Map map = (Map) getScreen();
+			if(map != null)
+				map.undo();
+		}
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+		{
+			Map map = (Map) getScreen();
+			if(map != null)
+				map.redo();
+		}
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.B))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.brush);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.eraser);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.G))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.fill);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.V))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.select);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.H))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.grab);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.R))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.random);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.X))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.b2drender);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.M))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.boxSelect);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.T))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.top);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.O))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.drawObject);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.P))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.drawPoint);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.I))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.objectVerticeSelect);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.S))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.stamp);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.D))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.bind);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.K))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.blocked);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.L))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.parallax);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.N))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.lines);
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.C))
+			this.fileMenu.toolPane.selectTool(this.fileMenu.toolPane.perspective);
 	}
 }

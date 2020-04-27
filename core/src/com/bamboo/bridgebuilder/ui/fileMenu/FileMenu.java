@@ -61,22 +61,7 @@ public class FileMenu extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                new YesNoDialog("Create a new map with BBM default settings/properties?", FileMenu.this.editor.stage, "", EditorAssets.getUISkin(), true)
-                {
-                    Map newMap;
-                    @Override
-                    public void yes()
-                    {
-                    }
-
-                    @Override
-                    public void no()
-                    {
-                        newMap = new Map(FileMenu.this.editor, "untitled " + untitledCount++);
-                        FileMenu.this.editor.addToMaps(newMap);
-                        mapTabPane.lookAtMap(newMap);
-                    }
-                };
+                newMap();
             }
         });
         this.openButton.addListener(new ClickListener()
@@ -158,6 +143,26 @@ public class FileMenu extends Group
         this.fileMenuTable.add(this.mapTabPane).row();
         this.fileMenuTable.add(this.toolPane);
         this.addActor(this.fileMenuTable);
+    }
+
+    public void newMap()
+    {
+        new YesNoDialog("Create a new map with BBM default settings/properties?", FileMenu.this.editor.stage, "", EditorAssets.getUISkin(), true)
+        {
+            Map newMap;
+            @Override
+            public void yes()
+            {
+            }
+
+            @Override
+            public void no()
+            {
+                newMap = new Map(FileMenu.this.editor, "untitled " + untitledCount++);
+                FileMenu.this.editor.addToMaps(newMap);
+                mapTabPane.lookAtMap(newMap);
+            }
+        };
     }
 
     public void save(Map map, boolean removeMapAfterSaving, boolean closeApplicationAfterSaving)

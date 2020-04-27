@@ -1,7 +1,9 @@
 package com.bamboo.bridgebuilder.ui.fileMenu;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -45,7 +47,7 @@ public class YesNoDialog extends Dialog
                 @Override
                 public void clicked(InputEvent event, float x, float y)
                 {
-                    remove();
+                    cancelDialog();
                 }
             });
         }
@@ -63,8 +65,32 @@ public class YesNoDialog extends Dialog
         this.setPosition((stage.getWidth() / 2), (stage.getHeight() / 2), Align.center);
 
         stage.addActor(this);
+
+        this.addListener(new InputListener(){
+            @Override
+            public boolean keyDown(InputEvent event, int key)
+            {
+                if(key == Input.Keys.Y)
+                {
+                    yes();
+                    cancelDialog();
+                }
+                else if(key == Input.Keys.N)
+                {
+                    no();
+                    cancelDialog();
+                }
+                else if(key == Input.Keys.ESCAPE)
+                    cancelDialog();
+                return super.keyDown(event, key);
+            }
+        });
     }
 
     public void yes() {}
     public void no() {}
+    private void cancelDialog()
+    {
+        remove();
+    };
 }

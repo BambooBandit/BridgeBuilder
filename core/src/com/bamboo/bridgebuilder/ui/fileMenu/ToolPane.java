@@ -17,17 +17,17 @@ public class ToolPane extends Group
     private Table toolTable;
     private Image background;
 
-    private Tool brush;
-    private Tool eraser;
-    private Tool fill;
-    private Tool bind;
-    private Tool stamp;
-    private Tool drawPoint;
-    private Tool drawObject;
-    private Tool objectVerticeSelect;
-    private Tool boxSelect;
-    private Tool select;
-    private Tool grab;
+    public Tool brush;
+    public Tool eraser;
+    public Tool fill;
+    public Tool bind;
+    public Tool stamp;
+    public Tool drawPoint;
+    public Tool drawObject;
+    public Tool objectVerticeSelect;
+    public Tool boxSelect;
+    public Tool select;
+    public Tool grab;
     public Tool random;
     public Tool blocked;
     public Tool parallax;
@@ -35,7 +35,7 @@ public class ToolPane extends Group
     public Tool top;
     public Tool lines;
     public Tool b2drender;
-    private Tool selectedTool;
+    public Tool selectedTool;
     private TextButton bringUp;
     private TextButton bringDown;
     private TextButton bringTop;
