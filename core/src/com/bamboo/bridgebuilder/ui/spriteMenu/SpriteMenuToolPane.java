@@ -23,8 +23,9 @@ public class SpriteMenuToolPane extends Group
     private BridgeBuilder editor;
     private Map map;
 
-    private SpriteMenuTool sprites;
-    private SpriteMenuTool lines;
+    public SpriteMenuTool sprites;
+    public SpriteMenuTool lines;
+    public SpriteMenuTool darkMode;
 
     public SpriteMenu menu;
 
@@ -35,9 +36,11 @@ public class SpriteMenuToolPane extends Group
         this.toolTable = new Table();
         this.sprites = new SpriteMenuTool(SpriteMenuTools.SPRITESELECT, this, skin);
         this.lines = new SpriteMenuTool(SpriteMenuTools.LINES, this, skin);
+        this.darkMode = new SpriteMenuTool(SpriteMenuTools.DARK_MODE, this, skin);
         this.toolTable.left();
         this.toolTable.add(this.sprites).padRight(1);
         this.toolTable.add(this.lines).padRight(1);
+        this.toolTable.add(this.darkMode).padRight(1);
 
         this.sprites.select();
         selectMultipleSprites();
@@ -62,6 +65,7 @@ public class SpriteMenuToolPane extends Group
         // Resize all buttons in the pane
         this.toolTable.getCell(this.sprites).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.lines).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.darkMode).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();
 
         this.pane.invalidateHierarchy();
@@ -73,6 +77,13 @@ public class SpriteMenuToolPane extends Group
     public void selectTool(SpriteMenuTool selectedTool)
     {
         if(selectedTool.tool == SpriteMenuTools.LINES)
+        {
+            if (selectedTool.isSelected)
+                selectedTool.unselect();
+            else
+                selectedTool.select();
+        }
+        if(selectedTool.tool == SpriteMenuTools.DARK_MODE)
         {
             if (selectedTool.isSelected)
                 selectedTool.unselect();

@@ -56,9 +56,9 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
         Table cellTable = (Table) this.image.getParent().getParent();
         SpriteDrawable background = (SpriteDrawable) cellTable.getBackground();
         Color backgroundColor = background.getSprite().getColor();
-        if(backgroundColor.equals(Color.WHITE))
-            background.getSprite().setColor(Color.GREEN);
-        else if(backgroundColor.equals(Color.LIGHT_GRAY))
+        if(backgroundColor.equals(Color.WHITE) || backgroundColor.equals(Color.DARK_GRAY))
+            background.getSprite().setColor(Color.LIME);
+        else if(backgroundColor.equals(Color.LIGHT_GRAY) || backgroundColor.equals(Color.BLACK))
             background.getSprite().setColor(Color.FOREST);
 
         this.isSelected = true;
@@ -77,10 +77,20 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
         Table cellTable = (Table) this.image.getParent().getParent();
         SpriteDrawable background = (SpriteDrawable) cellTable.getBackground();
         Color backgroundColor = background.getSprite().getColor();
-        if(backgroundColor.equals(Color.GREEN))
-            background.getSprite().setColor(Color.WHITE);
+        if(backgroundColor.equals(Color.LIME))
+        {
+            if(spriteMenuToolPane.darkMode.isSelected)
+                background.getSprite().setColor(Color.DARK_GRAY);
+            else
+                background.getSprite().setColor(Color.WHITE);
+        }
         else if(backgroundColor.equals(Color.FOREST))
-            background.getSprite().setColor(Color.LIGHT_GRAY);
+        {
+            if(spriteMenuToolPane.darkMode.isSelected)
+                background.getSprite().setColor(Color.BLACK);
+            else
+                background.getSprite().setColor(Color.LIGHT_GRAY);
+        }
 
         this.isSelected = false;
 

@@ -70,9 +70,9 @@ public class SpriteMenuTool extends Group
         this.isSelected = true;
 
         if(this.tool == SpriteMenuTools.LINES)
-        {
             spriteMenuToolPane.menu.spriteTable.setDebug(true);
-        }
+        if(this.tool == SpriteMenuTools.DARK_MODE)
+            spriteMenuToolPane.menu.reColorCheckers();
         if(this.tool == SpriteMenuTools.SPRITESELECT)
             spriteMenuToolPane.menu.spriteScrollPane.setVisible(true);
     }
@@ -87,9 +87,9 @@ public class SpriteMenuTool extends Group
         this.isSelected = false;
 
         if(this.tool == SpriteMenuTools.LINES)
-        {
             spriteMenuToolPane.menu.spriteTable.setDebug(false);
-        }
+        if(this.tool == SpriteMenuTools.DARK_MODE)
+            spriteMenuToolPane.menu.reColorCheckers();
         if(this.tool == SpriteMenuTools.SPRITESELECT)
             spriteMenuToolPane.menu.spriteScrollPane.setVisible(false);
     }

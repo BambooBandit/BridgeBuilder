@@ -54,7 +54,6 @@ public class SpriteMenu extends Group
                 Table table = (Table) spriteScrollPane.getWidget();
                 for(int i = 0; i < table.getCells().size; i ++)
                 {
-//                    table.getCells().get(i).size(table.getCells().get(i).get() - (table.getCells().get(i).getPrefWidth() / (amount * 3f)), table.getCells().get(i).getPrefHeight() - (table.getCells().get(i).getPrefHeight() / (amount * 3f)));
                     if(table.getCells().get(i).getActor() instanceof Table)
                     {
                         table.getCells().get(i).getActor().setSize(table.getCells().get(i).getMaxWidth(), table.getCells().get(i).getMaxHeight());
@@ -183,5 +182,46 @@ public class SpriteMenu extends Group
             }
         }
         return null;
+    }
+
+    public void reColorCheckers()
+    {
+        boolean checkerDark = false;
+        boolean rowOdd = true;
+        int spriteToolCount = 0;
+        for(int i = 0; i < spriteTable.getChildren().size; i++)
+        {
+            if(spriteTable.getChildren().get(i) instanceof Table)
+            {
+                Table cellTable = (Table) spriteTable.getChildren().get(i);
+                SpriteDrawable spriteDrawable = (SpriteDrawable) cellTable.getBackground();
+                Sprite sprite = spriteDrawable.getSprite();
+                if(!((SpriteTool)cellTable.findActor("spriteTool")).isSelected)
+                {
+                    if(toolPane.darkMode.isSelected)
+                    {
+                        if (checkerDark)
+                            sprite.setColor(Color.BLACK);
+                        else
+                            sprite.setColor(Color.DARK_GRAY);
+                    }
+                    else
+                    {
+                        if (checkerDark)
+                            sprite.setColor(Color.LIGHT_GRAY);
+                        else
+                            sprite.setColor(Color.WHITE);
+                    }
+                }
+
+                checkerDark = !checkerDark;
+                if((spriteToolCount + 1) % 5 == 0)
+                {
+                    rowOdd = !rowOdd;
+                    checkerDark = !rowOdd;
+                }
+                spriteToolCount ++;
+            }
+        }
     }
 }
