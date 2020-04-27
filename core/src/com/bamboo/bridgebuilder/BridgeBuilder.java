@@ -10,9 +10,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.fileMenu.FileMenu;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
-import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
-import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
-import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 public class BridgeBuilder extends Game
 {
@@ -64,6 +61,18 @@ public class BridgeBuilder extends Game
 
 		try{
 			fileMenu.toolPane.fps.setText(Gdx.graphics.getFramesPerSecond());
+			if(Gdx.input.isKeyJustPressed(Input.Keys.Z) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+			{
+				Map map = (Map) getScreen();
+				if(map != null)
+					map.undo();
+			}
+			else if(Gdx.input.isKeyJustPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+			{
+				Map map = (Map) getScreen();
+				if(map != null)
+					map.redo();
+			}
 
 			if(activeMap == null)
 			{
