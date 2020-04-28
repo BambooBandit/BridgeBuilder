@@ -42,6 +42,18 @@ public class MapPropertyPanel extends Group
 
         ColorPropertyField mapRGBAProperty = new ColorPropertyField(skin, menu, this.properties, false, 0, 0, 0, 1);
         LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = new LabelFieldPropertyValuePropertyField("Virtual Height", "20", skin, menu, properties, false);
+
+        TextField.TextFieldFilter valueFilter = new TextField.TextFieldFilter()
+        {
+            @Override
+            public boolean acceptChar(TextField textField, char c)
+            {
+                return c == '.' || Character.isDigit(c);
+            }
+        };
+
+        mapVirtualHeightProperty.value.setTextFieldFilter(valueFilter);
+
         this.lockedProperties = new Array<>();
         this.lockedProperties.add(mapRGBAProperty);
         this.lockedProperties.add(mapVirtualHeightProperty);

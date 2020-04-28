@@ -130,6 +130,7 @@ public class Map implements Screen
         this.editor.inputMultiplexer.addProcessor(this.editor.stage);
         this.editor.inputMultiplexer.addProcessor(this.stage);
         this.editor.inputMultiplexer.addProcessor(this.input);
+        this.editor.inputMultiplexer.addProcessor(this.editor.shortcutProcessor);
         Gdx.input.setInputProcessor(this.editor.inputMultiplexer);
     }
 
