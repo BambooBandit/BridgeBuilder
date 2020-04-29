@@ -211,9 +211,6 @@ public class MapSprite extends LayerChild
                 }
             }
         }
-        drawMoveBox();
-        drawRotationBox();
-        drawScaleBox();
     }
 
     @Override

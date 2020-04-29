@@ -110,6 +110,6 @@ public class MapPoint extends MapObject
     public boolean isHoveredOver(float x, float y)
     {
         double distance = Math.sqrt(Math.pow((x - position.x), 2) + Math.pow((y - position.y), 2));
-        return distance <= 15;
+        return distance <= .6f;
     }
 }

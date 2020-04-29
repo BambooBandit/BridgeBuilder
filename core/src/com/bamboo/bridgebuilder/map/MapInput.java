@@ -168,7 +168,12 @@ public class MapInput implements InputProcessor
                 clearMapPolygonVertices(button);
             return;
         }
-        DrawMapPolygon drawMapPolygon = new DrawMapPolygon(map, (ObjectLayer) map.selectedLayer, map.input.mapPolygonVertices, objectVerticePosition.x, objectVerticePosition.y);
+        if(map.input.mapPolygonVertices.size < 6)
+        {
+            clearMapPolygonVertices(button);
+            return;
+        }
+            DrawMapPolygon drawMapPolygon = new DrawMapPolygon(map, (ObjectLayer) map.selectedLayer, map.input.mapPolygonVertices, objectVerticePosition.x, objectVerticePosition.y);
         clearMapPolygonVertices(button);
         map.executeCommand(drawMapPolygon);
     }

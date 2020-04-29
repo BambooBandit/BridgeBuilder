@@ -7,11 +7,11 @@ public abstract class ManipulatorBox
 {
     public Sprite sprite;
     protected Rectangle rectangle;
-    public int width, height;
+    public float width, height;
     public ManipulatorBox()
     {
-        this.width = 1;
-        this.height = 1;
+        this.width = .625f;
+        this.height = .625f;
         this.rectangle = new Rectangle(0, 0, width, height);
     }
 
