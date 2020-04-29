@@ -159,6 +159,8 @@ public class BridgeBuilder extends Game
 				return false;
 			}
 		};
+
+		this.inputMultiplexer.addProcessor(this.shortcutProcessor);
 	}
 
 	@Override

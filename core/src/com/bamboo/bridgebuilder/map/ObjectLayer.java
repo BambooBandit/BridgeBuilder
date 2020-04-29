@@ -26,4 +26,8 @@ public class ObjectLayer extends Layer
         setCameraZoomToSelectedLayer();
     }
 
+    public void addMapObject(MapObject mapObject)
+    {
+        this.children.add(mapObject);
+    }
 }

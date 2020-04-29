@@ -164,6 +164,7 @@ public class Map implements Screen
         drawObjectLayers();
         drawHoveredOutline();
         drawSelectedOutlines();
+        drawUnfinishedMapPolygon();
         //shaperenderer end
         this.editor.shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -194,6 +195,21 @@ public class Map implements Screen
                 selectedObject.drawSelectedHoveredOutline();
             else
                 selectedObject.drawSelectedOutline();
+        }
+    }
+
+    private void drawUnfinishedMapPolygon()
+    {
+        this.editor.shapeRenderer.setColor(Color.GRAY);
+        int oldIndex = 0;
+        if(input.mapPolygonVertices.size >= 2)
+        {
+            this.editor.shapeRenderer.circle(input.mapPolygonVertices.get(0) + input.objectVerticePosition.x, input.mapPolygonVertices.get(1) + input.objectVerticePosition.y, .1f, 7);
+            for (int i = 2; i < input.mapPolygonVertices.size; i += 2)
+            {
+                this.editor.shapeRenderer.line(input.mapPolygonVertices.get(oldIndex) + input.objectVerticePosition.x, input.mapPolygonVertices.get(oldIndex + 1) + input.objectVerticePosition.y, input.mapPolygonVertices.get(i) + input.objectVerticePosition.x, input.mapPolygonVertices.get(i + 1) + input.objectVerticePosition.y);
+                oldIndex += 2;
+            }
         }
     }
 

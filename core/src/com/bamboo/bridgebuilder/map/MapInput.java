@@ -6,10 +6,10 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.FloatArray;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.Utils;
-import com.bamboo.bridgebuilder.commands.DrawMapSprite;
-import com.bamboo.bridgebuilder.commands.SelectMapSprite;
+import com.bamboo.bridgebuilder.commands.*;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
@@ -22,6 +22,9 @@ public class MapInput implements InputProcessor
     private Vector2 dragOrigin;
     private Vector3 pos; // Used to retrieve position difference of mouse drag
 
+    public FloatArray mapPolygonVertices; // allows for seeing where you are clicking when constructing a new MapObject polygon
+    public Vector2 objectVerticePosition;
+
     public MapInput(BridgeBuilder editor, Map map)
     {
         this.editor = editor;
@@ -29,6 +32,9 @@ public class MapInput implements InputProcessor
 
         this.dragOrigin = new Vector2();
         this.pos = new Vector3();
+
+        this.mapPolygonVertices = new FloatArray();
+        this.objectVerticePosition = new Vector2();
     }
 
     @Override
@@ -58,8 +64,11 @@ public class MapInput implements InputProcessor
         Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
         this.dragOrigin.set(coords.x, coords.y);
 
-        createMapSprite(coords.x, coords.y);
-        handleSelect();
+        handleMapSpriteCreation(coords.x, coords.y, button);
+        handleSelect(button);
+        handleMapPointCreation(coords.x, coords.y, button);
+        handleMapPolygonVerticeCreation(coords.x, coords.y, button);
+        handleMapPolygonCreation(button);
 
         return false;
     }
@@ -115,22 +124,62 @@ public class MapInput implements InputProcessor
         map.hoveredChild = null;
     }
 
-    private void createMapSprite(float x, float y)
+    private void handleMapSpriteCreation(float x, float y, int button)
     {
-        if(!Utils.isFileToolThisType(editor, Tools.BRUSH) || map.selectedLayer == null || !(map.selectedLayer instanceof SpriteLayer))
+        if(!Utils.isFileToolThisType(editor, Tools.BRUSH) || map.selectedLayer == null || !(map.selectedLayer instanceof SpriteLayer) || button != Input.Buttons.LEFT)
             return;
 
         DrawMapSprite drawMapSprite = new DrawMapSprite(map, (SpriteLayer) map.selectedLayer, x, y);
         map.executeCommand(drawMapSprite);
     }
 
-    private void handleSelect()
+    private void handleSelect(int button)
     {
-        if(!Utils.isFileToolThisType(editor, Tools.SELECT) || map.selectedLayer == null)
+        if(!Utils.isFileToolThisType(editor, Tools.SELECT) || map.selectedLayer == null || button != Input.Buttons.LEFT)
             return;
 
         SelectMapSprite selectMapSprite = new SelectMapSprite(map, map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
         map.executeCommand(selectMapSprite);
+    }
+
+    private void handleMapPointCreation(float x, float y, int button)
+    {
+        if(!Utils.isFileToolThisType(editor, Tools.DRAWPOINT) || map.selectedLayer == null || !(map.selectedLayer instanceof ObjectLayer) || button != Input.Buttons.LEFT)
+            return;
+
+        DrawMapPoint drawMapPoint = new DrawMapPoint(map, (ObjectLayer) map.selectedLayer, x, y);
+        map.executeCommand(drawMapPoint);
+    }
+
+    private void handleMapPolygonVerticeCreation(float x, float y, int button)
+    {
+        if(!Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) || map.selectedLayer == null || !(map.selectedLayer instanceof ObjectLayer) || button != Input.Buttons.LEFT)
+            return;
+
+        DrawMapPolygonVertice drawMapPolygonVertice = new DrawMapPolygonVertice(map, x, y, objectVerticePosition.x, objectVerticePosition.y);
+        map.executeCommand(drawMapPolygonVertice);
+    }
+
+    private void handleMapPolygonCreation(int button)
+    {
+        if(!Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) || map.selectedLayer == null || !(map.selectedLayer instanceof ObjectLayer) || button != Input.Buttons.RIGHT)
+        {
+            if(button == Input.Buttons.RIGHT && map.input.mapPolygonVertices.size < 6)
+                clearMapPolygonVertices(button);
+            return;
+        }
+        DrawMapPolygon drawMapPolygon = new DrawMapPolygon(map, (ObjectLayer) map.selectedLayer, map.input.mapPolygonVertices, objectVerticePosition.x, objectVerticePosition.y);
+        clearMapPolygonVertices(button);
+        map.executeCommand(drawMapPolygon);
+    }
+
+    private void clearMapPolygonVertices(int button)
+    {
+        if(button == Input.Buttons.RIGHT)
+        {
+            ClearMapPolygonVertices clearMapPolygonVertices = new ClearMapPolygonVertices(this.map, this.map.input.mapPolygonVertices);
+            this.map.executeCommand(clearMapPolygonVertices);
+        }
     }
 
     private void handlePreviewSpritePositionUpdate(float x, float y)

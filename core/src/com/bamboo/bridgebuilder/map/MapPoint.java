@@ -41,14 +41,14 @@ public class MapPoint extends MapObject
         map.editor.shapeRenderer.setColor(Color.CYAN);
         pointShape[0] = position.x + 0;
         pointShape[1] = position.y + 0;
-        pointShape[2] = position.x - 4;
-        pointShape[3] = position.y + 8;
-        pointShape[4] = position.x - 1;
-        pointShape[5] = position.y + 11;
-        pointShape[6] = position.x + 1;
-        pointShape[7] = position.y + 11;
-        pointShape[8] = position.x + 4;
-        pointShape[9] = position.y + 8;
+        pointShape[2] = position.x - .1333f;
+        pointShape[3] = position.y + .2666f;
+        pointShape[4] = position.x - .0333f;
+        pointShape[5] = position.y + .3666f;
+        pointShape[6] = position.x + .0333f;
+        pointShape[7] = position.y + .3666f;
+        pointShape[8] = position.x + .1333f;
+        pointShape[9] = position.y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
     }
 
@@ -59,14 +59,14 @@ public class MapPoint extends MapObject
         map.editor.shapeRenderer.setColor(Color.ORANGE);
         pointShape[0] = position.x + 0;
         pointShape[1] = position.y + 0;
-        pointShape[2] = position.x - 4;
-        pointShape[3] = position.y + 8;
-        pointShape[4] = position.x - 1;
-        pointShape[5] = position.y + 11;
-        pointShape[6] = position.x + 1;
-        pointShape[7] = position.y + 11;
-        pointShape[8] = position.x + 4;
-        pointShape[9] = position.y + 8;
+        pointShape[2] = position.x - .1333f;
+        pointShape[3] = position.y + .2666f;
+        pointShape[4] = position.x - .0333f;
+        pointShape[5] = position.y + .3666f;
+        pointShape[6] = position.x + .0333f;
+        pointShape[7] = position.y + .3666f;
+        pointShape[8] = position.x + .1333f;
+        pointShape[9] = position.y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
     }
 
@@ -77,14 +77,14 @@ public class MapPoint extends MapObject
         map.editor.shapeRenderer.setColor(Color.GREEN);
         pointShape[0] = position.x + 0;
         pointShape[1] = position.y + 0;
-        pointShape[2] = position.x - 4;
-        pointShape[3] = position.y + 8;
-        pointShape[4] = position.x - 1;
-        pointShape[5] = position.y + 11;
-        pointShape[6] = position.x + 1;
-        pointShape[7] = position.y + 11;
-        pointShape[8] = position.x + 4;
-        pointShape[9] = position.y + 8;
+        pointShape[2] = position.x - .1333f;
+        pointShape[3] = position.y + .2666f;
+        pointShape[4] = position.x - .0333f;
+        pointShape[5] = position.y + .3666f;
+        pointShape[6] = position.x + .0333f;
+        pointShape[7] = position.y + .3666f;
+        pointShape[8] = position.x + .1333f;
+        pointShape[9] = position.y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
     }
 
@@ -95,14 +95,14 @@ public class MapPoint extends MapObject
         map.editor.shapeRenderer.setColor(Color.YELLOW);
         pointShape[0] = position.x + 0;
         pointShape[1] = position.y + 0;
-        pointShape[2] = position.x - 4;
-        pointShape[3] = position.y + 8;
-        pointShape[4] = position.x - 1;
-        pointShape[5] = position.y + 11;
-        pointShape[6] = position.x + 1;
-        pointShape[7] = position.y + 11;
-        pointShape[8] = position.x + 4;
-        pointShape[9] = position.y + 8;
+        pointShape[2] = position.x - .1333f;
+        pointShape[3] = position.y + .2666f;
+        pointShape[4] = position.x - .0333f;
+        pointShape[5] = position.y + .3666f;
+        pointShape[6] = position.x + .0333f;
+        pointShape[7] = position.y + .3666f;
+        pointShape[8] = position.x + .1333f;
+        pointShape[9] = position.y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
     }
 
