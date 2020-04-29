@@ -36,11 +36,13 @@ public abstract class MapObject extends LayerChild
 
     public void select()
     {
+        this.map.selectedObjects.add(this);
         this.selected = true;
     }
 
     public void unselect()
     {
+        this.map.selectedObjects.removeValue(this, true);
         this.selected = false;
     }
 }

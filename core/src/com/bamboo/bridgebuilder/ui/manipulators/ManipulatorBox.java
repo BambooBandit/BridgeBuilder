@@ -1,20 +1,17 @@
 package com.bamboo.bridgebuilder.ui.manipulators;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
-import com.bamboo.bridgebuilder.map.Map;
-import com.bamboo.bridgebuilder.map.MapSprite;
 
 public abstract class ManipulatorBox
 {
     public Sprite sprite;
     protected Rectangle rectangle;
-    protected int width, height;
+    public int width, height;
     public ManipulatorBox()
     {
-        this.width = 25;
-        this.height = 25;
+        this.width = 1;
+        this.height = 1;
         this.rectangle = new Rectangle(0, 0, width, height);
     }
 

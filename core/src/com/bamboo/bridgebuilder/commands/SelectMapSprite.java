@@ -38,14 +38,15 @@ public class SelectMapSprite implements Command
             if(this.ctrlHeld)
             {
                 if(map.selectedSprites.contains(hoveredMapSprite, true))
-                    map.selectedSprites.removeValue(hoveredMapSprite, true);
+                    hoveredMapSprite.unselect();
                 else
-                    map.selectedSprites.add(hoveredMapSprite);
+                    hoveredMapSprite.select();
             }
             else
             {
-                map.selectedSprites.clear();
-                map.selectedSprites.add(hoveredMapSprite);
+                for (int i = 0; i < this.map.selectedSprites.size; i++)
+                    this.map.selectedSprites.get(i).unselect();
+                hoveredMapSprite.select();
             }
         }
         else if(hoveredChild instanceof MapObject)
@@ -61,14 +62,15 @@ public class SelectMapSprite implements Command
             if(this.ctrlHeld)
             {
                 if(map.selectedObjects.contains(hoveredMapObject, true))
-                    map.selectedObjects.removeValue(hoveredMapObject, true);
+                    hoveredMapObject.unselect();
                 else
-                    map.selectedObjects.add(hoveredMapObject);
+                    hoveredMapObject.select();
             }
             else
             {
-                map.selectedObjects.clear();
-                map.selectedObjects.add(hoveredMapObject);
+                for(int i = 0; i < this.map.selectedObjects.size; i ++)
+                    this.map.selectedObjects.get(i).unselect();
+                hoveredMapObject.select();
             }
         }
     }
@@ -78,13 +80,17 @@ public class SelectMapSprite implements Command
     {
         if(hoveredChild instanceof MapSprite)
         {
-            map.selectedSprites.clear();
-            map.selectedSprites.addAll(this.oldSelectedSprites);
+            for(int i = 0; i < map.selectedSprites.size; i ++)
+                map.selectedSprites.get(i).unselect();
+            for(int i = 0; i < this.oldSelectedSprites.size; i ++)
+                this.oldSelectedSprites.get(i).select();
         }
         else if(hoveredChild instanceof MapObject)
         {
-            map.selectedObjects.clear();
-            map.selectedObjects.addAll(this.oldSelectedObjects);
+            for(int i = 0; i < map.selectedSprites.size; i ++)
+                map.selectedObjects.get(i).unselect();
+            for(int i = 0; i < this.oldSelectedSprites.size; i ++)
+                this.oldSelectedObjects.get(i).select();
         }
     }
 }

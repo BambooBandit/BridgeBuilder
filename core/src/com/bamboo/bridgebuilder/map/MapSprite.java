@@ -56,11 +56,11 @@ public class MapSprite extends LayerChild
         this.polygon.setPosition(x, y);
         this.polygon.setOrigin(this.width / 2, this.height / 2);
         this.rotationBox = new RotationBox();
-        this.rotationBox.setPosition(x + this.width, y + this.height);
+        this.rotationBox.setPosition(x + this.width, y + this.height / 2);
         this.moveBox = new MoveBox();
-        this.moveBox.setPosition(x + this.width, y + this.height - 25);
+        this.moveBox.setPosition(x + this.width, y + this.height / 2);
         this.scaleBox = new ScaleBox();
-        this.scaleBox.setPosition(x + this.width, y + this.height - 50);
+        this.scaleBox.setPosition(x + this.width, y + this.height / 2);
         this.verts = new float[20];
         this.scale = 1;
     }
@@ -211,6 +211,9 @@ public class MapSprite extends LayerChild
                 }
             }
         }
+        drawMoveBox();
+        drawRotationBox();
+        drawScaleBox();
     }
 
     @Override
@@ -257,7 +260,10 @@ public class MapSprite extends LayerChild
     public void drawMoveBox()
     {
         if(selected)
+        {
+            System.out.println("wer");
             moveBox.sprite.draw(map.editor.batch);
+        }
     }
     public void drawScaleBox()
     {
@@ -362,10 +368,12 @@ public class MapSprite extends LayerChild
 
     public void select()
     {
+        this.map.selectedSprites.add(this);
         this.selected = true;
     }
     public void unselect()
     {
+        this.map.selectedSprites.removeValue(this, true);
         this.selected = false;
     }
 
