@@ -45,7 +45,10 @@ public class SelectMapSprite implements Command
             else
             {
                 for (int i = 0; i < this.map.selectedSprites.size; i++)
+                {
                     this.map.selectedSprites.get(i).unselect();
+                    i--;
+                }
                 hoveredMapSprite.select();
             }
         }
@@ -69,7 +72,10 @@ public class SelectMapSprite implements Command
             else
             {
                 for(int i = 0; i < this.map.selectedObjects.size; i ++)
+                {
                     this.map.selectedObjects.get(i).unselect();
+                    i--;
+                }
                 hoveredMapObject.select();
             }
         }

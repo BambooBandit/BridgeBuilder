@@ -260,10 +260,7 @@ public class MapSprite extends LayerChild
     public void drawMoveBox()
     {
         if(selected)
-        {
-            System.out.println("wer");
             moveBox.sprite.draw(map.editor.batch);
-        }
     }
     public void drawScaleBox()
     {
