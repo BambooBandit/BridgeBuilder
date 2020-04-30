@@ -43,8 +43,8 @@ public class RemoveablePropertyPanel extends Group
             this.table.getChildren().get(i).setSize(width, textFieldHeight);
             this.table.getCell(this.table.getChildren().get(i)).size(width, textFieldHeight);
         }
-
         this.table.invalidateHierarchy();
+
         float newHeight = textFieldHeight * this.table.getChildren().size;
 
         this.background.setBounds(0, 0, width, newHeight);

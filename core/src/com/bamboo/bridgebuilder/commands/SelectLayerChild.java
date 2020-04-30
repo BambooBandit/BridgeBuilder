@@ -79,6 +79,7 @@ public class SelectLayerChild implements Command
                 hoveredMapObject.select();
             }
         }
+        this.map.propertyMenu.rebuild();
     }
 
     @Override
@@ -104,5 +105,6 @@ public class SelectLayerChild implements Command
             for(int i = 0; i < this.oldSelectedObjects.size; i ++)
                 this.oldSelectedObjects.get(i).select();
         }
+        this.map.propertyMenu.rebuild();
     }
 }

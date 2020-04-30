@@ -95,15 +95,17 @@ public class LayerPropertyPanel extends Group
             this.table.getChildren().get(i).setSize(width, textFieldHeight);
             this.table.getCell(this.table.getChildren().get(i)).size(width, textFieldHeight);
         }
+        this.table.invalidateHierarchy();
         for(int i = 0; i < this.buttonDirectionTable.getChildren().size; i ++)
         {
             this.buttonDirectionTable.getChildren().get(i).setSize(width / 7, textFieldHeight);
             this.buttonDirectionTable.getCell(this.buttonDirectionTable.getChildren().get(i)).size(width / 7, textFieldHeight);
         }
+        this.apply.setSize(width - (width / 7) * 4, textFieldHeight);
         this.buttonDirectionTable.getCell(this.apply).size(width - (width / 7) * 4, textFieldHeight);
         this.buttonDirectionTable.invalidateHierarchy();
 
-        float newHeight = textFieldHeight * 4;
+        float newHeight = textFieldHeight * 4f;
 
         this.background.setBounds(0, 0, width, newHeight);
         this.stack.setSize(width, newHeight);

@@ -63,6 +63,12 @@ public class MapSprite extends LayerChild
         this.scaleBox.setPosition(x + this.width, y + this.height / 2);
         this.verts = new float[20];
         this.scale = 1;
+
+        this.lockedProperties.add(new LabelFieldPropertyValuePropertyField("ID", "0", map.skin, map.propertyMenu, null, false));
+        this.lockedProperties.add(new LabelFieldPropertyValuePropertyField("Rotation", "0", map.skin, map.propertyMenu, null, false));
+        this.lockedProperties.add(new LabelFieldPropertyValuePropertyField("Scale", "1", map.skin, map.propertyMenu, null, false));
+        this.lockedProperties.add(new LabelFieldPropertyValuePropertyField("Z", "0", map.skin, map.propertyMenu, null, false));
+        this.lockedProperties.add(new ColorPropertyField(map.skin, map.propertyMenu, null, false, 1, 1, 1, 1));
     }
 
     @Override

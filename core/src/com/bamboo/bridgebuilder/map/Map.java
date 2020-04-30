@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -68,6 +69,8 @@ public class Map implements Screen
 
     public MapInput input;
 
+    public Skin skin;
+
     // For undo/redo
     private int undoRedoPointer = -1;
     private Stack<Command> commandStack = new Stack<>();
@@ -103,6 +106,7 @@ public class Map implements Screen
 
 
         this.stage = new Stage(new ScreenViewport(), editor.batch);
+        this.skin = EditorAssets.getUISkin();
         // spriteMenu
         this.spriteMenu = new SpriteMenu(EditorAssets.getUISkin(), editor, this);
         this.spriteMenu.setVisible(true);

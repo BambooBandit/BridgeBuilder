@@ -128,8 +128,9 @@ public class PropertyMenu extends Group
     {
         for(int i = 0; i < map.spriteMenu.spriteTable.getChildren().size; i ++)
         {
-            if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof SpriteTool)
+            if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof Table)
             {
+                SpriteTool spriteTool = ((Table) map.spriteMenu.spriteTable.getChildren().get(i)).findActor("spriteTool");
                 LabelFieldPropertyValuePropertyField probability = new LabelFieldPropertyValuePropertyField("Probability", "1.0", skin, this, null,false);
                 probability.value.setTextFieldFilter(new TextField.TextFieldFilter()
                 {
@@ -140,11 +141,11 @@ public class PropertyMenu extends Group
                     }
                 });
 
-                ((SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i)).lockedProperties.add(probability);
+                spriteTool.lockedProperties.add(probability);
                 LabelFieldPropertyValuePropertyField type = new LabelFieldPropertyValuePropertyField("Type", "", skin, this, null, false);
-                ((SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i)).lockedProperties.add(type);
+                spriteTool.lockedProperties.add(type);
                 LabelFieldPropertyValuePropertyField z = new LabelFieldPropertyValuePropertyField("spawnZ", "", skin, this, null, false);
-                ((SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i)).lockedProperties.add(z);
+                spriteTool.lockedProperties.add(z);
             }
         }
     }
