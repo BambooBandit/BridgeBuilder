@@ -1,7 +1,9 @@
 package com.bamboo.bridgebuilder.ui.manipulators;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import com.bamboo.bridgebuilder.BBColors;
 
 public abstract class ManipulatorBox
 {
@@ -24,5 +26,13 @@ public abstract class ManipulatorBox
     public boolean contains(float x, float y)
     {
         return this.rectangle.contains(x, y);
+    }
+
+    public void hover(boolean on)
+    {
+        if(on)
+            this.sprite.setColor(Color.WHITE);
+        else
+            this.sprite.setColor(BBColors.lightGray);
     }
 }

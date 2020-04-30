@@ -9,6 +9,7 @@ public class ScaleBox extends ManipulatorBox
     {
         this.sprite = new Sprite(new Texture("ui/scale.png")); // TODO pack this
         this.sprite.setSize(width, height);
+        hover(false);
     }
 
     @Override

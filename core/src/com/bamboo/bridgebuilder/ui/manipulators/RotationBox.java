@@ -9,6 +9,7 @@ public class RotationBox extends ManipulatorBox
     {
         this.sprite = new Sprite(new Texture("ui/rotate.png")); // TODO pack this
         this.sprite.setSize(width, height);
+        hover(false);
     }
 
     @Override

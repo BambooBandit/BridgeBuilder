@@ -118,6 +118,7 @@ public class MapInput implements InputProcessor
         Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
         handlePreviewSpritePositionUpdate(coords.x, coords.y);
         handleHoveredLayerChildUpdate(coords.x, coords.y);
+        handleManipulatorBoxHover(coords.x, coords.y);
         return false;
     }
 
@@ -198,20 +199,36 @@ public class MapInput implements InputProcessor
 
     private boolean handleHoveredLayerChildUpdate(float x, float y)
     {
-        if(map.selectedLayer != null && Utils.isFileToolThisType(editor, Tools.SELECT))
+        if(this.map.selectedLayer != null && Utils.isFileToolThisType(this.editor, Tools.SELECT))
         {
-            for (int i = map.selectedLayer.children.size - 1; i >= 0; i--)
+            for (int i = this.map.selectedLayer.children.size - 1; i >= 0; i--)
             {
-                LayerChild layerChild = (LayerChild) map.selectedLayer.children.get(i);
+                LayerChild layerChild = (LayerChild) this.map.selectedLayer.children.get(i);
                 if (layerChild.isHoveredOver(x, y))
                 {
-                    map.hoveredChild = layerChild;
+                    this.map.hoveredChild = layerChild;
                     return false;
                 }
             }
         }
-        map.hoveredChild = null;
+        this.map.hoveredChild = null;
         return false;
+    }
+
+    private void handleManipulatorBoxHover(float x, float y)
+    {
+        for(int i = 0; i < this.map.selectedSprites.size; i ++)
+        {
+            MapSprite mapSprite = this.map.selectedSprites.get(i);
+            mapSprite.moveBox.hover(mapSprite.moveBox.contains(x, y));
+            mapSprite.rotationBox.hover(mapSprite.rotationBox.contains(x, y));
+            mapSprite.scaleBox.hover(mapSprite.scaleBox.contains(x, y));
+        }
+        for(int i = 0; i < this.map.selectedObjects.size; i ++)
+        {
+            MapObject mapObject = this.map.selectedObjects.get(i);
+            mapObject.moveBox.hover(mapObject.moveBox.contains(x, y));
+        }
     }
 
     private boolean handleMapSpriteCreation(float x, float y, int button)
