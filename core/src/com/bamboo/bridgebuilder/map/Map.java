@@ -412,8 +412,13 @@ public class Map implements Screen
 
     public void executeCommand(Command command)
     {
-        deleteElementsAfterPointer(undoRedoPointer);
         command.execute();
+        pushCommand(command);
+    }
+
+    public void pushCommand(Command command)
+    {
+        deleteElementsAfterPointer(undoRedoPointer);
         commandStack.push(command);
         undoRedoPointer ++;
 

@@ -25,6 +25,8 @@ public class MapInput implements InputProcessor
     public FloatArray mapPolygonVertices; // allows for seeing where you are clicking when constructing a new MapObject polygon
     public Vector2 objectVerticePosition;
 
+    public MoveMapSprites moveMapSprites; // Null if not currently drag/moving any layer child
+
     public MapInput(BridgeBuilder editor, Map map)
     {
         this.editor = editor;
@@ -69,6 +71,7 @@ public class MapInput implements InputProcessor
         handleMapPointCreation(coords.x, coords.y, button);
         handleMapPolygonVerticeCreation(coords.x, coords.y, button);
         handleMapPolygonCreation(button);
+        handleManipulatorBoxTouchDown(coords.x, coords.y, button);
 
         return false;
     }
@@ -76,6 +79,9 @@ public class MapInput implements InputProcessor
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button)
     {
+        Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
+
+        handleManipulatorBoxTouchUp();
         return false;
     }
 
@@ -86,6 +92,7 @@ public class MapInput implements InputProcessor
         this.pos.set(coords);
         this.pos = this.pos.sub(dragOrigin.x, dragOrigin.y, 0);
 
+        handleManipulatorBoxDrag(pos.x, pos.y);
         handleCameraDrag();
 
         return false;
@@ -105,6 +112,52 @@ public class MapInput implements InputProcessor
     {
         handleCameraZoom(amount);
         return false;
+    }
+
+    private void handleManipulatorBoxTouchDown(float x, float y, int button)
+    {
+        if(button != Input.Buttons.LEFT)
+            return;
+
+        for(int i = 0; i < map.selectedSprites.size; i++)
+        {
+            MapSprite selectedSprite = map.selectedSprites.get(i);
+            if(selectedSprite.moveBox.contains(x, y))
+            {
+                this.moveMapSprites = new MoveMapSprites(this.map.selectedSprites);
+                this.map.pushCommand(this.moveMapSprites);
+                return;
+            }
+            else if(selectedSprite.rotationBox.contains(x, y))
+            {
+                return;
+            }
+            else if(selectedSprite.scaleBox.contains(x, y))
+            {
+                return;
+            }
+        }
+
+        for(int i = 0; i < this.map.selectedObjects.size; i++)
+        {
+            MapObject selectedObjects = map.selectedObjects.get(i);
+            if(selectedObjects.moveBox.contains(x, y))
+            {
+                return;
+            }
+        }
+    }
+
+    private void handleManipulatorBoxTouchUp()
+    {
+        this.moveMapSprites = null;
+    }
+
+    private void handleManipulatorBoxDrag(float x, float y)
+    {
+        if(this.moveMapSprites == null)
+            return;
+        this.moveMapSprites.update(x, y);
     }
 
     private void handleHoveredLayerChildUpdate(float x, float y)
@@ -136,6 +189,8 @@ public class MapInput implements InputProcessor
     private void handleSelect(int button)
     {
         if(!Utils.isFileToolThisType(editor, Tools.SELECT) || map.selectedLayer == null || button != Input.Buttons.LEFT)
+            return;
+        if(map.hoveredChild == null)
             return;
 
         SelectMapSprite selectMapSprite = new SelectMapSprite(map, map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));

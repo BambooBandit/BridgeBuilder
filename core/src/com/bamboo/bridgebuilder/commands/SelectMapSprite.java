@@ -87,14 +87,20 @@ public class SelectMapSprite implements Command
         if(hoveredChild instanceof MapSprite)
         {
             for(int i = 0; i < map.selectedSprites.size; i ++)
+            {
                 map.selectedSprites.get(i).unselect();
+                i--;
+            }
             for(int i = 0; i < this.oldSelectedSprites.size; i ++)
                 this.oldSelectedSprites.get(i).select();
         }
         else if(hoveredChild instanceof MapObject)
         {
             for(int i = 0; i < map.selectedSprites.size; i ++)
+            {
                 map.selectedObjects.get(i).unselect();
+                i--;
+            }
             for(int i = 0; i < this.oldSelectedSprites.size; i ++)
                 this.oldSelectedObjects.get(i).select();
         }

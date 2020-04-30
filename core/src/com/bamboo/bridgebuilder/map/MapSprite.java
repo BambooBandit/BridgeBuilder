@@ -70,10 +70,13 @@ public class MapSprite extends LayerChild
     {
         super.setPosition(x, y);
         this.polygon.setPosition(x, y);
-        this.rotationBox.setPosition(x + this.width, y + this.height);
-        this.moveBox.setPosition(x + this.width, y + this.height - 25);
-        this.scaleBox.setPosition(x + this.width, y + this.height - 50);
         this.sprite.setPosition(x, y);
+
+        x += this.width;
+        y += this.height / 2;
+        this.rotationBox.setPosition(x, y);
+        this.moveBox.setPosition(x, y);
+        this.scaleBox.setPosition(x, y);
     }
 
     @Override
