@@ -44,6 +44,7 @@ public class MapSprite extends LayerChild
         this.lockedProperties = new Array<>();
         this.sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) tool.textureRegion);
         this.sprite.setSize(this.sprite.getWidth() / 64, this.sprite.getHeight() / 64);
+        this.sprite.setOriginCenter();
         x -= this.sprite.getWidth() / 2;
         y -= this.sprite.getHeight() / 2;
         this.position.set(x, y);
@@ -322,7 +323,11 @@ public class MapSprite extends LayerChild
 
     public void setRotation(float degree)
     {
+        float rotateAmount = degree - this.rotation;
         this.rotation = degree;
+        Utils.spritePositionCopy.set(position);
+        Vector2 endPos = Utils.spritePositionCopy.sub(Utils.centerOrigin).rotate(rotateAmount).add(Utils.centerOrigin); // TODO don't assume this was set in case rotate is used somewhere else
+        setPosition(endPos.x, endPos.y);
         this.sprite.setRotation(degree);
         this.polygon.setRotation(degree);
         if(this.tool.topSprites != null)

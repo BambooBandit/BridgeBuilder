@@ -20,14 +20,16 @@ public class MapInput implements InputProcessor
     public BridgeBuilder editor;
 
     private Vector2 dragOrigin;
-    private Vector3 pos; // Used to retrieve position difference of mouse drag
+    private Vector2 pos; // Used to retrieve position difference of mouse drag
 
     public FloatArray mapPolygonVertices; // allows for seeing where you are clicking when constructing a new MapObject polygon
     public Vector2 objectVerticePosition;
 
     // Null if not currently drag/moving any layer child
     public MoveMapSprites moveMapSprites;
+    public RotateMapSprites rotateMapSprites;
     public MoveMapObjects moveMapObjects;
+
 
     public MapInput(BridgeBuilder editor, Map map)
     {
@@ -35,7 +37,7 @@ public class MapInput implements InputProcessor
         this.map = map;
 
         this.dragOrigin = new Vector2();
-        this.pos = new Vector3();
+        this.pos = new Vector2();
 
         this.mapPolygonVertices = new FloatArray();
         this.objectVerticePosition = new Vector2();
@@ -97,10 +99,11 @@ public class MapInput implements InputProcessor
     public boolean touchDragged(int screenX, int screenY, int pointer)
     {
         Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
-        this.pos.set(coords);
-        this.pos = this.pos.sub(dragOrigin.x, dragOrigin.y, 0);
+        this.pos.set(coords.x, coords.y);
+        handleManipulatorBoxDrag(this.pos);
 
-        handleManipulatorBoxDrag(pos.x, pos.y);
+        this.pos = this.pos.sub(dragOrigin.x, dragOrigin.y);
+
         handleCameraDrag();
 
         return false;
@@ -138,6 +141,8 @@ public class MapInput implements InputProcessor
             }
             else if(selectedSprite.rotationBox.contains(x, y))
             {
+                this.rotateMapSprites = new RotateMapSprites(this.map.selectedSprites);
+                this.map.pushCommand(this.rotateMapSprites);
                 return true;
             }
             else if(selectedSprite.scaleBox.contains(x, y))
@@ -163,16 +168,19 @@ public class MapInput implements InputProcessor
     private boolean handleManipulatorBoxTouchUp()
     {
         this.moveMapSprites = null;
+        this.rotateMapSprites = null;
         this.moveMapObjects = null;
         return false;
     }
 
-    private boolean handleManipulatorBoxDrag(float x, float y)
+    private boolean handleManipulatorBoxDrag(Vector2 pos)
     {
         if(this.moveMapSprites != null)
-            this.moveMapSprites.update(x, y);
+            this.moveMapSprites.update(pos.x, pos.y);
         else if(this.moveMapObjects != null)
-            this.moveMapObjects.update(x, y);
+            this.moveMapObjects.update(pos.x, pos.y);
+        else if(this.rotateMapSprites != null)
+            this.rotateMapSprites.update(dragOrigin.angle(pos));
         return false;
     }
 
