@@ -19,8 +19,9 @@ public class MapInput implements InputProcessor
     public Map map;
     public BridgeBuilder editor;
 
-    private Vector2 dragOrigin;
-    private Vector2 pos; // Used to retrieve position difference of mouse drag
+    private Vector2 dragOriginPos;
+    private Vector2 dragDifferencePos; // Used to retrieve position difference of mouse drag
+    private Vector2 currentPos;
 
     public FloatArray mapPolygonVertices; // allows for seeing where you are clicking when constructing a new MapObject polygon
     public Vector2 objectVerticePosition;
@@ -28,6 +29,7 @@ public class MapInput implements InputProcessor
     // Null if not currently drag/moving any layer child
     public MoveMapSprites moveMapSprites;
     public RotateMapSprites rotateMapSprites;
+    public ScaleMapSprites scaleMapSprites;
     public MoveMapObjects moveMapObjects;
 
 
@@ -36,8 +38,9 @@ public class MapInput implements InputProcessor
         this.editor = editor;
         this.map = map;
 
-        this.dragOrigin = new Vector2();
-        this.pos = new Vector2();
+        this.dragOriginPos = new Vector2();
+        this.dragDifferencePos = new Vector2();
+        this.currentPos = new Vector2();
 
         this.mapPolygonVertices = new FloatArray();
         this.objectVerticePosition = new Vector2();
@@ -68,7 +71,7 @@ public class MapInput implements InputProcessor
         editor.stage.unfocusAll();
 
         Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
-        this.dragOrigin.set(coords.x, coords.y);
+        this.dragOriginPos.set(coords.x, coords.y);
 
         if(handleMapSpriteCreation(coords.x, coords.y, button))
             return false;
@@ -99,10 +102,10 @@ public class MapInput implements InputProcessor
     public boolean touchDragged(int screenX, int screenY, int pointer)
     {
         Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
-        this.pos.set(coords.x, coords.y);
-        handleManipulatorBoxDrag(this.pos);
-
-        this.pos = this.pos.sub(dragOrigin.x, dragOrigin.y);
+        this.currentPos.set(coords.x, coords.y);
+        this.dragDifferencePos.set(coords.x, coords.y);
+        this.dragDifferencePos = this.dragDifferencePos.sub(dragOriginPos.x, dragOriginPos.y);
+        handleManipulatorBoxDrag(this.dragDifferencePos, this.currentPos);
 
         handleCameraDrag();
 
@@ -147,6 +150,8 @@ public class MapInput implements InputProcessor
             }
             else if(selectedSprite.scaleBox.contains(x, y))
             {
+                this.scaleMapSprites = new ScaleMapSprites(this.map.selectedSprites);
+                this.map.pushCommand(this.scaleMapSprites);
                 return true;
             }
         }
@@ -169,18 +174,25 @@ public class MapInput implements InputProcessor
     {
         this.moveMapSprites = null;
         this.rotateMapSprites = null;
+        this.scaleMapSprites = null;
         this.moveMapObjects = null;
         return false;
     }
 
-    private boolean handleManipulatorBoxDrag(Vector2 pos)
+    private boolean handleManipulatorBoxDrag(Vector2 dragAmount, Vector2 dragCurrentPos)
     {
         if(this.moveMapSprites != null)
-            this.moveMapSprites.update(pos.x, pos.y);
+            this.moveMapSprites.update(dragAmount.x, dragAmount.y);
         else if(this.moveMapObjects != null)
-            this.moveMapObjects.update(pos.x, pos.y);
+            this.moveMapObjects.update(dragAmount.x, dragAmount.y);
         else if(this.rotateMapSprites != null)
-            this.rotateMapSprites.update(dragOrigin.angle(pos));
+            this.rotateMapSprites.update(dragOriginPos.angle(dragCurrentPos));
+        else if(this.scaleMapSprites != null)
+        {
+            float amountUp = dragCurrentPos.y - dragOriginPos.y;
+            float amountRight = dragCurrentPos.x - dragOriginPos.x;
+            this.scaleMapSprites.update(amountUp + amountRight);
+        }
         return false;
     }
 
@@ -300,8 +312,8 @@ public class MapInput implements InputProcessor
     {
         if(!Utils.isFileToolThisType(editor, Tools.GRAB))
             return false;
-        this.map.camera.position.x -= this.pos.x;
-        this.map.camera.position.y -= this.pos.y;
+        this.map.camera.position.x -= this.dragDifferencePos.x;
+        this.map.camera.position.y -= this.dragDifferencePos.y;
         this.map.camera.update();
         return false;
     }
