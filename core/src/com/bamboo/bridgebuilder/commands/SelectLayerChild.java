@@ -6,7 +6,7 @@ import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.map.MapSprite;
 
-public class SelectMapSprite implements Command
+public class SelectLayerChild implements Command
 {
     private Map map;
     private LayerChild hoveredChild;
@@ -15,7 +15,7 @@ public class SelectMapSprite implements Command
     private Array<MapSprite> oldSelectedSprites;
     private Array<MapObject> oldSelectedObjects;
 
-    public SelectMapSprite(Map map, LayerChild hoveredChild, boolean ctrlHeld)
+    public SelectLayerChild(Map map, LayerChild hoveredChild, boolean ctrlHeld)
     {
         this.map = map;
         this.ctrlHeld = ctrlHeld;
@@ -96,12 +96,12 @@ public class SelectMapSprite implements Command
         }
         else if(hoveredChild instanceof MapObject)
         {
-            for(int i = 0; i < map.selectedSprites.size; i ++)
+            for(int i = 0; i < map.selectedObjects.size; i ++)
             {
                 map.selectedObjects.get(i).unselect();
                 i--;
             }
-            for(int i = 0; i < this.oldSelectedSprites.size; i ++)
+            for(int i = 0; i < this.oldSelectedObjects.size; i ++)
                 this.oldSelectedObjects.get(i).select();
         }
     }

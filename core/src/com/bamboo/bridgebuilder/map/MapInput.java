@@ -25,7 +25,9 @@ public class MapInput implements InputProcessor
     public FloatArray mapPolygonVertices; // allows for seeing where you are clicking when constructing a new MapObject polygon
     public Vector2 objectVerticePosition;
 
-    public MoveMapSprites moveMapSprites; // Null if not currently drag/moving any layer child
+    // Null if not currently drag/moving any layer child
+    public MoveMapSprites moveMapSprites;
+    public MoveMapObjects moveMapObjects;
 
     public MapInput(BridgeBuilder editor, Map map)
     {
@@ -143,6 +145,8 @@ public class MapInput implements InputProcessor
             MapObject selectedObjects = map.selectedObjects.get(i);
             if(selectedObjects.moveBox.contains(x, y))
             {
+                this.moveMapObjects = new MoveMapObjects(this.map.selectedObjects);
+                this.map.pushCommand(this.moveMapObjects);
                 return;
             }
         }
@@ -151,13 +155,15 @@ public class MapInput implements InputProcessor
     private void handleManipulatorBoxTouchUp()
     {
         this.moveMapSprites = null;
+        this.moveMapObjects = null;
     }
 
     private void handleManipulatorBoxDrag(float x, float y)
     {
-        if(this.moveMapSprites == null)
-            return;
-        this.moveMapSprites.update(x, y);
+        if(this.moveMapSprites != null)
+            this.moveMapSprites.update(x, y);
+        else if(this.moveMapObjects != null)
+            this.moveMapObjects.update(x, y);
     }
 
     private void handleHoveredLayerChildUpdate(float x, float y)
@@ -193,8 +199,8 @@ public class MapInput implements InputProcessor
         if(map.hoveredChild == null)
             return;
 
-        SelectMapSprite selectMapSprite = new SelectMapSprite(map, map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
-        map.executeCommand(selectMapSprite);
+        SelectLayerChild selectLayerChild = new SelectLayerChild(map, map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+        map.executeCommand(selectLayerChild);
     }
 
     private void handleMapPointCreation(float x, float y, int button)

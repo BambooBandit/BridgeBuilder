@@ -79,16 +79,19 @@ public class MapPolygon extends MapObject
     @Override
     public void setPosition(float x, float y)
     {
+        super.setPosition(x, y);
         this.polygon.setPosition(x, y);
         if(this.attachedSprite != null && this.attachedSprite instanceof MapSprite)
         {
-            MapSprite mapSprite = (MapSprite) this.attachedSprite;
+            MapSprite mapSprite = this.attachedSprite;
             polygon.setRotation(mapSprite.rotation);
         }
         computeCentroid();
 
         if(indexOfSelectedVertice != -1)
             this.moveBox.setPosition(polygon.getTransformedVertices()[indexOfSelectedVertice], polygon.getTransformedVertices()[indexOfSelectedVertice + 1]);
+        else
+            this.moveBox.setPosition(x, y);
     }
 
     @Override
