@@ -29,4 +29,6 @@ public abstract class PropertyField extends Group
 
     /** Any changes you make to one locked property will change all other identical properties in a selection of objects or sprites*/
     protected abstract void addLockedListener();
+
+    public abstract boolean equals(PropertyField propertyField);
 }

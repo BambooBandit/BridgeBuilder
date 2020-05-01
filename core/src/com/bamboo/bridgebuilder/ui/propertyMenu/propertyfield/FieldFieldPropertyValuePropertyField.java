@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.RemoveProperty;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
@@ -75,8 +76,8 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
                     if (map.spriteMenu.selectedSpriteTools.get(i).properties.contains(thisProperty, true))
                         continue;
                     FieldFieldPropertyValuePropertyField propertyField = null;
-                    if (map.spriteMenu.selectedSpriteTools.get(i).properties.contains(thisProperty, false))
-                        propertyField = (FieldFieldPropertyValuePropertyField) map.spriteMenu.selectedSpriteTools.get(i).properties.get(map.spriteMenu.selectedSpriteTools.get(i).properties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(i).properties, thisProperty))
+                        propertyField = (FieldFieldPropertyValuePropertyField) map.spriteMenu.selectedSpriteTools.get(i).properties.get(Utils.indexOfEquivalentProperty(map.spriteMenu.selectedSpriteTools.get(i).properties, thisProperty));
                     if (propertyField != null)
                     {
                         final FieldFieldPropertyValuePropertyField finalPropertyField = propertyField;
@@ -91,8 +92,8 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
                     if (map.selectedObjects.get(i).properties.contains(thisProperty, true))
                         continue;
                     FieldFieldPropertyValuePropertyField propertyField = null;
-                    if (map.selectedObjects.get(i).properties.contains(thisProperty, false))
-                        propertyField = (FieldFieldPropertyValuePropertyField) map.selectedObjects.get(i).properties.get(map.selectedObjects.get(i).properties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedObjects.get(i).properties, thisProperty))
+                        propertyField = (FieldFieldPropertyValuePropertyField) map.selectedObjects.get(i).properties.get(Utils.indexOfEquivalentProperty(map.selectedObjects.get(i).properties, thisProperty));
                     if (propertyField != null)
                     {
                         final FieldFieldPropertyValuePropertyField finalPropertyField = propertyField;
@@ -121,8 +122,8 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
                     if (map.spriteMenu.selectedSpriteTools.get(i).properties.contains(thisProperty, true))
                         continue;
                     FieldFieldPropertyValuePropertyField propertyField = null;
-                    if (map.spriteMenu.selectedSpriteTools.get(i).properties.contains(thisProperty, false))
-                        propertyField = (FieldFieldPropertyValuePropertyField) map.spriteMenu.selectedSpriteTools.get(i).properties.get(map.spriteMenu.selectedSpriteTools.get(i).properties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(i).properties, thisProperty))
+                        propertyField = (FieldFieldPropertyValuePropertyField) map.spriteMenu.selectedSpriteTools.get(i).properties.get(Utils.indexOfEquivalentProperty(map.spriteMenu.selectedSpriteTools.get(i).properties, thisProperty));
                     if (propertyField != null)
                     {
                         final FieldFieldPropertyValuePropertyField finalPropertyField = propertyField;
@@ -135,8 +136,8 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
                     if (map.selectedObjects.get(i).properties.contains(thisProperty, true))
                         continue;
                     FieldFieldPropertyValuePropertyField propertyField = null;
-                    if (map.selectedObjects.get(i).properties.contains(thisProperty, false))
-                        propertyField = (FieldFieldPropertyValuePropertyField) map.selectedObjects.get(i).properties.get(map.selectedObjects.get(i).properties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedObjects.get(i).properties, thisProperty))
+                        propertyField = (FieldFieldPropertyValuePropertyField) map.selectedObjects.get(i).properties.get(Utils.indexOfEquivalentProperty(map.selectedObjects.get(i).properties, thisProperty));
                     if (propertyField != null)
                     {
                         final FieldFieldPropertyValuePropertyField finalPropertyField = propertyField;
@@ -174,8 +175,8 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
                     if (map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.contains(thisProperty, true))
                         continue;
                     FieldFieldPropertyValuePropertyField propertyField = null;
-                    if (map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.contains(thisProperty, false))
-                        propertyField = (FieldFieldPropertyValuePropertyField) map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.get(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties, thisProperty))
+                        propertyField = (FieldFieldPropertyValuePropertyField) map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties, thisProperty));
                     if (propertyField != null)
                     {
                         final FieldFieldPropertyValuePropertyField finalPropertyField = propertyField;
@@ -188,8 +189,8 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
                     if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, true))
                         continue;
                     FieldFieldPropertyValuePropertyField propertyField = null;
-                    if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, false))
-                        propertyField = (FieldFieldPropertyValuePropertyField) map.selectedSprites.get(i).lockedProperties.get(map.selectedSprites.get(i).lockedProperties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).lockedProperties, thisProperty))
+                        propertyField = (FieldFieldPropertyValuePropertyField) map.selectedSprites.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).lockedProperties, thisProperty));
                     if (propertyField != null)
                     {
                         final FieldFieldPropertyValuePropertyField finalPropertyField = propertyField;
@@ -202,8 +203,8 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
                     if (map.selectedObjects.get(i).properties.contains(thisProperty, true))
                         continue;
                     FieldFieldPropertyValuePropertyField propertyField = null;
-                    if (map.selectedObjects.get(i).properties.contains(thisProperty, false))
-                        propertyField = (FieldFieldPropertyValuePropertyField) map.selectedObjects.get(i).properties.get(map.selectedObjects.get(i).properties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedObjects.get(i).properties, thisProperty))
+                        propertyField = (FieldFieldPropertyValuePropertyField) map.selectedObjects.get(i).properties.get(Utils.indexOfEquivalentProperty(map.selectedObjects.get(i).properties, thisProperty));
                     if (propertyField != null)
                     {
                         final FieldFieldPropertyValuePropertyField finalPropertyField = propertyField;
@@ -230,8 +231,8 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
                     if (map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.contains(thisProperty, true))
                         continue;
                     FieldFieldPropertyValuePropertyField propertyField = null;
-                    if (map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.contains(thisProperty, false))
-                        propertyField = (FieldFieldPropertyValuePropertyField) map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.get(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties, thisProperty))
+                        propertyField = (FieldFieldPropertyValuePropertyField) map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties, thisProperty));
                     if (propertyField != null)
                     {
                         final FieldFieldPropertyValuePropertyField finalPropertyField = propertyField;
@@ -244,8 +245,8 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
                     if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, true))
                         continue;
                     FieldFieldPropertyValuePropertyField propertyField = null;
-                    if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, false))
-                        propertyField = (FieldFieldPropertyValuePropertyField) map.selectedSprites.get(i).lockedProperties.get(map.selectedSprites.get(i).lockedProperties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).lockedProperties, thisProperty))
+                        propertyField = (FieldFieldPropertyValuePropertyField) map.selectedSprites.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).lockedProperties, thisProperty));
                     if (propertyField != null)
                     {
                         final FieldFieldPropertyValuePropertyField finalPropertyField = propertyField;
@@ -258,8 +259,8 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
                     if (map.selectedObjects.get(i).properties.contains(thisProperty, true))
                         continue;
                     FieldFieldPropertyValuePropertyField propertyField = null;
-                    if (map.selectedObjects.get(i).properties.contains(thisProperty, false))
-                        propertyField = (FieldFieldPropertyValuePropertyField) map.selectedObjects.get(i).properties.get(map.selectedObjects.get(i).properties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedObjects.get(i).properties, thisProperty))
+                        propertyField = (FieldFieldPropertyValuePropertyField) map.selectedObjects.get(i).properties.get(Utils.indexOfEquivalentProperty(map.selectedObjects.get(i).properties, thisProperty));
                     if (propertyField != null)
                     {
                         final FieldFieldPropertyValuePropertyField finalPropertyField = propertyField;
@@ -301,23 +302,14 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
         super.setSize(width, height);
     }
 
-    //TODO commenting below fixes some issues but stops common property panel from working
-//    @Override
-//    public boolean equals(Object o)
-//    {
-//        if(o instanceof FieldFieldPropertyValuePropertyField)
-//        {
-//            FieldFieldPropertyValuePropertyField toCompare = (FieldFieldPropertyValuePropertyField) o;
-//            return this.property.getText().equals(toCompare.property.getText()) && this.value.getText().equals(toCompare.value.getText());
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return this.property.getText().hashCode() +
-//                this.property.getClass().hashCode() +
-//                this.value.getText().hashCode() +
-//                (this.removeable ? 0 : 1);
-//    }
+    @Override
+    public boolean equals(PropertyField propertyField)
+    {
+        if(propertyField instanceof FieldFieldPropertyValuePropertyField)
+        {
+            FieldFieldPropertyValuePropertyField toCompare = (FieldFieldPropertyValuePropertyField) propertyField;
+            return this.property.getText().equals(toCompare.property.getText()) && this.value.getText().equals(toCompare.value.getText());
+        }
+        return false;
+    }
 }

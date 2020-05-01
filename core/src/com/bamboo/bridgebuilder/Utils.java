@@ -159,6 +159,21 @@ public class Utils
         return false;
     }
 
+    public static boolean containsEquivalentPropertyField (Array<PropertyField> propertyFields, PropertyField propertyField) {
+        int i = propertyFields.size - 1;
+        {
+            while (i >= 0)
+                if (propertyField.equals(propertyFields.get(i--))) return true;
+        }
+        return false;
+    }
+
+    public static int indexOfEquivalentProperty (Array<PropertyField> propertyFields, PropertyField propertyField) {
+        for (int i = 0, n = propertyFields.size; i < n; i++)
+            if (propertyField.equals(propertyFields.get(i))) return i;
+        return -1;
+    }
+
     public static LabelFieldPropertyValuePropertyField getLockedPropertyField(Array<PropertyField> lockedProperties, String propertyName)
     {
         for(int i = 0; i < lockedProperties.size; i ++)

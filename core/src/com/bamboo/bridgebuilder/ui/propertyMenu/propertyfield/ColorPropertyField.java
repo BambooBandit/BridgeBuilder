@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.RemoveProperty;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
@@ -97,8 +98,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.spriteMenu.selectedSpriteTools.get(i).properties.contains(property, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.spriteMenu.selectedSpriteTools.get(i).properties.contains(property, false))
-                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).properties.get(map.spriteMenu.selectedSpriteTools.get(i).properties.indexOf(property, false));
+                    if (Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(i).properties, property))
+                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).properties.get(Utils.indexOfEquivalentProperty(map.spriteMenu.selectedSpriteTools.get(i).properties, property));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -111,8 +112,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.selectedObjects.get(i).properties.contains(property, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.selectedObjects.get(i).properties.contains(property, false))
-                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(map.selectedObjects.get(i).properties.indexOf(property, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedObjects.get(i).properties, property))
+                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(Utils.indexOfEquivalentProperty(map.selectedObjects.get(i).properties, property));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -139,8 +140,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.spriteMenu.selectedSpriteTools.get(i).properties.contains(property, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.spriteMenu.selectedSpriteTools.get(i).properties.contains(property, false))
-                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).properties.get(map.spriteMenu.selectedSpriteTools.get(i).properties.indexOf(property, false));
+                    if (Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(i).properties, property))
+                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).properties.get(Utils.indexOfEquivalentProperty(map.spriteMenu.selectedSpriteTools.get(i).properties, property));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -153,8 +154,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.selectedObjects.get(i).properties.contains(property, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.selectedObjects.get(i).properties.contains(property, false))
-                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(map.selectedObjects.get(i).properties.indexOf(property, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedObjects.get(i).properties, property))
+                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(Utils.indexOfEquivalentProperty(map.selectedObjects.get(i).properties, property));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -181,8 +182,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.spriteMenu.selectedSpriteTools.get(i).properties.contains(property, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.spriteMenu.selectedSpriteTools.get(i).properties.contains(property, false))
-                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).properties.get(map.spriteMenu.selectedSpriteTools.get(i).properties.indexOf(property, false));
+                    if (Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(i).properties, property))
+                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).properties.get(Utils.indexOfEquivalentProperty(map.spriteMenu.selectedSpriteTools.get(i).properties, property));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -195,8 +196,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.selectedObjects.get(i).properties.contains(property, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.selectedObjects.get(i).properties.contains(property, false))
-                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(map.selectedObjects.get(i).properties.indexOf(property, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedObjects.get(i).properties, property))
+                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(Utils.indexOfEquivalentProperty(map.selectedObjects.get(i).properties, property));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -223,8 +224,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.spriteMenu.selectedSpriteTools.get(i).properties.contains(property, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.spriteMenu.selectedSpriteTools.get(i).properties.contains(property, false))
-                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).properties.get(map.spriteMenu.selectedSpriteTools.get(i).properties.indexOf(property, false));
+                    if (Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(i).properties, property))
+                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).properties.get(Utils.indexOfEquivalentProperty(map.spriteMenu.selectedSpriteTools.get(i).properties, property));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -237,8 +238,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.selectedObjects.get(i).properties.contains(property, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.selectedObjects.get(i).properties.contains(property, false))
-                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(map.selectedObjects.get(i).properties.indexOf(property, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedObjects.get(i).properties, property))
+                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(Utils.indexOfEquivalentProperty(map.selectedObjects.get(i).properties, property));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -278,8 +279,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.contains(thisProperty, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.contains(thisProperty, false))
-                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.get(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties, thisProperty))
+                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties, thisProperty));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -292,8 +293,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, false))
-                        propertyField = (ColorPropertyField) map.selectedSprites.get(i).lockedProperties.get(map.selectedSprites.get(i).lockedProperties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).lockedProperties, thisProperty))
+                        propertyField = (ColorPropertyField) map.selectedSprites.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).lockedProperties, thisProperty));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -305,8 +306,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.selectedObjects.get(i).properties.contains(thisProperty, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.selectedObjects.get(i).properties.contains(thisProperty, false))
-                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(map.selectedObjects.get(i).properties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedObjects.get(i).properties, thisProperty))
+                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(Utils.indexOfEquivalentProperty(map.selectedObjects.get(i).properties, thisProperty));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -333,8 +334,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.contains(thisProperty, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.contains(thisProperty, false))
-                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.get(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties, thisProperty))
+                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties, thisProperty));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -347,8 +348,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, false))
-                        propertyField = (ColorPropertyField) map.selectedSprites.get(i).lockedProperties.get(map.selectedSprites.get(i).lockedProperties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).lockedProperties, thisProperty))
+                        propertyField = (ColorPropertyField) map.selectedSprites.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).lockedProperties, thisProperty));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -361,8 +362,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.selectedObjects.get(i).properties.contains(thisProperty, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.selectedObjects.get(i).properties.contains(thisProperty, false))
-                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(map.selectedObjects.get(i).properties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedObjects.get(i).properties, thisProperty))
+                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(Utils.indexOfEquivalentProperty(map.selectedObjects.get(i).properties, thisProperty));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -389,8 +390,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.contains(thisProperty, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.contains(thisProperty, false))
-                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.get(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties, thisProperty))
+                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties, thisProperty));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -403,8 +404,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, false))
-                        propertyField = (ColorPropertyField) map.selectedSprites.get(i).lockedProperties.get(map.selectedSprites.get(i).lockedProperties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).lockedProperties, thisProperty))
+                        propertyField = (ColorPropertyField) map.selectedSprites.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).lockedProperties, thisProperty));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -417,8 +418,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.selectedObjects.get(i).properties.contains(thisProperty, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.selectedObjects.get(i).properties.contains(thisProperty, false))
-                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(map.selectedObjects.get(i).properties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedObjects.get(i).properties, thisProperty))
+                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(Utils.indexOfEquivalentProperty(map.selectedObjects.get(i).properties, thisProperty));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -445,8 +446,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.contains(thisProperty, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.contains(thisProperty, false))
-                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.get(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties, thisProperty))
+                        propertyField = (ColorPropertyField) map.spriteMenu.selectedSpriteTools.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.spriteMenu.selectedSpriteTools.get(i).lockedProperties, thisProperty));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -459,8 +460,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, false))
-                        propertyField = (ColorPropertyField) map.selectedSprites.get(i).lockedProperties.get(map.selectedSprites.get(i).lockedProperties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).lockedProperties, thisProperty))
+                        propertyField = (ColorPropertyField) map.selectedSprites.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).lockedProperties, thisProperty));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -473,8 +474,8 @@ public class ColorPropertyField extends PropertyField
                     if (map.selectedObjects.get(i).properties.contains(thisProperty, true))
                         continue;
                     ColorPropertyField propertyField = null;
-                    if (map.selectedObjects.get(i).properties.contains(thisProperty, false))
-                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(map.selectedObjects.get(i).properties.indexOf(thisProperty, false));
+                    if (Utils.containsEquivalentPropertyField(map.selectedObjects.get(i).properties, thisProperty))
+                        propertyField = (ColorPropertyField) map.selectedObjects.get(i).properties.get(Utils.indexOfEquivalentProperty(map.selectedObjects.get(i).properties, thisProperty));
                     if (propertyField != null)
                     {
                         final ColorPropertyField finalPropertyField = propertyField;
@@ -535,27 +536,17 @@ public class ColorPropertyField extends PropertyField
     }
 
 
-    //TODO commenting below fixes some issues but stops common property panel from working
-//    @Override
-//    public boolean equals(Object o)
-//    {
-//        if(o instanceof ColorPropertyField)
-//        {
-//            ColorPropertyField toCompare = (ColorPropertyField) o;
-//            return this.rValue.getText().equals(toCompare.rValue.getText()) &&
-//                    this.gValue.getText().equals(toCompare.gValue.getText()) &&
-//                    this.bValue.getText().equals(toCompare.bValue.getText()) &&
-//                    this.aValue.getText().equals(toCompare.aValue.getText());
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return this.rValue.getText().hashCode() +
-//                this.gValue.getText().hashCode() +
-//                this.bValue.getText().hashCode() +
-//                this.aValue.getText().hashCode() +
-//                (this.removeable ? 0 : 1);
-//    }
+    @Override
+    public boolean equals(PropertyField propertyField)
+    {
+        if(propertyField instanceof ColorPropertyField)
+        {
+            ColorPropertyField toCompare = (ColorPropertyField) propertyField;
+            return this.rValue.getText().equals(toCompare.rValue.getText()) &&
+                    this.gValue.getText().equals(toCompare.gValue.getText()) &&
+                    this.bValue.getText().equals(toCompare.bValue.getText()) &&
+                    this.aValue.getText().equals(toCompare.aValue.getText());
+        }
+        return false;
+    }
 }

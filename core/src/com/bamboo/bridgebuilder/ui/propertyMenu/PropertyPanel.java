@@ -231,7 +231,7 @@ public class PropertyPanel extends Group
                 boolean commonProperty = true;
                 for(int k = 1; k < map.spriteMenu.selectedSpriteTools.size; k ++)
                 {
-                    if(!map.spriteMenu.selectedSpriteTools.get(k).properties.contains(firstTool.properties.get(i), false))
+                    if(!Utils.containsEquivalentPropertyField(map.spriteMenu.selectedSpriteTools.get(k).properties, firstTool.properties.get(i)))
                     {
                         commonProperty = false;
                         break;
@@ -261,7 +261,7 @@ public class PropertyPanel extends Group
                 boolean commonProperty = true;
                 for(int k = 1; k < map.selectedObjects.size; k ++)
                 {
-                    if(!map.selectedObjects.get(k).properties.contains(mapObject.properties.get(i), false))
+                    if(!Utils.containsEquivalentPropertyField(map.selectedObjects.get(k).properties, mapObject.properties.get(i)))
                     {
                         commonProperty = false;
                         break;
