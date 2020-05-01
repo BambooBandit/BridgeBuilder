@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.bamboo.bridgebuilder.commands.CreateLayer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.fileMenu.FileMenu;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
+import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 
 public class BridgeBuilder extends Game
 {
@@ -74,6 +76,24 @@ public class BridgeBuilder extends Game
 					Map map = (Map) getScreen();
 					if(map != null)
 						map.redo();
+				}
+				else if(keycode == Input.Keys.S && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+				{
+					Map map = (Map) getScreen();
+					if(map != null)
+					{
+						CreateLayer createLayer = new CreateLayer(map, LayerTypes.SPRITE);
+						map.executeCommand(createLayer);
+					}
+				}
+				else if(keycode == Input.Keys.O && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+				{
+					Map map = (Map) getScreen();
+					if(map != null)
+					{
+						CreateLayer createLayer = new CreateLayer(map, LayerTypes.OBJECT);
+						map.executeCommand(createLayer);
+					}
 				}
 				else if(keycode == Input.Keys.B)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.brush);
