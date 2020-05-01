@@ -377,6 +377,8 @@ public class MapSprite extends LayerChild
     @Override
     public void select()
     {
+        if(this.selected)
+            return;
         this.map.selectedSprites.add(this);
         this.selected = true;
     }

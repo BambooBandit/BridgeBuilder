@@ -16,6 +16,8 @@ public class SelectLayerChildren implements Command
     private Array<MapSprite> oldSelectedSprites;
     private Array<MapObject> oldSelectedObjects;
 
+    private boolean areAllHoveredAreSelected;
+
     public SelectLayerChildren(Map map, float dragStartX, float dragStartY, float dragCurrentX, float dragCurrentY, boolean ctrlHeld)
     {
         this.map = map;
@@ -32,13 +34,17 @@ public class SelectLayerChildren implements Command
 
         this.hoveredChildren = new Array<>();
 
+        this.areAllHoveredAreSelected = true;
         for(int i = 0; i < map.selectedLayer.children.size; i ++)
         {
             LayerChild layerChild = (LayerChild) map.selectedLayer.children.get(i);
             if(layerChild.isHoveredOver(Utils.boxSelectCommandVertices))
+            {
                 this.hoveredChildren.add(layerChild);
+                if(!layerChild.selected)
+                    this.areAllHoveredAreSelected = false;
+            }
         }
-
     }
 
     @Override
@@ -71,9 +77,19 @@ public class SelectLayerChildren implements Command
                 this.map.selectedObjects.get(i).unselect();
                 i--;
             }
+            for(int i = 0; i < this.hoveredChildren.size; i ++)
+                this.hoveredChildren.get(i).select();
         }
-        for(int i = 0; i < this.hoveredChildren.size; i ++)
-            this.hoveredChildren.get(i).select();
+        else
+        {
+            for(int i = 0; i < this.hoveredChildren.size; i ++)
+            {
+                if(this.areAllHoveredAreSelected)
+                    this.hoveredChildren.get(i).unselect();
+                else
+                    this.hoveredChildren.get(i).select();
+            }
+        }
         this.map.propertyMenu.rebuild();
     }
 

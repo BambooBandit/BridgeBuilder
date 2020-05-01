@@ -36,6 +36,8 @@ public abstract class MapObject extends LayerChild
     @Override
     public void select()
     {
+        if(this.selected)
+            return;
         this.map.selectedObjects.add(this);
         this.selected = true;
     }
