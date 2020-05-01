@@ -8,7 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.bamboo.bridgebuilder.commands.CreateLayer;
+import com.bamboo.bridgebuilder.commands.MoveMapSpriteIndex;
 import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.ui.fileMenu.FileMenu;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
@@ -93,6 +95,46 @@ public class BridgeBuilder extends Game
 					{
 						CreateLayer createLayer = new CreateLayer(map, LayerTypes.OBJECT);
 						map.executeCommand(createLayer);
+					}
+				}
+				else if(keycode == Input.Keys.UP && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+				{
+					Map map = ((Map)getScreen());
+					if(map != null && map.selectedSprites.size == 1)
+					{
+						MapSprite selectedSprite = map.selectedSprites.first();
+						MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, true, true);
+						map.executeCommand(moveMapSpriteIndex);
+					}
+				}
+				else if(keycode == Input.Keys.DOWN && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+				{
+					Map map = ((Map)getScreen());
+					if(map != null && map.selectedSprites.size == 1)
+					{
+						MapSprite selectedSprite = map.selectedSprites.first();
+						MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, false, true);
+						map.executeCommand(moveMapSpriteIndex);
+					}
+				}
+				else if(keycode == Input.Keys.UP && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+				{
+					Map map = ((Map)getScreen());
+					if(map != null && map.selectedSprites.size == 1)
+					{
+						MapSprite selectedSprite = map.selectedSprites.first();
+						MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, true, false);
+						map.executeCommand(moveMapSpriteIndex);
+					}
+				}
+				else if(keycode == Input.Keys.DOWN && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+				{
+					Map map = ((Map)getScreen());
+					if(map != null && map.selectedSprites.size == 1)
+					{
+						MapSprite selectedSprite = map.selectedSprites.first();
+						MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, false, false);
+						map.executeCommand(moveMapSpriteIndex);
 					}
 				}
 				else if(keycode == Input.Keys.B)

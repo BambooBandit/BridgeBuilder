@@ -6,6 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.commands.MoveMapSpriteIndex;
+import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.ui.MinMaxDialog;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
@@ -47,10 +50,13 @@ public class ToolPane extends Group
     public MinMaxDialog minMaxDialog;
     private TextButton minMaxButton;
 
+    private BridgeBuilder editor;
+
     public Label fps;
 
     public ToolPane(BridgeBuilder editor, Skin skin)
     {
+        this.editor = editor;
         this.toolTable = new Table();
         this.brush = new Tool(Tools.BRUSH, this, false);
         this.eraser = new Tool(Tools.ERASER, this, false);
@@ -202,6 +208,12 @@ public class ToolPane extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Map map = ((Map)editor.getScreen());
+                if(map == null || map.selectedSprites.size != 1)
+                    return;
+                MapSprite selectedSprite = map.selectedSprites.first();
+                MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, true, false);
+                map.executeCommand(moveMapSpriteIndex);
             }
         });
 
@@ -210,6 +222,13 @@ public class ToolPane extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Map map = ((Map)editor.getScreen());
+                if(map == null || map.selectedSprites.size != 1)
+                    return;
+                MapSprite selectedSprite = map.selectedSprites.first();
+                MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, false, false);
+                map.executeCommand(moveMapSpriteIndex);
+
             }
         });
 
@@ -218,6 +237,12 @@ public class ToolPane extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Map map = ((Map)editor.getScreen());
+                if(map == null || map.selectedSprites.size != 1)
+                    return;
+                MapSprite selectedSprite = map.selectedSprites.first();
+                MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, true, true);
+                map.executeCommand(moveMapSpriteIndex);
             }
         });
 
@@ -226,6 +251,12 @@ public class ToolPane extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Map map = ((Map)editor.getScreen());
+                if(map == null || map.selectedSprites.size != 1)
+                    return;
+                MapSprite selectedSprite = map.selectedSprites.first();
+                MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, false, true);
+                map.executeCommand(moveMapSpriteIndex);
             }
         });
 
