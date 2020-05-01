@@ -7,7 +7,6 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 public abstract class MapObject extends LayerChild
 {
     public MoveBox moveBox;
-    private boolean selected;
     public Array<PropertyField> properties;
 
     public MapSprite attachedSprite = null;
@@ -34,12 +33,14 @@ public abstract class MapObject extends LayerChild
             moveBox.sprite.draw(map.editor.batch);
     }
 
+    @Override
     public void select()
     {
         this.map.selectedObjects.add(this);
         this.selected = true;
     }
 
+    @Override
     public void unselect()
     {
         this.map.selectedObjects.removeValue(this, true);

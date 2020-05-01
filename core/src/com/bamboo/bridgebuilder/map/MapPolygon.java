@@ -2,6 +2,7 @@ package com.bamboo.bridgebuilder.map;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Intersector;
 import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
@@ -98,6 +99,12 @@ public class MapPolygon extends MapObject
     public boolean isHoveredOver(float x, float y)
     {
         return this.polygon.contains(x, y);
+    }
+
+    @Override
+    public boolean isHoveredOver(float[] vertices)
+    {
+        return Intersector.overlapConvexPolygons(polygon.getTransformedVertices(), vertices, null);
     }
 
     private void computeCentroid()

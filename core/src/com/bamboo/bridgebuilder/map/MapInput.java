@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.FloatArray;
+import com.bamboo.bridgebuilder.BoxSelect;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.*;
@@ -32,6 +34,7 @@ public class MapInput implements InputProcessor
     public ScaleMapSprites scaleMapSprites;
     public MoveMapObjects moveMapObjects;
 
+    public BoxSelect boxSelect;
 
     public MapInput(BridgeBuilder editor, Map map)
     {
@@ -44,6 +47,8 @@ public class MapInput implements InputProcessor
 
         this.mapPolygonVertices = new FloatArray();
         this.objectVerticePosition = new Vector2();
+
+        this.boxSelect = new BoxSelect(map);
     }
 
     @Override
@@ -79,6 +84,8 @@ public class MapInput implements InputProcessor
             return false;
         if(handleSelect(button))
             return false;
+        if(handleBoxSelectTouchDown(coords.x, coords.y, button))
+            return false;
         if(handleMapPointCreation(coords.x, coords.y, button))
             return false;
         if(handleMapPolygonVerticeCreation(coords.x, coords.y, button))
@@ -95,6 +102,7 @@ public class MapInput implements InputProcessor
         Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
 
         handleManipulatorBoxTouchUp();
+        handleBoxSelectTouchUp();
         return false;
     }
 
@@ -106,6 +114,7 @@ public class MapInput implements InputProcessor
         this.dragDifferencePos.set(coords.x, coords.y);
         this.dragDifferencePos = this.dragDifferencePos.sub(dragOriginPos.x, dragOriginPos.y);
         handleManipulatorBoxDrag(this.dragDifferencePos, this.currentPos);
+        handleBoxSelectDrag(coords.x, coords.y);
 
         handleCameraDrag();
 
@@ -250,6 +259,87 @@ public class MapInput implements InputProcessor
 
         SelectLayerChild selectLayerChild = new SelectLayerChild(map, map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
         map.executeCommand(selectLayerChild);
+        return false;
+    }
+
+    private boolean handleBoxSelectTouchDown(float x, float y, int button)
+    {
+        if(!Utils.isFileToolThisType(editor, Tools.BOXSELECT) || map.selectedLayer == null || button != Input.Buttons.LEFT)
+            return false;
+        this.boxSelect.startDrag(x, y);
+        return false;
+    }
+    private boolean handleBoxSelectDrag(float x, float y)
+    {
+        if(!Utils.isFileToolThisType(editor, Tools.BOXSELECT) || map.selectedLayer == null)
+            return false;
+        this.boxSelect.continueDrag(x, y);
+        return false;
+    }
+    private boolean handleBoxSelectTouchUp()
+    {
+        if(!Utils.isFileToolThisType(editor, Tools.BOXSELECT) || map.selectedLayer == null || !this.boxSelect.isDragging)
+            return false;
+
+        if(map.selectedLayer instanceof SpriteLayer)
+        {
+            SelectLayerChildren selectLayerChildren = new SelectLayerChildren(map, dragOriginPos.x, dragOriginPos.y, currentPos.x, currentPos.y, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+            map.executeCommand(selectLayerChildren);
+//            if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+//            {
+//                for (int k = 0; k < map.selectedSprites.size; k++)
+//                    map.selectedSprites.get(k).unselect();
+//                map.selectedSprites.clear();
+//            }
+//            for (int i = 0; i < spriteLayer.children.size; i++)
+//            {
+//                MapSprite mapSprite = spriteLayer.children.get(i);
+//                if (Intersector.overlapConvexPolygons(mapSprite.polygon.getTransformedVertices(), map.input.boxSelect.getVertices(), null))
+//                {
+//                    boolean selected = map.selectedSprites.contains(mapSprite, true);
+//                    if (!selected)
+//                    {
+//                        map.selectedSprites.add(mapSprite);
+//                        mapSprite.select();
+//                        map.propertyMenu.spritePropertyPanel.setVisible(true);
+//                    }
+//                }
+//            }
+//            selectSprite.addSelected();
+//            map.executeCommand(selectSprite);
+        }
+//        else if(map.selectedLayer instanceof ObjectLayer || (map.selectedSprites.size == 1 && map.selectedSprites.first().tool.mapObjects.size > 1))
+        else if(map.selectedLayer instanceof ObjectLayer)
+        {
+            ObjectLayer objectLayer = (ObjectLayer) map.selectedLayer;
+//            SelectObject selectObject = new SelectObject(map, map.selectedObjects);
+            if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+            {
+                for (int k = 0; k < map.selectedObjects.size; k++)
+                    map.selectedObjects.get(k).unselect();
+                map.selectedObjects.clear();
+            }
+            for (int i = 0; i < objectLayer.children.size; i++)
+            {
+                MapObject mapObject = objectLayer.children.get(i);
+//                boolean polygon = mapObject.polygon != null && Intersector.overlapConvexPolygons(mapObject.polygon.getTransformedVertices(), map.input.boxSelect.getVertices(), null);
+                boolean polygon = mapObject instanceof MapPolygon && Intersector.overlapConvexPolygons(((MapPolygon) mapObject).polygon.getTransformedVertices(), map.input.boxSelect.getVertices(), null);
+                boolean point = Intersector.isPointInPolygon(map.input.boxSelect.getVertices(), 0, map.input.boxSelect.getVertices().length, mapObject.position.x, mapObject.position.y);
+                if (polygon || point)
+                {
+                    boolean selected = map.selectedObjects.contains(mapObject, true);
+                    if (!selected)
+                    {
+                        map.selectedObjects.add(mapObject);
+                        mapObject.select();
+                    }
+                }
+            }
+//            selectObject.addSelected();
+//            map.executeCommand(selectObject);
+        }
+        map.propertyMenu.rebuild();
+        map.input.boxSelect.isDragging = false;
         return false;
     }
 

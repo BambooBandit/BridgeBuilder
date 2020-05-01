@@ -2,6 +2,7 @@ package com.bamboo.bridgebuilder.map;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Intersector;
 
 public class MapPoint extends MapObject
 {
@@ -111,5 +112,11 @@ public class MapPoint extends MapObject
     {
         double distance = Math.sqrt(Math.pow((x - position.x), 2) + Math.pow((y - position.y), 2));
         return distance <= .6f;
+    }
+
+    @Override
+    public boolean isHoveredOver(float[] vertices)
+    {
+        return Intersector.isPointInPolygon(vertices, 0, vertices.length, position.x, position.y);
     }
 }

@@ -19,6 +19,8 @@ public class Utils
     public static Vector2 spritePositionCopy = new Vector2();
     public static boolean print = true;
 
+    public static float[] boxSelectCommandVertices = new float[8];
+
     public static float degreeAngleFix(float angle)
     {
         angle = ((int) angle % 360) + (angle - ((int)angle));

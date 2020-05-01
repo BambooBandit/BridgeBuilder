@@ -7,6 +7,7 @@ public abstract class LayerChild
     protected Map map;
     public Vector2 position;
     public Layer layer;
+    public boolean selected;
 
     public LayerChild(Map map, Layer layer, float x, float y)
     {
@@ -26,4 +27,8 @@ public abstract class LayerChild
     }
 
     public abstract boolean isHoveredOver(float x, float y);
+    public abstract boolean isHoveredOver(float[] vertices);
+
+    public abstract void select();
+    public abstract void unselect();
 }

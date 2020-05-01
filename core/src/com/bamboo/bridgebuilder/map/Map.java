@@ -169,6 +169,7 @@ public class Map implements Screen
         drawHoveredOutline();
         drawSelectedOutlines();
         drawUnfinishedMapPolygon();
+        drawBoxSelect();
         //shaperenderer end
         this.editor.shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -191,7 +192,7 @@ public class Map implements Screen
 
     private void drawSelectedOutlines()
     {
-        if(!Utils.isFileToolThisType(editor, Tools.SELECT))
+        if(!Utils.isFileToolThisType(editor, Tools.SELECT) && !Utils.isFileToolThisType(editor, Tools.BOXSELECT))
             return;
 
         for(int i = 0; i < this.selectedSprites.size; i ++)
@@ -226,6 +227,27 @@ public class Map implements Screen
                 oldIndex += 2;
             }
         }
+    }
+
+    private void drawBoxSelect()
+    {
+        if(!Utils.isFileToolThisType(editor, Tools.BOXSELECT) || !this.input.boxSelect.isDragging || this.selectedLayer == null)
+            return;
+
+        for(int i = 0; i < this.selectedLayer.children.size; i ++)
+        {
+            LayerChild layerChild = (LayerChild) this.selectedLayer.children.get(i);
+            if(layerChild.isHoveredOver(this.input.boxSelect.getVertices()))
+            {
+                if(layerChild.selected)
+                    layerChild.drawSelectedHoveredOutline();
+                else
+                    layerChild.drawHoverOutline();
+            }
+        }
+
+        this.editor.shapeRenderer.setColor(Color.CYAN);
+        editor.shapeRenderer.rect(input.boxSelect.rectangle.x, input.boxSelect.rectangle.y, input.boxSelect.rectangle.width, input.boxSelect.rectangle.height);
     }
 
     private void drawHoveredOutline()

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.EditorPolygon;
@@ -25,7 +26,6 @@ public class MapSprite extends LayerChild
     public RotationBox rotationBox;
     public MoveBox moveBox;
     public ScaleBox scaleBox;
-    public boolean selected;
     public Array<PropertyField> lockedProperties; // properties such as rotation. They belong to all sprites
     public float z;
     public int id; // Used to be able to set any sprites id and specifically retrieve it in the game
@@ -374,11 +374,13 @@ public class MapSprite extends LayerChild
         labelFieldProperty.value.setText(Float.toString(this.scale));
     }
 
+    @Override
     public void select()
     {
         this.map.selectedSprites.add(this);
         this.selected = true;
     }
+    @Override
     public void unselect()
     {
         this.map.selectedSprites.removeValue(this, true);
@@ -418,5 +420,11 @@ public class MapSprite extends LayerChild
     public boolean isHoveredOver(float x, float y)
     {
         return this.polygon.contains(x, y);
+    }
+
+    @Override
+    public boolean isHoveredOver(float[] vertices)
+    {
+        return Intersector.overlapConvexPolygons(polygon.getTransformedVertices(), vertices, null);
     }
 }
