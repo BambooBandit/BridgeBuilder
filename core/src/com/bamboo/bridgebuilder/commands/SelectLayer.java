@@ -21,8 +21,9 @@ public class SelectLayer implements Command
     @Override
     public void execute()
     {
+        boolean wasSelected = this.newLayer.layerField.isSelected;
         this.map.layerMenu.unselectAll();
-        if (!ctrlHeld)
+        if (!ctrlHeld || (ctrlHeld && !wasSelected))
         {
             this.newLayer.layerField.select();
             map.selectedLayer = this.newLayer;
@@ -33,8 +34,11 @@ public class SelectLayer implements Command
     @Override
     public void undo()
     {
+        boolean wasSelected = false;
+        if(this.oldLayer != null)
+            wasSelected = this.oldLayer.layerField.isSelected;
         this.map.layerMenu.unselectAll();
-        if (!ctrlHeld)
+        if (!ctrlHeld || (ctrlHeld && !wasSelected))
         {
             if(this.oldLayer != null)
             {

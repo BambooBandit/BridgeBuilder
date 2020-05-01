@@ -9,6 +9,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.bamboo.bridgebuilder.commands.CreateLayer;
 import com.bamboo.bridgebuilder.commands.MoveMapSpriteIndex;
+import com.bamboo.bridgebuilder.commands.SelectLayer;
+import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.ui.fileMenu.FileMenu;
@@ -69,72 +71,64 @@ public class BridgeBuilder extends Game
 				}
 				else if(keycode == Input.Keys.Z && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
 				{
-					Map map = (Map) getScreen();
-					if(map != null)
-						map.undo();
+					if(activeMap != null)
+						activeMap.undo();
 				}
 				else if(keycode == Input.Keys.R && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
 				{
-					Map map = (Map) getScreen();
-					if(map != null)
-						map.redo();
+					if(activeMap != null)
+						activeMap.redo();
 				}
 				else if(keycode == Input.Keys.S && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
 				{
-					Map map = (Map) getScreen();
-					if(map != null)
+					if(activeMap != null)
 					{
-						CreateLayer createLayer = new CreateLayer(map, LayerTypes.SPRITE);
-						map.executeCommand(createLayer);
+						CreateLayer createLayer = new CreateLayer(activeMap, LayerTypes.SPRITE);
+						activeMap.executeCommand(createLayer);
 					}
 				}
 				else if(keycode == Input.Keys.O && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
 				{
-					Map map = (Map) getScreen();
-					if(map != null)
+					if(activeMap != null)
 					{
-						CreateLayer createLayer = new CreateLayer(map, LayerTypes.OBJECT);
-						map.executeCommand(createLayer);
+						CreateLayer createLayer = new CreateLayer(activeMap, LayerTypes.OBJECT);
+						activeMap.executeCommand(createLayer);
 					}
 				}
 				else if(keycode == Input.Keys.UP && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
 				{
-					Map map = ((Map)getScreen());
-					if(map != null && map.selectedSprites.size == 1)
+					if(activeMap != null && activeMap.selectedSprites.size == 1)
 					{
-						MapSprite selectedSprite = map.selectedSprites.first();
-						MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, true, true);
-						map.executeCommand(moveMapSpriteIndex);
+						MapSprite selectedSprite = activeMap.selectedSprites.first();
+						MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(activeMap, selectedSprite, true, true);
+						activeMap.executeCommand(moveMapSpriteIndex);
 					}
 				}
 				else if(keycode == Input.Keys.DOWN && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
 				{
-					Map map = ((Map)getScreen());
-					if(map != null && map.selectedSprites.size == 1)
+					if(activeMap != null && activeMap.selectedSprites.size == 1)
 					{
-						MapSprite selectedSprite = map.selectedSprites.first();
-						MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, false, true);
-						map.executeCommand(moveMapSpriteIndex);
+						MapSprite selectedSprite = activeMap.selectedSprites.first();
+						MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(activeMap, selectedSprite, false, true);
+						activeMap.executeCommand(moveMapSpriteIndex);
 					}
 				}
 				else if(keycode == Input.Keys.UP && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
 				{
-					Map map = ((Map)getScreen());
-					if(map != null && map.selectedSprites.size == 1)
+					if(activeMap != null && activeMap.selectedSprites.size == 1)
 					{
-						MapSprite selectedSprite = map.selectedSprites.first();
-						MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, true, false);
-						map.executeCommand(moveMapSpriteIndex);
+						MapSprite selectedSprite = activeMap.selectedSprites.first();
+						MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(activeMap, selectedSprite, true, false);
+						activeMap.executeCommand(moveMapSpriteIndex);
 					}
 				}
 				else if(keycode == Input.Keys.DOWN && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
 				{
-					Map map = ((Map)getScreen());
-					if(map != null && map.selectedSprites.size == 1)
+					if(activeMap != null && activeMap.selectedSprites.size == 1)
 					{
-						MapSprite selectedSprite = map.selectedSprites.first();
-						MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, false, false);
-						map.executeCommand(moveMapSpriteIndex);
+						MapSprite selectedSprite = activeMap.selectedSprites.first();
+						MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(activeMap, selectedSprite, false, false);
+						activeMap.executeCommand(moveMapSpriteIndex);
 					}
 				}
 				else if(keycode == Input.Keys.B)
@@ -173,10 +167,28 @@ public class BridgeBuilder extends Game
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.lines);
 				else if(keycode == Input.Keys.C)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.perspective);
-				else
-					return Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT);
+				else if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+				{
+					if(activeMap == null)
+						return true;
+					int layerIndex = activeMap.layers.size - 1;
+					for(int i = Input.Keys.NUM_0; i <= Input.Keys.NUM_9; i ++)
+					{
+						if(Gdx.input.isKeyPressed(i))
+						{
+							if(layerIndex < 0)
+								return true;
+							Layer layer = activeMap.layers.get(layerIndex);
+							SelectLayer selectLayer = new SelectLayer(activeMap, activeMap.selectedLayer, layer, true);
+							activeMap.executeCommand(selectLayer);
+							return true;
+						}
+						layerIndex --;
+					}
+					return true;
+				}
 
-				return true;
+				return false;
 			}
 
 			@Override
