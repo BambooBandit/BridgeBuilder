@@ -21,9 +21,9 @@ public class MapInput implements InputProcessor
     public Map map;
     public BridgeBuilder editor;
 
-    private Vector2 dragOriginPos;
-    private Vector2 dragDifferencePos; // Used to retrieve position difference of mouse drag
-    private Vector2 currentPos;
+    public Vector2 dragOriginPos;
+    public Vector2 dragDifferencePos; // Used to retrieve position difference of mouse drag
+    public Vector2 currentPos;
 
     public FloatArray mapPolygonVertices; // allows for seeing where you are clicking when constructing a new MapObject polygon
     public Vector2 objectVerticePosition;
@@ -76,6 +76,7 @@ public class MapInput implements InputProcessor
         editor.stage.unfocusAll();
 
         Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
+        this.currentPos.set(coords.x, coords.y);
         this.dragOriginPos.set(coords.x, coords.y);
 
         if(handleMapSpriteCreation(coords.x, coords.y, button))
@@ -87,6 +88,8 @@ public class MapInput implements InputProcessor
         if(handleBoxSelectTouchDown(coords.x, coords.y, button))
             return false;
         if(handleMapPointCreation(coords.x, coords.y, button))
+            return false;
+        if(handleMapPolygonRectangleCreation(button))
             return false;
         if(handleMapPolygonVerticeCreation(coords.x, coords.y, button))
             return false;
@@ -125,6 +128,7 @@ public class MapInput implements InputProcessor
     public boolean mouseMoved(int screenX, int screenY)
     {
         Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
+        this.currentPos.set(coords.x, coords.y);
         handlePreviewSpritePositionUpdate(coords.x, coords.y);
         handleHoveredLayerChildUpdate(coords.x, coords.y);
         handleManipulatorBoxHover(coords.x, coords.y);
@@ -355,10 +359,10 @@ public class MapInput implements InputProcessor
 
     private boolean handleMapPolygonVerticeCreation(float x, float y, int button)
     {
-        if(!Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) || map.selectedLayer == null || !(map.selectedLayer instanceof ObjectLayer) || button != Input.Buttons.LEFT)
+        if((!Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE)) || map.selectedLayer == null || !(map.selectedLayer instanceof ObjectLayer) || button != Input.Buttons.LEFT)
             return false;
 
-        DrawMapPolygonVertice drawMapPolygonVertice = new DrawMapPolygonVertice(map, x, y, objectVerticePosition.x, objectVerticePosition.y);
+        DrawMapPolygonVertice drawMapPolygonVertice = new DrawMapPolygonVertice(map, x, y, objectVerticePosition.x, objectVerticePosition.y, Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE));
         map.executeCommand(drawMapPolygonVertice);
         return false;
     }
@@ -382,9 +386,28 @@ public class MapInput implements InputProcessor
         return false;
     }
 
+    private boolean handleMapPolygonRectangleCreation(int button)
+    {
+        if(!Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE) || map.selectedLayer == null || !(map.selectedLayer instanceof ObjectLayer) || button != Input.Buttons.LEFT)
+        {
+            if(button == Input.Buttons.LEFT && map.input.mapPolygonVertices.size < 2)
+                clearMapPolygonVertices(button);
+            return false;
+        }
+        if(map.input.mapPolygonVertices.size < 2)
+        {
+            clearMapPolygonVertices(button);
+            return false;
+        }
+        DrawMapPolygon drawMapPolygon = new DrawMapPolygon(map, (ObjectLayer) map.selectedLayer, map.input.mapPolygonVertices, objectVerticePosition.x, objectVerticePosition.y);
+        clearMapPolygonVertices(button);
+        map.executeCommand(drawMapPolygon);
+        return true;
+    }
+
     private boolean clearMapPolygonVertices(int button)
     {
-        if(button == Input.Buttons.RIGHT)
+        if(Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) && button == Input.Buttons.RIGHT || Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE) && button == Input.Buttons.LEFT)
         {
             ClearMapPolygonVertices clearMapPolygonVertices = new ClearMapPolygonVertices(this.map, this.map.input.mapPolygonVertices);
             this.map.executeCommand(clearMapPolygonVertices);

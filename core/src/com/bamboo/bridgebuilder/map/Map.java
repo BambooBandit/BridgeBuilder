@@ -216,9 +216,26 @@ public class Map implements Screen
 
     private void drawUnfinishedMapPolygon()
     {
+        if(!Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
+            return;
         this.editor.shapeRenderer.setColor(Color.GRAY);
         int oldIndex = 0;
-        if(input.mapPolygonVertices.size >= 2)
+        if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE) && input.mapPolygonVertices.size == 8)
+        {
+            input.mapPolygonVertices.removeIndex(2);
+            input.mapPolygonVertices.insert(2, input.currentPos.x - this.input.objectVerticePosition.x);
+            input.mapPolygonVertices.removeIndex(3);
+            input.mapPolygonVertices.insert(3, input.mapPolygonVertices.get(1));
+            input.mapPolygonVertices.removeIndex(4);
+            input.mapPolygonVertices.insert(4, input.currentPos.x - this.input.objectVerticePosition.x);
+            input.mapPolygonVertices.removeIndex(5);
+            input.mapPolygonVertices.insert(5, input.currentPos.y - this.input.objectVerticePosition.y);
+            input.mapPolygonVertices.removeIndex(6);
+            input.mapPolygonVertices.insert(6, input.mapPolygonVertices.get(0));
+            input.mapPolygonVertices.removeIndex(7);
+            input.mapPolygonVertices.insert(7, input.currentPos.y - this.input.objectVerticePosition.y);
+        }
+        if (input.mapPolygonVertices.size >= 2)
         {
             this.editor.shapeRenderer.circle(input.mapPolygonVertices.get(0) + input.objectVerticePosition.x, input.mapPolygonVertices.get(1) + input.objectVerticePosition.y, .1f, 7);
             for (int i = 2; i < input.mapPolygonVertices.size; i += 2)
@@ -226,6 +243,8 @@ public class Map implements Screen
                 this.editor.shapeRenderer.line(input.mapPolygonVertices.get(oldIndex) + input.objectVerticePosition.x, input.mapPolygonVertices.get(oldIndex + 1) + input.objectVerticePosition.y, input.mapPolygonVertices.get(i) + input.objectVerticePosition.x, input.mapPolygonVertices.get(i + 1) + input.objectVerticePosition.y);
                 oldIndex += 2;
             }
+            if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
+                this.editor.shapeRenderer.line(input.mapPolygonVertices.get(oldIndex) + input.objectVerticePosition.x, input.mapPolygonVertices.get(oldIndex + 1) + input.objectVerticePosition.y, input.mapPolygonVertices.get(0) + input.objectVerticePosition.x, input.mapPolygonVertices.get(1) + input.objectVerticePosition.y);
         }
     }
 

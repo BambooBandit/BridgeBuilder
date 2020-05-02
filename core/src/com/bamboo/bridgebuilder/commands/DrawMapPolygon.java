@@ -35,5 +35,6 @@ public class DrawMapPolygon implements Command
     public void undo()
     {
         this.layer.children.removeValue(mapPolygon, true);
+        this.map.input.objectVerticePosition.set(this.objectX, this.objectY);
     }
 }
