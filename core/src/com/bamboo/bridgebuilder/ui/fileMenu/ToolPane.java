@@ -7,8 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.commands.MoveMapSpriteIndex;
+import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.map.SpriteLayer;
 import com.bamboo.bridgebuilder.ui.MinMaxDialog;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
@@ -269,6 +271,48 @@ public class ToolPane extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Map map = ((Map)editor.getScreen());
+                if(map == null || map.selectedLayer == null)
+                    return;
+                if(map.selectedLayer.overrideSprite == null)
+                {
+                    int layerIndex = map.layers.indexOf(map.selectedLayer, true);
+                    if(layerIndex == 0)
+                        return;
+                    for(int i = layerIndex - 1; i > 0; i--)
+                    {
+                        Layer layer = map.layers.get(i);
+                        if(layer instanceof SpriteLayer)
+                        {
+                            SpriteLayer spriteLayer = (SpriteLayer) layer;
+                            MapSprite mapSprite = spriteLayer.children.peek();
+                            map.selectedLayer.overrideSprite = mapSprite;
+                            mapSprite.layerOverride = map.selectedLayer;
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    int layerIndex = map.layers.indexOf(map.selectedLayer.overrideSprite.layer, true);
+                    int spriteIndex = map.selectedLayer.overrideSprite.layer.children.indexOf(map.selectedLayer.overrideSprite, true);
+                    spriteIndex --;
+                    if(spriteIndex < 0)
+                    {
+                        while(layerIndex - 1 > 0)
+                        {
+                            layerIndex--;
+                            if(map.layers.get(layerIndex) instanceof SpriteLayer)
+                                break;
+                        }
+                        if(layerIndex < 0 || !(map.layers.get(layerIndex) instanceof SpriteLayer))
+                            return;
+                        spriteIndex = ((SpriteLayer) map.layers.get(layerIndex)).children.size - 1;
+                    }
+                    map.selectedLayer.overrideSprite.layerOverride = null;
+                    map.selectedLayer.overrideSprite = (MapSprite) map.layers.get(layerIndex).children.get(spriteIndex);
+                    map.selectedLayer.overrideSprite.layerOverride = map.selectedLayer;
+                }
             }
         });
 
@@ -277,6 +321,48 @@ public class ToolPane extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Map map = ((Map)editor.getScreen());
+                if(map == null || map.selectedLayer == null)
+                    return;
+                if(map.selectedLayer.overrideSprite == null)
+                {
+                    int layerIndex = map.layers.indexOf(map.selectedLayer, true);
+                    if(layerIndex == map.layers.size - 1)
+                        return;
+                    for(int i = layerIndex + 1; i < map.layers.size; i++)
+                    {
+                        Layer layer = map.layers.get(i);
+                        if(layer instanceof SpriteLayer)
+                        {
+                            SpriteLayer spriteLayer = (SpriteLayer) layer;
+                            MapSprite mapSprite = spriteLayer.children.peek();
+                            map.selectedLayer.overrideSprite = mapSprite;
+                            mapSprite.layerOverride = map.selectedLayer;
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    int layerIndex = map.layers.indexOf(map.selectedLayer.overrideSprite.layer, true);
+                    int spriteIndex = map.selectedLayer.overrideSprite.layer.children.indexOf(map.selectedLayer.overrideSprite, true);
+                    spriteIndex ++;
+                    if(spriteIndex >= map.selectedLayer.overrideSprite.layer.children.size)
+                    {
+                        while(layerIndex + 1 < map.layers.size - 1)
+                        {
+                            layerIndex++;
+                            if(map.layers.get(layerIndex) instanceof SpriteLayer)
+                                break;
+                        }
+                        if(layerIndex >= map.layers.size || !(map.layers.get(layerIndex) instanceof SpriteLayer))
+                            return;
+                        spriteIndex = 0;
+                    }
+                    map.selectedLayer.overrideSprite.layerOverride = null;
+                    map.selectedLayer.overrideSprite = (MapSprite) map.layers.get(layerIndex).children.get(spriteIndex);
+                    map.selectedLayer.overrideSprite.layerOverride = map.selectedLayer;
+                }
             }
         });
         this.layerOverrideReset.addListener(new ClickListener()
@@ -284,6 +370,14 @@ public class ToolPane extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                Map map = ((Map)editor.getScreen());
+                if(map == null || map.selectedLayer == null)
+                    return;
+                if(map.selectedLayer.overrideSprite != null)
+                {
+                    map.selectedLayer.overrideSprite.layerOverride = null;
+                    map.selectedLayer.overrideSprite = null;
+                }
             }
         });
 
