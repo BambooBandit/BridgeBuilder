@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.commands.ResizeLayer;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
 
 public class LayerPropertyPanel extends Group
@@ -63,7 +64,7 @@ public class LayerPropertyPanel extends Group
         this.right = new TextButton(">", skin, "checked");
         this.left = new TextButton("<", skin, "checked");
         this.apply = new TextButton("Apply", skin);
-        this.buttonDirectionUpDownGroup.add(down, up);
+        this.buttonDirectionUpDownGroup.add(up, down);
         this.buttonDirectionLeftRightGroup.add(right, left);
         this.buttonDirectionTable.add(down, up, right, left, apply);
         this.apply.addListener(new ClickListener()
@@ -71,8 +72,8 @@ public class LayerPropertyPanel extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                menu.map.selectedLayer.setZ(Float.parseFloat(layerZProperty.value.getText()));
-                menu.map.selectedLayer.resize(Integer.parseInt(layerWidthProperty.value.getText()), Integer.parseInt(layerHeightProperty.value.getText()), down.isChecked(), right.isChecked());
+                ResizeLayer resizeLayer = new ResizeLayer(menu.map.selectedLayer, menu.map.selectedLayer.width, menu.map.selectedLayer.height, menu.map.selectedLayer.z, Integer.parseInt(layerWidthProperty.value.getText()), Integer.parseInt(layerHeightProperty.value.getText()), Float.parseFloat(layerZProperty.value.getText()), down.isChecked(), right.isChecked());
+                menu.map.executeCommand(resizeLayer);
             }
         });
 
