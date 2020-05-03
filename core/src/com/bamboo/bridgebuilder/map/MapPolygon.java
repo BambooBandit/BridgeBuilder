@@ -171,12 +171,18 @@ public class MapPolygon extends MapObject
     public void drawSelectedVertices()
     {
         if(indexOfSelectedVertice != -1)
-            map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfSelectedVertice], polygon.getTransformedVertices()[indexOfSelectedVertice + 1], 5);
+        {
+            map.editor.shapeRenderer.setColor(Color.GREEN);
+            map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfSelectedVertice], polygon.getTransformedVertices()[indexOfSelectedVertice + 1], .1f, 7);
+        }
     }
 
     public void drawHoveredVertices()
     {
         if(indexOfHoveredVertice != -1)
-            map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfHoveredVertice], polygon.getTransformedVertices()[indexOfHoveredVertice + 1], 5);
+        {
+            map.editor.shapeRenderer.setColor(Color.ORANGE);
+            map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfHoveredVertice], polygon.getTransformedVertices()[indexOfHoveredVertice + 1], .1f, 7);
+        }
     }
 }

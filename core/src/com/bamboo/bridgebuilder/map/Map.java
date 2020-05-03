@@ -169,6 +169,7 @@ public class Map implements Screen
         drawHoveredOutline();
         drawSelectedOutlines();
         drawUnfinishedMapPolygon();
+        drawVerticeSelect();
         drawBoxSelect();
         //shaperenderer end
         this.editor.shapeRenderer.end();
@@ -192,7 +193,7 @@ public class Map implements Screen
 
     private void drawSelectedOutlines()
     {
-        if(!Utils.isFileToolThisType(editor, Tools.SELECT) && !Utils.isFileToolThisType(editor, Tools.BOXSELECT))
+        if(!Utils.isFileToolThisType(editor, Tools.SELECT) && !Utils.isFileToolThisType(editor, Tools.BOXSELECT) && !Utils.isFileToolThisType(editor, Tools.OBJECTVERTICESELECT))
             return;
 
         for(int i = 0; i < this.selectedSprites.size; i ++)
@@ -245,6 +246,20 @@ public class Map implements Screen
             }
             if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
                 this.editor.shapeRenderer.line(input.mapPolygonVertices.get(oldIndex) + input.objectVerticePosition.x, input.mapPolygonVertices.get(oldIndex + 1) + input.objectVerticePosition.y, input.mapPolygonVertices.get(0) + input.objectVerticePosition.x, input.mapPolygonVertices.get(1) + input.objectVerticePosition.y);
+        }
+    }
+
+    private void drawVerticeSelect()
+    {
+        for(int i = 0; i < this.selectedObjects.size; i ++)
+        {
+            MapObject mapObject = this.selectedObjects.get(i);
+            if(mapObject instanceof MapPolygon)
+            {
+                MapPolygon mapPolygon = (MapPolygon) mapObject;
+                mapPolygon.drawHoveredVertices();
+                mapPolygon.drawSelectedVertices();
+            }
         }
     }
 

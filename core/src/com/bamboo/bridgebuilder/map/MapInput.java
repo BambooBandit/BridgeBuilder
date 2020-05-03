@@ -33,6 +33,7 @@ public class MapInput implements InputProcessor
     public RotateMapSprites rotateMapSprites;
     public ScaleMapSprites scaleMapSprites;
     public MoveMapObjects moveMapObjects;
+    public MovePolygonVertice movePolygonVertice;
 
     public BoxSelect boxSelect;
 
@@ -81,7 +82,9 @@ public class MapInput implements InputProcessor
 
         if(handleMapSpriteCreation(coords.x, coords.y, button))
             return false;
-        if(handleManipulatorBoxTouchDown(coords.x, coords.y, button))
+        if(handleManipulatorBoxMoveLayerChildTouchDown(coords.x, coords.y, button))
+            return false;
+        if(handleManipulatorBoxMoveVerticeTouchDown(coords.x, coords.y, button))
             return false;
         if(handleSelect(button))
             return false;
@@ -95,6 +98,8 @@ public class MapInput implements InputProcessor
             return false;
         if(handleMapPolygonCreation(button))
             return false;
+        if(handlePolygonVertexSelection(button))
+            return false;
 
         return false;
     }
@@ -106,6 +111,7 @@ public class MapInput implements InputProcessor
 
         handleManipulatorBoxTouchUp();
         handleBoxSelectTouchUp();
+
         return false;
     }
 
@@ -132,6 +138,7 @@ public class MapInput implements InputProcessor
         handlePreviewSpritePositionUpdate(coords.x, coords.y);
         handleHoveredLayerChildUpdate(coords.x, coords.y);
         handleManipulatorBoxHover(coords.x, coords.y);
+        handleSelectedPolygonVerticeHover(coords.x, coords.y);
         return false;
     }
 
@@ -142,9 +149,9 @@ public class MapInput implements InputProcessor
         return false;
     }
 
-    private boolean handleManipulatorBoxTouchDown(float x, float y, int button)
+    private boolean handleManipulatorBoxMoveLayerChildTouchDown(float x, float y, int button)
     {
-        if(button != Input.Buttons.LEFT)
+        if(button != Input.Buttons.LEFT || !Utils.isFileToolThisType(this.editor, Tools.SELECT))
             return false;
 
         for(int i = 0; i < map.selectedSprites.size; i++)
@@ -184,12 +191,36 @@ public class MapInput implements InputProcessor
         return false;
     }
 
+    private boolean handleManipulatorBoxMoveVerticeTouchDown(float x, float y, int button)
+    {
+        if(button != Input.Buttons.LEFT && !Utils.isFileToolThisType(this.editor, Tools.OBJECTVERTICESELECT))
+            return false;
+
+        for(int i = 0; i < this.map.selectedObjects.size; i++)
+        {
+            MapObject mapObject = map.selectedObjects.get(i);
+            if(mapObject instanceof MapPolygon)
+            {
+                MapPolygon mapPolygon = (MapPolygon) mapObject;
+                if (mapPolygon.moveBox.contains(x, y) && mapPolygon.indexOfSelectedVertice != -1)
+                {
+                    this.movePolygonVertice = new MovePolygonVertice(mapPolygon, mapPolygon.polygon.getTransformedVertices()[mapPolygon.indexOfSelectedVertice], mapPolygon.polygon.getTransformedVertices()[mapPolygon.indexOfSelectedVertice + 1]);
+                    this.map.pushCommand(this.movePolygonVertice);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private boolean handleManipulatorBoxTouchUp()
     {
         this.moveMapSprites = null;
         this.rotateMapSprites = null;
         this.scaleMapSprites = null;
         this.moveMapObjects = null;
+        this.movePolygonVertice = null;
         return false;
     }
 
@@ -199,6 +230,8 @@ public class MapInput implements InputProcessor
             this.moveMapSprites.update(dragAmount.x, dragAmount.y);
         else if(this.moveMapObjects != null)
             this.moveMapObjects.update(dragAmount.x, dragAmount.y);
+        else if(this.movePolygonVertice != null)
+            this.movePolygonVertice.update(dragCurrentPos.x, dragCurrentPos.y);
         else if(this.rotateMapSprites != null)
             this.rotateMapSprites.update(dragOriginPos.angle(dragCurrentPos));
         else if(this.scaleMapSprites != null)
@@ -241,6 +274,35 @@ public class MapInput implements InputProcessor
         {
             MapObject mapObject = this.map.selectedObjects.get(i);
             mapObject.moveBox.hover(mapObject.moveBox.contains(x, y));
+        }
+    }
+
+    private void handleSelectedPolygonVerticeHover(float x, float y)
+    {
+        if(!Utils.isFileToolThisType(this.editor, Tools.OBJECTVERTICESELECT))
+            return;
+        boolean vertexFound = false;
+        for(int i = 0; i < this.map.selectedObjects.size; i ++)
+        {
+            MapObject mapObject = this.map.selectedObjects.get(i);
+            if(mapObject instanceof MapPolygon)
+            {
+                MapPolygon mapPolygon = (MapPolygon) mapObject;
+                for(int k = 0; k < mapPolygon.polygon.getTransformedVertices().length; k += 2)
+                {
+                    float verticeX = mapPolygon.polygon.getTransformedVertices()[k];
+                    float verticeY = mapPolygon.polygon.getTransformedVertices()[k + 1];
+                    double distance = Math.sqrt(Math.pow((x - verticeX), 2) + Math.pow((y - verticeY), 2));
+                    if (distance <= .25f && !vertexFound)
+                    {
+                        vertexFound = true;
+                        mapPolygon.indexOfHoveredVertice = k;
+                        break;
+                    }
+                    else
+                        mapPolygon.indexOfHoveredVertice = -1;
+                }
+            }
         }
     }
 
@@ -289,28 +351,6 @@ public class MapInput implements InputProcessor
         {
             SelectLayerChildren selectLayerChildren = new SelectLayerChildren(map, dragOriginPos.x, dragOriginPos.y, currentPos.x, currentPos.y, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
             map.executeCommand(selectLayerChildren);
-//            if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
-//            {
-//                for (int k = 0; k < map.selectedSprites.size; k++)
-//                    map.selectedSprites.get(k).unselect();
-//                map.selectedSprites.clear();
-//            }
-//            for (int i = 0; i < spriteLayer.children.size; i++)
-//            {
-//                MapSprite mapSprite = spriteLayer.children.get(i);
-//                if (Intersector.overlapConvexPolygons(mapSprite.polygon.getTransformedVertices(), map.input.boxSelect.getVertices(), null))
-//                {
-//                    boolean selected = map.selectedSprites.contains(mapSprite, true);
-//                    if (!selected)
-//                    {
-//                        map.selectedSprites.add(mapSprite);
-//                        mapSprite.select();
-//                        map.propertyMenu.spritePropertyPanel.setVisible(true);
-//                    }
-//                }
-//            }
-//            selectSprite.addSelected();
-//            map.executeCommand(selectSprite);
         }
 //        else if(map.selectedLayer instanceof ObjectLayer || (map.selectedSprites.size == 1 && map.selectedSprites.first().tool.mapObjects.size > 1))
         else if(map.selectedLayer instanceof ObjectLayer)
@@ -344,6 +384,30 @@ public class MapInput implements InputProcessor
         }
         map.propertyMenu.rebuild();
         map.input.boxSelect.isDragging = false;
+        return false;
+    }
+
+    private boolean handlePolygonVertexSelection(int button)
+    {
+        if(button != Input.Buttons.LEFT && !Utils.isFileToolThisType(this.editor, Tools.OBJECTVERTICESELECT))
+            return false;
+
+        for(int i = 0; i < this.map.selectedObjects.size; i ++)
+        {
+            MapObject mapObject = this.map.selectedObjects.get(i);
+            if(mapObject instanceof MapPolygon)
+            {
+                MapPolygon mapPolygon = (MapPolygon) mapObject;
+                if(mapPolygon.indexOfHoveredVertice != -1)
+                {
+                    SelectPolygonVertice selectPolygonVertice = new SelectPolygonVertice(map);
+                    map.executeCommand(selectPolygonVertice);
+                    return true;
+                }
+            }
+        }
+        SelectPolygonVertice selectPolygonVertice = new SelectPolygonVertice(map);
+        map.executeCommand(selectPolygonVertice);
         return false;
     }
 
