@@ -90,9 +90,9 @@ public class PropertyToolPane extends Group
         // map sprites
         for(int i = 0; i < map.spriteMenu.spriteTable.getChildren().size; i ++)
         {
-            if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof SpriteTool)
+            if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof Table)
             {
-                SpriteTool spriteTool = (SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i);
+                SpriteTool spriteTool = ((Table) map.spriteMenu.spriteTable.getChildren().get(i)).findActor("spriteTool");
                 // top
                 PropertyField propertyField = Utils.getPropertyField(spriteTool.properties, "top");
                 if(propertyField != null)
@@ -101,7 +101,7 @@ public class PropertyToolPane extends Group
                     String topValue = topProperty.value.getText();
                     spriteTool.setTopSprites(topValue);
                 }
-                else
+                else if(spriteTool.topSprites != null)
                     spriteTool.setTopSprites("");
             }
         }
