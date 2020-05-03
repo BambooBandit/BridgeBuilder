@@ -29,6 +29,7 @@ public class DrawMapSprite implements Command
             SpriteLayer layer = (SpriteLayer) map.selectedLayer;
             SpriteTool spriteTool = map.getSpriteToolFromSelectedTools();
             this.mapSprite = new MapSprite(map, layer, spriteTool, x, y);
+            map.shuffleRandomSpriteTool();
         }
         layer.addMapSprite(this.mapSprite);
     }

@@ -62,10 +62,10 @@ public class ToolPane extends Group
         this.editor = editor;
         this.toolTable = new Table();
         this.brush = new Tool(Tools.BRUSH, this, false);
-        this.eraser = new Tool(Tools.ERASER, this, false);
-        this.fill = new Tool(Tools.FILL, this, false);
-        this.bind = new Tool(Tools.BIND, this, false);
-        this.stamp = new Tool(Tools.STAMP, this, false);
+//        this.eraser = new Tool(Tools.ERASER, this, false);
+//        this.fill = new Tool(Tools.FILL, this, false);
+//        this.bind = new Tool(Tools.BIND, this, false);
+//        this.stamp = new Tool(Tools.STAMP, this, false);
         this.drawPoint = new Tool(Tools.DRAWPOINT, this, false);
         this.drawRectangle = new Tool(Tools.DRAWRECTANGLE, this, false);
         this.drawObject = new Tool(Tools.DRAWOBJECT, this, false);
@@ -98,10 +98,10 @@ public class ToolPane extends Group
         setListeners();
         this.toolTable.left();
         this.toolTable.add(this.brush).padRight(1);
-        this.toolTable.add(this.eraser).padRight(1);
-        this.toolTable.add(this.fill).padRight(1);
-        this.toolTable.add(this.bind).padRight(1);
-        this.toolTable.add(this.stamp).padRight(1);
+//        this.toolTable.add(this.eraser).padRight(1);
+//        this.toolTable.add(this.fill).padRight(1);
+//        this.toolTable.add(this.bind).padRight(1);
+//        this.toolTable.add(this.stamp).padRight(1);
         this.toolTable.add(this.drawPoint).padRight(1);
         this.toolTable.add(this.drawRectangle).padRight(1);
         this.toolTable.add(this.drawObject).padRight(1);
@@ -143,10 +143,10 @@ public class ToolPane extends Group
 
         // Resize all buttons in the pane
         this.toolTable.getCell(this.brush).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.eraser).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.fill).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.bind).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.stamp).size(toolHeight, toolHeight);
+//        this.toolTable.getCell(this.eraser).size(toolHeight, toolHeight);
+//        this.toolTable.getCell(this.fill).size(toolHeight, toolHeight);
+//        this.toolTable.getCell(this.bind).size(toolHeight, toolHeight);
+//        this.toolTable.getCell(this.stamp).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.drawPoint).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.drawRectangle).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.drawObject).size(toolHeight, toolHeight);
