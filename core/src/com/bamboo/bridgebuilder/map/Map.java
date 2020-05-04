@@ -193,8 +193,14 @@ public class Map implements Screen
 
     private void drawSelectedOutlines()
     {
-        if(!Utils.isFileToolThisType(editor, Tools.SELECT) && !Utils.isFileToolThisType(editor, Tools.BOXSELECT) && !Utils.isFileToolThisType(editor, Tools.OBJECTVERTICESELECT))
+        if(!Utils.isFileToolThisType(editor, Tools.SELECT) && !Utils.isFileToolThisType(editor, Tools.BOXSELECT) && !Utils.isFileToolThisType(editor, Tools.OBJECTVERTICESELECT) && !Utils.isFileToolThisType(editor, Tools.DRAWPOINT) && !Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
             return;
+        if(Utils.isFileToolThisType(editor, Tools.DRAWPOINT) || Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) || Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
+        {
+            if(!(this.selectedLayer instanceof SpriteLayer) || this.selectedSprites.size != 1)
+                return;
+        }
+
 
         for(int i = 0; i < this.selectedSprites.size; i ++)
         {
