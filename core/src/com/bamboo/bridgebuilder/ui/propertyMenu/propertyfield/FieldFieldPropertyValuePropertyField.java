@@ -23,8 +23,7 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
         super(menu, properties, removeable);
 
 
-        if (removeable)
-            this.property = new TextField(property, skin);
+        this.property = new TextField(property, skin);
         this.value = new TextField(value, skin);
 
         this.table = new Table();
@@ -32,26 +31,28 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
         this.table.add(this.property);
         this.table.add(this.value);
 
-        if(removeable)
+        if(menu != null)
         {
-            this.remove = new TextButton("X", skin);
-            this.remove.setColor(Color.FIREBRICK);
-            final PropertyField removeableField = this;
-            this.remove.addListener(new ClickListener()
+            if (removeable)
             {
-                @Override
-                public void clicked(InputEvent event, float x, float y)
+                this.remove = new TextButton("X", skin);
+                this.remove.setColor(Color.FIREBRICK);
+                final PropertyField removeableField = this;
+                this.remove.addListener(new ClickListener()
                 {
-                    RemoveProperty removeProperty = new RemoveProperty(menu.map, removeableField, properties);
-                    menu.map.executeCommand(removeProperty);
-                }
-            });
+                    @Override
+                    public void clicked(InputEvent event, float x, float y)
+                    {
+                        RemoveProperty removeProperty = new RemoveProperty(menu.map, removeableField, properties);
+                        menu.map.executeCommand(removeProperty);
+                    }
+                });
 
-            this.table.add(this.remove);
-            addRemoveableListener();
+                this.table.add(this.remove);
+                addRemoveableListener();
+            } else
+                addLockedListener();
         }
-        else
-            addLockedListener();
 
         addActor(this.table);
     }
@@ -311,5 +312,13 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
             return this.property.getText().equals(toCompare.property.getText()) && this.value.getText().equals(toCompare.value.getText());
         }
         return false;
+    }
+
+    @Override
+    public void clearListeners()
+    {
+        super.clearListeners();
+        this.property.clearListeners();
+        this.value.clearListeners();
     }
 }

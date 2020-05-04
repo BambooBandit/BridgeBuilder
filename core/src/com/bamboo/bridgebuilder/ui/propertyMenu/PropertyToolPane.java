@@ -7,10 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.commands.AddProperty;
 import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.map.SpriteLayer;
+import com.bamboo.bridgebuilder.ui.PropertyPresetDialog;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
@@ -27,22 +29,43 @@ public class PropertyToolPane extends Group
     private BridgeBuilder editor;
 
     private PropertyTool newProperty;
-    private PropertyTool newLightProperty;
+    private PropertyPresetDialog propertyPresetDialog;
+    private TextButton more;
     private TextButton apply;
 
     public PropertyMenu menu;
+
 
     public PropertyToolPane(BridgeBuilder editor, Map map, PropertyMenu menu, Skin skin)
     {
         this.menu = menu;
         this.toolTable = new Table();
-        this.newProperty = new PropertyTool(map, PropertyTools.NEW, this, skin);
-        this.newLightProperty = new PropertyTool(map, PropertyTools.NEWLIGHT, this, skin);
+        this.newProperty = new PropertyTool(map, PropertyTools.NEW, skin);
+        this.more = new TextButton("More", skin);
+        this.propertyPresetDialog = new PropertyPresetDialog(map, editor.stage, skin);
+        this.newProperty.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                AddProperty addProperty = new AddProperty(map, newProperty.tool, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects);
+                map.executeCommand(addProperty);
+            }
+        });
+        this.more.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                propertyPresetDialog.open();
+            }
+        });
+
         this.apply = new TextButton("Apply", skin);
         setApplyListener();
         this.toolTable.left();
         this.toolTable.add(this.newProperty).padRight(1);
-        this.toolTable.add(this.newLightProperty).padRight(1);
+        this.toolTable.add(this.more).padRight(1);
         this.toolTable.add(this.apply);
 
         this.editor = editor;
@@ -64,7 +87,7 @@ public class PropertyToolPane extends Group
 
         // Resize all buttons in the pane
         this.toolTable.getCell(this.newProperty).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.newLightProperty).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.more).size(toolHeight * 2, toolHeight);
         this.toolTable.getCell(this.apply).size(toolHeight * 2, toolHeight);
         this.toolTable.invalidateHierarchy();
 

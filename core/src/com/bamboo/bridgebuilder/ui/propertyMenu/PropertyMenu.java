@@ -102,26 +102,26 @@ public class PropertyMenu extends Group
 
     public void newProperty(boolean light, Layer selectedLayer, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObject)
     {
-        this.propertyPanel.newProperty(light, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects);
+        this.propertyPanel.newProperty(light, selectedLayer, selectedSpriteTools, selectedMapObject);
         rebuild();
     }
 
-    public void newProperty(String property, String value)
+    public void newProperty(String property, String value, Layer selectedLayer, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObject)
     {
-        this.propertyPanel.newProperty(property, value);
+        this.propertyPanel.newProperty(property, value, selectedLayer, selectedSpriteTools, selectedMapObject);
         rebuild();
     }
 
     public void newProperty(float r, float g, float b, float a)
     {
-        this.propertyPanel.newProperty(r, g, b, a);
-        rebuild();
+//        this.propertyPanel.newProperty(r, g, b, a);
+//        rebuild();
     }
 
     public void newProperty(float r, float g, float b, float a, float distance, int rayAmount)
     {
-        this.propertyPanel.newProperty(r, g, b, a, distance, rayAmount);
-        rebuild();
+//        this.propertyPanel.newProperty(r, g, b, a, distance, rayAmount);
+//        rebuild();
     }
 
     private void setSpriteProperties()

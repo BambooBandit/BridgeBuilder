@@ -19,6 +19,8 @@ public class AddProperty implements Command
 
     private Array<PropertyField> propertyFields; // If this has already been executed, and you had 3 MapObjects selected for example, this array would be 3 long, tracking those new property objects.
 
+    private String property, value;
+
     public AddProperty(Map map, PropertyTools tool, Layer selectedLayer, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
     {
         this.map = map;
@@ -28,6 +30,17 @@ public class AddProperty implements Command
         this.selectedMapObjects = new Array(selectedMapObjects);
     }
 
+    public AddProperty(Map map, PropertyTools tool, Layer selectedLayer, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects, String property, String value)
+    {
+        this.map = map;
+        this.tool = tool;
+        this.selectedLayer = selectedLayer;
+        this.selectedSpriteTools = new Array(selectedSpriteTools);
+        this.selectedMapObjects = new Array(selectedMapObjects);
+        this.property = property;
+        this.value = value;
+    }
+
     @Override
     public void execute()
     {
@@ -35,7 +48,12 @@ public class AddProperty implements Command
         {
             this.propertyFields = new Array<>();
             if (tool == PropertyTools.NEW)
-                map.propertyMenu.newProperty(false, selectedLayer, selectedSpriteTools, selectedMapObjects);
+            {
+                if(property == null)
+                    map.propertyMenu.newProperty(false, selectedLayer, selectedSpriteTools, selectedMapObjects);
+                else
+                    map.propertyMenu.newProperty(property, value, selectedLayer, selectedSpriteTools, selectedMapObjects);
+            }
             else
                 map.propertyMenu.newProperty(true, selectedLayer, selectedSpriteTools, selectedMapObjects);
 

@@ -66,26 +66,28 @@ public class LightPropertyField extends PropertyField
         this.table.add(this.rayAmountLabel);
         this.table.add(this.rayAmountValue);
 
-        if(removeable)
+        if(this.menu != null)
         {
-            this.remove = new TextButton("X", skin);
-            this.remove.setColor(Color.FIREBRICK);
-            final PropertyField removeableField = this;
-            this.remove.addListener(new ClickListener()
+            if (removeable)
             {
-                @Override
-                public void clicked(InputEvent event, float x, float y)
+                this.remove = new TextButton("X", skin);
+                this.remove.setColor(Color.FIREBRICK);
+                final PropertyField removeableField = this;
+                this.remove.addListener(new ClickListener()
                 {
-                    RemoveProperty removeProperty = new RemoveProperty(menu.map, removeableField, properties);
-                    menu.map.executeCommand(removeProperty);
-                }
-            });
+                    @Override
+                    public void clicked(InputEvent event, float x, float y)
+                    {
+                        RemoveProperty removeProperty = new RemoveProperty(menu.map, removeableField, properties);
+                        menu.map.executeCommand(removeProperty);
+                    }
+                });
 
-            this.table.add(this.remove);
-            addRemoveableListener();
+                this.table.add(this.remove);
+                addRemoveableListener();
+            } else
+                addLockedListener();
         }
-        else
-            addLockedListener();
 
         addActor(this.table);
     }
