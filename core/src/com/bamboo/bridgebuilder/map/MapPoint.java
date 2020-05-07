@@ -12,6 +12,10 @@ public class MapPoint extends MapObject
     {
         super(map, layer, x, y);
     }
+    public MapPoint(Map map, MapSprite mapSprite, float x, float y)
+    {
+        super(map, mapSprite, x, y);
+    }
 
     @Override
     public void setPosition(float x, float y)
@@ -51,6 +55,26 @@ public class MapPoint extends MapObject
         pointShape[8] = position.x + .1333f;
         pointShape[9] = position.y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
+    }
+
+    @Override
+    public void draw(float xOffset, float yOffset)
+    {
+        setPosition(position.x + xOffset, position.y + yOffset);
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.CYAN);
+        pointShape[0] = position.x + 0;
+        pointShape[1] = position.y + 0;
+        pointShape[2] = position.x - .1333f;
+        pointShape[3] = position.y + .2666f;
+        pointShape[4] = position.x - .0333f;
+        pointShape[5] = position.y + .3666f;
+        pointShape[6] = position.x + .0333f;
+        pointShape[7] = position.y + .3666f;
+        pointShape[8] = position.x + .1333f;
+        pointShape[9] = position.y + .2666f;
+        map.editor.shapeRenderer.polygon(pointShape);
+        setPosition(position.x - xOffset, position.y - yOffset);
     }
 
     @Override

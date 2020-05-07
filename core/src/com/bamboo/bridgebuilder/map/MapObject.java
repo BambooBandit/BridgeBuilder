@@ -20,6 +20,16 @@ public abstract class MapObject extends LayerChild
         this.position.set(x, y);
     }
 
+    public MapObject(Map map, MapSprite mapSprite, float x, float y)
+    {
+        super(map, mapSprite.layer, x, y);
+        this.attachedSprite = mapSprite;
+        this.properties = new Array<>();
+        this.moveBox = new MoveBox();
+        this.moveBox.setPosition(x, y);
+        this.position.set(x, y);
+    }
+
     @Override
     public void setPosition(float x, float y)
     {
@@ -48,4 +58,11 @@ public abstract class MapObject extends LayerChild
         this.map.selectedObjects.removeValue(this, true);
         this.selected = false;
     }
+
+    public final boolean isAttachedObject()
+    {
+        return this.attachedSprite != null;
+    }
+
+    public abstract void draw(float xOffset, float yOffset);
 }

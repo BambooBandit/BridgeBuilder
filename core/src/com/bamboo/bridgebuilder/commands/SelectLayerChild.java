@@ -34,6 +34,16 @@ public class SelectLayerChild implements Command
                 this.oldSelectedSprites.clear();
                 this.oldSelectedSprites.addAll(map.selectedSprites);
             }
+            if(map.selectedObjects.size > 0)
+            {
+                if(this.oldSelectedObjects == null)
+                    this.oldSelectedObjects = new Array<>(map.selectedObjects);
+                else
+                {
+                    this.oldSelectedObjects.clear();
+                    this.oldSelectedObjects.addAll(map.selectedObjects);
+                }
+            }
             MapSprite hoveredMapSprite = (MapSprite) hoveredChild;
             if(this.ctrlHeld)
             {
@@ -94,6 +104,16 @@ public class SelectLayerChild implements Command
             }
             for(int i = 0; i < this.oldSelectedSprites.size; i ++)
                 this.oldSelectedSprites.get(i).select();
+            for(int i = 0; i < map.selectedObjects.size; i ++)
+            {
+                map.selectedObjects.get(i).unselect();
+                i--;
+            }
+            if(this.oldSelectedObjects != null)
+            {
+                for (int i = 0; i < this.oldSelectedObjects.size; i++)
+                    this.oldSelectedObjects.get(i).select();
+            }
         }
         else if(hoveredChild instanceof MapObject)
         {

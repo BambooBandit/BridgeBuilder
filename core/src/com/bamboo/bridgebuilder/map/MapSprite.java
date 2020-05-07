@@ -221,7 +221,7 @@ public class MapSprite extends LayerChild
                 }
             }
         }
-        if(map.editor.fileMenu.toolPane.top.selected)
+        if(this.map.editor.fileMenu.toolPane.top.selected)
             drawTopSprites();
     }
 
@@ -389,6 +389,10 @@ public class MapSprite extends LayerChild
     {
         this.map.selectedSprites.removeValue(this, true);
         this.selected = false;
+        if(this.tool.attachedMapObjects == null)
+            return;
+        for(int i = 0; i < this.tool.attachedMapObjects.size; i ++)
+            this.tool.attachedMapObjects.get(i).unselect();
     }
 
     public void updatePerspectiveScale()
@@ -418,6 +422,16 @@ public class MapSprite extends LayerChild
 //            for(int i = 0; i < this.tool.topSprites.size; i ++)
 //                this.tool.topSprites.get(i).setScale(totalScale);
 //        }
+    }
+
+    public void addAttachedMapObject(MapObject mapObject)
+    {
+        this.tool.addAttachedMapObject(mapObject);
+    }
+
+    public void removeAttachedMapObject(MapObject mapObject)
+    {
+        this.tool.removeAttachedMapObject(mapObject);
     }
 
     @Override

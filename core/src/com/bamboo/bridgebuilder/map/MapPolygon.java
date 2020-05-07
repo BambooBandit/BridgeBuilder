@@ -26,6 +26,15 @@ public class MapPolygon extends MapObject
         computeCentroid();
     }
 
+    public MapPolygon(Map map, MapSprite mapSprite, float[] vertices, float x, float y)
+    {
+        super(map, mapSprite, x, y);
+        this.vertices = vertices;
+        this.polygon = new EditorPolygon(vertices);
+        this.polygon.setPosition(x, y);
+        computeCentroid();
+    }
+
     @Override
     public void draw()
     {
@@ -45,6 +54,29 @@ public class MapPolygon extends MapObject
             }
             catch (NumberFormatException e){return;}
         }
+    }
+
+    @Override
+    public void draw(float xOffset, float yOffset)
+    {
+        setPosition(position.x + xOffset, position.y + yOffset);
+        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.CYAN);
+        map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
+
+        PropertyField propertyField = Utils.getPropertyField(properties, "angle");
+        if(propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField angleProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float angle = (float) Math.toRadians(Float.parseFloat(angleProperty.getValue()));
+                drawCentroidAndAngle(angle);
+                return;
+            }
+            catch (NumberFormatException e){return;}
+        }
+        setPosition(position.x - xOffset, position.y - yOffset);
     }
 
     @Override

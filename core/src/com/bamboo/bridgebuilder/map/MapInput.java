@@ -73,10 +73,10 @@ public class MapInput implements InputProcessor
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button)
     {
-        map.stage.unfocusAll();
-        editor.stage.unfocusAll();
+        this.map.stage.unfocusAll();
+        this.editor.stage.unfocusAll();
 
-        Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
+        Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
         this.currentPos.set(coords.x, coords.y);
         this.dragOriginPos.set(coords.x, coords.y);
 
@@ -107,7 +107,7 @@ public class MapInput implements InputProcessor
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button)
     {
-        Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
+        Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
 
         handleManipulatorBoxTouchUp();
         handleBoxSelectTouchUp();
@@ -118,10 +118,10 @@ public class MapInput implements InputProcessor
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer)
     {
-        Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
+        Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
         this.currentPos.set(coords.x, coords.y);
         this.dragDifferencePos.set(coords.x, coords.y);
-        this.dragDifferencePos = this.dragDifferencePos.sub(dragOriginPos.x, dragOriginPos.y);
+        this.dragDifferencePos = this.dragDifferencePos.sub(this.dragOriginPos.x, this.dragOriginPos.y);
         handleManipulatorBoxDrag(this.dragDifferencePos, this.currentPos);
         handleBoxSelectDrag(coords.x, coords.y);
 
@@ -133,7 +133,7 @@ public class MapInput implements InputProcessor
     @Override
     public boolean mouseMoved(int screenX, int screenY)
     {
-        Vector3 coords = Utils.unproject(map.camera, screenX, screenY);
+        Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
         this.currentPos.set(coords.x, coords.y);
         handlePreviewSpritePositionUpdate(coords.x, coords.y);
         handleHoveredLayerChildUpdate(coords.x, coords.y);
@@ -154,9 +154,9 @@ public class MapInput implements InputProcessor
         if(button != Input.Buttons.LEFT || !Utils.isFileToolThisType(this.editor, Tools.SELECT))
             return false;
 
-        for(int i = 0; i < map.selectedSprites.size; i++)
+        for(int i = 0; i < this.map.selectedSprites.size; i++)
         {
-            MapSprite selectedSprite = map.selectedSprites.get(i);
+            MapSprite selectedSprite = this.map.selectedSprites.get(i);
             if(selectedSprite.moveBox.contains(x, y))
             {
                 this.moveMapSprites = new MoveMapSprites(this.map.selectedSprites);
@@ -179,7 +179,7 @@ public class MapInput implements InputProcessor
 
         for(int i = 0; i < this.map.selectedObjects.size; i++)
         {
-            MapObject selectedObjects = map.selectedObjects.get(i);
+            MapObject selectedObjects = this.map.selectedObjects.get(i);
             if(selectedObjects.moveBox.contains(x, y))
             {
                 this.moveMapObjects = new MoveMapObjects(this.map.selectedObjects);
@@ -233,11 +233,11 @@ public class MapInput implements InputProcessor
         else if(this.movePolygonVertice != null)
             this.movePolygonVertice.update(dragCurrentPos.x, dragCurrentPos.y);
         else if(this.rotateMapSprites != null)
-            this.rotateMapSprites.update(dragOriginPos.angle(dragCurrentPos));
+            this.rotateMapSprites.update(this.dragOriginPos.angle(dragCurrentPos));
         else if(this.scaleMapSprites != null)
         {
-            float amountUp = dragCurrentPos.y - dragOriginPos.y;
-            float amountRight = dragCurrentPos.x - dragOriginPos.x;
+            float amountUp = dragCurrentPos.y - this.dragOriginPos.y;
+            float amountRight = dragCurrentPos.x - this.dragOriginPos.x;
             this.scaleMapSprites.update(amountUp + amountRight);
         }
         return false;
@@ -247,6 +247,22 @@ public class MapInput implements InputProcessor
     {
         if(this.map.selectedLayer != null && Utils.isFileToolThisType(this.editor, Tools.SELECT))
         {
+            for(int i = 0; i < map.selectedSprites.size; i ++)
+            {
+                MapSprite mapSprite = map.selectedSprites.get(i);
+                if(mapSprite.tool.hasAttachedMapObjects())
+                {
+                    for(int k = 0; k < mapSprite.tool.attachedMapObjects.size; k ++)
+                    {
+                        MapObject mapObject = mapSprite.tool.attachedMapObjects.get(k);
+                        if(mapObject.isHoveredOver(x, y))
+                        {
+                            this.map.hoveredChild = mapObject;
+                            return false;
+                        }
+                    }
+                }
+            }
             for (int i = this.map.selectedLayer.children.size - 1; i >= 0; i--)
             {
                 LayerChild layerChild = (LayerChild) this.map.selectedLayer.children.get(i);
@@ -308,73 +324,75 @@ public class MapInput implements InputProcessor
 
     private boolean handleMapSpriteCreation(float x, float y, int button)
     {
-        if(!Utils.isFileToolThisType(editor, Tools.BRUSH) || map.selectedLayer == null || !(map.selectedLayer instanceof SpriteLayer) || button != Input.Buttons.LEFT)
+        if(!Utils.isFileToolThisType(this.editor, Tools.BRUSH) || this.map.selectedLayer == null || !(this.map.selectedLayer instanceof SpriteLayer) || button != Input.Buttons.LEFT)
+            return false;
+        if(this.map.spriteMenu.selectedSpriteTools.size == 0)
             return false;
 
-        DrawMapSprite drawMapSprite = new DrawMapSprite(map, (SpriteLayer) map.selectedLayer, x, y);
-        map.executeCommand(drawMapSprite);
-        return false;
+        DrawMapSprite drawMapSprite = new DrawMapSprite(this.map, (SpriteLayer) this.map.selectedLayer, x, y);
+        this.map.executeCommand(drawMapSprite);
+        return true;
     }
 
     private boolean handleSelect(int button)
     {
-        if(!Utils.isFileToolThisType(editor, Tools.SELECT) || map.selectedLayer == null || button != Input.Buttons.LEFT)
+        if(!Utils.isFileToolThisType(this.editor, Tools.SELECT) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
             return false;
-        if(map.hoveredChild == null)
+        if(this.map.hoveredChild == null)
             return false;
 
-        SelectLayerChild selectLayerChild = new SelectLayerChild(map, map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
-        map.executeCommand(selectLayerChild);
-        return false;
+        SelectLayerChild selectLayerChild = new SelectLayerChild(this.map, this.map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+        this.map.executeCommand(selectLayerChild);
+        return true;
     }
 
     private boolean handleBoxSelectTouchDown(float x, float y, int button)
     {
-        if(!Utils.isFileToolThisType(editor, Tools.BOXSELECT) || map.selectedLayer == null || button != Input.Buttons.LEFT)
+        if(!Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
             return false;
         this.boxSelect.startDrag(x, y);
-        return false;
+        return true;
     }
     private boolean handleBoxSelectDrag(float x, float y)
     {
-        if(!Utils.isFileToolThisType(editor, Tools.BOXSELECT) || map.selectedLayer == null)
+        if(!Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) || this.map.selectedLayer == null)
             return false;
         this.boxSelect.continueDrag(x, y);
         return false;
     }
     private boolean handleBoxSelectTouchUp()
     {
-        if(!Utils.isFileToolThisType(editor, Tools.BOXSELECT) || map.selectedLayer == null || !this.boxSelect.isDragging)
+        if(!Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) || this.map.selectedLayer == null || !this.boxSelect.isDragging)
             return false;
 
-        if(map.selectedLayer instanceof SpriteLayer)
+        if(this.map.selectedLayer instanceof SpriteLayer)
         {
-            SelectLayerChildren selectLayerChildren = new SelectLayerChildren(map, dragOriginPos.x, dragOriginPos.y, currentPos.x, currentPos.y, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
-            map.executeCommand(selectLayerChildren);
+            SelectLayerChildren selectLayerChildren = new SelectLayerChildren(this.map, this.dragOriginPos.x, this.dragOriginPos.y, this.currentPos.x, this.currentPos.y, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+            this.map.executeCommand(selectLayerChildren);
         }
 //        else if(map.selectedLayer instanceof ObjectLayer || (map.selectedSprites.size == 1 && map.selectedSprites.first().tool.mapObjects.size > 1))
-        else if(map.selectedLayer instanceof ObjectLayer)
+        else if(this.map.selectedLayer instanceof ObjectLayer)
         {
-            ObjectLayer objectLayer = (ObjectLayer) map.selectedLayer;
+            ObjectLayer objectLayer = (ObjectLayer) this.map.selectedLayer;
 //            SelectObject selectObject = new SelectObject(map, map.selectedObjects);
             if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
             {
-                for (int k = 0; k < map.selectedObjects.size; k++)
-                    map.selectedObjects.get(k).unselect();
-                map.selectedObjects.clear();
+                for (int k = 0; k < this.map.selectedObjects.size; k++)
+                    this.map.selectedObjects.get(k).unselect();
+                this.map.selectedObjects.clear();
             }
             for (int i = 0; i < objectLayer.children.size; i++)
             {
                 MapObject mapObject = objectLayer.children.get(i);
 //                boolean polygon = mapObject.polygon != null && Intersector.overlapConvexPolygons(mapObject.polygon.getTransformedVertices(), map.input.boxSelect.getVertices(), null);
-                boolean polygon = mapObject instanceof MapPolygon && Intersector.overlapConvexPolygons(((MapPolygon) mapObject).polygon.getTransformedVertices(), map.input.boxSelect.getVertices(), null);
-                boolean point = Intersector.isPointInPolygon(map.input.boxSelect.getVertices(), 0, map.input.boxSelect.getVertices().length, mapObject.position.x, mapObject.position.y);
+                boolean polygon = mapObject instanceof MapPolygon && Intersector.overlapConvexPolygons(((MapPolygon) mapObject).polygon.getTransformedVertices(), this.map.input.boxSelect.getVertices(), null);
+                boolean point = Intersector.isPointInPolygon(this.map.input.boxSelect.getVertices(), 0, this.map.input.boxSelect.getVertices().length, mapObject.position.x, mapObject.position.y);
                 if (polygon || point)
                 {
-                    boolean selected = map.selectedObjects.contains(mapObject, true);
+                    boolean selected = this.map.selectedObjects.contains(mapObject, true);
                     if (!selected)
                     {
-                        map.selectedObjects.add(mapObject);
+                        this.map.selectedObjects.add(mapObject);
                         mapObject.select();
                     }
                 }
@@ -382,8 +400,8 @@ public class MapInput implements InputProcessor
 //            selectObject.addSelected();
 //            map.executeCommand(selectObject);
         }
-        map.propertyMenu.rebuild();
-        map.input.boxSelect.isDragging = false;
+        this.map.propertyMenu.rebuild();
+        this.map.input.boxSelect.isDragging = false;
         return false;
     }
 
@@ -400,78 +418,106 @@ public class MapInput implements InputProcessor
                 MapPolygon mapPolygon = (MapPolygon) mapObject;
                 if(mapPolygon.indexOfHoveredVertice != -1)
                 {
-                    SelectPolygonVertice selectPolygonVertice = new SelectPolygonVertice(map);
-                    map.executeCommand(selectPolygonVertice);
+                    SelectPolygonVertice selectPolygonVertice = new SelectPolygonVertice(this.map);
+                    this.map.executeCommand(selectPolygonVertice);
                     return true;
                 }
             }
         }
-        SelectPolygonVertice selectPolygonVertice = new SelectPolygonVertice(map);
-        map.executeCommand(selectPolygonVertice);
+        SelectPolygonVertice selectPolygonVertice = new SelectPolygonVertice(this.map);
+        this.map.executeCommand(selectPolygonVertice);
         return false;
     }
 
     private boolean handleMapPointCreation(float x, float y, int button)
     {
-        if(!Utils.isFileToolThisType(editor, Tools.DRAWPOINT) || map.selectedLayer == null || !(map.selectedLayer instanceof ObjectLayer) || button != Input.Buttons.LEFT)
+        if(!Utils.isFileToolThisType(this.editor, Tools.DRAWPOINT) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
+            return false;
+        if(this.map.selectedLayer instanceof SpriteLayer && this.map.selectedSprites.size != 1)
             return false;
 
-        DrawMapPoint drawMapPoint = new DrawMapPoint(map, (ObjectLayer) map.selectedLayer, x, y);
-        map.executeCommand(drawMapPoint);
-        return false;
+        DrawMapPoint drawMapPoint;
+        if(this.map.selectedLayer instanceof ObjectLayer)
+            drawMapPoint = new DrawMapPoint(this.map, (ObjectLayer) this.map.selectedLayer, x, y);
+        else
+            drawMapPoint = new DrawMapPoint(this.map, this.map.selectedSprites.first(), x, y);
+        this.map.executeCommand(drawMapPoint);
+        return true;
     }
 
     private boolean handleMapPolygonVerticeCreation(float x, float y, int button)
     {
-        if((!Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE)) || map.selectedLayer == null || !(map.selectedLayer instanceof ObjectLayer) || button != Input.Buttons.LEFT)
+        if((!Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE)) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
+            return false;
+        if(this.map.selectedLayer instanceof SpriteLayer && this.map.selectedSprites.size != 1)
             return false;
 
-        DrawMapPolygonVertice drawMapPolygonVertice = new DrawMapPolygonVertice(map, x, y, objectVerticePosition.x, objectVerticePosition.y, Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE));
-        map.executeCommand(drawMapPolygonVertice);
-        return false;
+        DrawMapPolygonVertice drawMapPolygonVertice = new DrawMapPolygonVertice(this.map, x, y, this.objectVerticePosition.x, this.objectVerticePosition.y, Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE));
+        this.map.executeCommand(drawMapPolygonVertice);
+        return true;
     }
 
     private boolean handleMapPolygonCreation(int button)
     {
-        if(!Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) || map.selectedLayer == null || !(map.selectedLayer instanceof ObjectLayer) || button != Input.Buttons.RIGHT)
+        if(!Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) || this.map.selectedLayer == null || button != Input.Buttons.RIGHT)
         {
-            if(button == Input.Buttons.RIGHT && map.input.mapPolygonVertices.size < 6)
+            if(button == Input.Buttons.RIGHT && this.map.input.mapPolygonVertices.size < 6)
                 clearMapPolygonVertices(button);
             return false;
         }
-        if(map.input.mapPolygonVertices.size < 6)
+        if(this.map.input.mapPolygonVertices.size < 6)
         {
             clearMapPolygonVertices(button);
-            return false;
+            return true;
         }
-            DrawMapPolygon drawMapPolygon = new DrawMapPolygon(map, (ObjectLayer) map.selectedLayer, map.input.mapPolygonVertices, objectVerticePosition.x, objectVerticePosition.y);
+        if(this.map.selectedLayer instanceof SpriteLayer && this.map.selectedSprites.size != 1)
+        {
+            clearMapPolygonVertices(button);
+            return true;
+        }
+
+        DrawMapPolygon drawMapPolygon;
+        if(this.map.selectedLayer instanceof ObjectLayer)
+            drawMapPolygon = new DrawMapPolygon(this.map, (ObjectLayer) this.map.selectedLayer, this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
+        else
+            drawMapPolygon = new DrawMapPolygon(this.map, this.map.selectedSprites.first(), this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
         clearMapPolygonVertices(button);
-        map.executeCommand(drawMapPolygon);
-        return false;
+        this.map.executeCommand(drawMapPolygon);
+        return true;
     }
 
     private boolean handleMapPolygonRectangleCreation(int button)
     {
-        if(!Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE) || map.selectedLayer == null || !(map.selectedLayer instanceof ObjectLayer) || button != Input.Buttons.LEFT)
+        if(!Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
         {
-            if(button == Input.Buttons.LEFT && map.input.mapPolygonVertices.size < 2)
+            if(button == Input.Buttons.LEFT && this.map.input.mapPolygonVertices.size < 2)
                 clearMapPolygonVertices(button);
             return false;
         }
-        if(map.input.mapPolygonVertices.size < 2)
+        if(this.map.input.mapPolygonVertices.size < 2)
         {
             clearMapPolygonVertices(button);
-            return false;
+            return true;
         }
-        DrawMapPolygon drawMapPolygon = new DrawMapPolygon(map, (ObjectLayer) map.selectedLayer, map.input.mapPolygonVertices, objectVerticePosition.x, objectVerticePosition.y);
+        if(this.map.selectedLayer instanceof SpriteLayer && this.map.selectedSprites.size != 1)
+        {
+            clearMapPolygonVertices(button);
+            return true;
+        }
+
+        DrawMapPolygon drawMapPolygon;
+        if(this.map.selectedLayer instanceof ObjectLayer)
+            drawMapPolygon = new DrawMapPolygon(this.map, (ObjectLayer) this.map.selectedLayer, this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
+        else
+            drawMapPolygon = new DrawMapPolygon(this.map, this.map.selectedSprites.first(), this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
         clearMapPolygonVertices(button);
-        map.executeCommand(drawMapPolygon);
+        this.map.executeCommand(drawMapPolygon);
         return true;
     }
 
     private boolean clearMapPolygonVertices(int button)
     {
-        if(Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) && button == Input.Buttons.RIGHT || Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE) && button == Input.Buttons.LEFT)
+        if(Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && button == Input.Buttons.RIGHT || Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE) && button == Input.Buttons.LEFT)
         {
             ClearMapPolygonVertices clearMapPolygonVertices = new ClearMapPolygonVertices(this.map, this.map.input.mapPolygonVertices);
             this.map.executeCommand(clearMapPolygonVertices);
@@ -481,7 +527,7 @@ public class MapInput implements InputProcessor
 
     private boolean handlePreviewSpritePositionUpdate(float x, float y)
     {
-        SpriteTool spriteTool = map.getSpriteToolFromSelectedTools();
+        SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
         if(spriteTool == null)
             return false;
         for(int i = 0; i < spriteTool.previewSprites.size; i ++)
@@ -504,7 +550,7 @@ public class MapInput implements InputProcessor
 
     private boolean handleCameraDrag()
     {
-        if(!Utils.isFileToolThisType(editor, Tools.GRAB))
+        if(!Utils.isFileToolThisType(this.editor, Tools.GRAB))
             return false;
         this.map.camera.position.x -= this.dragDifferencePos.x;
         this.map.camera.position.y -= this.dragDifferencePos.y;

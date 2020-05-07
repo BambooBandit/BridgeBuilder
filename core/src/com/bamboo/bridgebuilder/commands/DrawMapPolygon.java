@@ -3,38 +3,61 @@ package com.bamboo.bridgebuilder.commands;
 import com.badlogic.gdx.utils.FloatArray;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapPolygon;
+import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.map.ObjectLayer;
 
 public class DrawMapPolygon implements Command
 {
     private Map map;
-    private ObjectLayer layer;
+    private ObjectLayer selectedObjectLayer;
+    private MapSprite selectedMapSprite;
     private FloatArray vertices;
     private float objectX;
     private float objectY;
     private MapPolygon mapPolygon;
 
-    public DrawMapPolygon(Map map, ObjectLayer layer, FloatArray vertices, float objectX, float objectY)
+    public DrawMapPolygon(Map map, ObjectLayer selectedObjectLayer, FloatArray vertices, float objectX, float objectY)
     {
         this.map = map;
-        this.layer = layer;
+        this.selectedObjectLayer = selectedObjectLayer;
         this.vertices = new FloatArray(vertices);
         this.objectX = objectX;
         this.objectY = objectY;
     }
 
+    public DrawMapPolygon(Map map, MapSprite mapSprite, FloatArray vertices, float objectX, float objectY)
+    {
+        this.map = map;
+        this.selectedMapSprite = mapSprite;
+        this.vertices = new FloatArray(vertices);
+        this.objectX = objectX - mapSprite.position.x;
+        this.objectY = objectY - mapSprite.position.y;
+    }
+
     @Override
     public void execute()
     {
-        if(this.mapPolygon == null)
-            this.mapPolygon = new MapPolygon(this.map, this.layer, vertices.toArray(), this.objectX, this.objectY);
-        this.layer.addMapObject(mapPolygon);
+        if(this.selectedObjectLayer != null)
+        {
+            if (this.mapPolygon == null)
+                this.mapPolygon = new MapPolygon(this.map, this.selectedObjectLayer, vertices.toArray(), this.objectX, this.objectY);
+            this.selectedObjectLayer.addMapObject(mapPolygon);
+        }
+        else
+        {
+            if (this.mapPolygon == null)
+                this.mapPolygon = new MapPolygon(this.map, this.selectedMapSprite, vertices.toArray(), this.objectX, this.objectY);
+            this.selectedMapSprite.addAttachedMapObject(this.mapPolygon);
+        }
     }
 
     @Override
     public void undo()
     {
-        this.layer.children.removeValue(mapPolygon, true);
+        if(this.selectedObjectLayer != null)
+            this.selectedObjectLayer.children.removeValue(mapPolygon, true);
+        else
+            this.selectedMapSprite.removeAttachedMapObject(this.mapPolygon);
         this.map.input.objectVerticePosition.set(this.objectX, this.objectY);
     }
 }

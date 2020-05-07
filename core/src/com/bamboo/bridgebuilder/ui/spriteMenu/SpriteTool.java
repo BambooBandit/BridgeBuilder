@@ -11,12 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.BBColors;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 /** The sprite buttons in the SpriteMenu. Holds data that belongs with the sprite, such as locked properties.*/
 public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
 {
-
     public Array<PropertyField> lockedProperties; // properties such as probability. They belong to all MapSprites and cannot be removed
     public Array<PropertyField> properties;
 
@@ -27,6 +27,8 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
 
     public Array<Sprite> previewSprites;
     public Array<TextureAtlas.AtlasSprite> topSprites;
+
+    public Array<MapObject> attachedMapObjects;
 
     public SpriteTool(SpriteMenuTools tool, SheetTools sheetTool, Image image, TextureRegion textureRegion, String name, int id, int x, int y, SpriteMenuToolPane spriteMenuToolPane, Skin skin)
     {
@@ -153,5 +155,24 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
                 textureRegion = EditorAssets.getTextureRegion(sheetTool.name, (topSpriteNoDigits + number));
             }
         }
+    }
+
+    public void addAttachedMapObject(MapObject mapObject)
+    {
+        if(this.attachedMapObjects == null)
+            this.attachedMapObjects = new Array<>();
+        this.attachedMapObjects.add(mapObject);
+    }
+
+    public void removeAttachedMapObject(MapObject mapObject)
+    {
+        if(this.attachedMapObjects == null)
+            return;
+        this.attachedMapObjects.removeValue(mapObject, true);
+    }
+
+    public boolean hasAttachedMapObjects()
+    {
+        return this.attachedMapObjects != null && this.attachedMapObjects.size > 0;
     }
 }

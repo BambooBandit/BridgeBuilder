@@ -165,6 +165,7 @@ public class Map implements Screen
         //shaperenderer begin
         drawLayerOutline();
         drawGrid();
+        drawAttachedObjects();
         drawObjectLayers();
         drawHoveredOutline();
         drawSelectedOutlines();
@@ -191,16 +192,37 @@ public class Map implements Screen
         this.stage.draw();
     }
 
+    private void drawAttachedObjects()
+    {
+        for(int i = 0; i < this.layers.size; i ++)
+        {
+            Layer layer = this.layers.get(i);
+            if(layer instanceof SpriteLayer)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                for(int k = 0; k < spriteLayer.children.size; k ++)
+                {
+                    MapSprite mapSprite = spriteLayer.children.get(k);
+                    SpriteTool tool = mapSprite.tool;
+                    if(tool.hasAttachedMapObjects())
+                    {
+                        for(int s = 0; s < tool.attachedMapObjects.size; s ++)
+                            tool.attachedMapObjects.get(s).draw(mapSprite.position.x, mapSprite.position.y);
+                    }
+                }
+            }
+        }
+    }
+
     private void drawSelectedOutlines()
     {
         if(!Utils.isFileToolThisType(editor, Tools.SELECT) && !Utils.isFileToolThisType(editor, Tools.BOXSELECT) && !Utils.isFileToolThisType(editor, Tools.OBJECTVERTICESELECT) && !Utils.isFileToolThisType(editor, Tools.DRAWPOINT) && !Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
             return;
         if(Utils.isFileToolThisType(editor, Tools.DRAWPOINT) || Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) || Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
         {
-            if(!(this.selectedLayer instanceof SpriteLayer) || this.selectedSprites.size != 1)
+            if(this.selectedLayer instanceof SpriteLayer && this.selectedSprites.size != 1)
                 return;
         }
-
 
         for(int i = 0; i < this.selectedSprites.size; i ++)
         {
