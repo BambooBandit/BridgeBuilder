@@ -143,4 +143,17 @@ public class MapPoint extends MapObject
     {
         return Intersector.isPointInPolygon(vertices, 0, vertices.length, position.x, position.y);
     }
+
+    @Override
+    public MapObject copy()
+    {
+        MapPoint mapPoint;
+        if(this.attachedSprite != null)
+            mapPoint = new MapPoint(map, this.attachedSprite, position.x, position.y);
+        else
+            mapPoint = new MapPoint(map, this.layer, position.x, position.y);
+        mapPoint.id = this.id;
+        mapPoint.attachedMapObjectManager = this.attachedMapObjectManager;
+        return mapPoint;
+    }
 }

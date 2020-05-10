@@ -133,10 +133,6 @@ public class BridgeBuilder extends Game
 				}
 				else if(keycode == Input.Keys.B)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.brush);
-				else if(keycode == Input.Keys.E)
-					fileMenu.toolPane.selectTool(fileMenu.toolPane.eraser);
-				else if(keycode == Input.Keys.G)
-					fileMenu.toolPane.selectTool(fileMenu.toolPane.fill);
 				else if(keycode == Input.Keys.V)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.select);
 				else if(keycode == Input.Keys.H)
@@ -158,10 +154,6 @@ public class BridgeBuilder extends Game
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.drawPoint);
 				else if(keycode == Input.Keys.I)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.objectVerticeSelect);
-				else if(keycode == Input.Keys.S)
-					fileMenu.toolPane.selectTool(fileMenu.toolPane.stamp);
-				else if(keycode == Input.Keys.D)
-					fileMenu.toolPane.selectTool(fileMenu.toolPane.bind);
 				else if(keycode == Input.Keys.K)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.blocked);
 				else if(keycode == Input.Keys.L)

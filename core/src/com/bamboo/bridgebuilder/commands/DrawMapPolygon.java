@@ -30,8 +30,8 @@ public class DrawMapPolygon implements Command
         this.map = map;
         this.selectedMapSprite = mapSprite;
         this.vertices = new FloatArray(vertices);
-        this.objectX = objectX - mapSprite.position.x;
-        this.objectY = objectY - mapSprite.position.y;
+        this.objectX = objectX;
+        this.objectY = objectY;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class DrawMapPolygon implements Command
         {
             if (this.mapPolygon == null)
                 this.mapPolygon = new MapPolygon(this.map, this.selectedMapSprite, vertices.toArray(), this.objectX, this.objectY);
-            this.selectedMapSprite.addAttachedMapObject(this.mapPolygon);
+            this.selectedMapSprite.createAttachedMapObject(this.map, this.mapPolygon);
         }
     }
 

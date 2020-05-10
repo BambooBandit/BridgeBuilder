@@ -252,9 +252,9 @@ public class MapInput implements InputProcessor
                 MapSprite mapSprite = map.selectedSprites.get(i);
                 if(mapSprite.tool.hasAttachedMapObjects())
                 {
-                    for(int k = 0; k < mapSprite.tool.attachedMapObjects.size; k ++)
+                    for(int k = 0; k < mapSprite.attachedMapObjects.size; k ++)
                     {
-                        MapObject mapObject = mapSprite.tool.attachedMapObjects.get(k);
+                        MapObject mapObject = mapSprite.attachedMapObjects.get(k);
                         if(mapObject.isHoveredOver(x, y))
                         {
                             this.map.hoveredChild = mapObject;

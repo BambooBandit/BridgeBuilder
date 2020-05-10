@@ -36,7 +36,9 @@ public class MapSprite extends LayerChild
     public int layerOverrideIndex; // Only used to keep the reloading simple. When the MapSprite is made, store the index of the override layer here and use it later to set the bottom variable once all layers are created. 0 means no override. Index starts at 1.
     public Layer layerOverride; // If this is not null, before drawing this sprite, draw that whole layer. Used to organize different layer heights
 
-    float[] verts; // Used to pass to the sprite batch for skewable drawing
+    private float[] verts; // Used to pass to the sprite batch for skewable drawing
+
+    public Array<MapObject> attachedMapObjects;
 
     public MapSprite(Map map, Layer layer, SpriteTool tool, float x, float y)
     {
@@ -70,6 +72,15 @@ public class MapSprite extends LayerChild
         this.lockedProperties.add(new LabelFieldPropertyValuePropertyField("Scale", "1", map.skin, map.propertyMenu, null, false));
         this.lockedProperties.add(new LabelFieldPropertyValuePropertyField("Z", "0", map.skin, map.propertyMenu, null, false));
         this.lockedProperties.add(new ColorPropertyField(map.skin, map.propertyMenu, null, false, 1, 1, 1, 1));
+
+        if(tool.hasAttachedMapObjects())
+        {
+            for(int i = 0; i < tool.attachedMapObjectManagers.size; i ++)
+            {
+                AttachedMapObjectManager attachedMapObjectManager = tool.attachedMapObjectManagers.get(i);
+                attachedMapObjectManager.addCopiesOfAllMapObjectsToThisMapSprite(this);
+            }
+        }
     }
 
     @Override
@@ -389,10 +400,10 @@ public class MapSprite extends LayerChild
     {
         this.map.selectedSprites.removeValue(this, true);
         this.selected = false;
-        if(this.tool.attachedMapObjects == null)
+        if(this.tool.attachedMapObjectManagers == null)
             return;
-        for(int i = 0; i < this.tool.attachedMapObjects.size; i ++)
-            this.tool.attachedMapObjects.get(i).unselect();
+        for(int i = 0; i < this.attachedMapObjects.size; i ++)
+            this.attachedMapObjects.get(i).unselect();
     }
 
     public void updatePerspectiveScale()
@@ -426,7 +437,14 @@ public class MapSprite extends LayerChild
 
     public void addAttachedMapObject(MapObject mapObject)
     {
-        this.tool.addAttachedMapObject(mapObject);
+        if(this.attachedMapObjects == null)
+            this.attachedMapObjects = new Array<>();
+        this.attachedMapObjects.add(mapObject);
+    }
+
+    public void createAttachedMapObject(Map map, MapObject mapObject)
+    {
+        this.tool.createAttachedMapObject(map, mapObject, this);
     }
 
     public void removeAttachedMapObject(MapObject mapObject)

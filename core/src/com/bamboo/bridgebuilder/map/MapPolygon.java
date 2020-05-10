@@ -10,7 +10,6 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public class MapPolygon extends MapObject
 {
-    public float[] vertices;
     float centroidX, centroidY;
     public EditorPolygon polygon;
 
@@ -20,7 +19,6 @@ public class MapPolygon extends MapObject
     public MapPolygon(Map map, Layer layer, float[] vertices, float x, float y)
     {
         super(map, layer, x, y);
-        this.vertices = vertices;
         this.polygon = new EditorPolygon(vertices);
         this.polygon.setPosition(x, y);
         computeCentroid();
@@ -29,7 +27,6 @@ public class MapPolygon extends MapObject
     public MapPolygon(Map map, MapSprite mapSprite, float[] vertices, float x, float y)
     {
         super(map, mapSprite, x, y);
-        this.vertices = vertices;
         this.polygon = new EditorPolygon(vertices);
         this.polygon.setPosition(x, y);
         computeCentroid();
@@ -77,6 +74,19 @@ public class MapPolygon extends MapObject
             catch (NumberFormatException e){return;}
         }
         setPosition(position.x - xOffset, position.y - yOffset);
+    }
+
+    @Override
+    public MapObject copy()
+    {
+        MapPolygon mapPolygon;
+        if(this.attachedSprite != null)
+            mapPolygon = new MapPolygon(map, this.attachedSprite, this.polygon.getVertices(), this.polygon.getX(), this.polygon.getY());
+        else
+            mapPolygon = new MapPolygon(map, this.layer, this.polygon.getVertices(), this.polygon.getX(), this.polygon.getY());
+        mapPolygon.id = this.id;
+        mapPolygon.attachedMapObjectManager = this.attachedMapObjectManager;
+        return mapPolygon;
     }
 
     @Override
@@ -188,16 +198,40 @@ public class MapPolygon extends MapObject
         setPosition(polygon.getX(), polygon.getY());
     }
 
+    public void moveVertice(int index, float x, float y)
+    {
+        float[] vertices = this.polygon.getVertices();
+        vertices[index] = x - this.polygon.getX();
+        vertices[index + 1] = y - this.polygon.getY();
+        setPosition(polygon.getX(), polygon.getY());
+    }
+
     public float getVerticeX()
     {
+        if(indexOfSelectedVertice == -1)
+            return -1;
         float[] vertices = this.polygon.getVertices();
         return vertices[indexOfSelectedVertice] + this.polygon.getX();
     }
 
     public float getVerticeY()
     {
+        if(indexOfSelectedVertice == -1)
+            return -1;
         float[] vertices = this.polygon.getVertices();
         return vertices[indexOfSelectedVertice + 1] + this.polygon.getY();
+    }
+
+    public float getVerticeX(int index)
+    {
+        float[] vertices = this.polygon.getVertices();
+        return vertices[index] + this.polygon.getX();
+    }
+
+    public float getVerticeY(int index)
+    {
+        float[] vertices = this.polygon.getVertices();
+        return vertices[index + 1] + this.polygon.getY();
     }
 
     public void drawSelectedVertices()

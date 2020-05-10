@@ -11,7 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.BBColors;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.map.AttachedMapObjectManager;
+import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapObject;
+import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 /** The sprite buttons in the SpriteMenu. Holds data that belongs with the sprite, such as locked properties.*/
@@ -28,7 +31,7 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
     public Array<Sprite> previewSprites;
     public Array<TextureAtlas.AtlasSprite> topSprites;
 
-    public Array<MapObject> attachedMapObjects;
+    public Array<AttachedMapObjectManager> attachedMapObjectManagers;
 
     public SpriteTool(SpriteMenuTools tool, SheetTools sheetTool, Image image, TextureRegion textureRegion, String name, int id, int x, int y, SpriteMenuToolPane spriteMenuToolPane, Skin skin)
     {
@@ -157,22 +160,30 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
         }
     }
 
-    public void addAttachedMapObject(MapObject mapObject)
+    public void createAttachedMapObject(Map map, MapObject mapObject, MapSprite mapSprite)
     {
-        if(this.attachedMapObjects == null)
-            this.attachedMapObjects = new Array<>();
-        this.attachedMapObjects.add(mapObject);
+        if(this.attachedMapObjectManagers == null)
+            this.attachedMapObjectManagers = new Array<>();
+        this.attachedMapObjectManagers.add(new AttachedMapObjectManager(map, this, mapObject, mapSprite));
     }
 
     public void removeAttachedMapObject(MapObject mapObject)
     {
-        if(this.attachedMapObjects == null)
+        if(this.attachedMapObjectManagers == null)
             return;
-        this.attachedMapObjects.removeValue(mapObject, true);
+        for(int i = 0; i < this.attachedMapObjectManagers.size; i ++)
+            this.attachedMapObjectManagers.get(i).removeAttachedMapObject(mapObject);
     }
 
     public boolean hasAttachedMapObjects()
     {
-        return this.attachedMapObjects != null && this.attachedMapObjects.size > 0;
+        if(this.attachedMapObjectManagers == null)
+            return false;
+        for(int i = 0; i < this.attachedMapObjectManagers.size; i ++)
+        {
+            if(this.attachedMapObjectManagers.get(i).attachedMapObjects.size > 0)
+                return true;
+        }
+        return false;
     }
 }

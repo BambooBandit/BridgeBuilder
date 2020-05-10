@@ -23,6 +23,8 @@ public class MoveMapObjects implements Command
 
     public void update(float currentDragX, float currentDragY)
     {
+        float offsetDifferenceX = currentDragX - this.resultingOffsetX;
+        float offsetDifferenceY = currentDragY - this.resultingOffsetY;
         this.resultingOffsetX = currentDragX;
         this.resultingOffsetY = currentDragY;
 
@@ -32,7 +34,10 @@ public class MoveMapObjects implements Command
             ObjectMap.Entry<MapObject, Vector2> entry = iterator.next();
             MapObject mapObject = entry.key;
             Vector2 originalPosition = entry.value;
-            mapObject.setPosition(originalPosition.x + this.resultingOffsetX, originalPosition.y + this.resultingOffsetY);
+            if(mapObject.attachedSprite == null)
+                mapObject.setPosition(originalPosition.x + this.resultingOffsetX, originalPosition.y + this.resultingOffsetY);
+            else
+                mapObject.attachedMapObjectManager.moveBy(offsetDifferenceX, offsetDifferenceY);
         }
     }
 
@@ -45,7 +50,10 @@ public class MoveMapObjects implements Command
             ObjectMap.Entry<MapObject, Vector2> entry = iterator.next();
             MapObject mapObject = entry.key;
             Vector2 originalPosition = entry.value;
-            mapObject.setPosition(originalPosition.x + this.resultingOffsetX, originalPosition.y + this.resultingOffsetY);
+            if(mapObject.attachedSprite == null)
+                mapObject.setPosition(originalPosition.x + this.resultingOffsetX, originalPosition.y + this.resultingOffsetY);
+            else
+                mapObject.attachedMapObjectManager.moveBy(this.resultingOffsetX, this.resultingOffsetY);
         }
     }
 
@@ -58,7 +66,10 @@ public class MoveMapObjects implements Command
             ObjectMap.Entry<MapObject, Vector2> entry = iterator.next();
             MapObject mapObject = entry.key;
             Vector2 originalPosition = entry.value;
-            mapObject.setPosition(originalPosition.x, originalPosition.y);
+            if(mapObject.attachedSprite == null)
+                mapObject.setPosition(originalPosition.x, originalPosition.y);
+            else
+                mapObject.attachedMapObjectManager.moveBy(-this.resultingOffsetX, -this.resultingOffsetY);
         }
     }
 }

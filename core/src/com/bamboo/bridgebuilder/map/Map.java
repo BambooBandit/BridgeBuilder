@@ -203,11 +203,10 @@ public class Map implements Screen
                 for(int k = 0; k < spriteLayer.children.size; k ++)
                 {
                     MapSprite mapSprite = spriteLayer.children.get(k);
-                    SpriteTool tool = mapSprite.tool;
-                    if(tool.hasAttachedMapObjects())
+                    if(mapSprite.tool.hasAttachedMapObjects())
                     {
-                        for(int s = 0; s < tool.attachedMapObjects.size; s ++)
-                            tool.attachedMapObjects.get(s).draw(mapSprite.position.x, mapSprite.position.y);
+                        for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
+                            mapSprite.attachedMapObjects.get(s).draw();
                     }
                 }
             }

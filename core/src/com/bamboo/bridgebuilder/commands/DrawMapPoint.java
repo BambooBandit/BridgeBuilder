@@ -35,15 +35,15 @@ public class DrawMapPoint implements Command
     {
         if(this.selectedObjectLayer != null)
         {
-            if (mapPoint == null)
-                this.mapPoint = new MapPoint(map, selectedObjectLayer, x, y);
-            selectedObjectLayer.addMapObject(this.mapPoint);
+            if (this.mapPoint == null)
+                this.mapPoint = new MapPoint(this.map, this.selectedObjectLayer, this.x, this.y);
+            this.selectedObjectLayer.addMapObject(this.mapPoint);
         }
         else
         {
-            if (mapPoint == null)
-                this.mapPoint = new MapPoint(map, selectedMapSprite, x, y);
-            this.selectedMapSprite.addAttachedMapObject(this.mapPoint);
+            if (this.mapPoint == null)
+                this.mapPoint = new MapPoint(this.map, this.selectedMapSprite, this.x, this.y);
+            this.selectedMapSprite.createAttachedMapObject(this.map, this.mapPoint);
         }
     }
 

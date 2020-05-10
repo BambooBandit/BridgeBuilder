@@ -3,6 +3,7 @@ package com.bamboo.bridgebuilder.commands;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.map.MapSprite;
 
 public class MoveMapSprites implements Command
@@ -23,6 +24,8 @@ public class MoveMapSprites implements Command
 
     public void update(float currentDragX, float currentDragY)
     {
+        float offsetDifferenceX = currentDragX - this.resultingOffsetX;
+        float offsetDifferenceY = currentDragY - this.resultingOffsetY;
         this.resultingOffsetX = currentDragX;
         this.resultingOffsetY = currentDragY;
 
@@ -33,6 +36,14 @@ public class MoveMapSprites implements Command
             MapSprite mapSprite = entry.key;
             Vector2 originalPosition = entry.value;
             mapSprite.setPosition(originalPosition.x + this.resultingOffsetX, originalPosition.y + this.resultingOffsetY);
+            if(mapSprite.tool.hasAttachedMapObjects())
+            {
+                for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
+                {
+                    MapObject mapObject = mapSprite.attachedMapObjects.get(i);
+                    mapObject.setPosition(mapObject.position.x + offsetDifferenceX, mapObject.position.y + offsetDifferenceY);
+                }
+            }
         }
     }
 
@@ -46,6 +57,14 @@ public class MoveMapSprites implements Command
             MapSprite mapSprite = entry.key;
             Vector2 originalPosition = entry.value;
             mapSprite.setPosition(originalPosition.x + this.resultingOffsetX, originalPosition.y + this.resultingOffsetY);
+            if(mapSprite.tool.hasAttachedMapObjects())
+            {
+                for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
+                {
+                    MapObject mapObject = mapSprite.attachedMapObjects.get(i);
+                    mapObject.setPosition(mapObject.position.x + this.resultingOffsetX, mapObject.position.y + this.resultingOffsetY);
+                }
+            }
         }
     }
 
@@ -59,6 +78,14 @@ public class MoveMapSprites implements Command
             MapSprite mapSprite = entry.key;
             Vector2 originalPosition = entry.value;
             mapSprite.setPosition(originalPosition.x, originalPosition.y);
+            if(mapSprite.tool.hasAttachedMapObjects())
+            {
+                for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
+                {
+                    MapObject mapObject = mapSprite.attachedMapObjects.get(i);
+                    mapObject.setPosition(mapObject.position.x - this.resultingOffsetX, mapObject.position.y - this.resultingOffsetY);
+                }
+            }
         }
     }
 }

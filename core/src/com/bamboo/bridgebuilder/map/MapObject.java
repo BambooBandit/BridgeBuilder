@@ -11,6 +11,9 @@ public abstract class MapObject extends LayerChild
 
     public MapSprite attachedSprite = null;
 
+    public AttachedMapObjectManager attachedMapObjectManager;
+    public int id = 0; // Used to know if one attached map object is the same one on another map sprite of the same type
+
     public MapObject(Map map, Layer layer, float x, float y)
     {
         super(map, layer, x, y);
@@ -65,4 +68,6 @@ public abstract class MapObject extends LayerChild
     }
 
     public abstract void draw(float xOffset, float yOffset);
+
+    public abstract MapObject copy();
 }
