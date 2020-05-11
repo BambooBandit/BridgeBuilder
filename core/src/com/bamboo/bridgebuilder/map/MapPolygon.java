@@ -99,6 +99,14 @@ public class MapPolygon extends MapObject
     }
 
     @Override
+    public void setScale(float scale)
+    {
+        if(this.attachedSprite == null)
+            return;
+        this.polygon.setScale(scale, scale);
+    }
+
+    @Override
     public float getRotation()
     {
         return this.polygon.getRotation();

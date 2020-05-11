@@ -3,6 +3,7 @@ package com.bamboo.bridgebuilder.commands;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.map.MapSprite;
 
 public class ScaleMapSprites implements Command
@@ -34,6 +35,14 @@ public class ScaleMapSprites implements Command
             float originalScale = entry.value;
             this.resultingScale = originalScale + scale;
             mapSprite.setScale(this.resultingScale);
+            if(mapSprite.tool.hasAttachedMapObjects())
+            {
+                for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
+                {
+                    MapObject mapObject = mapSprite.attachedMapObjects.get(i);
+                    mapObject.setScale(this.resultingScale);
+                }
+            }
         }
     }
 
@@ -47,6 +56,14 @@ public class ScaleMapSprites implements Command
             ObjectMap.Entry<MapSprite, Float> entry = iterator.next();
             MapSprite mapSprite = entry.key;
             mapSprite.setScale(this.resultingScale);
+            if(mapSprite.tool.hasAttachedMapObjects())
+            {
+                for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
+                {
+                    MapObject mapObject = mapSprite.attachedMapObjects.get(i);
+                    mapObject.setScale(this.resultingScale);
+                }
+            }
         }
     }
 
@@ -60,6 +77,14 @@ public class ScaleMapSprites implements Command
             MapSprite mapSprite = entry.key;
             Float originalScale = entry.value;
             mapSprite.setScale(originalScale);
+            if(mapSprite.tool.hasAttachedMapObjects())
+            {
+                for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
+                {
+                    MapObject mapObject = mapSprite.attachedMapObjects.get(i);
+                    mapObject.setScale(originalScale);
+                }
+            }
         }
     }
 

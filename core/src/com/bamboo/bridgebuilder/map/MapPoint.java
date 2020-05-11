@@ -164,6 +164,12 @@ public class MapPoint extends MapObject
     }
 
     @Override
+    public void setScale(float scale)
+    {
+
+    }
+
+    @Override
     public float getRotation()
     {
         return 0;

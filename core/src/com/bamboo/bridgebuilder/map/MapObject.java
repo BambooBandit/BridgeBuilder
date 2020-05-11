@@ -72,5 +72,6 @@ public abstract class MapObject extends LayerChild
     public abstract MapObject copy();
 
     public abstract void setRotation(float degrees);
+    public abstract void setScale(float scale);
     public abstract float getRotation();
 }

@@ -338,7 +338,7 @@ public class MapSprite extends LayerChild
     {
         float rotateAmount = degree - this.rotation;
         this.rotation = degree;
-        Utils.spritePositionCopy.set(position);
+        Utils.spritePositionCopy.set(this.position);
         Vector2 endPos = Utils.spritePositionCopy.sub(Utils.centerOrigin).rotate(rotateAmount).add(Utils.centerOrigin); // TODO don't assume this was set in case rotate is used somewhere else
         setPosition(endPos.x, endPos.y);
         this.sprite.setRotation(degree);
