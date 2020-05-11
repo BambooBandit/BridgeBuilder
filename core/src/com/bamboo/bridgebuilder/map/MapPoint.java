@@ -43,6 +43,18 @@ public class MapPoint extends MapObject
     }
 
     @Override
+    public float getX()
+    {
+        return this.point.getX();
+    }
+
+    @Override
+    public float getY()
+    {
+        return this.point.getY();
+    }
+
+    @Override
     public void draw()
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
@@ -66,7 +78,7 @@ public class MapPoint extends MapObject
     @Override
     public void draw(float xOffset, float yOffset)
     {
-        setPosition(position.x + xOffset, position.y + yOffset);
+        setPosition(getX() + xOffset, getY() + yOffset);
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.CYAN);
         float x = this.point.getTransformedVertices()[0];
@@ -82,7 +94,7 @@ public class MapPoint extends MapObject
         pointShape[8] = x + .1333f;
         pointShape[9] = y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
-        setPosition(position.x - xOffset, position.y - yOffset);
+        setPosition(getX() - xOffset, getY() - yOffset);
     }
 
     @Override
@@ -204,8 +216,8 @@ public class MapPoint extends MapObject
     {
         if(this.attachedSprite == null)
             return;
-        float xOffset = this.point.getX() - this.attachedSprite.position.x;
-        float yOffset = this.point.getY() - this.attachedSprite.position.y;
+        float xOffset = this.point.getX() - this.attachedSprite.getX();
+        float yOffset = this.point.getY() - this.attachedSprite.getY();
         float width = this.attachedSprite.sprite.getWidth();
         float height = this.attachedSprite.sprite.getHeight();
         this.point.setOrigin((-xOffset) + width / 2, (-yOffset) + height / 2);

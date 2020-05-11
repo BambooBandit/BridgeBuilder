@@ -17,7 +17,7 @@ public class MoveMapObjects implements Command
         for(int i = 0; i < selectedMapObjects.size; i ++)
         {
             MapObject mapObject = selectedMapObjects.get(i);
-            this.originalMapObjectPosition.put(mapObject, new Vector2(mapObject.position));
+            this.originalMapObjectPosition.put(mapObject, new Vector2(mapObject.getX(), mapObject.getY()));
         }
     }
 

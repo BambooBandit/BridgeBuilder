@@ -40,6 +40,7 @@ public class MapSprite extends LayerChild
 
     public Array<MapObject> attachedMapObjects;
 
+
     public MapSprite(Map map, Layer layer, SpriteTool tool, float x, float y)
     {
         super(map, layer, x, y);
@@ -49,7 +50,6 @@ public class MapSprite extends LayerChild
         this.sprite.setOriginCenter();
         x -= this.sprite.getWidth() / 2;
         y -= this.sprite.getHeight() / 2;
-        this.position.set(x, y);
         this.sprite.setPosition(x, y);
         this.width = this.sprite.getWidth();
         this.height = this.sprite.getHeight();
@@ -86,7 +86,6 @@ public class MapSprite extends LayerChild
     @Override
     public void setPosition(float x, float y)
     {
-        super.setPosition(x, y);
         this.polygon.setPosition(x, y);
         this.sprite.setPosition(x, y);
 
@@ -95,6 +94,18 @@ public class MapSprite extends LayerChild
         this.rotationBox.setPosition(x, y);
         this.moveBox.setPosition(x, y);
         this.scaleBox.setPosition(x, y);
+    }
+
+    @Override
+    public float getX()
+    {
+        return this.sprite.getX();
+    }
+
+    @Override
+    public float getY()
+    {
+        return this.sprite.getY();
     }
 
     @Override
@@ -267,7 +278,7 @@ public class MapSprite extends LayerChild
             if(this.tool.topSprites != null)
             {
                 for(int i = 0; i < this.tool.topSprites.size; i ++)
-                    map.editor.batch.draw(this.tool.topSprites.get(i), position.x, position.y);
+                    map.editor.batch.draw(this.tool.topSprites.get(i), getX(), getY());
             }
         }
     }
@@ -338,7 +349,7 @@ public class MapSprite extends LayerChild
     {
         float rotateAmount = degree - this.rotation;
         this.rotation = degree;
-        Utils.spritePositionCopy.set(this.position);
+        Utils.spritePositionCopy.set(getX(), getY());
         Vector2 endPos = Utils.spritePositionCopy.sub(Utils.centerOrigin).rotate(rotateAmount).add(Utils.centerOrigin); // TODO don't assume this was set in case rotate is used somewhere else
         setPosition(endPos.x, endPos.y);
         this.sprite.setRotation(degree);

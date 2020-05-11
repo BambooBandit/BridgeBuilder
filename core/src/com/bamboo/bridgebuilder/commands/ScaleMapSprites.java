@@ -94,8 +94,8 @@ public class ScaleMapSprites implements Command
         for(int i = 0; i < selectedMapSprites.size; i ++)
         {
             MapSprite mapSprite = selectedMapSprites.get(i);
-            xSum += mapSprite.position.x;
-            ySum += mapSprite.position.y;
+            xSum += mapSprite.getX();
+            ySum += mapSprite.getY();
         }
         float xAverage = xSum / selectedMapSprites.size;
         float yAverage = ySum / selectedMapSprites.size;

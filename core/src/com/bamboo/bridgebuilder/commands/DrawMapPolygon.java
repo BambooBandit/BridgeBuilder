@@ -1,6 +1,8 @@
 package com.bamboo.bridgebuilder.commands;
 
 import com.badlogic.gdx.utils.FloatArray;
+import com.bamboo.bridgebuilder.EditorPolygon;
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapPolygon;
 import com.bamboo.bridgebuilder.map.MapSprite;
@@ -46,7 +48,20 @@ public class DrawMapPolygon implements Command
         else
         {
             if (this.mapPolygon == null)
-                this.mapPolygon = new MapPolygon(this.map, this.selectedMapSprite, vertices.toArray(), this.objectX, this.objectY);
+            {
+                EditorPolygon editorPolygon = new EditorPolygon(vertices.toArray());
+
+                float xOffset = this.objectX - this.selectedMapSprite.getX();
+                float yOffset = this.objectY - this.selectedMapSprite.getY();
+                float width = this.selectedMapSprite.sprite.getWidth();
+                float height = this.selectedMapSprite.sprite.getHeight();
+                editorPolygon.setOrigin((-xOffset) + width / 2, (-yOffset) + height / 2);
+                editorPolygon.setRotation(Utils.degreeAngleFix(-this.selectedMapSprite.rotation));
+                editorPolygon.setScale(1 / this.selectedMapSprite.scale, 1 / this.selectedMapSprite.scale);
+                this.mapPolygon = new MapPolygon(this.map, this.selectedMapSprite, editorPolygon.getTransformedVertices(), this.objectX, this.objectY);
+            }
+            this.mapPolygon.setRotation(this.selectedMapSprite.rotation);
+            this.mapPolygon.setScale(this.selectedMapSprite.scale);
             this.selectedMapSprite.createAttachedMapObject(this.map, this.mapPolygon);
         }
     }

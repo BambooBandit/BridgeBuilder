@@ -50,7 +50,7 @@ public abstract class Layer<T extends LayerChild>
         this.y = y;
         this.moveBox.setPosition(x + (this.width), y + (this.height));
         for(int i = 0; i < children.size; i ++)
-            children.get(i).setPosition(children.get(i).position.x + xOffset, children.get(i).position.y + yOffset);
+            children.get(i).setPosition(children.get(i).getX() + xOffset, children.get(i).getY() + yOffset);
     }
 
     public void drawMoveBox()
@@ -73,7 +73,7 @@ public abstract class Layer<T extends LayerChild>
             {
                 float widthIncrease = (width - oldWidth);
                 for(int i = 0; i < children.size; i ++)
-                    children.get(i).setPosition(children.get(i).position.x + widthIncrease, children.get(i).position.y);
+                    children.get(i).setPosition(children.get(i).getX() + widthIncrease, children.get(i).getY());
             }
         }
         else // shrink horizontal
@@ -82,7 +82,7 @@ public abstract class Layer<T extends LayerChild>
             {
                 float widthShrink = (oldWidth - width);
                 for(int i = 0; i < children.size; i ++)
-                    children.get(i).setPosition(children.get(i).position.x - widthShrink, children.get(i).position.y);
+                    children.get(i).setPosition(children.get(i).getX() - widthShrink, children.get(i).getY());
             }
         }
 
@@ -92,7 +92,7 @@ public abstract class Layer<T extends LayerChild>
             {
                 float heightIncrease = (height - oldHeight);
                 for(int i = 0; i < children.size; i ++)
-                    children.get(i).setPosition(children.get(i).position.x, children.get(i).position.y + heightIncrease);
+                    children.get(i).setPosition(children.get(i).getX(), children.get(i).getY() + heightIncrease);
             }
         }
         else // shrink vertical
@@ -101,7 +101,7 @@ public abstract class Layer<T extends LayerChild>
             {
                 float heightShrink = (oldHeight - height);
                 for(int i = 0; i < children.size; i ++)
-                    children.get(i).setPosition(children.get(i).position.x, children.get(i).position.y - heightShrink);
+                    children.get(i).setPosition(children.get(i).getX(), children.get(i).getY() - heightShrink);
             }
         }
         this.moveBox.setPosition(x + (this.width), y + (this.height));

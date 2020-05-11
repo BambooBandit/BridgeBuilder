@@ -18,7 +18,7 @@ public class MoveMapSprites implements Command
         for(int i = 0; i < selectedMapSprites.size; i ++)
         {
             MapSprite mapSprite = selectedMapSprites.get(i);
-            this.originalMapSpritePosition.put(mapSprite, new Vector2(mapSprite.position));
+            this.originalMapSpritePosition.put(mapSprite, new Vector2(mapSprite.getX(), mapSprite.getY()));
         }
     }
 
@@ -41,7 +41,7 @@ public class MoveMapSprites implements Command
                 for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
                 {
                     MapObject mapObject = mapSprite.attachedMapObjects.get(i);
-                    mapObject.setPosition(mapObject.position.x + offsetDifferenceX, mapObject.position.y + offsetDifferenceY);
+                    mapObject.setPosition(mapObject.getX() + offsetDifferenceX, mapObject.getY() + offsetDifferenceY);
                 }
             }
         }
@@ -62,7 +62,7 @@ public class MoveMapSprites implements Command
                 for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
                 {
                     MapObject mapObject = mapSprite.attachedMapObjects.get(i);
-                    mapObject.setPosition(mapObject.position.x + this.resultingOffsetX, mapObject.position.y + this.resultingOffsetY);
+                    mapObject.setPosition(mapObject.getX() + this.resultingOffsetX, mapObject.getY() + this.resultingOffsetY);
                 }
             }
         }
@@ -83,7 +83,7 @@ public class MoveMapSprites implements Command
                 for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
                 {
                     MapObject mapObject = mapSprite.attachedMapObjects.get(i);
-                    mapObject.setPosition(mapObject.position.x - this.resultingOffsetX, mapObject.position.y - this.resultingOffsetY);
+                    mapObject.setPosition(mapObject.getX() - this.resultingOffsetX, mapObject.getY() - this.resultingOffsetY);
                 }
             }
         }

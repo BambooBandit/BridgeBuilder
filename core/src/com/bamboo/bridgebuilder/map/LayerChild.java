@@ -1,11 +1,8 @@
 package com.bamboo.bridgebuilder.map;
 
-import com.badlogic.gdx.math.Vector2;
-
 public abstract class LayerChild
 {
     protected Map map;
-    public Vector2 position;
     public Layer layer;
     public boolean selected;
 
@@ -13,7 +10,6 @@ public abstract class LayerChild
     {
         this.map = map;
         this.layer = layer;
-        this.position = new Vector2(x, y);
     }
 
     public abstract void draw();
@@ -21,14 +17,13 @@ public abstract class LayerChild
     public abstract void drawSelectedOutline();
     public abstract void drawSelectedHoveredOutline();
 
-    public void setPosition(float x, float y)
-    {
-        this.position.set(x, y);
-    }
-
     public abstract boolean isHoveredOver(float x, float y);
     public abstract boolean isHoveredOver(float[] vertices);
 
     public abstract void select();
     public abstract void unselect();
+
+    public abstract void setPosition(float x, float y);
+    public abstract float getX();
+    public abstract float getY();
 }

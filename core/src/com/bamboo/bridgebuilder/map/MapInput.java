@@ -386,7 +386,7 @@ public class MapInput implements InputProcessor
                 MapObject mapObject = objectLayer.children.get(i);
 //                boolean polygon = mapObject.polygon != null && Intersector.overlapConvexPolygons(mapObject.polygon.getTransformedVertices(), map.input.boxSelect.getVertices(), null);
                 boolean polygon = mapObject instanceof MapPolygon && Intersector.overlapConvexPolygons(((MapPolygon) mapObject).polygon.getTransformedVertices(), this.map.input.boxSelect.getVertices(), null);
-                boolean point = Intersector.isPointInPolygon(this.map.input.boxSelect.getVertices(), 0, this.map.input.boxSelect.getVertices().length, mapObject.position.x, mapObject.position.y);
+                boolean point = Intersector.isPointInPolygon(this.map.input.boxSelect.getVertices(), 0, this.map.input.boxSelect.getVertices().length, mapObject.getX(), mapObject.getY());
                 if (polygon || point)
                 {
                     boolean selected = this.map.selectedObjects.contains(mapObject, true);

@@ -33,10 +33,10 @@ public class AttachedMapObjectManager
             MapObject mapObject = this.attachedMapObjects.get(i);
             double dragAngle = Utils.getAngleDegree(0, 0, xOffset, yOffset);
             float dragAmount = (float) Math.sqrt(Math.pow(xOffset, 2) + Math.pow(yOffset, 2));
-            float rotation = Utils.radianAngleFix((float) Math.toRadians(mapObject.getRotation() + dragAngle));
+            float rotation = Utils.radianAngleFix((float) Math.toRadians(dragAngle));
             float rotationX = (float) (Math.cos(rotation) * dragAmount);
             float rotationY = (float) (Math.sin(rotation) * dragAmount);
-            mapObject.setPosition(mapObject.position.x + rotationX, mapObject.position.y + rotationY);
+            mapObject.setPosition(mapObject.getX() + rotationX, mapObject.getY() + rotationY);
         }
     }
 
@@ -169,11 +169,11 @@ public class AttachedMapObjectManager
     public void addCopyOfMapObjectToThisMapSprite(MapObject mapObject, MapSprite mapSprite)
     {
         MapObject mapObjectCopy = mapObject.copy();
-        float xOffset = mapObjectCopy.position.x - mapObjectCopy.attachedSprite.position.x;
-        float yOffset = mapObjectCopy.position.y - mapObjectCopy.attachedSprite.position.y;
+        float xOffset = mapObjectCopy.getX() - mapObjectCopy.attachedSprite.getX();
+        float yOffset = mapObjectCopy.getY() - mapObjectCopy.attachedSprite.getY();
         mapObjectCopy.attachedSprite = mapSprite;
         mapObjectCopy.layer = mapSprite.layer;
-        mapObjectCopy.setPosition(mapSprite.position.x + xOffset, mapSprite.position.y + yOffset);
+        mapObjectCopy.setPosition(mapSprite.getX() + xOffset, mapSprite.getY() + yOffset);
         mapObjectCopy.setOriginBasedOnParentSprite();
         mapSprite.addAttachedMapObject(mapObjectCopy);
         this.attachedMapObjects.add(mapObjectCopy);

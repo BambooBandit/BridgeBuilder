@@ -60,7 +60,7 @@ public class SelectPolygonVertice implements Command
     private void selectVertice(MapPolygon mapPolygon, int index)
     {
         if(index == -1)
-            mapPolygon.moveBox.setPosition(mapPolygon.position.x, mapPolygon.position.y);
+            mapPolygon.moveBox.setPosition(mapPolygon.getX(), mapPolygon.getY());
         else
             mapPolygon.moveBox.setPosition(mapPolygon.polygon.getTransformedVertices()[index], mapPolygon.polygon.getTransformedVertices()[index + 1]);
         mapPolygon.indexOfSelectedVertice = index;

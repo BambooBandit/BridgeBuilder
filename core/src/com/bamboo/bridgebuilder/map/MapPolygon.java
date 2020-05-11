@@ -57,7 +57,7 @@ public class MapPolygon extends MapObject
     @Override
     public void draw(float xOffset, float yOffset)
     {
-        setPosition(position.x + xOffset, position.y + yOffset);
+        setPosition(getX() + xOffset, getY() + yOffset);
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.CYAN);
         map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
@@ -74,7 +74,7 @@ public class MapPolygon extends MapObject
             }
             catch (NumberFormatException e){return;}
         }
-        setPosition(position.x - xOffset, position.y - yOffset);
+        setPosition(getX() - xOffset, getY() - yOffset);
     }
 
     @Override
@@ -151,6 +151,7 @@ public class MapPolygon extends MapObject
         {
             MapSprite mapSprite = this.attachedSprite;
             polygon.setRotation(mapSprite.rotation);
+            polygon.setScale(mapSprite.scale, mapSprite.scale);
         }
         computeCentroid();
 
@@ -158,8 +159,19 @@ public class MapPolygon extends MapObject
             this.moveBox.setPosition(polygon.getTransformedVertices()[indexOfSelectedVertice], polygon.getTransformedVertices()[indexOfSelectedVertice + 1]);
         else
             this.moveBox.setPosition(x, y);
-
         setOriginBasedOnParentSprite();
+    }
+
+    @Override
+    public float getX()
+    {
+        return this.polygon.getX();
+    }
+
+    @Override
+    public float getY()
+    {
+        return this.polygon.getY();
     }
 
     @Override
@@ -167,8 +179,8 @@ public class MapPolygon extends MapObject
     {
         if(this.attachedSprite == null)
             return;
-        float xOffset = this.polygon.getX() - this.attachedSprite.position.x;
-        float yOffset = this.polygon.getY() - this.attachedSprite.position.y;
+        float xOffset = this.polygon.getX() - this.attachedSprite.getX();
+        float yOffset = this.polygon.getY() - this.attachedSprite.getY();
         float width = this.attachedSprite.sprite.getWidth();
         float height = this.attachedSprite.sprite.getHeight();
         this.polygon.setOrigin((-xOffset) + width / 2, (-yOffset) + height / 2);

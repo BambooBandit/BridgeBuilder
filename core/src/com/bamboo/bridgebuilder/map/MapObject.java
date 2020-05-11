@@ -20,7 +20,6 @@ public abstract class MapObject extends LayerChild
         this.properties = new Array<>();
         this.moveBox = new MoveBox();
         this.moveBox.setPosition(x, y);
-        this.position.set(x, y);
     }
 
     public MapObject(Map map, MapSprite mapSprite, float x, float y)
@@ -30,13 +29,11 @@ public abstract class MapObject extends LayerChild
         this.properties = new Array<>();
         this.moveBox = new MoveBox();
         this.moveBox.setPosition(x, y);
-        this.position.set(x, y);
     }
 
     @Override
     public void setPosition(float x, float y)
     {
-        super.setPosition(x, y);
         this.moveBox.setPosition(x, y);
     }
 
