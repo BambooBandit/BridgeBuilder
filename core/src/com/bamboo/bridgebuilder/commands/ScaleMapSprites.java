@@ -10,7 +10,7 @@ public class ScaleMapSprites implements Command
 {
     private ObjectMap<MapSprite, Float> originalMapSpriteScale;
     private Array<MapSprite> selectedMapSprites;
-    private float resultingScale;
+    private float resultingScaleAddition;
 
     public ScaleMapSprites(Array<MapSprite> selectedMapSprites)
     {
@@ -33,14 +33,14 @@ public class ScaleMapSprites implements Command
             ObjectMap.Entry<MapSprite, Float> entry = iterator.next();
             MapSprite mapSprite = entry.key;
             float originalScale = entry.value;
-            this.resultingScale = originalScale + scale;
-            mapSprite.setScale(this.resultingScale);
-            if(mapSprite.tool.hasAttachedMapObjects())
+            this.resultingScaleAddition = scale;
+            mapSprite.setScale(originalScale + this.resultingScaleAddition);
+            if(mapSprite.tool.hasAttachedMapObjects()) //TODO should be part of the mapSprite.setScale() method
             {
                 for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
                 {
                     MapObject mapObject = mapSprite.attachedMapObjects.get(i);
-                    mapObject.setScale(this.resultingScale);
+                    mapObject.setScale(originalScale + this.resultingScaleAddition);
                 }
             }
         }
@@ -55,13 +55,14 @@ public class ScaleMapSprites implements Command
         {
             ObjectMap.Entry<MapSprite, Float> entry = iterator.next();
             MapSprite mapSprite = entry.key;
-            mapSprite.setScale(this.resultingScale);
+            float originalScale = entry.value;
+            mapSprite.setScale(originalScale + this.resultingScaleAddition);
             if(mapSprite.tool.hasAttachedMapObjects())
             {
                 for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
                 {
                     MapObject mapObject = mapSprite.attachedMapObjects.get(i);
-                    mapObject.setScale(this.resultingScale);
+                    mapObject.setScale(originalScale + this.resultingScaleAddition);
                 }
             }
         }
@@ -70,6 +71,7 @@ public class ScaleMapSprites implements Command
     @Override
     public void undo()
     {
+        setOrigin(selectedMapSprites);
         ObjectMap.Entries<MapSprite, Float> iterator = this.originalMapSpriteScale.iterator();
         while(iterator.hasNext)
         {
