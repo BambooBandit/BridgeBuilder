@@ -40,6 +40,11 @@ public class Utils
         if(print)
             System.out.println(string);
     }
+    public static void println()
+    {
+        if(print)
+            System.out.println();
+    }
 
     public static float radianAngleFix(float angle)
     {

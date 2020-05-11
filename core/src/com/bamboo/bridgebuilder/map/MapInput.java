@@ -416,7 +416,7 @@ public class MapInput implements InputProcessor
             if(mapObject instanceof MapPolygon)
             {
                 MapPolygon mapPolygon = (MapPolygon) mapObject;
-                if(mapPolygon.indexOfHoveredVertice != -1)
+                if(mapPolygon.indexOfHoveredVertice != -1 && mapPolygon.indexOfSelectedVertice != mapPolygon.indexOfHoveredVertice)
                 {
                     SelectPolygonVertice selectPolygonVertice = new SelectPolygonVertice(this.map);
                     this.map.executeCommand(selectPolygonVertice);
@@ -424,8 +424,11 @@ public class MapInput implements InputProcessor
                 }
             }
         }
-        SelectPolygonVertice selectPolygonVertice = new SelectPolygonVertice(this.map);
-        this.map.executeCommand(selectPolygonVertice);
+        if(Command.shouldExecute(map, SelectPolygonVertice.class))
+        {
+            SelectPolygonVertice selectPolygonVertice = new SelectPolygonVertice(this.map);
+            this.map.executeCommand(selectPolygonVertice);
+        }
         return false;
     }
 

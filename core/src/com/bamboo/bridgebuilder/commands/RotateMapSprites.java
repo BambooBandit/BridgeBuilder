@@ -9,7 +9,7 @@ public class RotateMapSprites implements Command
 {
     private ObjectMap<MapSprite, Float> originalMapSpriteRotation;
     private Array<MapSprite> selectedMapSprites;
-    private float resultingRotation;
+    private float resultingAngleAddition;
 
     public RotateMapSprites(Array<MapSprite> selectedMapSprites)
     {
@@ -21,19 +21,19 @@ public class RotateMapSprites implements Command
             this.originalMapSpriteRotation.put(mapSprite, mapSprite.rotation);
         }
 
-        setOrigin(selectedMapSprites);
+        setOrigin(this.selectedMapSprites);
     }
 
     public void update(float angle)
     {
+        this.resultingAngleAddition = angle;
         ObjectMap.Entries<MapSprite, Float> iterator = this.originalMapSpriteRotation.iterator();
         while(iterator.hasNext)
         {
             ObjectMap.Entry<MapSprite, Float> entry = iterator.next();
             MapSprite mapSprite = entry.key;
             float originalRotation = entry.value;
-            this.resultingRotation = originalRotation + angle;
-            mapSprite.setRotation(this.resultingRotation);
+            mapSprite.setRotation(originalRotation + this.resultingAngleAddition);
         }
     }
 
@@ -46,13 +46,15 @@ public class RotateMapSprites implements Command
         {
             ObjectMap.Entry<MapSprite, Float> entry = iterator.next();
             MapSprite mapSprite = entry.key;
-            mapSprite.setRotation(this.resultingRotation);
+            float originalRotation = entry.value;
+            mapSprite.setRotation(originalRotation + this.resultingAngleAddition);
         }
     }
 
     @Override
     public void undo()
     {
+        setOrigin(selectedMapSprites);
         ObjectMap.Entries<MapSprite, Float> iterator = this.originalMapSpriteRotation.iterator();
         while(iterator.hasNext)
         {

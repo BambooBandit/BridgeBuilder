@@ -500,6 +500,8 @@ public class Map implements Screen
     public void executeCommand(Command command)
     {
         command.execute();
+        Utils.println();
+        Utils.println("execute " + command);
         pushCommand(command);
     }
 
@@ -508,7 +510,8 @@ public class Map implements Screen
         deleteElementsAfterPointer(undoRedoPointer);
         commandStack.push(command);
         undoRedoPointer ++;
-
+        Utils.println("push " + command);
+        Utils.println();
         if(commandStack.size() > stackThreshold)
         {
             undoRedoPointer --;
@@ -529,6 +532,7 @@ public class Map implements Screen
         if(undoRedoPointer < 0)
             return;
         Command command = commandStack.get(undoRedoPointer);
+        Utils.println("undo " + command);
         command.undo();
         undoRedoPointer --;
     }
@@ -539,6 +543,7 @@ public class Map implements Screen
             return;
         undoRedoPointer ++;
         Command command = commandStack.get(undoRedoPointer);
+        Utils.println("redo " + command);
         command.execute();
     }
 }
