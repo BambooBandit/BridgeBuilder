@@ -78,7 +78,7 @@ public class MapSprite extends LayerChild
             for(int i = 0; i < tool.attachedMapObjectManagers.size; i ++)
             {
                 AttachedMapObjectManager attachedMapObjectManager = tool.attachedMapObjectManagers.get(i);
-                attachedMapObjectManager.addCopiesOfAllMapObjectsToThisMapSprite(this);
+                attachedMapObjectManager.addCopyOfMapObjectToThisMapSprite(this);
             }
         }
     }
@@ -350,25 +350,34 @@ public class MapSprite extends LayerChild
         }
         LabelFieldPropertyValuePropertyField labelFieldProperty = Utils.getLockedPropertyField(this.lockedProperties, "Rotation");
         labelFieldProperty.value.setText(Float.toString(this.rotation));
-    }
 
-    public void rotate(float degree)
-    {
-        this.rotation += degree;
-        Utils.spritePositionCopy.set(position);
-        Vector2 endPos = Utils.spritePositionCopy.sub(Utils.centerOrigin).rotate(degree).add(Utils.centerOrigin); // TODO don't assume this was set in case rotate is used somewhere else
-        setPosition(endPos.x, endPos.y);
-        this.sprite.rotate(degree);
-        this.polygon.rotate(degree);
-        if(this.tool.topSprites != null)
+        if(this.attachedMapObjects != null)
         {
-            for(int i = 0; i < this.tool.topSprites.size; i ++)
-                this.tool.topSprites.get(i).rotate(degree);
+            for (int i = 0; i < this.attachedMapObjects.size; i++)
+            {
+                MapObject mapObject = this.attachedMapObjects.get(i);
+                mapObject.setRotation(this.rotation);
+            }
         }
-
-        LabelFieldPropertyValuePropertyField labelFieldProperty = Utils.getLockedPropertyField(this.lockedProperties, "Rotation");
-        labelFieldProperty.value.setText(Float.toString(this.rotation));
     }
+
+//    public void rotate(float degree)
+//    {
+//        this.rotation += degree;
+//        Utils.spritePositionCopy.set(position);
+//        Vector2 endPos = Utils.spritePositionCopy.sub(Utils.centerOrigin).rotate(degree).add(Utils.centerOrigin); // TODO don't assume this was set in case rotate is used somewhere else
+//        setPosition(endPos.x, endPos.y);
+//        this.sprite.rotate(degree);
+//        this.polygon.rotate(degree);
+//        if(this.tool.topSprites != null)
+//        {
+//            for(int i = 0; i < this.tool.topSprites.size; i ++)
+//                this.tool.topSprites.get(i).rotate(degree);
+//        }
+//
+//        LabelFieldPropertyValuePropertyField labelFieldProperty = Utils.getLockedPropertyField(this.lockedProperties, "Rotation");
+//        labelFieldProperty.value.setText(Float.toString(this.rotation));
+//    }
 
     public void setScale(float scale)
     {

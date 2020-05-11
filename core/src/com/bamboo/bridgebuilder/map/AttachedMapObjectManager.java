@@ -1,6 +1,7 @@
 package com.bamboo.bridgebuilder.map;
 
 import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 public class AttachedMapObjectManager
@@ -30,7 +31,12 @@ public class AttachedMapObjectManager
         for(int i = 0; i < this.attachedMapObjects.size; i ++)
         {
             MapObject mapObject = this.attachedMapObjects.get(i);
-            mapObject.setPosition(mapObject.position.x + xOffset, mapObject.position.y + yOffset);
+            double dragAngle = Utils.getAngleDegree(0, 0, xOffset, yOffset);
+            float dragAmount = (float) Math.sqrt(Math.pow(xOffset, 2) + Math.pow(yOffset, 2));
+            float rotation = Utils.radianAngleFix((float) Math.toRadians(mapObject.getRotation() + dragAngle));
+            float rotationX = (float) (Math.cos(rotation) * dragAmount);
+            float rotationY = (float) (Math.sin(rotation) * dragAmount);
+            mapObject.setPosition(mapObject.position.x + rotationX, mapObject.position.y + rotationY);
         }
     }
 
@@ -168,16 +174,19 @@ public class AttachedMapObjectManager
         mapObjectCopy.attachedSprite = mapSprite;
         mapObjectCopy.layer = mapSprite.layer;
         mapObjectCopy.setPosition(mapSprite.position.x + xOffset, mapSprite.position.y + yOffset);
+        if(mapObject instanceof MapPolygon)
+        {
+            MapPolygon mapPolygon = (MapPolygon) mapObject;
+            mapPolygon.setOriginBasedOnParentSprite();
+        }
         mapSprite.addAttachedMapObject(mapObjectCopy);
         this.attachedMapObjects.add(mapObjectCopy);
     }
 
-    public void addCopiesOfAllMapObjectsToThisMapSprite(MapSprite mapSprite)
+    public void addCopyOfMapObjectToThisMapSprite(MapSprite mapSprite)
     {
-        for(int i = 0; i < this.attachedMapObjects.size; i ++)
-        {
-            MapObject mapObject = this.attachedMapObjects.get(i);
-            addCopyOfMapObjectToThisMapSprite(mapObject, mapSprite);
-        }
+        if(this.attachedMapObjects == null)
+            return;
+        addCopyOfMapObjectToThisMapSprite(this.attachedMapObjects.first(), mapSprite);
     }
 }

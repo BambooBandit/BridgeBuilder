@@ -161,6 +161,11 @@ public class Utils
         return false;
     }
 
+    public static float getAngleDegree(float originX, float originY, float targetX, float targetY)
+    {
+        return Utils.degreeAngleFix((float) Math.toDegrees((float) Math.atan2((targetY - originY), (targetX - originX))));
+    }
+
     public static boolean containsEquivalentPropertyField (Array<PropertyField> propertyFields, PropertyField propertyField) {
         int i = propertyFields.size - 1;
         {

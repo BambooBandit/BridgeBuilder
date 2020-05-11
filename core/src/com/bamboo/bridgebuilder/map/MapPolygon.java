@@ -30,6 +30,7 @@ public class MapPolygon extends MapObject
         this.polygon = new EditorPolygon(vertices);
         this.polygon.setPosition(x, y);
         computeCentroid();
+        this.setOriginBasedOnParentSprite();
     }
 
     @Override
@@ -90,6 +91,20 @@ public class MapPolygon extends MapObject
     }
 
     @Override
+    public void setRotation(float degrees)
+    {
+        if(this.attachedSprite == null)
+            return;
+        this.polygon.setRotation(degrees);
+    }
+
+    @Override
+    public float getRotation()
+    {
+        return this.polygon.getRotation();
+    }
+
+    @Override
     public void drawHoverOutline()
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
@@ -135,6 +150,17 @@ public class MapPolygon extends MapObject
             this.moveBox.setPosition(polygon.getTransformedVertices()[indexOfSelectedVertice], polygon.getTransformedVertices()[indexOfSelectedVertice + 1]);
         else
             this.moveBox.setPosition(x, y);
+    }
+
+    public void setOriginBasedOnParentSprite()
+    {
+        if(this.attachedSprite == null)
+            return;
+        float xOffset = this.polygon.getX() - this.attachedSprite.position.x;
+        float yOffset = this.polygon.getY() - this.attachedSprite.position.y;
+        float width = this.attachedSprite.sprite.getWidth();
+        float height = this.attachedSprite.sprite.getHeight();
+        this.polygon.setOrigin((-xOffset) + width / 2, (-yOffset) + height / 2);
     }
 
     @Override

@@ -70,4 +70,7 @@ public abstract class MapObject extends LayerChild
     public abstract void draw(float xOffset, float yOffset);
 
     public abstract MapObject copy();
+
+    public abstract void setRotation(float degrees);
+    public abstract float getRotation();
 }

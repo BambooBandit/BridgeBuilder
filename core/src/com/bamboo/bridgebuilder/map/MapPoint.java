@@ -156,4 +156,16 @@ public class MapPoint extends MapObject
         mapPoint.attachedMapObjectManager = this.attachedMapObjectManager;
         return mapPoint;
     }
+
+    @Override
+    public void setRotation(float degrees)
+    {
+
+    }
+
+    @Override
+    public float getRotation()
+    {
+        return 0;
+    }
 }
