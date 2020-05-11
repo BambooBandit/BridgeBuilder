@@ -3,40 +3,43 @@ package com.bamboo.bridgebuilder.map;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.bamboo.bridgebuilder.EditorPolygon;
 
 public class MapPoint extends MapObject
 {
     public static float[] pointShape = new float[10];
 
+    public EditorPolygon point;
+
+    public static float[] verts = new float[6]; // Empty array to fill the EditorPolygon as a point
+
     public MapPoint(Map map, Layer layer, float x, float y)
     {
         super(map, layer, x, y);
+        this.point = new EditorPolygon(verts);
+        this.point.setPosition(x, y);
     }
     public MapPoint(Map map, MapSprite mapSprite, float x, float y)
     {
         super(map, mapSprite, x, y);
+        this.point = new EditorPolygon(verts);
+        this.point.setPosition(x, y);
+        setOriginBasedOnParentSprite();
     }
 
     @Override
     public void setPosition(float x, float y)
     {
         super.setPosition(x, y);
-        if (this.attachedSprite != null)
+        this.point.setPosition(x, y);
+        if(this.attachedSprite != null && this.attachedSprite instanceof MapSprite)
         {
-            float centerX = attachedSprite.position.x + attachedSprite.width / 2;
-            float centerY = attachedSprite.position.y + attachedSprite.height / 2;
-            float angle = (float) Math.toRadians(this.attachedSprite.sprite.getRotation()); // Convert to radians
-
-            float rotatedX = (float) (Math.cos(angle) * (position.x - centerX) - Math.sin(angle) * (position.y - centerY) + centerX);
-            float rotatedY = (float) (Math.sin(angle) * (position.x - centerX) + Math.cos(angle) * (position.y - centerY) + centerY);
-            x = rotatedX;
-            y = rotatedY;
-            float scaledX = rotatedX + (centerX - rotatedX) * (1 - attachedSprite.sprite.getScaleX());
-            float scaledY = rotatedY + (centerY - rotatedY) * (1 - attachedSprite.sprite.getScaleY());
-            super.setPosition(scaledX, scaledY);
-
-            this.moveBox.setPosition(x, y);
+            MapSprite mapSprite = this.attachedSprite;
+            point.setRotation(mapSprite.rotation);
         }
+
+        this.moveBox.setPosition(x, y);
+        setOriginBasedOnParentSprite();
     }
 
     @Override
@@ -44,16 +47,19 @@ public class MapPoint extends MapObject
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.CYAN);
-        pointShape[0] = position.x + 0;
-        pointShape[1] = position.y + 0;
-        pointShape[2] = position.x - .1333f;
-        pointShape[3] = position.y + .2666f;
-        pointShape[4] = position.x - .0333f;
-        pointShape[5] = position.y + .3666f;
-        pointShape[6] = position.x + .0333f;
-        pointShape[7] = position.y + .3666f;
-        pointShape[8] = position.x + .1333f;
-        pointShape[9] = position.y + .2666f;
+
+        float x = this.point.getTransformedVertices()[0];
+        float y = this.point.getTransformedVertices()[1];
+        pointShape[0] = x + 0;
+        pointShape[1] = y + 0;
+        pointShape[2] = x - .1333f;
+        pointShape[3] = y + .2666f;
+        pointShape[4] = x - .0333f;
+        pointShape[5] = y + .3666f;
+        pointShape[6] = x + .0333f;
+        pointShape[7] = y + .3666f;
+        pointShape[8] = x + .1333f;
+        pointShape[9] = y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
     }
 
@@ -63,16 +69,18 @@ public class MapPoint extends MapObject
         setPosition(position.x + xOffset, position.y + yOffset);
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.CYAN);
-        pointShape[0] = position.x + 0;
-        pointShape[1] = position.y + 0;
-        pointShape[2] = position.x - .1333f;
-        pointShape[3] = position.y + .2666f;
-        pointShape[4] = position.x - .0333f;
-        pointShape[5] = position.y + .3666f;
-        pointShape[6] = position.x + .0333f;
-        pointShape[7] = position.y + .3666f;
-        pointShape[8] = position.x + .1333f;
-        pointShape[9] = position.y + .2666f;
+        float x = this.point.getTransformedVertices()[0];
+        float y = this.point.getTransformedVertices()[1];
+        pointShape[0] = x + 0;
+        pointShape[1] = y + 0;
+        pointShape[2] = x - .1333f;
+        pointShape[3] = y + .2666f;
+        pointShape[4] = x - .0333f;
+        pointShape[5] = y + .3666f;
+        pointShape[6] = x + .0333f;
+        pointShape[7] = y + .3666f;
+        pointShape[8] = x + .1333f;
+        pointShape[9] = y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
         setPosition(position.x - xOffset, position.y - yOffset);
     }
@@ -82,16 +90,18 @@ public class MapPoint extends MapObject
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.ORANGE);
-        pointShape[0] = position.x + 0;
-        pointShape[1] = position.y + 0;
-        pointShape[2] = position.x - .1333f;
-        pointShape[3] = position.y + .2666f;
-        pointShape[4] = position.x - .0333f;
-        pointShape[5] = position.y + .3666f;
-        pointShape[6] = position.x + .0333f;
-        pointShape[7] = position.y + .3666f;
-        pointShape[8] = position.x + .1333f;
-        pointShape[9] = position.y + .2666f;
+        float x = this.point.getTransformedVertices()[0];
+        float y = this.point.getTransformedVertices()[1];
+        pointShape[0] = x + 0;
+        pointShape[1] = y + 0;
+        pointShape[2] = x - .1333f;
+        pointShape[3] = y + .2666f;
+        pointShape[4] = x - .0333f;
+        pointShape[5] = y + .3666f;
+        pointShape[6] = x + .0333f;
+        pointShape[7] = y + .3666f;
+        pointShape[8] = x + .1333f;
+        pointShape[9] = y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
     }
 
@@ -100,16 +110,18 @@ public class MapPoint extends MapObject
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.GREEN);
-        pointShape[0] = position.x + 0;
-        pointShape[1] = position.y + 0;
-        pointShape[2] = position.x - .1333f;
-        pointShape[3] = position.y + .2666f;
-        pointShape[4] = position.x - .0333f;
-        pointShape[5] = position.y + .3666f;
-        pointShape[6] = position.x + .0333f;
-        pointShape[7] = position.y + .3666f;
-        pointShape[8] = position.x + .1333f;
-        pointShape[9] = position.y + .2666f;
+        float x = this.point.getTransformedVertices()[0];
+        float y = this.point.getTransformedVertices()[1];
+        pointShape[0] = x + 0;
+        pointShape[1] = y + 0;
+        pointShape[2] = x - .1333f;
+        pointShape[3] = y + .2666f;
+        pointShape[4] = x - .0333f;
+        pointShape[5] = y + .3666f;
+        pointShape[6] = x + .0333f;
+        pointShape[7] = y + .3666f;
+        pointShape[8] = x + .1333f;
+        pointShape[9] = y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
     }
 
@@ -118,30 +130,38 @@ public class MapPoint extends MapObject
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.YELLOW);
-        pointShape[0] = position.x + 0;
-        pointShape[1] = position.y + 0;
-        pointShape[2] = position.x - .1333f;
-        pointShape[3] = position.y + .2666f;
-        pointShape[4] = position.x - .0333f;
-        pointShape[5] = position.y + .3666f;
-        pointShape[6] = position.x + .0333f;
-        pointShape[7] = position.y + .3666f;
-        pointShape[8] = position.x + .1333f;
-        pointShape[9] = position.y + .2666f;
+        float x = this.point.getTransformedVertices()[0];
+        float y = this.point.getTransformedVertices()[1];
+        pointShape[0] = x + 0;
+        pointShape[1] = y + 0;
+        pointShape[2] = x - .1333f;
+        pointShape[3] = y + .2666f;
+        pointShape[4] = x - .0333f;
+        pointShape[5] = y + .3666f;
+        pointShape[6] = x + .0333f;
+        pointShape[7] = y + .3666f;
+        pointShape[8] = x + .1333f;
+        pointShape[9] = y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
     }
 
     @Override
     public boolean isHoveredOver(float x, float y)
     {
-        double distance = Math.sqrt(Math.pow((x - position.x), 2) + Math.pow((y - position.y), 2));
+        float pointX = this.point.getTransformedVertices()[0];
+        float pointY = this.point.getTransformedVertices()[1];
+
+        double distance = Math.sqrt(Math.pow((x - pointX), 2) + Math.pow((y - pointY), 2));
         return distance <= .6f;
     }
 
     @Override
     public boolean isHoveredOver(float[] vertices)
     {
-        return Intersector.isPointInPolygon(vertices, 0, vertices.length, position.x, position.y);
+        float pointX = this.point.getTransformedVertices()[0];
+        float pointY = this.point.getTransformedVertices()[1];
+
+        return Intersector.isPointInPolygon(vertices, 0, vertices.length, pointX, pointY);
     }
 
     @Override
@@ -149,9 +169,9 @@ public class MapPoint extends MapObject
     {
         MapPoint mapPoint;
         if(this.attachedSprite != null)
-            mapPoint = new MapPoint(map, this.attachedSprite, position.x, position.y);
+            mapPoint = new MapPoint(map, this.attachedSprite, this.point.getX(), this.point.getY());
         else
-            mapPoint = new MapPoint(map, this.layer, position.x, position.y);
+            mapPoint = new MapPoint(map, this.layer, this.point.getX(), this.point.getY());
         mapPoint.id = this.id;
         mapPoint.attachedMapObjectManager = this.attachedMapObjectManager;
         return mapPoint;
@@ -160,18 +180,34 @@ public class MapPoint extends MapObject
     @Override
     public void setRotation(float degrees)
     {
-
+        if(this.attachedSprite == null)
+            return;
+        this.point.setRotation(degrees);
     }
 
     @Override
     public void setScale(float scale)
     {
-
+        if(this.attachedSprite == null)
+            return;
+        this.point.setScale(scale, scale);
     }
 
     @Override
     public float getRotation()
     {
-        return 0;
+        return this.point.getRotation();
+    }
+
+    @Override
+    public void setOriginBasedOnParentSprite()
+    {
+        if(this.attachedSprite == null)
+            return;
+        float xOffset = this.point.getX() - this.attachedSprite.position.x;
+        float yOffset = this.point.getY() - this.attachedSprite.position.y;
+        float width = this.attachedSprite.sprite.getWidth();
+        float height = this.attachedSprite.sprite.getHeight();
+        this.point.setOrigin((-xOffset) + width / 2, (-yOffset) + height / 2);
     }
 }

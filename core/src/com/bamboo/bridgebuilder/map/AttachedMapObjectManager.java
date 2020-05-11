@@ -174,11 +174,7 @@ public class AttachedMapObjectManager
         mapObjectCopy.attachedSprite = mapSprite;
         mapObjectCopy.layer = mapSprite.layer;
         mapObjectCopy.setPosition(mapSprite.position.x + xOffset, mapSprite.position.y + yOffset);
-        if(mapObject instanceof MapPolygon)
-        {
-            MapPolygon mapPolygon = (MapPolygon) mapObject;
-            mapPolygon.setOriginBasedOnParentSprite();
-        }
+        mapObjectCopy.setOriginBasedOnParentSprite();
         mapSprite.addAttachedMapObject(mapObjectCopy);
         this.attachedMapObjects.add(mapObjectCopy);
     }

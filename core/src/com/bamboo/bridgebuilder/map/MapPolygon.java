@@ -158,8 +158,11 @@ public class MapPolygon extends MapObject
             this.moveBox.setPosition(polygon.getTransformedVertices()[indexOfSelectedVertice], polygon.getTransformedVertices()[indexOfSelectedVertice + 1]);
         else
             this.moveBox.setPosition(x, y);
+
+        setOriginBasedOnParentSprite();
     }
 
+    @Override
     public void setOriginBasedOnParentSprite()
     {
         if(this.attachedSprite == null)
