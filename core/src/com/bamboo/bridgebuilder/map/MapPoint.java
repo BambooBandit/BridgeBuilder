@@ -8,10 +8,8 @@ import com.bamboo.bridgebuilder.EditorPolygon;
 public class MapPoint extends MapObject
 {
     public static float[] pointShape = new float[10];
-
-    public EditorPolygon point;
-
     public static float[] verts = new float[6]; // Empty array to fill the EditorPolygon as a point
+    public EditorPolygon point;
 
     public MapPoint(Map map, Layer layer, float x, float y)
     {
@@ -19,6 +17,7 @@ public class MapPoint extends MapObject
         this.point = new EditorPolygon(verts);
         this.point.setPosition(x, y);
     }
+
     public MapPoint(Map map, MapSprite mapSprite, float x, float y)
     {
         super(map, mapSprite, x, y);
@@ -32,10 +31,11 @@ public class MapPoint extends MapObject
     {
         super.setPosition(x, y);
         this.point.setPosition(x, y);
-        if(this.attachedSprite != null && this.attachedSprite instanceof MapSprite)
+        if (this.attachedSprite != null && this.attachedSprite instanceof MapSprite)
         {
             MapSprite mapSprite = this.attachedSprite;
             point.setRotation(mapSprite.rotation);
+            point.setScale(mapSprite.scale, mapSprite.scale);
         }
 
         this.moveBox.setPosition(x, y);
@@ -180,7 +180,7 @@ public class MapPoint extends MapObject
     public MapObject copy()
     {
         MapPoint mapPoint;
-        if(this.attachedSprite != null)
+        if (this.attachedSprite != null)
             mapPoint = new MapPoint(map, this.attachedSprite, this.point.getX(), this.point.getY());
         else
             mapPoint = new MapPoint(map, this.layer, this.point.getX(), this.point.getY());
@@ -190,17 +190,9 @@ public class MapPoint extends MapObject
     }
 
     @Override
-    public void setRotation(float degrees)
-    {
-        if(this.attachedSprite == null)
-            return;
-        this.point.setRotation(degrees);
-    }
-
-    @Override
     public void setScale(float scale)
     {
-        if(this.attachedSprite == null)
+        if (this.attachedSprite == null)
             return;
         this.point.setScale(scale, scale);
     }
@@ -212,9 +204,17 @@ public class MapPoint extends MapObject
     }
 
     @Override
+    public void setRotation(float degrees)
+    {
+        if (this.attachedSprite == null)
+            return;
+        this.point.setRotation(degrees);
+    }
+
+    @Override
     public void setOriginBasedOnParentSprite()
     {
-        if(this.attachedSprite == null)
+        if (this.attachedSprite == null)
             return;
         float xOffset = this.point.getX() - this.attachedSprite.getX();
         float yOffset = this.point.getY() - this.attachedSprite.getY();

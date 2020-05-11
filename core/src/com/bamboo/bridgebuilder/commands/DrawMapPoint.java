@@ -1,5 +1,7 @@
 package com.bamboo.bridgebuilder.commands;
 
+import com.bamboo.bridgebuilder.EditorPolygon;
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapPoint;
 import com.bamboo.bridgebuilder.map.MapSprite;
@@ -42,7 +44,20 @@ public class DrawMapPoint implements Command
         else
         {
             if (this.mapPoint == null)
-                this.mapPoint = new MapPoint(this.map, this.selectedMapSprite, this.x, this.y);
+            {
+                EditorPolygon editorPolygon = new EditorPolygon(MapPoint.verts);
+                editorPolygon.setPosition(this.x, this.y);
+                float xOffset = this.x - this.selectedMapSprite.getX();
+                float yOffset = this.y - this.selectedMapSprite.getY();
+                float width = this.selectedMapSprite.sprite.getWidth();
+                float height = this.selectedMapSprite.sprite.getHeight();
+                editorPolygon.setOrigin((-xOffset) + width / 2, (-yOffset) + height / 2);
+                editorPolygon.setRotation(Utils.degreeAngleFix(-this.selectedMapSprite.rotation));
+                editorPolygon.setScale(1 / this.selectedMapSprite.scale, 1 / this.selectedMapSprite.scale);
+                this.mapPoint = new MapPoint(this.map, this.selectedMapSprite, editorPolygon.getTransformedVertices()[0], editorPolygon.getTransformedVertices()[1]);
+            }
+            this.mapPoint.setRotation(this.selectedMapSprite.rotation);
+            this.mapPoint.setScale(this.selectedMapSprite.scale);
             this.selectedMapSprite.createAttachedMapObject(this.map, this.mapPoint);
         }
     }

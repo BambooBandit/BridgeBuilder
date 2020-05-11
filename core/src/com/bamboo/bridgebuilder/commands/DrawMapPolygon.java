@@ -50,7 +50,6 @@ public class DrawMapPolygon implements Command
             if (this.mapPolygon == null)
             {
                 EditorPolygon editorPolygon = new EditorPolygon(vertices.toArray());
-
                 float xOffset = this.objectX - this.selectedMapSprite.getX();
                 float yOffset = this.objectY - this.selectedMapSprite.getY();
                 float width = this.selectedMapSprite.sprite.getWidth();

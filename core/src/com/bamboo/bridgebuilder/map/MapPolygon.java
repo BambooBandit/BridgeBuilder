@@ -10,11 +10,10 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public class MapPolygon extends MapObject
 {
-    float centroidX, centroidY;
     public EditorPolygon polygon;
-
     public int indexOfSelectedVertice = -1; // x index. y is + 1
     public int indexOfHoveredVertice = -1; // x index. y is + 1
+    float centroidX, centroidY;
 
     public MapPolygon(Map map, Layer layer, float[] vertices, float x, float y)
     {
@@ -41,7 +40,7 @@ public class MapPolygon extends MapObject
         map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
 
         PropertyField propertyField = Utils.getPropertyField(properties, "angle");
-        if(propertyField != null)
+        if (propertyField != null)
         {
             FieldFieldPropertyValuePropertyField angleProperty = (FieldFieldPropertyValuePropertyField) propertyField;
             try
@@ -50,7 +49,10 @@ public class MapPolygon extends MapObject
                 drawCentroidAndAngle(angle);
                 return;
             }
-            catch (NumberFormatException e){return;}
+            catch (NumberFormatException e)
+            {
+                return;
+            }
         }
     }
 
@@ -63,7 +65,7 @@ public class MapPolygon extends MapObject
         map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
 
         PropertyField propertyField = Utils.getPropertyField(properties, "angle");
-        if(propertyField != null)
+        if (propertyField != null)
         {
             FieldFieldPropertyValuePropertyField angleProperty = (FieldFieldPropertyValuePropertyField) propertyField;
             try
@@ -72,7 +74,10 @@ public class MapPolygon extends MapObject
                 drawCentroidAndAngle(angle);
                 return;
             }
-            catch (NumberFormatException e){return;}
+            catch (NumberFormatException e)
+            {
+                return;
+            }
         }
         setPosition(getX() - xOffset, getY() - yOffset);
     }
@@ -81,7 +86,7 @@ public class MapPolygon extends MapObject
     public MapObject copy()
     {
         MapPolygon mapPolygon;
-        if(this.attachedSprite != null)
+        if (this.attachedSprite != null)
             mapPolygon = new MapPolygon(map, this.attachedSprite, this.polygon.getVertices(), this.polygon.getX(), this.polygon.getY());
         else
             mapPolygon = new MapPolygon(map, this.layer, this.polygon.getVertices(), this.polygon.getX(), this.polygon.getY());
@@ -91,17 +96,9 @@ public class MapPolygon extends MapObject
     }
 
     @Override
-    public void setRotation(float degrees)
-    {
-        if(this.attachedSprite == null)
-            return;
-        this.polygon.setRotation(degrees);
-    }
-
-    @Override
     public void setScale(float scale)
     {
-        if(this.attachedSprite == null)
+        if (this.attachedSprite == null)
             return;
         this.polygon.setScale(scale, scale);
     }
@@ -110,6 +107,14 @@ public class MapPolygon extends MapObject
     public float getRotation()
     {
         return this.polygon.getRotation();
+    }
+
+    @Override
+    public void setRotation(float degrees)
+    {
+        if (this.attachedSprite == null)
+            return;
+        this.polygon.setRotation(degrees);
     }
 
     @Override
@@ -147,7 +152,7 @@ public class MapPolygon extends MapObject
     {
         super.setPosition(x, y);
         this.polygon.setPosition(x, y);
-        if(this.attachedSprite != null && this.attachedSprite instanceof MapSprite)
+        if (this.attachedSprite != null && this.attachedSprite instanceof MapSprite)
         {
             MapSprite mapSprite = this.attachedSprite;
             polygon.setRotation(mapSprite.rotation);
@@ -155,7 +160,7 @@ public class MapPolygon extends MapObject
         }
         computeCentroid();
 
-        if(indexOfSelectedVertice != -1)
+        if (indexOfSelectedVertice != -1)
             this.moveBox.setPosition(polygon.getTransformedVertices()[indexOfSelectedVertice], polygon.getTransformedVertices()[indexOfSelectedVertice + 1]);
         else
             this.moveBox.setPosition(x, y);
@@ -177,7 +182,7 @@ public class MapPolygon extends MapObject
     @Override
     public void setOriginBasedOnParentSprite()
     {
-        if(this.attachedSprite == null)
+        if (this.attachedSprite == null)
             return;
         float xOffset = this.polygon.getX() - this.attachedSprite.getX();
         float yOffset = this.polygon.getY() - this.attachedSprite.getY();
@@ -257,7 +262,7 @@ public class MapPolygon extends MapObject
 
     public float getVerticeX()
     {
-        if(indexOfSelectedVertice == -1)
+        if (indexOfSelectedVertice == -1)
             return -1;
         float[] vertices = this.polygon.getVertices();
         return vertices[indexOfSelectedVertice] + this.polygon.getX();
@@ -265,7 +270,7 @@ public class MapPolygon extends MapObject
 
     public float getVerticeY()
     {
-        if(indexOfSelectedVertice == -1)
+        if (indexOfSelectedVertice == -1)
             return -1;
         float[] vertices = this.polygon.getVertices();
         return vertices[indexOfSelectedVertice + 1] + this.polygon.getY();
@@ -285,7 +290,7 @@ public class MapPolygon extends MapObject
 
     public void drawSelectedVertices()
     {
-        if(indexOfSelectedVertice != -1)
+        if (indexOfSelectedVertice != -1)
         {
             map.editor.shapeRenderer.setColor(Color.GREEN);
             map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfSelectedVertice], polygon.getTransformedVertices()[indexOfSelectedVertice + 1], .1f, 7);
@@ -294,7 +299,7 @@ public class MapPolygon extends MapObject
 
     public void drawHoveredVertices()
     {
-        if(indexOfHoveredVertice != -1)
+        if (indexOfHoveredVertice != -1)
         {
             map.editor.shapeRenderer.setColor(Color.ORANGE);
             map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfHoveredVertice], polygon.getTransformedVertices()[indexOfHoveredVertice + 1], .1f, 7);
