@@ -1,27 +1,36 @@
 package com.bamboo.bridgebuilder;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 
+/** Copy/paste of EditorPolygon. Only change is using primitives instead of arrays for optimization since points do not have polygons.*/
 /** Encapsulates a 2D polygon defined by it's vertices relative to an origin point (default of 0, 0). */
 public class EditorPoint implements Shape2D
 {
-    private float localX, localY, worldX, worldY;
+    private final float localX = 0, localY = 0;
+    private float worldX, worldY;
+//    private float[] localVertices;
+//    private float[] scaledVertices;
+//    private float[] worldVertices;
+    private float x, y;
     private float originX, originY;
     private float rotation;
     private float scaleX = 1, scaleY = 1;
     private boolean dirty = true;
+    private Rectangle bounds;
 
     /** Constructs a new polygon with no vertices. */
     public EditorPoint() {
     }
 
-    public EditorPoint(float localX, float localY) {
-        this.localX = localX;
-        this.localY = localY;
-        this.worldX = localX;
-        this.worldY = localY;
+    /** Returns the polygon's local vertices without scaling or rotation and without being offset by the polygon position. */
+    public float getLocalX () {
+        return this.localX;
+    }
+    public float getLocalY () {
+        return this.localY;
     }
 
     /** Calculates and returns the vertices of the polygon after scaling, rotation, and positional translations have been applied,
@@ -29,12 +38,14 @@ public class EditorPoint implements Shape2D
      *
      * @return vertices scaled, rotated, and offset by the polygon position. */
     public float getTransformedX () {
-        if (!dirty) return worldX;
+        if (!dirty) return this.worldX;
         dirty = false;
 
         final float localX = this.localX;
         final float localY = this.localY;
 
+        final float positionX = x;
+        final float positionY = y;
         final float originX = this.originX;
         final float originY = this.originY;
         final float scaleX = this.scaleX;
@@ -44,8 +55,8 @@ public class EditorPoint implements Shape2D
         final float cos = MathUtils.cosDeg(rotation);
         final float sin = MathUtils.sinDeg(rotation);
 
-        float x = -originX;
-        float y = -originY;
+        float x = localX - originX;
+        float y = localY - originY;
 
         // scale if needed
         if (scale) {
@@ -60,18 +71,20 @@ public class EditorPoint implements Shape2D
             y = sin * oldX + cos * y;
         }
 
-        this.worldX = localX + x + originX;
-        this.worldY = localY + y + originY;
+        this.worldX = positionX + x + originX;
+        this.worldY = positionY + y + originY;
         return this.worldX;
     }
 
     public float getTransformedY () {
-        if (!dirty) return worldY;
+        if (!dirty) return this.worldY;
         dirty = false;
 
         final float localX = this.localX;
         final float localY = this.localY;
 
+        final float positionX = x;
+        final float positionY = y;
         final float originX = this.originX;
         final float originY = this.originY;
         final float scaleX = this.scaleX;
@@ -81,8 +94,8 @@ public class EditorPoint implements Shape2D
         final float cos = MathUtils.cosDeg(rotation);
         final float sin = MathUtils.sinDeg(rotation);
 
-        float x = -originX;
-        float y = -originY;
+        float x = localX - originX;
+        float y = localY - originY;
 
         // scale if needed
         if (scale) {
@@ -97,8 +110,8 @@ public class EditorPoint implements Shape2D
             y = sin * oldX + cos * y;
         }
 
-        this.worldX = localX + x + originX;
-        this.worldY = localY + y + originY;
+        this.worldX = positionX + x + originX;
+        this.worldY = positionY + y + originY;
         return this.worldY;
     }
 
@@ -111,15 +124,15 @@ public class EditorPoint implements Shape2D
 
     /** Sets the polygon's position within the world. */
     public void setPosition (float x, float y) {
-        this.localX = x;
-        this.localY = y;
+        this.x = x;
+        this.y = y;
         dirty = true;
     }
 
     /** Translates the polygon's position by the specified horizontal and vertical amounts. */
     public void translate (float x, float y) {
-        this.localX += x;
-        this.localY += y;
+        this.x += x;
+        this.y += y;
         dirty = true;
     }
 
@@ -153,6 +166,7 @@ public class EditorPoint implements Shape2D
         dirty = true;
     }
 
+
     @Override
     public boolean contains (Vector2 point) {
         return contains(point.x, point.y);
@@ -166,20 +180,12 @@ public class EditorPoint implements Shape2D
 
     /** Returns the x-coordinate of the polygon's position within the world. */
     public float getX () {
-        return this.getTransformedX();
+        return x;
     }
 
     /** Returns the y-coordinate of the polygon's position within the world. */
     public float getY () {
-        return this.getTransformedY();
-    }
-
-    public float getLocalX () {
-        return this.localX;
-    }
-
-    public float getLocalY () {
-        return this.localY;
+        return y;
     }
 
     /** Returns the x-coordinate of the polygon's origin point. */

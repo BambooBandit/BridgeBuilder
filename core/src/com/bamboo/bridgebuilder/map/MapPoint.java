@@ -3,25 +3,24 @@ package com.bamboo.bridgebuilder.map;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
-import com.bamboo.bridgebuilder.EditorPolygon;
+import com.bamboo.bridgebuilder.EditorPoint;
 
 public class MapPoint extends MapObject
 {
     public static float[] pointShape = new float[10];
-    public static float[] verts = new float[6]; // Empty array to fill the EditorPolygon as a point
-    public EditorPolygon point;
+    public EditorPoint point;
 
     public MapPoint(Map map, Layer layer, float x, float y)
     {
         super(map, layer, x, y);
-        this.point = new EditorPolygon(verts);
+        this.point = new EditorPoint();
         this.point.setPosition(x, y);
     }
 
     public MapPoint(Map map, MapSprite mapSprite, float x, float y)
     {
         super(map, mapSprite, x, y);
-        this.point = new EditorPolygon(verts);
+        this.point = new EditorPoint();
         this.point.setPosition(x, y);
         setOriginBasedOnParentSprite();
     }
@@ -60,8 +59,8 @@ public class MapPoint extends MapObject
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.CYAN);
 
-        float x = this.point.getTransformedVertices()[0];
-        float y = this.point.getTransformedVertices()[1];
+        float x = this.point.getTransformedX();
+        float y = this.point.getTransformedY();
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -81,8 +80,8 @@ public class MapPoint extends MapObject
         setPosition(getX() + xOffset, getY() + yOffset);
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.CYAN);
-        float x = this.point.getTransformedVertices()[0];
-        float y = this.point.getTransformedVertices()[1];
+        float x = this.point.getTransformedX();
+        float y = this.point.getTransformedY();
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -102,8 +101,8 @@ public class MapPoint extends MapObject
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.ORANGE);
-        float x = this.point.getTransformedVertices()[0];
-        float y = this.point.getTransformedVertices()[1];
+        float x = this.point.getTransformedX();
+        float y = this.point.getTransformedY();
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -122,8 +121,8 @@ public class MapPoint extends MapObject
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.GREEN);
-        float x = this.point.getTransformedVertices()[0];
-        float y = this.point.getTransformedVertices()[1];
+        float x = this.point.getTransformedX();
+        float y = this.point.getTransformedY();
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -142,8 +141,8 @@ public class MapPoint extends MapObject
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.YELLOW);
-        float x = this.point.getTransformedVertices()[0];
-        float y = this.point.getTransformedVertices()[1];
+        float x = this.point.getTransformedX();
+        float y = this.point.getTransformedY();
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -160,8 +159,8 @@ public class MapPoint extends MapObject
     @Override
     public boolean isHoveredOver(float x, float y)
     {
-        float pointX = this.point.getTransformedVertices()[0];
-        float pointY = this.point.getTransformedVertices()[1];
+        float pointX = this.point.getTransformedX();
+        float pointY = this.point.getTransformedY();
 
         double distance = Math.sqrt(Math.pow((x - pointX), 2) + Math.pow((y - pointY), 2));
         return distance <= .6f;
@@ -170,8 +169,8 @@ public class MapPoint extends MapObject
     @Override
     public boolean isHoveredOver(float[] vertices)
     {
-        float pointX = this.point.getTransformedVertices()[0];
-        float pointY = this.point.getTransformedVertices()[1];
+        float pointX = this.point.getTransformedX();
+        float pointY = this.point.getTransformedY();
 
         return Intersector.isPointInPolygon(vertices, 0, vertices.length, pointX, pointY);
     }
