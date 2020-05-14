@@ -185,4 +185,14 @@ public class AttachedMapObjectManager
             return;
         addCopyOfMapObjectToThisMapSprite(this.attachedMapObjects.first(), mapSprite);
     }
+
+    public void selectObjectOfParentSprite(MapSprite mapSprite)
+    {
+        for(int i = 0; i < this.attachedMapObjects.size; i ++)
+        {
+            MapObject mapObject = this.attachedMapObjects.get(i);
+            if(mapObject.attachedSprite == mapSprite)
+                mapObject.select();
+        }
+    }
 }

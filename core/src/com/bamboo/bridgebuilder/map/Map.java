@@ -20,6 +20,8 @@ import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.Command;
+import com.bamboo.bridgebuilder.commands.DeleteMapObjects;
+import com.bamboo.bridgebuilder.commands.DeleteMapSprites;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
@@ -545,5 +547,22 @@ public class Map implements Screen
         Command command = commandStack.get(undoRedoPointer);
         Utils.println("redo " + command);
         command.execute();
+    }
+
+    public void deleteSelected()
+    {
+        if(this.selectedLayer != null)
+        {
+            if(this.selectedObjects.size > 0)
+            {
+                DeleteMapObjects deleteMapObjects = new DeleteMapObjects(this.selectedObjects, selectedLayer);
+                executeCommand(deleteMapObjects);
+            }
+            else if(this.selectedSprites.size > 0)
+            {
+                DeleteMapSprites deleteMapSprites = new DeleteMapSprites(this.selectedSprites, (SpriteLayer) selectedLayer);
+                executeCommand(deleteMapSprites);
+            }
+        }
     }
 }

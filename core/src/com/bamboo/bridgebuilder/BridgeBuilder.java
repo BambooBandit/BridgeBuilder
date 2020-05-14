@@ -162,6 +162,12 @@ public class BridgeBuilder extends Game
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.lines);
 				else if(keycode == Input.Keys.C)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.perspective);
+				else if(keycode == Input.Keys.DEL || keycode == Input.Keys.FORWARD_DEL)
+				{
+					if(activeMap == null)
+						return true;
+					activeMap.deleteSelected();
+				}
 				else if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
 				{
 					if(activeMap == null)
