@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.bamboo.bridgebuilder.commands.AddProperty;
 import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.map.MapObject;
+import com.bamboo.bridgebuilder.map.MapPoint;
 import com.bamboo.bridgebuilder.map.MapPolygon;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyTools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
@@ -22,6 +24,7 @@ public class PropertyPresetDialog extends Window
 {
     private Table newTopProperty;
     private Table newLightProperty;
+    private Table newBlockedProperty;
 
     private Table presetTable;
 
@@ -51,8 +54,8 @@ public class PropertyPresetDialog extends Window
 
         createPropertyPresets();
 
-        this.add(presetTable).row();
-        this.add(close);
+        this.add(this.presetTable).row();
+        this.add(this.close);
 
         setSize(Gdx.graphics.getWidth() / 1.75f, Gdx.graphics.getHeight() / 1.75f);
         this.setPosition((stage.getWidth() / 2f), (stage.getHeight() / 2f), Align.center);
@@ -64,27 +67,32 @@ public class PropertyPresetDialog extends Window
     {
         this.presetTable.clearChildren();
 
-        if(map.selectedObjects.size > 0)
+        if(this.map.selectedObjects.size > 0)
         {
             boolean allPoints = true;
-            for(int i = 0; i < map.selectedObjects.size; i++)
+            boolean allPolygons = true;
+            for(int i = 0; i < this.map.selectedObjects.size; i++)
             {
-                if(map.selectedObjects.get(i) instanceof MapPolygon)
-                {
+                MapObject mapObject = this.map.selectedObjects.get(i);
+                if(mapObject instanceof MapPolygon)
                     allPoints = false;
-                    break;
-                }
+                else if(mapObject instanceof MapPoint)
+                    allPolygons = false;
             }
             if(allPoints)
             {
-                this.presetTable.add(newLightProperty).pad(5);
+                this.presetTable.add(this.newLightProperty).pad(5);
+            }
+            else if(allPolygons)
+            {
+                this.presetTable.add(this.newBlockedProperty).pad(5);
             }
         }
-        else if(map.spriteMenu.selectedSpriteTools.size > 0)
+        else if(this.map.spriteMenu.selectedSpriteTools.size > 0)
         {
-            this.presetTable.add(newTopProperty).pad(5);
+            this.presetTable.add(this.newTopProperty).pad(5);
         }
-        else if(map.selectedLayer != null)
+        else if(this.map.selectedLayer != null)
         {
 
         }
@@ -109,6 +117,7 @@ public class PropertyPresetDialog extends Window
     {
         this.createTop();
         this.createLight();
+        this.createBlocked();
     }
 
     private void createTop()
@@ -162,7 +171,7 @@ public class PropertyPresetDialog extends Window
         spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
         spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
         this.newLightProperty.background(spriteDrawable);
-        this.newLightProperty.add(new Label("Light", this.skin)).padTop(pad / 2).row();
+        this.newLightProperty.add(new Label("Point Light", this.skin)).padTop(pad / 2).row();
         table = new Table();
         lightPropertyField = new LightPropertyField(this.skin, null, null, false, 1, 1, 1, 1, 10, 100);
         lightPropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
@@ -185,6 +194,46 @@ public class PropertyPresetDialog extends Window
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
                 AddProperty addProperty = new AddProperty(map, PropertyTools.NEWLIGHT, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects);
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
+    private void createBlocked()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newBlockedProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newBlockedProperty.background(spriteDrawable);
+        this.newBlockedProperty.add(new Label("Blocked Polygon", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("blocked", "", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        this.newBlockedProperty.add(table);
+        this.newBlockedProperty.setTouchable(Touchable.enabled);
+        this.newBlockedProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newBlockedProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newBlockedProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "blocked", "");
                 map.executeCommand(addProperty);
                 return false;
             }
