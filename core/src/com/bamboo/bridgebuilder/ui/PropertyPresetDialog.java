@@ -18,7 +18,7 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LightPropertyField
 
 import static com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu.toolHeight;
 
-public class PropertyPresetDialog extends Dialog
+public class PropertyPresetDialog extends Window
 {
     private Table newTopProperty;
     private Table newLightProperty;
@@ -51,8 +51,8 @@ public class PropertyPresetDialog extends Dialog
 
         createPropertyPresets();
 
-        this.getContentTable().add(presetTable).row();
-        this.getContentTable().add(close);
+        this.add(presetTable).row();
+        this.add(close);
 
         setSize(Gdx.graphics.getWidth() / 1.75f, Gdx.graphics.getHeight() / 1.75f);
         this.setPosition((stage.getWidth() / 2f), (stage.getHeight() / 2f), Align.center);
@@ -96,7 +96,7 @@ public class PropertyPresetDialog extends Dialog
 
     public void close()
     {
-        setVisible(false);
+        this.setVisible(false);
     }
 
     public void open()

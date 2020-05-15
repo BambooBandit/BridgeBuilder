@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.bamboo.bridgebuilder.Utils;
 
-public class MinMaxDialog extends Dialog
+public class MinMaxDialog extends Window
 {
     private Label minSizeLabel;
     private Label maxSizeLabel;
@@ -130,10 +130,10 @@ public class MinMaxDialog extends Dialog
         this.minMaxTable.add(maxALabel);
         this.minMaxTable.add(maxATextfield).row();
 
-        this.getContentTable().add(minMaxTable).row();
+        this.add(minMaxTable).row();
 
-        this.getContentTable().add(reset).row();
-        this.getContentTable().add(close);
+        this.add(reset).row();
+        this.add(close);
 
         setSize(getPrefWidth(), getPrefHeight());
 

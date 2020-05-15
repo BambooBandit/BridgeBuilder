@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
-public class YesNoDialog extends Dialog
+public class YesNoDialog extends Window
 {
     private Label areYouSureLabel;
     private Table yesNoTable;
@@ -52,7 +52,7 @@ public class YesNoDialog extends Dialog
             });
         }
 
-        this.getContentTable().add(areYouSureLabel).row();
+        this.add(areYouSureLabel).row();
         setWidth(getPrefWidth());
         this.yesNoTable.add(yes).width(getWidth() / 5).padRight(15).padLeft(15);
         this.yesNoTable.add(no).width(getWidth() / 5).padRight(15).padLeft(15);
@@ -60,7 +60,7 @@ public class YesNoDialog extends Dialog
         {
             this.yesNoTable.add(cancel).width(getWidth() / 5).padRight(15).padLeft(15);
         }
-        this.getContentTable().add(yesNoTable);
+        this.add(yesNoTable);
         setHeight(getPrefHeight());
         this.setPosition((stage.getWidth() / 2), (stage.getHeight() / 2), Align.center);
 
