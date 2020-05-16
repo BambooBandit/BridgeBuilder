@@ -165,11 +165,16 @@ public class Map implements Screen
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         this.editor.shapeRenderer.begin();
         //shaperenderer begin
-        this.b2dr.render(world, camera.combined);
         drawLayerOutline();
         drawGrid();
         drawAttachedObjects();
         drawObjectLayers();
+        if(this.editor.fileMenu.toolPane.b2drender.selected)
+        {
+            this.editor.shapeRenderer.end();
+            this.b2dr.render(world, camera.combined);
+            this.editor.shapeRenderer.begin();
+        }
         drawHoveredOutline();
         drawSelectedOutlines();
         drawUnfinishedMapPolygon();
@@ -177,6 +182,7 @@ public class Map implements Screen
         drawBoxSelect();
         //shaperenderer end
         this.editor.shapeRenderer.end();
+
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         this.editor.batch.begin();
