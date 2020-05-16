@@ -185,6 +185,7 @@ public class MapPoint extends MapObject
             mapPoint = new MapPoint(map, this.layer, this.point.getX(), this.point.getY());
         mapPoint.id = this.id;
         mapPoint.attachedMapObjectManager = this.attachedMapObjectManager;
+        mapPoint.properties = this.attachedMapObjectManager.properties;
         return mapPoint;
     }
 

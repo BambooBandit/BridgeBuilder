@@ -74,14 +74,19 @@ public class YesNoDialog extends Window
                 {
                     yes();
                     cancelDialog();
+                    return true;
                 }
                 else if(key == Input.Keys.N)
                 {
                     no();
                     cancelDialog();
+                    return true;
                 }
                 else if(key == Input.Keys.ESCAPE)
+                {
                     cancelDialog();
+                    return true;
+                }
                 return super.keyDown(event, key);
             }
         });

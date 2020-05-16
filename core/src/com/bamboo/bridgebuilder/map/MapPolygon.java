@@ -3,7 +3,12 @@ package com.bamboo.bridgebuilder.map;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.bamboo.bridgebuilder.EditorPolygon;
+import com.bamboo.bridgebuilder.PhysicsBits;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
@@ -14,6 +19,7 @@ public class MapPolygon extends MapObject
     public int indexOfSelectedVertice = -1; // x index. y is + 1
     public int indexOfHoveredVertice = -1; // x index. y is + 1
     float centroidX, centroidY;
+    public Body body;
 
     public MapPolygon(Map map, Layer layer, float[] vertices, float x, float y)
     {
@@ -92,6 +98,7 @@ public class MapPolygon extends MapObject
             mapPolygon = new MapPolygon(map, this.layer, this.polygon.getVertices(), this.polygon.getX(), this.polygon.getY());
         mapPolygon.id = this.id;
         mapPolygon.attachedMapObjectManager = this.attachedMapObjectManager;
+        mapPolygon.properties = this.attachedMapObjectManager.properties;
         return mapPolygon;
     }
 
@@ -304,5 +311,30 @@ public class MapPolygon extends MapObject
             map.editor.shapeRenderer.setColor(Color.ORANGE);
             map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfHoveredVertice], polygon.getTransformedVertices()[indexOfHoveredVertice + 1], .1f, 7);
         }
+    }
+
+    public void createBody()
+    {
+        if(this.body != null)
+            return;
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.position.set(this.getX(), this.getY());
+        PolygonShape shape = new PolygonShape();
+        float[] vertices = this.polygon.getVertices();
+        shape.set(vertices);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.friction = 0;
+        fixtureDef.filter.categoryBits = PhysicsBits.WORLD_PHYSICS;
+        fixtureDef.filter.maskBits = PhysicsBits.LIGHT_PHYSICS;
+        this.body = this.map.world.createBody(bodyDef).createFixture(fixtureDef).getBody();
+    }
+
+    public void destroyBody()
+    {
+        if(this.body == null)
+            return;
+        this.map.world.destroyBody(this.body);
+        this.body = null;
     }
 }

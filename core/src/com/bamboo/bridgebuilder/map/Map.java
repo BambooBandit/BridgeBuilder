@@ -165,6 +165,7 @@ public class Map implements Screen
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         this.editor.shapeRenderer.begin();
         //shaperenderer begin
+        this.b2dr.render(world, camera.combined);
         drawLayerOutline();
         drawGrid();
         drawAttachedObjects();

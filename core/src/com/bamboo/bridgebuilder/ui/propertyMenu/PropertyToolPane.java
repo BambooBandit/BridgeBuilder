@@ -8,10 +8,7 @@ import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.AddProperty;
-import com.bamboo.bridgebuilder.map.Layer;
-import com.bamboo.bridgebuilder.map.Map;
-import com.bamboo.bridgebuilder.map.MapSprite;
-import com.bamboo.bridgebuilder.map.SpriteLayer;
+import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.PropertyPresetDialog;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
@@ -110,7 +107,7 @@ public class PropertyToolPane extends Group
 
     public static void apply(Map map)
     {
-        // map sprites
+        // sprite tools
         for(int i = 0; i < map.spriteMenu.spriteTable.getChildren().size; i ++)
         {
             if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof Table)
@@ -129,17 +126,58 @@ public class PropertyToolPane extends Group
             }
         }
 
-        // Set sprite color
+        // Layer children
         for(int i = 0; i < map.layers.size; i ++)
         {
-            if(map.layers.get(i) instanceof SpriteLayer)
+            Layer layer = map.layers.get(i);
+            // Map sprites
+            if(layer instanceof SpriteLayer)
             {
-                SpriteLayer spriteLayer = (SpriteLayer) map.layers.get(i);
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
                 for(int k = 0; k < spriteLayer.children.size; k ++)
                 {
                     MapSprite mapSprite = spriteLayer.children.get(k);
+                    // Set sprite color
                     ColorPropertyField colorProperty = Utils.getLockedColorField(mapSprite.lockedProperties);
                     mapSprite.setColor(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
+
+                    // Attached map objects
+                    if(mapSprite.attachedMapObjects != null)
+                    {
+                        for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
+                        {
+                            MapObject mapObject = mapSprite.attachedMapObjects.get(s);
+                            // Set blocked
+                            if(mapObject instanceof MapPolygon)
+                            {
+                                MapPolygon mapPolygon = (MapPolygon) mapObject;
+                                PropertyField propertyField = Utils.getPropertyField(mapPolygon.properties, "blocked");
+                                if (propertyField != null)
+                                    mapPolygon.createBody();
+                                else
+                                    mapPolygon.destroyBody();
+                            }
+                        }
+                    }
+                }
+            }
+            // Map objects
+            if(layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                for(int k = 0; k < objectLayer.children.size; k ++)
+                {
+                    MapObject mapObject = objectLayer.children.get(k);
+                    // Set blocked
+                    if(mapObject instanceof MapPolygon)
+                    {
+                        MapPolygon mapPolygon = (MapPolygon) mapObject;
+                        PropertyField propertyField = Utils.getPropertyField(mapPolygon.properties, "blocked");
+                        if (propertyField != null)
+                            mapPolygon.createBody();
+                        else
+                            mapPolygon.destroyBody();
+                    }
                 }
             }
         }

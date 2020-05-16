@@ -26,7 +26,6 @@ public abstract class MapObject extends LayerChild
     {
         super(map, mapSprite.layer, x, y);
         this.attachedSprite = mapSprite;
-        this.properties = new Array<>();
         this.moveBox = new MoveBox();
         this.moveBox.setPosition(x, y);
     }
@@ -65,9 +64,7 @@ public abstract class MapObject extends LayerChild
     }
 
     public abstract void draw(float xOffset, float yOffset);
-
     public abstract MapObject copy();
-
     public abstract void setRotation(float degrees);
     public abstract void setScale(float scale);
     public abstract float getRotation();

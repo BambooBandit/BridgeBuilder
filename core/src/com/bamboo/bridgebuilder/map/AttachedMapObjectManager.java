@@ -2,6 +2,7 @@ package com.bamboo.bridgebuilder.map;
 
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 public class AttachedMapObjectManager
@@ -13,13 +14,17 @@ public class AttachedMapObjectManager
     public static int idIncrementer = 0;
     public int id = 0;
 
+    public Array<PropertyField> properties;
+
     public AttachedMapObjectManager(Map map, SpriteTool spriteTool, MapObject mapObject, MapSprite mapSprite)
     {
         this.map = map;
         this.spriteTool = spriteTool;
         this.attachedMapObjects = new Array<>();
         this.attachedMapObjects.add(mapObject);
+        this.properties = new Array<>();
         mapObject.attachedMapObjectManager = this;
+        mapObject.properties = this.properties;
         mapObject.id = idIncrementer ++;
         this.id = mapObject.id;
         addCopyOfMapObjectToAllOtherMapSpritesOfThisSpriteTool(mapObject, mapSprite);
