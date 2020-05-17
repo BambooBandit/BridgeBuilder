@@ -26,6 +26,7 @@ public class PropertyPresetDialog extends Window
     private Table newLightProperty;
     private Table newBlockedProperty;
     private Table newRayhandlerProperty;
+    private Table newPerspectiveProperty;
 
     private Table presetTable;
 
@@ -99,7 +100,7 @@ public class PropertyPresetDialog extends Window
         }
         else
         {
-
+            this.presetTable.add(this.newPerspectiveProperty).pad(5);
         }
     }
 
@@ -120,6 +121,7 @@ public class PropertyPresetDialog extends Window
         this.createLight();
         this.createBlocked();
         this.createRayhandler();
+        this.createPerspective();
     }
 
     private void createTop()
@@ -276,6 +278,52 @@ public class PropertyPresetDialog extends Window
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
                 AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "rayhandler", "");
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
+    private void createPerspective()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newPerspectiveProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newPerspectiveProperty.background(spriteDrawable);
+        this.newPerspectiveProperty.add(new Label("Perspective", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("bottomPerspective", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("topPerspective", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        this.newPerspectiveProperty.add(table);
+        this.newPerspectiveProperty.setTouchable(Touchable.enabled);
+        this.newPerspectiveProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newPerspectiveProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newPerspectiveProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "bottomPerspective", "1");
+                AddProperty addSecondProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "topPerspective", "1");
+                addProperty.addAddPropertyCommandToChain(addSecondProperty);
                 map.executeCommand(addProperty);
                 return false;
             }

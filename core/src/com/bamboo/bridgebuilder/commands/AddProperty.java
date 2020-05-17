@@ -21,6 +21,8 @@ public class AddProperty implements Command
 
     private String property, value;
 
+    private Array<AddProperty> chainedAddPropertyCommands; // Used for adding multiple properties in one execution
+
     public AddProperty(Map map, PropertyTools tool, Layer selectedLayer, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
     {
         this.map = map;
@@ -91,6 +93,10 @@ public class AddProperty implements Command
                 map.propertyMenu.mapPropertyPanel.properties.add(propertyFields.first());
             map.propertyMenu.rebuild();
         }
+
+        if(this.chainedAddPropertyCommands != null)
+            for(int i = 0; i < this.chainedAddPropertyCommands.size; i ++)
+                this.chainedAddPropertyCommands.get(i).execute();
     }
 
     @Override
@@ -118,5 +124,16 @@ public class AddProperty implements Command
         else
             this.map.propertyMenu.mapPropertyPanel.properties.removeIndex(this.map.propertyMenu.mapPropertyPanel.properties.size - 1);
         this.map.propertyMenu.rebuild();
+
+        if(this.chainedAddPropertyCommands != null)
+            for(int i = 0; i < this.chainedAddPropertyCommands.size; i ++)
+                this.chainedAddPropertyCommands.get(i).undo();
+    }
+
+    public void addAddPropertyCommandToChain(AddProperty addProperty)
+    {
+        if(this.chainedAddPropertyCommands == null)
+            this.chainedAddPropertyCommands = new Array<>();
+        this.chainedAddPropertyCommands.add(addProperty);
     }
 }
