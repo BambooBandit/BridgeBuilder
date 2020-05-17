@@ -62,6 +62,10 @@ public class AttachedMapObjectManager
 
     public void removeAttachedMapObject(MapObject mapObject)
     {
+        if(mapObject instanceof MapPoint)
+            ((MapPoint) mapObject).destroyLight();
+        else if(mapObject instanceof MapPolygon)
+            ((MapPolygon) mapObject).destroyBody();
         this.attachedMapObjects.removeValue(mapObject, true);
 
         for(int i = 0; i < this.map.layers.size; i ++)
@@ -80,6 +84,11 @@ public class AttachedMapObjectManager
                     {
                         if(child.attachedMapObjects.get(s).id == mapObject.id)
                         {
+                            MapObject attachedMapObject = child.attachedMapObjects.get(s);
+                            if(attachedMapObject instanceof MapPoint)
+                                ((MapPoint) attachedMapObject).destroyLight();
+                            else if(attachedMapObject instanceof MapPolygon)
+                                ((MapPolygon) attachedMapObject).destroyBody();
                             child.attachedMapObjects.removeIndex(s);
                             s --;
                         }

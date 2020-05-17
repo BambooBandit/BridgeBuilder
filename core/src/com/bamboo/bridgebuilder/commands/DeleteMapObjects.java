@@ -2,9 +2,7 @@ package com.bamboo.bridgebuilder.commands;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.bamboo.bridgebuilder.map.Layer;
-import com.bamboo.bridgebuilder.map.MapObject;
-import com.bamboo.bridgebuilder.map.SpriteLayer;
+import com.bamboo.bridgebuilder.map.*;
 
 public class DeleteMapObjects implements Command
 {
@@ -44,7 +42,14 @@ public class DeleteMapObjects implements Command
             }
             this.deletedObjects.addAll(this.selectedObjects);
             for(int i = 0; i < this.selectedObjects.size; i ++)
-                this.selectedObjects.get(i).unselect();
+            {
+                MapObject mapObject = this.selectedObjects.get(i);
+                if(mapObject instanceof MapPoint)
+                    ((MapPoint) mapObject).destroyLight();
+                else if(mapObject instanceof MapPolygon)
+                    ((MapPolygon) mapObject).destroyBody();
+                mapObject.unselect();
+            }
             this.selectedLayer.children.removeAll(this.selectedObjects, true);
             this.selectedLayer.map.propertyMenu.rebuild();
             this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
