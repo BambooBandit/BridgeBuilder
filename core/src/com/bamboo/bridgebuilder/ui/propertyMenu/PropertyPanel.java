@@ -92,7 +92,7 @@ public class PropertyPanel extends Group
         if(light)
         {
             if(Utils.getLightField(properties) == null) // An object can only have maximum one light.
-                properties.add(new LightPropertyField(this.skin, menu, properties, true, 1, 1, 1, 1, 100, 25));
+                properties.add(new LightPropertyField(this.skin, menu, properties, true, 1, 1, 1, 1, 5, 25));
         }
         else
             properties.add(new FieldFieldPropertyValuePropertyField("Property", "Value", this.skin, menu, properties, true));

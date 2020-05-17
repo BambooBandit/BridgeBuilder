@@ -147,15 +147,27 @@ public class PropertyToolPane extends Group
                         for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
                         {
                             MapObject mapObject = mapSprite.attachedMapObjects.get(s);
-                            // Set blocked
+                            // Map polygon
                             if(mapObject instanceof MapPolygon)
                             {
                                 MapPolygon mapPolygon = (MapPolygon) mapObject;
+                                // Set blocked
                                 PropertyField propertyField = Utils.getPropertyField(mapPolygon.properties, "blocked");
                                 if (propertyField != null)
                                     mapPolygon.createBody();
                                 else
                                     mapPolygon.destroyBody();
+                            }
+                            // Map point
+                            else
+                            {
+                                MapPoint mapPoint = (MapPoint) mapObject;
+                                // Create light
+                                PropertyField propertyField = Utils.getLightField(mapPoint.properties);
+                                if (propertyField != null)
+                                    mapPoint.createLight();
+                                else
+                                    mapPoint.destroyLight();
                             }
                         }
                     }
@@ -168,15 +180,27 @@ public class PropertyToolPane extends Group
                 for(int k = 0; k < objectLayer.children.size; k ++)
                 {
                     MapObject mapObject = objectLayer.children.get(k);
-                    // Set blocked
+                    // Map polygons
                     if(mapObject instanceof MapPolygon)
                     {
                         MapPolygon mapPolygon = (MapPolygon) mapObject;
+                        // Set blocked
                         PropertyField propertyField = Utils.getPropertyField(mapPolygon.properties, "blocked");
                         if (propertyField != null)
                             mapPolygon.createBody();
                         else
                             mapPolygon.destroyBody();
+                    }
+                    // Map point
+                    else
+                    {
+                        MapPoint mapPoint = (MapPoint) mapObject;
+                        // Create light
+                        PropertyField propertyField = Utils.getLightField(mapPoint.properties);
+                        if (propertyField != null)
+                            mapPoint.createLight();
+                        else
+                            mapPoint.destroyLight();
                     }
                 }
             }

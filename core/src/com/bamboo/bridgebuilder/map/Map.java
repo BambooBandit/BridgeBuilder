@@ -154,7 +154,7 @@ public class Map implements Screen
         this.editor.batch.setProjectionMatrix(camera.combined);
         this.editor.batch.begin();
         //spritebatch begin
-        drawSpriteLayers();
+        drawSpriteLayersAndLights();
         //spritebatch end
         this.editor.batch.end();
 
@@ -330,15 +330,33 @@ public class Map implements Screen
         this.hoveredChild.drawHoverOutline();
     }
 
-    private void drawSpriteLayers()
+    private void drawSpriteLayersAndLights()
     {
+        boolean renderedRayhandler = false;
         for(int i = 0; i < this.layers.size; i ++)
         {
-            if(this.layers.get(i) instanceof SpriteLayer)
+            Layer layer = this.layers.get(i);
+            if(layer instanceof SpriteLayer)
             {
-                if (this.layers.get(i).layerField.visibleImg.isVisible() && this.layers.get(i).overrideSprite == null)
-                    this.layers.get(i).draw();
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                if (spriteLayer.layerField.visibleImg.isVisible() && spriteLayer.overrideSprite == null)
+                    spriteLayer.draw();
             }
+            else if(Utils.getPropertyField(layer.properties, "rayhandler") != null)
+            {
+                renderedRayhandler = true;
+                this.editor.batch.end();
+                this.rayHandler.setCombinedMatrix(camera);
+                this.rayHandler.updateAndRender();
+                this.editor.batch.begin();
+            }
+        }
+        if(!renderedRayhandler)
+        {
+            this.editor.batch.end();
+            this.rayHandler.setCombinedMatrix(camera);
+            this.rayHandler.updateAndRender();
+            this.editor.batch.begin();
         }
     }
 

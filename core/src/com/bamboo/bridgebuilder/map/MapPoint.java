@@ -1,14 +1,18 @@
 package com.bamboo.bridgebuilder.map;
 
+import box2dLight.PointLight;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.bamboo.bridgebuilder.EditorPoint;
+import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LightPropertyField;
 
 public class MapPoint extends MapObject
 {
     public static float[] pointShape = new float[10];
     public EditorPoint point;
+    public PointLight light;
 
     public MapPoint(Map map, Layer layer, float x, float y)
     {
@@ -39,6 +43,9 @@ public class MapPoint extends MapObject
 
         this.moveBox.setPosition(x, y);
         setOriginBasedOnParentSprite();
+
+        if(this.light != null)
+            this.light.setPosition(this.point.getTransformedX(), this.point.getTransformedY());
     }
 
     @Override
@@ -186,6 +193,8 @@ public class MapPoint extends MapObject
         mapPoint.id = this.id;
         mapPoint.attachedMapObjectManager = this.attachedMapObjectManager;
         mapPoint.properties = this.attachedMapObjectManager.properties;
+        if(this.light != null)
+            mapPoint.createLight();
         return mapPoint;
     }
 
@@ -195,6 +204,8 @@ public class MapPoint extends MapObject
         if (this.attachedSprite == null)
             return;
         this.point.setScale(scale, scale);
+        if(this.light != null)
+            this.light.setPosition(this.point.getTransformedX(), this.point.getTransformedY());
     }
 
     @Override
@@ -209,6 +220,8 @@ public class MapPoint extends MapObject
         if (this.attachedSprite == null)
             return;
         this.point.setRotation(degrees);
+        if(this.light != null)
+            this.light.setPosition(this.point.getTransformedX(), this.point.getTransformedY());
     }
 
     @Override
@@ -221,5 +234,42 @@ public class MapPoint extends MapObject
         float width = this.attachedSprite.sprite.getWidth();
         float height = this.attachedSprite.sprite.getHeight();
         this.point.setOrigin((-xOffset) + width / 2, (-yOffset) + height / 2);
+    }
+
+    public void createLight()
+    {
+        if(this.light != null)
+        {
+            updateLightProperties();
+            return;
+        }
+        LightPropertyField lightField = Utils.getLightField(this.properties);
+        this.light = new PointLight(this.map.rayHandler, lightField.getRayAmount());
+        this.light.setColor(lightField.getR(), lightField.getG(), lightField.getB(), lightField.getA());
+        this.light.setDistance(lightField.getDistance());
+        this.light.setPosition(getX(), getY());
+    }
+
+    public void updateLightProperties()
+    {
+        if(this.light == null)
+            return;
+        LightPropertyField lightField = Utils.getLightField(this.properties);
+        if(this.light.getRayNum() != lightField.getRayAmount())
+        {
+            this.destroyLight();
+            this.createLight();
+            return;
+        }
+        this.light.setColor(lightField.getR(), lightField.getG(), lightField.getB(), lightField.getA());
+        this.light.setDistance(lightField.getDistance());
+    }
+
+    public void destroyLight()
+    {
+        if(this.light == null)
+            return;
+        this.light.remove();
+        this.light = null;
     }
 }

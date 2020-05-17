@@ -368,6 +368,8 @@ public class MapPolygon extends MapObject
         mapPolygon.id = this.id;
         mapPolygon.attachedMapObjectManager = this.attachedMapObjectManager;
         mapPolygon.properties = this.attachedMapObjectManager.properties;
+        if(this.body != null)
+            mapPolygon.createBody();
         return mapPolygon;
     }
 }

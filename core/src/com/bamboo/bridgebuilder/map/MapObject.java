@@ -69,5 +69,4 @@ public abstract class MapObject extends LayerChild
     public abstract void setScale(float scale);
     public abstract float getRotation();
     public abstract void setOriginBasedOnParentSprite();
-
 }

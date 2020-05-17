@@ -25,6 +25,7 @@ public class PropertyPresetDialog extends Window
     private Table newTopProperty;
     private Table newLightProperty;
     private Table newBlockedProperty;
+    private Table newRayhandlerProperty;
 
     private Table presetTable;
 
@@ -94,7 +95,7 @@ public class PropertyPresetDialog extends Window
         }
         else if(this.map.selectedLayer != null)
         {
-
+            this.presetTable.add(this.newRayhandlerProperty).pad(5);
         }
         else
         {
@@ -118,6 +119,7 @@ public class PropertyPresetDialog extends Window
         this.createTop();
         this.createLight();
         this.createBlocked();
+        this.createRayhandler();
     }
 
     private void createTop()
@@ -173,7 +175,7 @@ public class PropertyPresetDialog extends Window
         this.newLightProperty.background(spriteDrawable);
         this.newLightProperty.add(new Label("Point Light", this.skin)).padTop(pad / 2).row();
         table = new Table();
-        lightPropertyField = new LightPropertyField(this.skin, null, null, false, 1, 1, 1, 1, 10, 100);
+        lightPropertyField = new LightPropertyField(this.skin, null, null, false, 1, 1, 1, 1, 5, 25);
         lightPropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
         lightPropertyField.clearListeners();
         table.add(lightPropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
@@ -234,6 +236,46 @@ public class PropertyPresetDialog extends Window
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
                 AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "blocked", "");
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
+    private void createRayhandler()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newRayhandlerProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newRayhandlerProperty.background(spriteDrawable);
+        this.newRayhandlerProperty.add(new Label("Rayhandler", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("rayhandler", "", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        this.newRayhandlerProperty.add(table);
+        this.newRayhandlerProperty.setTouchable(Touchable.enabled);
+        this.newRayhandlerProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newRayhandlerProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newRayhandlerProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "rayhandler", "");
                 map.executeCommand(addProperty);
                 return false;
             }
