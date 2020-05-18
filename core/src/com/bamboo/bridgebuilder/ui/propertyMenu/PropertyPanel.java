@@ -200,7 +200,8 @@ public class PropertyPanel extends Group
             Array<PropertyField> properties = map.selectedObjects.get(i).properties;
             properties.removeValue(propertyField, false);
         }
-        map.selectedLayer.properties.removeValue(propertyField, false);
+        if(map.selectedLayer != null)
+            map.selectedLayer.properties.removeValue(propertyField, false);
         map.propertyMenu.mapPropertyPanel.properties.removeValue(propertyField, false);
     }
 

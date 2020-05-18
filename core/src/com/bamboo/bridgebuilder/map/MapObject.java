@@ -33,6 +33,8 @@ public abstract class MapObject extends LayerChild
     @Override
     public void setPosition(float x, float y)
     {
+        this.x = x;
+        this.y = y;
         this.moveBox.setPosition(x, y);
     }
 
@@ -65,8 +67,5 @@ public abstract class MapObject extends LayerChild
 
     public abstract void draw(float xOffset, float yOffset);
     public abstract MapObject copy();
-    public abstract void setRotation(float degrees);
-    public abstract void setScale(float scale);
-    public abstract float getRotation();
     public abstract void setOriginBasedOnParentSprite();
 }

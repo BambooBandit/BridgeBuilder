@@ -26,6 +26,7 @@ public class MapPolygon extends MapObject
         super(map, layer, x, y);
         this.polygon = new EditorPolygon(vertices);
         this.polygon.setPosition(x, y);
+        setPosition(x, y);
         computeCentroid();
     }
 
@@ -34,6 +35,7 @@ public class MapPolygon extends MapObject
         super(map, mapSprite, x, y);
         this.polygon = new EditorPolygon(vertices);
         this.polygon.setPosition(x, y);
+        setPosition(x, y);
         computeCentroid();
         this.setOriginBasedOnParentSprite();
     }
@@ -122,6 +124,14 @@ public class MapPolygon extends MapObject
     }
 
     @Override
+    public float getScale()
+    {
+        if(this.attachedSprite == null)
+            return 1;
+        return this.attachedSprite.scale;
+    }
+
+    @Override
     public float getRotation()
     {
         return this.polygon.getRotation();
@@ -174,13 +184,13 @@ public class MapPolygon extends MapObject
     @Override
     public float getX()
     {
-        return this.polygon.getX();
+        return this.x;
     }
 
     @Override
     public float getY()
     {
-        return this.polygon.getY();
+        return this.y;
     }
 
     @Override

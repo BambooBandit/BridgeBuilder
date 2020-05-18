@@ -60,13 +60,13 @@ public class AttachedMapObjectManager
         }
     }
 
-    public void removeAttachedMapObject(MapObject mapObject)
+    public boolean removeAttachedMapObject(MapObject mapObject)
     {
         if(mapObject instanceof MapPoint)
             ((MapPoint) mapObject).destroyLight();
         else if(mapObject instanceof MapPolygon)
             ((MapPolygon) mapObject).destroyBody();
-        this.attachedMapObjects.removeValue(mapObject, true);
+        boolean removed = this.attachedMapObjects.removeValue(mapObject, true);
 
         for(int i = 0; i < this.map.layers.size; i ++)
         {
@@ -96,6 +96,7 @@ public class AttachedMapObjectManager
                 }
             }
         }
+        return removed;
     }
 
     public void unselect(MapSprite mapSprite)

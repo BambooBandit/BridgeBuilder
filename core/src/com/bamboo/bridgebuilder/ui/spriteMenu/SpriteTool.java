@@ -172,7 +172,13 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
         if(this.attachedMapObjectManagers == null)
             return;
         for(int i = 0; i < this.attachedMapObjectManagers.size; i ++)
-            this.attachedMapObjectManagers.get(i).removeAttachedMapObject(mapObject);
+        {
+            if (this.attachedMapObjectManagers.get(i).removeAttachedMapObject(mapObject))
+            {
+                this.attachedMapObjectManagers.removeIndex(i);
+                i --;
+            }
+        }
     }
 
     public boolean hasAttachedMapObjects()

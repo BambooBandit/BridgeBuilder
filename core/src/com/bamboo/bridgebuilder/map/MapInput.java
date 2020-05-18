@@ -13,6 +13,8 @@ import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.*;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 
@@ -530,13 +532,47 @@ public class MapInput implements InputProcessor
 
     private boolean handlePreviewSpritePositionUpdate(float x, float y)
     {
+        if(map.selectedLayer == null)
+            return false;
         SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
         if(spriteTool == null)
             return false;
         for(int i = 0; i < spriteTool.previewSprites.size; i ++)
         {
             Sprite previewSprite = spriteTool.previewSprites.get(i);
-            previewSprite.setPosition(x - previewSprite.getWidth() / 2, y - previewSprite.getHeight() / 2);
+            if(editor.fileMenu.toolPane.perspective.selected)
+            {
+                float perspective = 0;
+                PropertyField bottomProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "bottomPerspective");
+                PropertyField topProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "topPerspective");
+                if(bottomProperty != null && topProperty != null)
+                {
+                    FieldFieldPropertyValuePropertyField bottomPropertyField = (FieldFieldPropertyValuePropertyField) bottomProperty;
+                    FieldFieldPropertyValuePropertyField topPropertyField = (FieldFieldPropertyValuePropertyField) topProperty;
+                    float perspectiveBottom = Float.parseFloat(bottomPropertyField.value.getText());
+                    float perspectiveTop = Float.parseFloat(topPropertyField.value.getText());
+
+                    float mapHeight = map.selectedLayer.height;
+                    float positionY = previewSprite.getY();
+
+                    float coeff = positionY / mapHeight;
+                    float delta = perspectiveTop - perspectiveBottom;
+
+                    perspective = perspectiveBottom + coeff * delta;
+                }
+
+                float randomScale = editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
+                float perspectiveScale = randomScale + perspective;
+                previewSprite.setOriginCenter();
+                previewSprite.setScale(perspectiveScale);
+
+                float xCenterScreen = map.selectedLayer.width / 2f;
+                float xCenterSprite = x + previewSprite.getWidth() / 2;
+                float perspectiveX = x + ((xCenterSprite - xCenterScreen) * perspective);
+                previewSprite.setPosition(perspectiveX - ((previewSprite.getWidth() * previewSprite.getScaleX()) / 2f), y - previewSprite.getHeight() / 2);
+            }
+            else
+                previewSprite.setPosition(x - previewSprite.getWidth() / 2, y - previewSprite.getHeight() / 2);
         }
         return false;
     }

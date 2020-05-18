@@ -19,6 +19,7 @@ public class MapPoint extends MapObject
         super(map, layer, x, y);
         this.point = new EditorPoint();
         this.point.setPosition(x, y);
+        setPosition(x, y);
     }
 
     public MapPoint(Map map, MapSprite mapSprite, float x, float y)
@@ -26,6 +27,7 @@ public class MapPoint extends MapObject
         super(map, mapSprite, x, y);
         this.point = new EditorPoint();
         this.point.setPosition(x, y);
+        setPosition(x, y);
         setOriginBasedOnParentSprite();
     }
 
@@ -51,13 +53,13 @@ public class MapPoint extends MapObject
     @Override
     public float getX()
     {
-        return this.point.getX();
+        return this.x;
     }
 
     @Override
     public float getY()
     {
-        return this.point.getY();
+        return this.y;
     }
 
     @Override
@@ -206,6 +208,14 @@ public class MapPoint extends MapObject
         this.point.setScale(scale, scale);
         if(this.light != null)
             this.light.setPosition(this.point.getTransformedX(), this.point.getTransformedY());
+    }
+
+    @Override
+    public float getScale()
+    {
+        if(this.attachedSprite == null)
+            return 1;
+        return this.attachedSprite.scale;
     }
 
     @Override

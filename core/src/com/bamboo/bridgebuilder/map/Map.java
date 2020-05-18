@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -25,6 +26,8 @@ import com.bamboo.bridgebuilder.commands.DeleteMapSprites;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
@@ -518,8 +521,42 @@ public class Map implements Screen
             for (int i = 0; i < getSpriteToolFromSelectedTools().previewSprites.size; i++)
             {
                 float randomScale = editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
-                spriteTool.previewSprites.get(i).setScale(randomScale, randomScale);
-                spriteTool.previewSprites.get(i).setPosition(coords.x - spriteTool.previewSprites.get(i).getWidth() / 2, coords.y - spriteTool.previewSprites.get(i).getHeight() / 2);
+                Sprite previewSprite = spriteTool.previewSprites.get(i);
+                if(editor.fileMenu.toolPane.perspective.selected)
+                {
+                    float perspective = 0;
+                    PropertyField bottomProperty = Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "bottomPerspective");
+                    PropertyField topProperty = Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "topPerspective");
+                    if (bottomProperty != null && topProperty != null)
+                    {
+                        FieldFieldPropertyValuePropertyField bottomPropertyField = (FieldFieldPropertyValuePropertyField) bottomProperty;
+                        FieldFieldPropertyValuePropertyField topPropertyField = (FieldFieldPropertyValuePropertyField) topProperty;
+                        float perspectiveBottom = Float.parseFloat(bottomPropertyField.value.getText());
+                        float perspectiveTop = Float.parseFloat(topPropertyField.value.getText());
+
+                        float mapHeight = selectedLayer.height;
+                        float positionY = previewSprite.getY();
+
+                        float coeff = positionY / mapHeight;
+                        float delta = perspectiveTop - perspectiveBottom;
+
+                        perspective = perspectiveBottom + coeff * delta;
+                    }
+
+                    float perspectiveScale = randomScale + perspective;
+                    previewSprite.setOriginCenter();
+                    previewSprite.setScale(perspectiveScale);
+
+                    float xCenterScreen = selectedLayer.width / 2f;
+                    float xCenterSprite = coords.x + previewSprite.getWidth() / 2;
+                    float perspectiveX = coords.x + ((xCenterSprite - xCenterScreen) * perspective);
+                    previewSprite.setPosition(perspectiveX - ((previewSprite.getWidth() * previewSprite.getScaleX()) / 2f), coords.y - previewSprite.getHeight() / 2);
+                }
+                else
+                {
+                    previewSprite.setScale(randomScale, randomScale);
+                    previewSprite.setPosition(coords.x - previewSprite.getWidth() / 2, coords.y - previewSprite.getHeight() / 2);
+                }
             }
         }
     }

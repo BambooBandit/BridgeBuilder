@@ -297,14 +297,14 @@ public class PropertyPresetDialog extends Window
         this.newPerspectiveProperty.background(spriteDrawable);
         this.newPerspectiveProperty.add(new Label("Perspective", this.skin)).padTop(pad / 2).row();
         table = new Table();
-        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("bottomPerspective", "...", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
-        fieldFieldPropertyValuePropertyField.clearListeners();
-        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
         fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("topPerspective", "...", this.skin, null, null, false);
         fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
-        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad / 6).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("bottomPerspective", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad).row();
         this.newPerspectiveProperty.add(table);
         this.newPerspectiveProperty.setTouchable(Touchable.enabled);
         this.newPerspectiveProperty.addListener(new InputListener(){
@@ -321,8 +321,8 @@ public class PropertyPresetDialog extends Window
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
-                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "bottomPerspective", "1");
-                AddProperty addSecondProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "topPerspective", "1");
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "topPerspective", "1");
+                AddProperty addSecondProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "Perspective", "1");
                 addProperty.addAddPropertyCommandToChain(addSecondProperty);
                 map.executeCommand(addProperty);
                 return false;

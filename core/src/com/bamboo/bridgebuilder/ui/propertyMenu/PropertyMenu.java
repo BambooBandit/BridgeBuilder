@@ -26,7 +26,7 @@ public class PropertyMenu extends Group
     public RemoveablePropertyPanel spritePropertyPanel;
     public Label propertyTypeLabel;
     private PropertyPanel propertyPanel; // Custom properties
-    private PropertyToolPane toolPane;
+    public PropertyToolPane toolPane;
 
     public static int toolHeight = 35;
 

@@ -21,7 +21,7 @@ import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 public class MapSprite extends LayerChild
 {
-    public float rotation, scale, perspectiveScale;
+    public float rotation, scale;
     public EditorPolygon polygon; // Used to show the sprite bounds even when scaled and rotated
     public RotationBox rotationBox;
     public MoveBox moveBox;
@@ -50,7 +50,6 @@ public class MapSprite extends LayerChild
         this.sprite.setOriginCenter();
         x -= this.sprite.getWidth() / 2;
         y -= this.sprite.getHeight() / 2;
-        this.sprite.setPosition(x, y);
         this.width = this.sprite.getWidth();
         this.height = this.sprite.getHeight();
         this.tool = tool;
@@ -81,11 +80,28 @@ public class MapSprite extends LayerChild
                 attachedMapObjectManager.addCopyOfMapObjectToThisMapSprite(this);
             }
         }
+        this.setPosition(x, y);
+        this.updatePerspective();
     }
 
     @Override
     public void setPosition(float x, float y)
     {
+        float oldX = this.x;
+        float oldY = this.y;
+        this.x = x;
+        this.y = y;
+        float offsetDifferenceX = this.x - oldX;
+        float offsetDifferenceY = this.y - oldY;
+
+        if(map.editor.fileMenu.toolPane.perspective.selected)
+        {
+            float xCenterScreen = this.layer.width / 2f;
+            float xCenterSprite = this.x + this.width / 2;
+            float perspectiveX = this.x + ((xCenterSprite - xCenterScreen) * this.perspective);
+            x = perspectiveX;
+        }
+
         this.polygon.setPosition(x, y);
         this.sprite.setPosition(x, y);
 
@@ -94,18 +110,27 @@ public class MapSprite extends LayerChild
         this.rotationBox.setPosition(x, y);
         this.moveBox.setPosition(x, y);
         this.scaleBox.setPosition(x, y);
+
+        if(this.tool.hasAttachedMapObjects())
+        {
+            for(int i = 0; i < this.attachedMapObjects.size; i ++)
+            {
+                MapObject mapObject = this.attachedMapObjects.get(i);
+                mapObject.setPosition(mapObject.getX() + offsetDifferenceX, mapObject.getY() + offsetDifferenceY);
+            }
+        }
     }
 
     @Override
     public float getX()
     {
-        return this.sprite.getX();
+        return this.x;
     }
 
     @Override
     public float getY()
     {
-        return this.sprite.getY();
+        return this.y;
     }
 
     @Override
@@ -372,29 +397,24 @@ public class MapSprite extends LayerChild
         }
     }
 
-//    public void rotate(float degree)
-//    {
-//        this.rotation += degree;
-//        Utils.spritePositionCopy.set(position);
-//        Vector2 endPos = Utils.spritePositionCopy.sub(Utils.centerOrigin).rotate(degree).add(Utils.centerOrigin); // TODO don't assume this was set in case rotate is used somewhere else
-//        setPosition(endPos.x, endPos.y);
-//        this.sprite.rotate(degree);
-//        this.polygon.rotate(degree);
-//        if(this.tool.topSprites != null)
-//        {
-//            for(int i = 0; i < this.tool.topSprites.size; i ++)
-//                this.tool.topSprites.get(i).rotate(degree);
-//        }
-//
-//        LabelFieldPropertyValuePropertyField labelFieldProperty = Utils.getLockedPropertyField(this.lockedProperties, "Rotation");
-//        labelFieldProperty.value.setText(Float.toString(this.rotation));
-//    }
+    @Override
+    public float getRotation()
+    {
+        return this.rotation;
+    }
 
+    @Override
     public void setScale(float scale)
     {
         if(scale <= 0)
             return;
         this.scale = scale;
+
+        if(map.editor.fileMenu.toolPane.perspective.selected)
+        {
+            float perspectiveScale = this.scale + this.perspective;
+            scale = perspectiveScale;
+        }
         this.sprite.setScale(scale);
         this.polygon.setScale(scale, scale);
         if(this.tool.topSprites != null)
@@ -403,8 +423,23 @@ public class MapSprite extends LayerChild
                 this.tool.topSprites.get(i).setScale(scale);
         }
 
+        if(this.tool.hasAttachedMapObjects())
+        {
+            for(int i = 0; i < this.attachedMapObjects.size; i ++)
+            {
+                MapObject mapObject = this.attachedMapObjects.get(i);
+                mapObject.setScale(scale);
+            }
+        }
+
         LabelFieldPropertyValuePropertyField labelFieldProperty = Utils.getLockedPropertyField(this.lockedProperties, "Scale");
         labelFieldProperty.value.setText(Float.toString(this.scale));
+    }
+
+    @Override
+    public float getScale()
+    {
+        return this.scale;
     }
 
     @Override
@@ -424,35 +459,6 @@ public class MapSprite extends LayerChild
             return;
         for(int i = 0; i < this.attachedMapObjects.size; i ++)
             this.attachedMapObjects.get(i).unselect();
-    }
-
-    public void updatePerspectiveScale()
-    {
-//        if(map.propertyMenu.mapPropertyPanel.getPropertyField("perspectiveMinScale") == null || map.propertyMenu.mapPropertyPanel.getPropertyField("perspectiveMaxScale") == null)
-//            return;
-//        float perspectiveMinScale = Float.parseFloat(map.propertyMenu.mapPropertyPanel.getPropertyField("perspectiveMinScale").value.getText());
-//        float perspectiveMaxScale = Float.parseFloat(map.propertyMenu.mapPropertyPanel.getPropertyField("perspectiveMaxScale").value.getText());
-//        float mapHeight = layer.height;
-//        float positionY = position.y;
-//
-//        float coeff = positionY / mapHeight;
-//
-//        float delta = perspectiveMinScale - perspectiveMaxScale;
-//
-//        this.perspectiveScale = perspectiveMaxScale + coeff * delta;
-//
-//        float totalScale = scale + perspectiveScale;
-//
-//        if(totalScale <= 0)
-//            return;
-//
-//        this.sprite.setScale(totalScale);
-//        this.polygon.setScale(totalScale, totalScale);
-//        if(this.tool.topSprites != null)
-//        {
-//            for(int i = 0; i < this.tool.topSprites.size; i ++)
-//                this.tool.topSprites.get(i).setScale(totalScale);
-//        }
     }
 
     public void addAttachedMapObject(MapObject mapObject)

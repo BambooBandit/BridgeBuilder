@@ -33,7 +33,7 @@ public class DeleteMapObjects implements Command
                     for(int i = 0; i < this.selectedObjects.size; i ++)
                     {
                         MapObject mapObject = this.selectedObjects.get(i);
-                        mapObject.attachedMapObjectManager.removeAttachedMapObject(mapObject);
+                        mapObject.attachedSprite.removeAttachedMapObject(mapObject);
                     }
                     this.selectedLayer.map.propertyMenu.rebuild();
                     this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());

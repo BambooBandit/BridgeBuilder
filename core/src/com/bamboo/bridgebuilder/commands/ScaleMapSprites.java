@@ -3,7 +3,6 @@ package com.bamboo.bridgebuilder.commands;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.bamboo.bridgebuilder.Utils;
-import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.map.MapSprite;
 
 public class ScaleMapSprites implements Command
@@ -35,14 +34,6 @@ public class ScaleMapSprites implements Command
             float originalScale = entry.value;
             this.resultingScaleAddition = scale;
             mapSprite.setScale(originalScale + this.resultingScaleAddition);
-            if(mapSprite.tool.hasAttachedMapObjects()) //TODO should be part of the mapSprite.setScale() method
-            {
-                for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
-                {
-                    MapObject mapObject = mapSprite.attachedMapObjects.get(i);
-                    mapObject.setScale(originalScale + this.resultingScaleAddition);
-                }
-            }
         }
     }
 
@@ -57,14 +48,6 @@ public class ScaleMapSprites implements Command
             MapSprite mapSprite = entry.key;
             float originalScale = entry.value;
             mapSprite.setScale(originalScale + this.resultingScaleAddition);
-            if(mapSprite.tool.hasAttachedMapObjects())
-            {
-                for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
-                {
-                    MapObject mapObject = mapSprite.attachedMapObjects.get(i);
-                    mapObject.setScale(originalScale + this.resultingScaleAddition);
-                }
-            }
         }
     }
 
@@ -79,14 +62,6 @@ public class ScaleMapSprites implements Command
             MapSprite mapSprite = entry.key;
             Float originalScale = entry.value;
             mapSprite.setScale(originalScale);
-            if(mapSprite.tool.hasAttachedMapObjects())
-            {
-                for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
-                {
-                    MapObject mapObject = mapSprite.attachedMapObjects.get(i);
-                    mapObject.setScale(originalScale);
-                }
-            }
         }
     }
 
