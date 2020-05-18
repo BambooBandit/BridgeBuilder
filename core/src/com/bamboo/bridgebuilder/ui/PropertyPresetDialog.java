@@ -322,7 +322,7 @@ public class PropertyPresetDialog extends Window
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
                 AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "topPerspective", "1");
-                AddProperty addSecondProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "Perspective", "1");
+                AddProperty addSecondProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "bottomPerspective", "1");
                 addProperty.addAddPropertyCommandToChain(addSecondProperty);
                 map.executeCommand(addProperty);
                 return false;
