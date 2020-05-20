@@ -13,6 +13,7 @@ import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.*;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
+import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
@@ -594,6 +595,7 @@ public class MapInput implements InputProcessor
         this.map.camera.position.x -= this.dragDifferencePos.x;
         this.map.camera.position.y -= this.dragDifferencePos.y;
         this.map.camera.update();
+        PropertyToolPane.updatePerspective(this.map);
         return false;
     }
 

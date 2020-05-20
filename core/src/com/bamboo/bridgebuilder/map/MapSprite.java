@@ -1,6 +1,7 @@
 package com.bamboo.bridgebuilder.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.Utils;
@@ -66,11 +69,46 @@ public class MapSprite extends LayerChild
         this.verts = new float[20];
         this.scale = 1;
 
-        this.lockedProperties.add(new LabelFieldPropertyValuePropertyField("ID", "0", map.skin, map.propertyMenu, null, false));
-        this.lockedProperties.add(new LabelFieldPropertyValuePropertyField("Rotation", "0", map.skin, map.propertyMenu, null, false));
-        this.lockedProperties.add(new LabelFieldPropertyValuePropertyField("Scale", "1", map.skin, map.propertyMenu, null, false));
-        this.lockedProperties.add(new LabelFieldPropertyValuePropertyField("Z", "0", map.skin, map.propertyMenu, null, false));
-        this.lockedProperties.add(new ColorPropertyField(map.skin, map.propertyMenu, null, false, 1, 1, 1, 1));
+        TextField.TextFieldFilter valueFilter = new TextField.TextFieldFilter()
+        {
+            @Override
+            public boolean acceptChar(TextField textField, char c)
+            {
+                return c == '.' || c == '-' || Character.isDigit(c);
+            }
+        };
+
+        LabelFieldPropertyValuePropertyField idProperty = new LabelFieldPropertyValuePropertyField("ID", "0", map.skin, map.propertyMenu, null, false);
+        LabelFieldPropertyValuePropertyField rotationProperty = new LabelFieldPropertyValuePropertyField("Rotation", "0", map.skin, map.propertyMenu, null, false);
+        LabelFieldPropertyValuePropertyField scaleProperty = new LabelFieldPropertyValuePropertyField("Scale", "1", map.skin, map.propertyMenu, null, false);
+        LabelFieldPropertyValuePropertyField zProperty = new LabelFieldPropertyValuePropertyField("Z", "0", map.skin, map.propertyMenu, null, false);
+        ColorPropertyField colorProperty = new ColorPropertyField(map.skin, map.propertyMenu, null, false, 1, 1, 1, 1);
+
+        this.lockedProperties.add(idProperty);
+        this.lockedProperties.add(rotationProperty);
+        this.lockedProperties.add(scaleProperty);
+        this.lockedProperties.add(zProperty);
+        this.lockedProperties.add(colorProperty);
+
+        zProperty.value.setTextFieldFilter(valueFilter);
+        zProperty.value.getListeners().clear();
+        TextField.TextFieldClickListener zListener = zProperty.value.new TextFieldClickListener(){
+            @Override
+            public boolean keyDown (InputEvent event, int keycode)
+            {
+                try
+                {
+                    if (keycode == Input.Keys.ENTER)
+                    {
+                        for(int i = 0; i < map.selectedSprites.size; i ++)
+                            map.selectedSprites.get(i).setZ(Float.parseFloat(zProperty.value.getText()));
+                    }
+                }
+                catch (NumberFormatException e) { }
+                return true;
+            }
+        };
+        zProperty.value.addListener(zListener);
 
         if(tool.hasAttachedMapObjects())
         {
@@ -96,7 +134,7 @@ public class MapSprite extends LayerChild
 
         if(map.editor.fileMenu.toolPane.perspective.selected)
         {
-            float xCenterScreen = this.layer.width / 2f;
+            float xCenterScreen = Utils.unprojectX(map.camera, Gdx.graphics.getWidth() / 2);
             float xCenterSprite = this.x + this.width / 2;
             float perspectiveX = this.x + ((xCenterSprite - xCenterScreen) * this.perspective);
             x = perspectiveX;

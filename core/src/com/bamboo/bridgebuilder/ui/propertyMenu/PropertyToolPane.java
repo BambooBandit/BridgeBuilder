@@ -9,7 +9,6 @@ import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.AddProperty;
 import com.bamboo.bridgebuilder.map.*;
-import com.bamboo.bridgebuilder.ui.PropertyPresetDialog;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;

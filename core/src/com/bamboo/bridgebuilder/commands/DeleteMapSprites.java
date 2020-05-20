@@ -29,13 +29,16 @@ public class DeleteMapSprites implements Command
             for(int i = 0; i < this.selectedSprites.size; i ++)
             {
                 MapSprite mapSprite = this.selectedSprites.get(i);
-                for(int k = 0; k < mapSprite.attachedMapObjects.size; k ++)
+                if(mapSprite.attachedMapObjects != null)
                 {
-                    MapObject mapObject = mapSprite.attachedMapObjects.get(k);
-                    if(mapObject instanceof MapPoint)
-                        ((MapPoint) mapObject).destroyLight();
-                    else if(mapObject instanceof MapPolygon)
-                        ((MapPolygon) mapObject).destroyBody();
+                    for (int k = 0; k < mapSprite.attachedMapObjects.size; k++)
+                    {
+                        MapObject mapObject = mapSprite.attachedMapObjects.get(k);
+                        if (mapObject instanceof MapPoint)
+                            ((MapPoint) mapObject).destroyLight();
+                        else if (mapObject instanceof MapPolygon)
+                            ((MapPolygon) mapObject).destroyBody();
+                    }
                 }
                 this.deletedSprites.put(this.selectedLayer.children.indexOf(mapSprite, true), mapSprite);
             }

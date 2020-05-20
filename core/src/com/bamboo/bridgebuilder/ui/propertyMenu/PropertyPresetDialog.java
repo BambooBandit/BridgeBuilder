@@ -1,4 +1,4 @@
-package com.bamboo.bridgebuilder.ui;
+package com.bamboo.bridgebuilder.ui.propertyMenu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -14,7 +14,6 @@ import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.map.MapPoint;
 import com.bamboo.bridgebuilder.map.MapPolygon;
-import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyTools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LightPropertyField;
 
@@ -321,8 +320,8 @@ public class PropertyPresetDialog extends Window
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
-                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "topPerspective", "1");
-                AddProperty addSecondProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "bottomPerspective", "1");
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "topPerspective", "0");
+                AddProperty addSecondProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "bottomPerspective", "0");
                 addProperty.addAddPropertyCommandToChain(addSecondProperty);
                 map.executeCommand(addProperty);
                 return false;

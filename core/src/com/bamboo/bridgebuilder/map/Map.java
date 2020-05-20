@@ -26,6 +26,7 @@ import com.bamboo.bridgebuilder.commands.DeleteMapSprites;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
+import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
@@ -75,6 +76,9 @@ public class Map implements Screen
     public MapInput input;
 
     public Skin skin;
+
+    public boolean shiftToPerspective = true;
+    public float lightShift = 0;
 
     // For undo/redo
     private int undoRedoPointer = -1;
@@ -148,6 +152,33 @@ public class Map implements Screen
     {
         Gdx.gl.glClearColor(r, g, b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if(editor.fileMenu.toolPane.lerpPerspective.selected)
+        {
+            FieldFieldPropertyValuePropertyField botPers = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "bottomPerspective");
+            if (botPers != null)
+            {
+                FieldFieldPropertyValuePropertyField topPers = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "topPerspective");
+                float top = Float.parseFloat(topPers.value.getText());
+                float bot = Float.parseFloat(botPers.value.getText());
+                if (this.shiftToPerspective)
+                {
+                    top += .01f;
+                    bot += .02f;
+                    if (bot >= 2.5f)
+                        this.shiftToPerspective = false;
+                } else
+                {
+                    top -= .01f;
+                    bot -= .02f;
+                    if (bot <= 0f)
+                        this.shiftToPerspective = true;
+                }
+                topPers.value.setText("" + top);
+                botPers.value.setText("" + bot);
+                PropertyToolPane.updatePerspective(this);
+            }
+        }
 
         this.world.step(delta, 1, 1);
 
@@ -349,18 +380,57 @@ public class Map implements Screen
             {
                 renderedRayhandler = true;
                 this.editor.batch.end();
-                this.rayHandler.setCombinedMatrix(camera);
-                this.rayHandler.updateAndRender();
+                renderlights();
                 this.editor.batch.begin();
             }
         }
         if(!renderedRayhandler)
         {
             this.editor.batch.end();
-            this.rayHandler.setCombinedMatrix(camera);
-            this.rayHandler.updateAndRender();
+            renderlights();
             this.editor.batch.begin();
         }
+    }
+
+    private void renderlights()
+    {
+//        if(shiftToPerspective)
+//        {
+//            lightShift += .001f;
+//            if(lightShift >= .075f)
+//                shiftToPerspective = false;
+//        }
+//        else
+//        {
+//            lightShift -= .001f;
+//            if(lightShift <= 0)
+//                shiftToPerspective = true;
+//        }
+//        float skew = lightShift; // To me, this is between 0 and 0.015
+//        skew = 0;
+//        float[] matrixValues = camera.combined.getValues();
+//        matrixValues[Matrix4.M31] = skew;
+//        matrixValues[Matrix4.M13] += skew * 7.5f;
+//
+//        camera.invProjectionView.set(camera.combined);
+//
+//        Matrix4.inv(camera.invProjectionView.val);
+//        camera.frustum.update(camera.invProjectionView);
+
+        this.rayHandler.setCombinedMatrix(camera);
+        this.rayHandler.updateAndRender();
+
+//        skew = 0f; // To me, this is between 0 and 0.015
+//        matrixValues = camera.combined.getValues();
+//        matrixValues[Matrix4.M31] = skew;
+//        matrixValues[Matrix4.M13] += skew * 7.5f;
+//
+//        camera.invProjectionView.set(camera.combined);
+//
+//        Matrix4.inv(camera.invProjectionView.val);
+//        camera.frustum.update(camera.invProjectionView);
+//
+//        camera.update();
     }
 
     private void drawObjectLayers()

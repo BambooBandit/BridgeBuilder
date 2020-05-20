@@ -2,7 +2,7 @@ package com.bamboo.bridgebuilder.ui.spriteMenu;
 
 public enum SpriteMenuTools
 {
-    SPRITE("sprite"), SPRITESELECT(null, "spriteLayer"), LINES(null, "lines"), DARK_MODE(null, "darkMode");
+    SPRITE("sprite"), SPRITESELECT(null, "spriteLayer"), LINES(null, "lines"), DARK_MODE(null, "darkMode"), NEW_SPRITESHEET(null, "newSpriteLayer");
 
     public String name;
     public String type;

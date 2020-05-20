@@ -11,6 +11,7 @@ import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.commands.SelectSpriteTool;
 import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.ui.propertyMenu.NewSpriteSheetDialog;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
 
@@ -26,6 +27,9 @@ public class SpriteMenuToolPane extends Group
     public SpriteMenuTool sprites;
     public SpriteMenuTool lines;
     public SpriteMenuTool darkMode;
+    public SpriteMenuTool newSpritesheet;
+
+    public NewSpriteSheetDialog newSpriteSheetDialog;
 
     public SpriteMenu menu;
 
@@ -37,10 +41,12 @@ public class SpriteMenuToolPane extends Group
         this.sprites = new SpriteMenuTool(SpriteMenuTools.SPRITESELECT, this, skin);
         this.lines = new SpriteMenuTool(SpriteMenuTools.LINES, this, skin);
         this.darkMode = new SpriteMenuTool(SpriteMenuTools.DARK_MODE, this, skin);
+        this.newSpritesheet = new SpriteMenuTool(SpriteMenuTools.NEW_SPRITESHEET, this, skin);
         this.toolTable.left();
         this.toolTable.add(this.sprites).padRight(1);
         this.toolTable.add(this.lines).padRight(1);
         this.toolTable.add(this.darkMode).padRight(1);
+        this.toolTable.add(this.newSpritesheet).padRight(1);
 
         this.sprites.select();
         selectMultipleSprites();
@@ -54,6 +60,8 @@ public class SpriteMenuToolPane extends Group
         this.pane.add(this.toolTable);
 
         this.addActor(this.pane);
+
+        this.newSpriteSheetDialog = new NewSpriteSheetDialog(map, editor.stage, skin);
     }
 
     @Override
@@ -66,6 +74,7 @@ public class SpriteMenuToolPane extends Group
         this.toolTable.getCell(this.sprites).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.lines).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.darkMode).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.newSpritesheet).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();
 
         this.pane.invalidateHierarchy();
@@ -99,6 +108,10 @@ public class SpriteMenuToolPane extends Group
         {
             SelectSpriteTool selectSpriteTool = new SelectSpriteTool(map, (SpriteTool) selectedTool, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
             map.executeCommand(selectSpriteTool);
+        }
+        if(selectedTool.tool == SpriteMenuTools.NEW_SPRITESHEET)
+        {
+            this.newSpriteSheetDialog.open();
         }
         this.menu.selectedSpriteTools.sort();
     }

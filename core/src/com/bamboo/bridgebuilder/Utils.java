@@ -59,16 +59,16 @@ public class Utils
 
     public static int randomInt(int minRange, int maxRange) { return random.nextInt(maxRange - minRange + 1) + minRange; }
 
-    public static float unprojectX(OrthographicCamera camera, float x, float y)
+    public static float unprojectX(OrthographicCamera camera, float x)
     {
-        unprojector.set(x, y, 0);
+        unprojector.set(x, 0, 0);
         camera.unproject(unprojector);
         return unprojector.x;
     }
 
-    public static float unprojectY(OrthographicCamera camera, float x, float y)
+    public static float unprojectY(OrthographicCamera camera, float x)
     {
-        unprojector.set(x, y, 0);
+        unprojector.set(x, 0, 0);
         camera.unproject(unprojector);
         return unprojector.y;
     }
