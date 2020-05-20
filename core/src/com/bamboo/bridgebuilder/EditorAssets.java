@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class EditorAssets
 {
     private static EditorAssets editorAssets = null;
-    private static AssetManager assets;
+    public static AssetManager assets;
     private static BitmapFont smallFont;
     private static BitmapFont font;
     private static BitmapFont headerFont;
@@ -22,7 +22,7 @@ public class EditorAssets
     private static Skin uiSkin;
 
     private static ObjectMap<String, ObjectMap<String, TextureAtlas.AtlasRegion>> nameToCachedAtlas = new ObjectMap<>();
-    private static ObjectMap<String, TextureAtlas> nameToGameAtlas = new ObjectMap<>();
+    private static ObjectMap<String, TextureAtlas> nameToMapAtlas = new ObjectMap<>();
 
     private EditorAssets() { }
 
@@ -39,11 +39,6 @@ public class EditorAssets
             uiSkin = new Skin();
             initFonts();
             loadAssets();
-            setGameAtlas("map", getAssets().get("editorMap.atlas"));
-            setGameAtlas("flatMap", getAssets().get("flatMap.atlas"));
-            setGameAtlas("canyonMap", getAssets().get("canyonMap.atlas"));
-            setGameAtlas("canyonBackdrop", getAssets().get("canyonBackdrop.atlas"));
-            setGameAtlas("mesaMap", getAssets().get("mesaMap.atlas"));
         }
         return editorAssets;
     }
@@ -63,11 +58,6 @@ public class EditorAssets
         uiSkin.add("header-font", headerFont);
         uiSkin.add("small-font", smallFont);
         uiSkin.load(Gdx.files.internal("ui/ui.json"));
-        assets.load("editorMap.atlas", TextureAtlas.class);
-        assets.load("flatMap.atlas", TextureAtlas.class);
-        assets.load("canyonMap.atlas", TextureAtlas.class);
-        assets.load("canyonBackdrop.atlas", TextureAtlas.class);
-        assets.load("mesaMap.atlas", TextureAtlas.class);
         assets.finishLoading();
     }
 
@@ -115,21 +105,18 @@ public class EditorAssets
         return get().glyph;
     }
 
-    public static TextureAtlas getGameAtlas(String name)
+    public static TextureAtlas getMapAtlas(String name)
     {
-        return get().nameToGameAtlas.get(name);
+        return get().nameToMapAtlas.get(name);
     }
 
-    /**Should only be used by the Loader
-     * @param name - Which atlas to work with
-     * @param atlas - Setter*/
-    public static void setGameAtlas(String name, TextureAtlas atlas)
+    public static void setMapAtlas(String name, TextureAtlas atlas)
     {
-        get().nameToGameAtlas.put(name, atlas);
-        ObjectMap<String, TextureAtlas.AtlasRegion> cachedGameAtlas = new ObjectMap<>(atlas.getRegions().size);
+        get().nameToMapAtlas.put(name, atlas);
+        ObjectMap<String, TextureAtlas.AtlasRegion> cachedMapAtlas = new ObjectMap<>(atlas.getRegions().size);
         for(int i = 0; i < atlas.getRegions().size; i++)
-            cachedGameAtlas.put(atlas.getRegions().get(i).name, atlas.getRegions().get(i));
-        nameToCachedAtlas.put(name, cachedGameAtlas);
+            cachedMapAtlas.put(atlas.getRegions().get(i).name, atlas.getRegions().get(i));
+        nameToCachedAtlas.put(name, cachedMapAtlas);
     }
 
     public static TextureRegion getTextureRegion(String name, String path)

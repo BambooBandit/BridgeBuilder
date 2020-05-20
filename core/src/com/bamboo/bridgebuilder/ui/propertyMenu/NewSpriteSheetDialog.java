@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteSheet;
 
 import java.io.File;
 
@@ -49,10 +50,12 @@ public class NewSpriteSheetDialog extends Window
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                if(valid)
-                {
-                    close();
-                }
+            if(valid)
+            {
+                String name = sheetName.getText();
+                map.spriteMenu.createSpriteSheet(name, skin);
+                close();
+            }
             }
         });
 
@@ -98,6 +101,7 @@ public class NewSpriteSheetDialog extends Window
 
     public void open()
     {
+        checkTextField();
         this.setVisible(true);
     }
 
@@ -105,7 +109,24 @@ public class NewSpriteSheetDialog extends Window
     {
         String string = sheetName.getText() + ".atlas";
         File tempFile = new File(string);
-        this.valid = tempFile.exists();
+        boolean exists = tempFile.exists();
+
+        conditional:
+        if(exists)
+        {
+            for(int i = 0; i < map.spriteMenu.spriteSheets.size; i ++)
+            {
+                SpriteSheet spriteSheet = map.spriteMenu.spriteSheets.get(i);
+                if(spriteSheet.name.equals(sheetName.getText()))
+                {
+                    this.valid = false;
+                    break conditional;
+                }
+            }
+            this.valid = true;
+        }
+        else
+            this.valid = false;
 
         if(this.valid)
             this.create.setColor(Color.GREEN);

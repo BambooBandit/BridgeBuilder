@@ -31,12 +31,16 @@ public class SpriteMenu extends Group
 
     public Array<SpriteTool> selectedSpriteTools;
 
+    public Array<SpriteSheet> spriteSheets;
+
     public SpriteMenu(Skin skin, BridgeBuilder editor, Map map)
     {
         this.editor = editor;
         this.map = map;
 
         this.selectedSpriteTools = new Array<>();
+
+        this.spriteSheets = new Array<>();
 
         this.spriteTable = new Table();
         this.spriteTable.left().top();
@@ -55,6 +59,8 @@ public class SpriteMenu extends Group
                 Table table = (Table) spriteScrollPane.getWidget();
                 for(int i = 0; i < table.getCells().size; i ++)
                 {
+                    if(table.getCells().get(i).getActor() == null)
+                        continue;
                     if(table.getCells().get(i).getActor() instanceof Table)
                     {
                         table.getCells().get(i).getActor().setSize(table.getCells().get(i).getMaxWidth(), table.getCells().get(i).getMaxHeight());
@@ -79,13 +85,6 @@ public class SpriteMenu extends Group
         this.background = new Image(EditorAssets.getUIAtlas().createPatch("load-background"));
         this.toolPane = new SpriteMenuToolPane(this.editor, this, map, skin);
 
-        int id;
-        id = createSpriteSheet(SheetTools.MAP, skin, 0);
-        id = createSpriteSheet(SheetTools.FLATMAP, skin, id);
-        id = createSpriteSheet(SheetTools.CANYONMAP, skin, id);
-        id = createSpriteSheet(SheetTools.CANYONBACKDROP, skin, id);
-        id = createSpriteSheet(SheetTools.MESAMAP, skin, id);
-
         this.stack.add(this.background);
         this.stack.add(this.spriteScrollPane);
         this.stack.setPosition(0, toolHeight);
@@ -94,20 +93,28 @@ public class SpriteMenu extends Group
         this.addActor(this.toolPane);
     }
 
-    private int createSpriteSheet(SheetTools sheetTool, Skin skin, int id)
+    public void createSpriteSheet(String name, Skin skin)
     {
+        SpriteSheet spriteSheet = new SpriteSheet(name);
+        this.spriteSheets.add(spriteSheet);
+
+        EditorAssets.assets.load(name + ".atlas", TextureAtlas.class);
+        EditorAssets.assets.finishLoading();
+        EditorAssets.setMapAtlas(name, EditorAssets.getAssets().get(name + ".atlas"));
+
         // Add all the sprites to the spriteTable as Images
         spriteTable.padLeft(1);
         spriteTable.padTop(1);
-        spriteTable.add(new Label(sheetTool.name, skin)).width(0);
-        spriteTable.row();
+        Label label = new Label(name, skin);
+        spriteSheet.label = label;
+        spriteTable.add(label).width(0).row();
         boolean checkerDark = false;
         boolean rowOdd = true;
-        for(int i = 0; i < EditorAssets.getGameAtlas(sheetTool.name).getRegions().size; i ++)
+        for(int i = 0; i < EditorAssets.getMapAtlas(name).getRegions().size; i ++)
         {
-            TextureAtlas.AtlasRegion spriteRegion = EditorAssets.getGameAtlas(sheetTool.name).getRegions().get(i);
+            TextureAtlas.AtlasRegion spriteRegion = EditorAssets.getMapAtlas(name).getRegions().get(i);
 
-            SpriteTool spriteTool = new SpriteTool(SpriteMenuTools.SPRITE, sheetTool, new Image(spriteRegion), spriteRegion, spriteRegion.name, id, 0, 0, toolPane, skin);
+            SpriteTool spriteTool = new SpriteTool(SpriteMenuTools.SPRITE, spriteSheet, new Image(spriteRegion), spriteRegion, spriteRegion.name, 0, 0, toolPane, skin);
             spriteTool.setName("spriteTool");
             SpriteDrawable backgroundDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
             if(checkerDark)
@@ -115,6 +122,7 @@ public class SpriteMenu extends Group
             else
                 backgroundDrawable.getSprite().setColor(Color.LIGHT_GRAY);
             Table cellTable = new Table(skin);
+            cellTable.setName(spriteSheet.name);
             cellTable.setTouchable(Touchable.enabled);
             cellTable.addListener(new ClickListener()
             {
@@ -126,6 +134,7 @@ public class SpriteMenu extends Group
             });
             cellTable.background(backgroundDrawable);
             cellTable.add(spriteTool).grow();
+            spriteSheet.children.add(cellTable);
 
             float minimumArea = 300;
             float maximumArea = 1000;
@@ -140,7 +149,6 @@ public class SpriteMenu extends Group
             newHeight *= multiplier;
             spriteTool.image.setSize(newWidth, newHeight);
             spriteTool.setSize(newWidth, newHeight);
-            id ++;
             checkerDark = !checkerDark;
             spriteTable.add(cellTable).center().grow();
             if((i + 1) % 5 == 0)
@@ -153,7 +161,22 @@ public class SpriteMenu extends Group
 
         spriteTable.row();
         spriteTable.padBottom(500).row();
-        return id;
+    }
+
+    public void removeSpriteSheet(String name)
+    {
+        for(int i = 0; i < this.spriteSheets.size; i ++)
+        {
+            SpriteSheet spriteSheet = this.spriteSheets.get(i);
+            if(!spriteSheet.name.equals(name))
+                continue;
+            this.spriteTable.removeActor(spriteSheet.label);
+            for(int k = 0; k < spriteSheet.children.size; k ++)
+            {
+                Table child = spriteSheet.children.get(k);
+                this.spriteTable.removeActor(child);
+            }
+        }
     }
 
     @Override
@@ -168,22 +191,22 @@ public class SpriteMenu extends Group
         super.setSize(width, height);
     }
 
-    public SpriteTool getSpriteTool(SpriteMenuTools spriteMenuTools, String name, String sheetName)
-    {
-        if(spriteMenuTools == SpriteMenuTools.SPRITE)
-        {
-            for(int i = 0; i < spriteTable.getChildren().size; i ++)
-            {
-                if(spriteTable.getChildren().get(i) instanceof SpriteTool)
-                {
-                    SpriteTool spriteTool = (SpriteTool) spriteTable.getChildren().get(i);
-                    if (spriteTool.name.equals(name) && spriteTool.sheetTool.name.equals(sheetName))
-                        return spriteTool;
-                }
-            }
-        }
-        return null;
-    }
+//    public SpriteTool getSpriteTool(SpriteMenuTools spriteMenuTools, String name, String sheetName)
+//    {
+//        if(spriteMenuTools == SpriteMenuTools.SPRITE)
+//        {
+//            for(int i = 0; i < spriteTable.getChildren().size; i ++)
+//            {
+//                if(spriteTable.getChildren().get(i) instanceof SpriteTool)
+//                {
+//                    SpriteTool spriteTool = (SpriteTool) spriteTable.getChildren().get(i);
+//                    if (spriteTool.name.equals(name) && spriteTool.sheet.name.equals(sheetName))
+//                        return spriteTool;
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     public void reColorCheckers()
     {

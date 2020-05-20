@@ -28,6 +28,7 @@ public class SpriteMenuToolPane extends Group
     public SpriteMenuTool lines;
     public SpriteMenuTool darkMode;
     public SpriteMenuTool newSpritesheet;
+    public SpriteMenuTool removeSpriteSheet;
 
     public NewSpriteSheetDialog newSpriteSheetDialog;
 
@@ -42,14 +43,15 @@ public class SpriteMenuToolPane extends Group
         this.lines = new SpriteMenuTool(SpriteMenuTools.LINES, this, skin);
         this.darkMode = new SpriteMenuTool(SpriteMenuTools.DARK_MODE, this, skin);
         this.newSpritesheet = new SpriteMenuTool(SpriteMenuTools.NEW_SPRITESHEET, this, skin);
+        this.removeSpriteSheet = new SpriteMenuTool(SpriteMenuTools.REMOVE_SPRITESHEET, this, skin);
         this.toolTable.left();
         this.toolTable.add(this.sprites).padRight(1);
         this.toolTable.add(this.lines).padRight(1);
         this.toolTable.add(this.darkMode).padRight(1);
         this.toolTable.add(this.newSpritesheet).padRight(1);
+        this.toolTable.add(this.removeSpriteSheet).padRight(1);
 
         this.sprites.select();
-        selectMultipleSprites();
 
         this.editor = editor;
         this.skin = skin;
@@ -75,6 +77,7 @@ public class SpriteMenuToolPane extends Group
         this.toolTable.getCell(this.lines).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.darkMode).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.newSpritesheet).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.removeSpriteSheet).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();
 
         this.pane.invalidateHierarchy();
@@ -92,52 +95,33 @@ public class SpriteMenuToolPane extends Group
             else
                 selectedTool.select();
         }
-        if(selectedTool.tool == SpriteMenuTools.DARK_MODE)
+        else if(selectedTool.tool == SpriteMenuTools.DARK_MODE)
         {
             if (selectedTool.isSelected)
                 selectedTool.unselect();
             else
                 selectedTool.select();
         }
-        if(selectedTool.tool == SpriteMenuTools.SPRITESELECT)
+        else if(selectedTool.tool == SpriteMenuTools.SPRITE)
         {
-            this.sprites.select();
-            selectMultipleSprites();
-        }
-        if(selectedTool.tool == SpriteMenuTools.SPRITE)
-        {
+            if(this.removeSpriteSheet.isSelected)
+            {
+                map.spriteMenu.removeSpriteSheet(selectedTool.sheet.name);
+                return;
+            }
             SelectSpriteTool selectSpriteTool = new SelectSpriteTool(map, (SpriteTool) selectedTool, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
             map.executeCommand(selectSpriteTool);
         }
-        if(selectedTool.tool == SpriteMenuTools.NEW_SPRITESHEET)
+        else if(selectedTool.tool == SpriteMenuTools.NEW_SPRITESHEET)
         {
             this.newSpriteSheetDialog.open();
         }
-        this.menu.selectedSpriteTools.sort();
-    }
-
-    /** Used to select all the selected sprites when switching from sprites panels*/
-    private void selectMultipleSprites()
-    {
-        this.menu.selectedSpriteTools.clear();
-        if(this.sprites.isSelected)
+        else if(selectedTool.tool == SpriteMenuTools.REMOVE_SPRITESHEET)
         {
-            for(int i = 0; i < this.menu.spriteTable.getChildren().size; i ++)
-            {
-                if(this.menu.spriteTable.getChildren().get(i) instanceof SpriteTool)
-                {
-                    if (((SpriteTool) this.menu.spriteTable.getChildren().get(i)).isSelected)
-                        this.menu.selectedSpriteTools.add((SpriteTool) this.menu.spriteTable.getChildren().get(i));
-                }
-            }
+            if (selectedTool.isSelected)
+                selectedTool.unselect();
+            else
+                selectedTool.select();
         }
-        if(this.map.propertyMenu != null)
-            this.map.propertyMenu.rebuild();
-    }
-
-    /** Draws preview sprites to show how the sprites would look like if placed. */
-    private void buildPreviewSprites()
-    {
-
     }
 }

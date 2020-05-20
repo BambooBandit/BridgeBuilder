@@ -21,7 +21,7 @@ public class SpriteMenuTool extends Group
     public boolean isSelected;
 
     public SpriteMenuTools tool;
-    public SheetTools sheetTool;
+    public SpriteSheet sheet;
 
     /** For sprite menu tools */
     public SpriteMenuTool(SpriteMenuTools tool, final SpriteMenuToolPane spriteMenuToolPane, Skin skin)
@@ -49,10 +49,10 @@ public class SpriteMenuTool extends Group
     }
 
     /** For sprite tools */
-    public SpriteMenuTool(SpriteMenuTools tool, SheetTools sheetTool, Image image, final SpriteMenuToolPane spriteMenuToolPane, Skin skin)
+    public SpriteMenuTool(SpriteMenuTools tool, SpriteSheet sheet, Image image, final SpriteMenuToolPane spriteMenuToolPane, Skin skin)
     {
         this.tool = tool;
-        this.sheetTool = sheetTool;
+        this.sheet = sheet;
         this.spriteMenuToolPane = spriteMenuToolPane;
         this.image = image;
 

@@ -18,12 +18,12 @@ import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 /** The sprite buttons in the SpriteMenu. Holds data that belongs with the sprite, such as locked properties.*/
-public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
+public class SpriteTool extends SpriteMenuTool
 {
     public Array<PropertyField> lockedProperties; // properties such as probability. They belong to all MapSprites and cannot be removed
     public Array<PropertyField> properties;
 
-    public int id, x, y;
+    public int x, y;
     public String name;
 
     public TextureRegion textureRegion;
@@ -33,9 +33,9 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
 
     public Array<AttachedMapObjectManager> attachedMapObjectManagers;
 
-    public SpriteTool(SpriteMenuTools tool, SheetTools sheetTool, Image image, TextureRegion textureRegion, String name, int id, int x, int y, SpriteMenuToolPane spriteMenuToolPane, Skin skin)
+    public SpriteTool(SpriteMenuTools tool, SpriteSheet sheet, Image image, TextureRegion textureRegion, String name, int x, int y, SpriteMenuToolPane spriteMenuToolPane, Skin skin)
     {
-        super(tool, sheetTool, image, spriteMenuToolPane, skin);
+        super(tool, sheet, image, spriteMenuToolPane, skin);
         this.textureRegion = textureRegion;
         this.previewSprites = new Array();
         Sprite sprite;
@@ -49,7 +49,6 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
         this.lockedProperties = new Array<>();
         this.properties = new Array<>();
         this.name = name;
-        this.id = id;
         this.x = x;
         this.y = y;
     }
@@ -106,16 +105,6 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
         }
     }
 
-    @Override
-    public int compareTo(SpriteTool o)
-    {
-        if(id > o.id)
-            return 1;
-        else if(id < o.id)
-            return -1;
-        return 0;
-    }
-
     public void setTopSprites(String topSpriteName)
     {
         if(this.topSprites == null)
@@ -133,7 +122,7 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
         }
         if(digits == 0)
         {
-            TextureRegion textureRegion = EditorAssets.getTextureRegion(sheetTool.name, topSpriteName);
+            TextureRegion textureRegion = EditorAssets.getTextureRegion(sheet.name, topSpriteName);
             if (textureRegion == null)
                 return;
             TextureAtlas.AtlasSprite sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) textureRegion);
@@ -145,7 +134,7 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
         {
             String topSpriteNoDigits = topSpriteName.substring(0, topSpriteName.length() - digits);
             int number = Integer.parseInt(topSpriteName.substring(topSpriteName.length() - digits));
-            TextureRegion textureRegion = EditorAssets.getTextureRegion(sheetTool.name, topSpriteName);
+            TextureRegion textureRegion = EditorAssets.getTextureRegion(sheet.name, topSpriteName);
             while(textureRegion != null)
             {
                 TextureAtlas.AtlasSprite sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) textureRegion);
@@ -155,7 +144,7 @@ public class SpriteTool extends SpriteMenuTool implements Comparable<SpriteTool>
                 sprite.setSize(sprite.getWidth() / 64, sprite.getHeight() / 64);
                 this.previewSprites.add(sprite);
                 number ++;
-                textureRegion = EditorAssets.getTextureRegion(sheetTool.name, (topSpriteNoDigits + number));
+                textureRegion = EditorAssets.getTextureRegion(sheet.name, (topSpriteNoDigits + number));
             }
         }
     }
