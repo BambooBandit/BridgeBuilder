@@ -14,7 +14,7 @@ import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
 public class SpriteMenuTool extends Group
 {
     private Image background;
-    protected Image image;
+    public Image image;
 
     protected SpriteMenuToolPane spriteMenuToolPane;
 

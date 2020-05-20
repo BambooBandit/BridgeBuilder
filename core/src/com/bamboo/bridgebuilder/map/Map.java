@@ -22,7 +22,7 @@ import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.Command;
 import com.bamboo.bridgebuilder.commands.DeleteMapObjects;
-import com.bamboo.bridgebuilder.commands.DeleteMapSprites;
+import com.bamboo.bridgebuilder.commands.DeleteSelectedMapSprites;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
@@ -411,13 +411,13 @@ public class Map implements Screen
 //        float[] matrixValues = camera.combined.getValues();
 //        matrixValues[Matrix4.M31] = skew;
 //        matrixValues[Matrix4.M13] += skew * 7.5f;
-//
+
 //        camera.invProjectionView.set(camera.combined);
 //
 //        Matrix4.inv(camera.invProjectionView.val);
 //        camera.frustum.update(camera.invProjectionView);
 
-        this.rayHandler.setCombinedMatrix(camera);
+        this.rayHandler.setCombinedMatrix(camera.combined, camera.position.x, camera.position.y, camera.viewportWidth * camera.zoom * 2f, camera.viewportHeight * camera.zoom * 2f);
         this.rayHandler.updateAndRender();
 
 //        skew = 0f; // To me, this is between 0 and 0.015
@@ -694,8 +694,8 @@ public class Map implements Screen
             }
             else if(this.selectedSprites.size > 0)
             {
-                DeleteMapSprites deleteMapSprites = new DeleteMapSprites(this.selectedSprites, (SpriteLayer) selectedLayer);
-                executeCommand(deleteMapSprites);
+                DeleteSelectedMapSprites deleteSelectedMapSprites = new DeleteSelectedMapSprites(this.selectedSprites, (SpriteLayer) selectedLayer);
+                executeCommand(deleteSelectedMapSprites);
             }
         }
     }

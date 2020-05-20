@@ -7,13 +7,13 @@ import com.bamboo.bridgebuilder.map.*;
 
 import java.util.Iterator;
 
-public class DeleteMapSprites implements Command
+public class DeleteSelectedMapSprites implements Command
 {
     private Array<MapSprite> selectedSprites;
     private IntMap<MapSprite> deletedSprites;
     private SpriteLayer selectedLayer;
 
-    public DeleteMapSprites(Array<MapSprite> selectedMapSprites, SpriteLayer selectedLayer)
+    public DeleteSelectedMapSprites(Array<MapSprite> selectedMapSprites, SpriteLayer selectedLayer)
     {
         if(selectedMapSprites.size > 0)
             this.selectedSprites = new Array<>(selectedMapSprites);
