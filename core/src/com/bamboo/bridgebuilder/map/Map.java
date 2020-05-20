@@ -134,6 +134,13 @@ public class Map implements Screen
         this.world = new World(new Vector2(0, 0), false);
         this.rayHandler = new RayHandler(this.world);
         this.rayHandler.setAmbientLight(1);
+
+        // sprite sheets TODO remove when default BBM is added
+        this.spriteMenu.createSpriteSheet("editorMap", skin);
+        this.spriteMenu.createSpriteSheet("flatMap", skin);
+        this.spriteMenu.createSpriteSheet("canyonMap", skin);
+        this.spriteMenu.createSpriteSheet("canyonBackdrop", skin);
+        this.spriteMenu.createSpriteSheet("mesaMap", skin);
     }
 
     @Override
