@@ -572,7 +572,9 @@ public class Map implements Screen
         float totalSum = 0;
         float partialSum = 0;
         for(int i = 0; i < getAllSelectedSpriteTools().size; i ++)
+        {
             totalSum += Float.parseFloat(Utils.getLockedPropertyField(getAllSelectedSpriteTools().get(i).lockedProperties, "Probability").value.getText());
+        }
         float random = Utils.randomFloat(0, totalSum);
         for(int i = 0; i < getAllSelectedSpriteTools().size; i ++)
         {

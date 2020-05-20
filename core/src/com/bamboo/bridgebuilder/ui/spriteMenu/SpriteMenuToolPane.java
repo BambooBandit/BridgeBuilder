@@ -10,7 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.commands.SelectSpriteTool;
+import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.map.SpriteLayer;
+import com.bamboo.bridgebuilder.ui.fileMenu.YesNoDialog;
 import com.bamboo.bridgebuilder.ui.propertyMenu.NewSpriteSheetDialog;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
@@ -106,7 +110,25 @@ public class SpriteMenuToolPane extends Group
         {
             if(this.removeSpriteSheet.isSelected)
             {
-                map.spriteMenu.removeSpriteSheet(selectedTool.sheet.name);
+                int count = spriteSheetInstanceCount((SpriteTool) selectedTool);
+                if(count > 0)
+                {
+                    new YesNoDialog("Remove sprite sheet and all " + count + " MapSprites belonging to it?", editor.stage, "", EditorAssets.getUISkin(), true)
+                    {
+                        @Override
+                        public void yes()
+                        {
+                            map.spriteMenu.removeSpriteSheet(selectedTool.sheet.name);
+                        }
+
+                        @Override
+                        public void no()
+                        {
+                        }
+                    };
+                }
+                else
+                    map.spriteMenu.removeSpriteSheet(selectedTool.sheet.name);
                 return;
             }
             SelectSpriteTool selectSpriteTool = new SelectSpriteTool(map, (SpriteTool) selectedTool, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
@@ -123,5 +145,26 @@ public class SpriteMenuToolPane extends Group
             else
                 selectedTool.select();
         }
+    }
+
+    public int spriteSheetInstanceCount(SpriteTool spriteTool)
+    {
+        int count = 0;
+        SpriteSheet spriteSheet = spriteTool.sheet;
+        for(int i = 0; i < map.layers.size; i ++)
+        {
+            Layer layer = map.layers.get(i);
+            if(layer instanceof SpriteLayer)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                for(int k = 0; k < spriteLayer.children.size; k ++)
+                {
+                    MapSprite mapSprite = spriteLayer.children.get(k);
+                    if(mapSprite.tool.sheet == spriteSheet)
+                        count ++;
+                }
+            }
+        }
+        return count;
     }
 }

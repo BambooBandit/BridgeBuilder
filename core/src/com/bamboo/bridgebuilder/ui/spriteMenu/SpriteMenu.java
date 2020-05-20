@@ -12,7 +12,11 @@ import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.BBColors;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.commands.DeleteMapSprites;
+import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.map.SpriteLayer;
 
 import java.util.Iterator;
 
@@ -93,6 +97,7 @@ public class SpriteMenu extends Group
         this.addActor(this.toolPane);
     }
 
+    // TODO undo/redo
     public void createSpriteSheet(String name, Skin skin)
     {
         SpriteSheet spriteSheet = new SpriteSheet(name);
@@ -116,6 +121,7 @@ public class SpriteMenu extends Group
 
             SpriteTool spriteTool = new SpriteTool(SpriteMenuTools.SPRITE, spriteSheet, new Image(spriteRegion), spriteRegion, spriteRegion.name, 0, 0, toolPane, skin);
             spriteTool.setName("spriteTool");
+            map.propertyMenu.setSpriteProperties(spriteTool);
             SpriteDrawable backgroundDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
             if(checkerDark)
                 backgroundDrawable.getSprite().setColor(Color.WHITE);
@@ -163,6 +169,7 @@ public class SpriteMenu extends Group
         spriteTable.padBottom(500).row();
     }
 
+    // TODO undo/redo
     public void removeSpriteSheet(String name)
     {
         for(int i = 0; i < this.spriteSheets.size; i ++)
@@ -170,12 +177,42 @@ public class SpriteMenu extends Group
             SpriteSheet spriteSheet = this.spriteSheets.get(i);
             if(!spriteSheet.name.equals(name))
                 continue;
+
+            Array<MapSprite> mapSprites = new Array<>();
+
+            for(int k = 0; k < map.layers.size; k ++)
+            {
+                Layer layer = map.layers.get(k);
+                if(layer instanceof SpriteLayer)
+                {
+                    SpriteLayer spriteLayer = (SpriteLayer) layer;
+                    for(int s = 0; s < spriteLayer.children.size; s++)
+                    {
+                        MapSprite mapSprite = spriteLayer.children.get(s);
+                        if(mapSprite.tool.sheet == spriteSheet)
+                        {
+                            // TODO group all of this into one command execution
+                            mapSprites.clear();
+                            mapSprites.add(mapSprite);
+                            DeleteMapSprites deleteMapSprites = new DeleteMapSprites(mapSprites, (SpriteLayer) mapSprite.layer);
+                            map.executeCommand(deleteMapSprites);
+                        }
+                    }
+                }
+            }
+
             this.spriteTable.removeActor(spriteSheet.label);
             for(int k = 0; k < spriteSheet.children.size; k ++)
             {
                 Table child = spriteSheet.children.get(k);
+                SpriteTool spriteTool = child.findActor("spriteTool");
+                if(spriteTool.isSelected)
+                    spriteTool.unselect();
+                this.map.spriteMenu.selectedSpriteTools.removeValue(spriteTool, true);
                 this.spriteTable.removeActor(child);
             }
+            this.spriteSheets.removeIndex(i);
+            i --;
         }
     }
 

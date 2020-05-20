@@ -60,8 +60,6 @@ public class PropertyMenu extends Group
         this.propertyTable.add(this.spritePropertyPanel).padBottom(5).row();
         this.propertyTable.add(this.propertyPanel);
 
-        setSpriteProperties();
-
         this.stack.add(this.background);
         this.stack.add(this.propertyTable);
         this.stack.setPosition(0, toolHeight);
@@ -124,30 +122,23 @@ public class PropertyMenu extends Group
 //        rebuild();
     }
 
-    private void setSpriteProperties()
+    public void setSpriteProperties(SpriteTool spriteTool)
     {
-        for(int i = 0; i < map.spriteMenu.spriteTable.getChildren().size; i ++)
+        LabelFieldPropertyValuePropertyField probability = new LabelFieldPropertyValuePropertyField("Probability", "1.0", skin, this, null,false);
+        probability.value.setTextFieldFilter(new TextField.TextFieldFilter()
         {
-            if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof Table)
+            @Override
+            public boolean acceptChar(TextField textField, char c)
             {
-                SpriteTool spriteTool = ((Table) map.spriteMenu.spriteTable.getChildren().get(i)).findActor("spriteTool");
-                LabelFieldPropertyValuePropertyField probability = new LabelFieldPropertyValuePropertyField("Probability", "1.0", skin, this, null,false);
-                probability.value.setTextFieldFilter(new TextField.TextFieldFilter()
-                {
-                    @Override
-                    public boolean acceptChar(TextField textField, char c)
-                    {
-                        return c == '.' || Character.isDigit(c);
-                    }
-                });
-
-                spriteTool.lockedProperties.add(probability);
-                LabelFieldPropertyValuePropertyField type = new LabelFieldPropertyValuePropertyField("Type", "", skin, this, null, false);
-                spriteTool.lockedProperties.add(type);
-                LabelFieldPropertyValuePropertyField z = new LabelFieldPropertyValuePropertyField("spawnZ", "", skin, this, null, false);
-                spriteTool.lockedProperties.add(z);
+                return c == '.' || Character.isDigit(c);
             }
-        }
+        });
+
+        spriteTool.lockedProperties.add(probability);
+        LabelFieldPropertyValuePropertyField type = new LabelFieldPropertyValuePropertyField("Type", "", skin, this, null, false);
+        spriteTool.lockedProperties.add(type);
+        LabelFieldPropertyValuePropertyField z = new LabelFieldPropertyValuePropertyField("spawnZ", "", skin, this, null, false);
+        spriteTool.lockedProperties.add(z);
     }
 
     public void removeProperty(String propertyName)
