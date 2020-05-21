@@ -9,6 +9,8 @@ public class ObjectLayer extends Layer
 {
     public Array<MapObject> children;
 
+    public Graph graph;
+
     public ObjectLayer(BridgeBuilder editor, Map map, LayerTypes type, LayerField layerField)
     {
         super(editor, map, type, layerField);
@@ -29,5 +31,27 @@ public class ObjectLayer extends Layer
     public void addMapObject(MapObject mapObject)
     {
         this.children.add(mapObject);
+    }
+
+    public void createGrid()
+    {
+        if(this.graph != null)
+            return;
+        this.graph = new Graph(this);
+    }
+
+    public void removeGrid()
+    {
+        if(this.graph == null)
+            return;
+        this.graph.clear();
+        this.graph = null;
+    }
+
+    public void updateGraph()
+    {
+        if(this.graph == null)
+            return;
+        this.graph.update();
     }
 }

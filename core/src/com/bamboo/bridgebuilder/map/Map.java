@@ -211,6 +211,7 @@ public class Map implements Screen
         drawGrid();
         drawAttachedObjects();
         drawObjectLayers();
+        drawBlocked();
         if(this.editor.fileMenu.toolPane.b2drender.selected)
         {
             this.editor.shapeRenderer.end();
@@ -449,6 +450,19 @@ public class Map implements Screen
             {
                 if (this.layers.get(i).layerField.visibleImg.isVisible() && this.layers.get(i).overrideSprite == null)
                     this.layers.get(i).draw();
+            }
+        }
+    }
+
+    private void drawBlocked()
+    {
+        for(int i = 0; i < this.layers.size; i ++)
+        {
+            if(this.layers.get(i) instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) this.layers.get(i);
+                if (objectLayer.layerField.visibleImg.isVisible() && objectLayer.overrideSprite == null && editor.fileMenu.toolPane.blocked.selected && objectLayer.graph != null)
+                    objectLayer.graph.drawBlocked();
             }
         }
     }

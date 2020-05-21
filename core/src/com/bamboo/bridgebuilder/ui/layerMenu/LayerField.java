@@ -1,9 +1,11 @@
 package com.bamboo.bridgebuilder.ui.layerMenu;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.BridgeBuilder;
@@ -50,6 +52,27 @@ public class LayerField extends Group
             this.mapLayer = new ObjectLayer(editor, map, type, this);
 
         this.layerName = new TextField(name, skin);
+        this.layerName.addListener(new InputListener()
+        {
+            public boolean keyDown (InputEvent event, int keycode)
+            {
+                if(keycode == Input.Keys.ENTER)
+                {
+                    if(mapLayer instanceof ObjectLayer)
+                    {
+                        String name = layerName.getText();
+                        ObjectLayer objectLayer = (ObjectLayer) mapLayer;
+                        if (name.startsWith("floor") && Character.isDigit(name.charAt(name.length() - 1)))
+                            objectLayer.createGrid();
+                        else
+                            objectLayer.removeGrid();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
         this.table = new Table();
         this.table.bottom().left();
         this.typeImage = new Image(new Texture("ui/" + type.name + ".png")); // TODO pack it in atlas

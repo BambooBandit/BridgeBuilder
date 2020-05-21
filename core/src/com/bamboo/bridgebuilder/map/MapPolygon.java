@@ -110,7 +110,10 @@ public class MapPolygon extends MapObject
         setOriginBasedOnParentSprite();
 
         if(this.body != null)
+        {
+            ((ObjectLayer)this.layer).updateGraph();
             this.body.setTransform(this.polygon.getTransformedVertices()[0], this.polygon.getTransformedVertices()[1], (float) Math.toRadians(this.getRotation()));
+        }
     }
 
     @Override
@@ -261,7 +264,7 @@ public class MapPolygon extends MapObject
         fixtureDef.filter.maskBits = PhysicsBits.LIGHT_PHYSICS;
         this.body = this.map.world.createBody(bodyDef).createFixture(fixtureDef).getBody();
         this.body.setTransform(this.polygon.getTransformedVertices()[0], this.polygon.getTransformedVertices()[1], (float) Math.toRadians(this.getRotation()));
-
+        ((ObjectLayer)this.layer).updateGraph();
     }
 
     public void destroyBody()
@@ -270,6 +273,7 @@ public class MapPolygon extends MapObject
             return;
         this.map.world.destroyBody(this.body);
         this.body = null;
+        ((ObjectLayer)this.layer).updateGraph();
     }
 
     /** Used for when the vertices of the body are affected, like during scaling, etc.*/
