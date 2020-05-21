@@ -55,6 +55,7 @@ public class Graph
         rectangle[6] = x + bezelSize;
         rectangle[7] = y + 1f - (bezelSize * 2f);
 
+        // Check bodies in this object layer
         for(int i = 0; i < this.objectLayer.children.size; i ++)
         {
             MapObject mapObject = this.objectLayer.children.get(i);
@@ -68,6 +69,51 @@ public class Graph
                 }
             }
         }
+
+        // Check attached bodies in all sprite layers in the same floor
+        int currentFloor = Integer.parseInt(this.objectLayer.layerField.layerName.getText().substring(6));
+        int iterationFloor = -1;
+        for(int i = 0; i < this.objectLayer.map.layers.size; i ++)
+        {
+            Layer layer = this.objectLayer.map.layers.get(i);
+            if(layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                String name = objectLayer.layerField.layerName.getText();
+                if(name.startsWith("floor ") && Character.isDigit(name.charAt(name.length() - 1)))
+                {
+                    iterationFloor = Integer.parseInt(name.substring(6));
+                }
+            }
+            else if(layer instanceof SpriteLayer)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                if(iterationFloor == currentFloor)
+                {
+                    for(int k = 0; k < spriteLayer.children.size; k ++)
+                    {
+                        MapSprite mapSprite = spriteLayer.children.get(k);
+                        if(mapSprite.attachedMapObjects != null)
+                        {
+                            for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
+                            {
+                                MapObject mapObject = mapSprite.attachedMapObjects.get(s);
+                                if(mapObject instanceof MapPolygon)
+                                {
+                                    MapPolygon mapPolygon = (MapPolygon) mapObject;
+                                    if(mapPolygon.body != null)
+                                    {
+                                        if(Intersector.overlapConvexPolygons(rectangle, mapPolygon.polygon.getTransformedVertices(), null))
+                                            return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         return false;
     }
 

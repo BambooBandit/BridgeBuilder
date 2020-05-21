@@ -655,6 +655,19 @@ public class Map implements Screen
         }
     }
 
+    public void updateLayerGraphs()
+    {
+        for(int i = 0; i < this.layers.size; i ++)
+        {
+            Layer layer = this.layers.get(i);
+            if(layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                objectLayer.updateGraph();
+            }
+        }
+    }
+
     public void executeCommand(Command command)
     {
         command.execute();

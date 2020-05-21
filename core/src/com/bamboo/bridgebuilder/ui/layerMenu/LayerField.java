@@ -62,7 +62,7 @@ public class LayerField extends Group
                     {
                         String name = layerName.getText();
                         ObjectLayer objectLayer = (ObjectLayer) mapLayer;
-                        if (name.startsWith("floor") && Character.isDigit(name.charAt(name.length() - 1)))
+                        if (name.startsWith("floor ") && Character.isDigit(name.charAt(name.length() - 1)))
                             objectLayer.createGrid();
                         else
                             objectLayer.removeGrid();

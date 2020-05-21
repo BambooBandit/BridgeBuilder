@@ -39,5 +39,7 @@ public class SpriteLayer extends Layer
     public void addMapSprite(MapSprite mapSprite)
     {
         this.children.add(mapSprite);
+        if(mapSprite.attachedMapObjects != null)
+            this.map.updateLayerGraphs();
     }
 }
