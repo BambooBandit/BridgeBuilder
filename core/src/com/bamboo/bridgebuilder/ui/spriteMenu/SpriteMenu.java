@@ -1,17 +1,18 @@
 package com.bamboo.bridgebuilder.ui.spriteMenu;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.BBColors;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.commands.CreateSpriteSheet;
 import com.bamboo.bridgebuilder.commands.DeleteSpriteSheet;
 import com.bamboo.bridgebuilder.map.Map;
 
@@ -94,76 +95,11 @@ public class SpriteMenu extends Group
         this.addActor(this.toolPane);
     }
 
-    // TODO undo/redo
-    public void createSpriteSheet(String name, Skin skin)
+    public void createSpriteSheet(String name)
     {
-        SpriteSheet spriteSheet = new SpriteSheet(name);
-        this.spriteSheets.add(spriteSheet);
-
-        EditorAssets.assets.load(name + ".atlas", TextureAtlas.class);
-        EditorAssets.assets.finishLoading();
-        EditorAssets.setMapAtlas(name, EditorAssets.getAssets().get(name + ".atlas"));
-
-        // Add all the sprites to the spriteTable as Images
-        spriteTable.padLeft(1);
-        spriteTable.padTop(1);
-        Label label = new Label(name, skin);
-        spriteSheet.label = label;
-        spriteTable.add(label).width(0).row();
-        boolean checkerDark = false;
-        boolean rowOdd = true;
-        for(int i = 0; i < EditorAssets.getMapAtlas(name).getRegions().size; i ++)
-        {
-            TextureAtlas.AtlasRegion spriteRegion = EditorAssets.getMapAtlas(name).getRegions().get(i);
-
-            SpriteTool spriteTool = new SpriteTool(SpriteMenuTools.SPRITE, spriteSheet, new Image(spriteRegion), spriteRegion, spriteRegion.name, 0, 0, toolPane, skin);
-            spriteTool.setName("spriteTool");
-            map.propertyMenu.setSpriteProperties(spriteTool);
-            SpriteDrawable backgroundDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
-            if(checkerDark)
-                backgroundDrawable.getSprite().setColor(Color.WHITE);
-            else
-                backgroundDrawable.getSprite().setColor(Color.LIGHT_GRAY);
-            Table cellTable = new Table(skin);
-            cellTable.setName(spriteSheet.name);
-            cellTable.setTouchable(Touchable.enabled);
-            cellTable.addListener(new ClickListener()
-            {
-                @Override
-                public void clicked(InputEvent event, float x, float y)
-                {
-                    toolPane.selectTool(spriteTool);
-                }
-            });
-            cellTable.background(backgroundDrawable);
-            cellTable.add(spriteTool).grow();
-            spriteSheet.children.add(cellTable);
-
-            float minimumArea = 300;
-            float maximumArea = 1000;
-            float newWidth = spriteTool.image.getWidth() / 25;
-            float newHeight = spriteTool.image.getHeight() / 25;
-            float multiplier = 1;
-            if(newWidth * newHeight < minimumArea)
-                multiplier = (float) Math.sqrt(minimumArea / (newWidth * newHeight));
-            else if(newWidth * newHeight > maximumArea)
-                multiplier = (float) Math.sqrt(maximumArea/ (newWidth * newHeight));
-            newWidth *= multiplier;
-            newHeight *= multiplier;
-            spriteTool.image.setSize(newWidth, newHeight);
-            spriteTool.setSize(newWidth, newHeight);
-            checkerDark = !checkerDark;
-            spriteTable.add(cellTable).center().grow();
-            if((i + 1) % 5 == 0)
-            {
-                rowOdd = !rowOdd;
-                checkerDark = !rowOdd;
-                spriteTable.row();
-            }
-        }
-
-        spriteTable.row();
-        spriteTable.padBottom(500).row();
+        CreateSpriteSheet createSpriteSheet = new CreateSpriteSheet(this.map, name);
+        this.map.executeCommand(createSpriteSheet);
+        this.spriteSheets.add(createSpriteSheet.spriteSheet);
     }
 
     public void removeSpriteSheet(String name)

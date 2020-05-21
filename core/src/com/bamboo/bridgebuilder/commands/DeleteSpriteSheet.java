@@ -96,10 +96,12 @@ public class DeleteSpriteSheet implements Command
     {
         // Re-add sprite sheet ui
         this.map.spriteMenu.spriteTable.add(this.spriteSheet.label).width(0).row();
-        for(int k = 0; k < this.spriteSheet.children.size; k ++)
+        for(int i = 0; i < this.spriteSheet.children.size; i ++)
         {
-            Table child = this.spriteSheet.children.get(k);
+            Table child = this.spriteSheet.children.get(i);
             this.map.spriteMenu.spriteTable.add(child).grow();
+            if((i + 1) % 5 == 0)
+                this.map.spriteMenu.spriteTable.row();
         }
         this.map.spriteMenu.spriteSheets.add(this.spriteSheet);
 

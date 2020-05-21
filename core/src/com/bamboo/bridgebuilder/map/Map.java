@@ -136,11 +136,12 @@ public class Map implements Screen
         this.rayHandler.setAmbientLight(1);
 
         // sprite sheets TODO remove when default BBM is added
-        this.spriteMenu.createSpriteSheet("editorMap", skin);
-        this.spriteMenu.createSpriteSheet("flatMap", skin);
-        this.spriteMenu.createSpriteSheet("canyonMap", skin);
-        this.spriteMenu.createSpriteSheet("canyonBackdrop", skin);
-        this.spriteMenu.createSpriteSheet("mesaMap", skin);
+        this.spriteMenu.createSpriteSheet("editorMap");
+        this.spriteMenu.createSpriteSheet("flatMap");
+        this.spriteMenu.createSpriteSheet("canyonMap");
+        this.spriteMenu.createSpriteSheet("canyonBackdrop");
+        this.spriteMenu.createSpriteSheet("mesaMap");
+        this.clearUndoRedo();
     }
 
     @Override
@@ -668,6 +669,12 @@ public class Map implements Screen
             return;
         for(int i = commandStack.size() - 1; i > undoRedoPointer; i --)
             commandStack.remove(i);
+    }
+
+    public void clearUndoRedo()
+    {
+        undoRedoPointer = -1;
+        commandStack.clear();
     }
 
     public void undo()

@@ -53,7 +53,7 @@ public class NewSpriteSheetDialog extends Window
             if(valid)
             {
                 String name = sheetName.getText();
-                map.spriteMenu.createSpriteSheet(name, skin);
+                map.spriteMenu.createSpriteSheet(name);
                 close();
             }
             }
