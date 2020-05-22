@@ -543,6 +543,8 @@ public class MapInput implements InputProcessor
             Sprite previewSprite = spriteTool.previewSprites.get(i);
             if(editor.fileMenu.toolPane.perspective.selected)
             {
+                previewSprite.setPosition(x - previewSprite.getWidth() / 2, y - previewSprite.getHeight() / 2);
+
                 float perspective = 0;
                 PropertyField bottomProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "bottomPerspective");
                 PropertyField topProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "topPerspective");
@@ -567,10 +569,14 @@ public class MapInput implements InputProcessor
                 previewSprite.setOriginCenter();
                 previewSprite.setScale(perspectiveScale);
 
-                float xCenterScreen = map.selectedLayer.width / 2f;
-                float xCenterSprite = x + previewSprite.getWidth() / 2;
-                float perspectiveX = x + ((xCenterSprite - xCenterScreen) * perspective);
-                previewSprite.setPosition(perspectiveX - ((previewSprite.getWidth() * previewSprite.getScaleX()) / 2f), y - previewSprite.getHeight() / 2);
+                float yCenterScreen = Utils.unprojectY(map.camera, Gdx.graphics.getHeight() / 2f);
+                float yCenterSprite = y + previewSprite.getHeight() / 2f;
+                float perspectiveY = y + ((yCenterSprite - yCenterScreen) * (perspective / 2f));
+
+                float xCenterScreen = Utils.unprojectX(map.camera, Gdx.graphics.getWidth() / 2f);
+                float xCenterSprite = x + previewSprite.getWidth() / 2f;
+                float perspectiveX = x + ((xCenterSprite - xCenterScreen) * (perspective * 2f));
+                previewSprite.setPosition(perspectiveX - ((previewSprite.getWidth() / 2 * previewSprite.getScaleX())), perspectiveY - ((previewSprite.getHeight() / 2 * previewSprite.getScaleY())));
             }
             else
                 previewSprite.setPosition(x - previewSprite.getWidth() / 2, y - previewSprite.getHeight() / 2);

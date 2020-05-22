@@ -10,7 +10,7 @@ public abstract class LayerChild
     protected Map map;
     public Layer layer;
     public boolean selected;
-    public float perspective = 0;
+    public float perspectiveScale = 0;
 
     public LayerChild(Map map, Layer layer, float x, float y)
     {
@@ -20,45 +20,27 @@ public abstract class LayerChild
 
     public void updatePerspective()
     {
-        PropertyField bottomProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "bottomPerspective");
-        PropertyField topProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "topPerspective");
+        PropertyField topProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "bottomScale");
+        PropertyField bottomProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "topScale");
         if(bottomProperty == null || topProperty == null)
             return;
-        FieldFieldPropertyValuePropertyField bottomPropertyField = (FieldFieldPropertyValuePropertyField) bottomProperty;
-        FieldFieldPropertyValuePropertyField topPropertyField = (FieldFieldPropertyValuePropertyField) topProperty;
-        float perspectiveBottom = Float.parseFloat(bottomPropertyField.value.getText());
-        float perspectiveTop = Float.parseFloat(topPropertyField.value.getText());
+        try
+        {
+            float perspectiveBottom = Float.parseFloat(((FieldFieldPropertyValuePropertyField) bottomProperty).value.getText());
+            float perspectiveTop = Float.parseFloat(((FieldFieldPropertyValuePropertyField) topProperty).value.getText());
 
-        float mapHeight = layer.height;
-        float positionY = getY();
+            float mapHeight = layer.height;
+            float positionY = getY();
 
-        float coeff = positionY / mapHeight;
-        float delta = perspectiveTop - perspectiveBottom;
+            float coeff = positionY / mapHeight;
+            float delta = perspectiveTop - perspectiveBottom;
 
-        this.perspective = perspectiveBottom + coeff * delta;
+            this.perspectiveScale = perspectiveBottom + coeff * delta;
 
-        this.setScale(getScale());
-        this.setPosition(getX(), getY());
-
-
-
-//        float totalScale = scale + perspectiveScale;
-//        if(totalScale <= 0)
-//            return;
-//
-//        this.sprite.setScale(totalScale);
-//        this.polygon.setScale(totalScale, totalScale);
-//        if(this.tool.topSprites != null)
-//        {
-//            for(int i = 0; i < this.tool.topSprites.size; i ++)
-//                this.tool.topSprites.get(i).setScale(totalScale);
-//        }
-//        for(int i = 0; i < drawableAttachedMapObjects.size; i ++)
-//        {
-//            if(drawableAttachedMapObjects.get(i).polygon != null)
-//                drawableAttachedMapObjects.get(i).polygon.setScale(totalScale, totalScale);
-//            drawableAttachedMapObjects.get(i).updateLightsAndBodies();
-//        }
+            this.setScale(getScale());
+            this.setPosition(getX(), getY());
+        }
+        catch (NumberFormatException e){}
     }
 
     public abstract void draw();

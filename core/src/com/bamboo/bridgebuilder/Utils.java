@@ -66,9 +66,9 @@ public class Utils
         return unprojector.x;
     }
 
-    public static float unprojectY(OrthographicCamera camera, float x)
+    public static float unprojectY(OrthographicCamera camera, float y)
     {
-        unprojector.set(x, 0, 0);
+        unprojector.set(0, y, 0);
         camera.unproject(unprojector);
         return unprojector.y;
     }

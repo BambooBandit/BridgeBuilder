@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -107,11 +108,11 @@ public class Map implements Screen
         this.selectedObjects = new Array<>();
 
         this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.setToOrtho(false, virtualHeight * Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight(), virtualHeight);
+        this.camera.setToOrtho(false, virtualHeight * Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight(), virtualHeight);
         this.camera.zoom = this.zoom;
         this.camera.position.x = 2.5f;
         this.camera.position.y = 2.5f;
-        camera.update();
+        this.camera.update();
 
 
         this.stage = new Stage(new ScreenViewport(), editor.batch);
@@ -420,26 +421,132 @@ public class Map implements Screen
 //        float[] matrixValues = camera.combined.getValues();
 //        matrixValues[Matrix4.M31] = skew;
 //        matrixValues[Matrix4.M13] += skew * 7.5f;
-
+//
 //        camera.invProjectionView.set(camera.combined);
 //
 //        Matrix4.inv(camera.invProjectionView.val);
 //        camera.frustum.update(camera.invProjectionView);
+        /**
+        float m00 = 0;
+        float m01 = 0;
+        float m02 = 0;
+        float m03 = 0;
+        float m10 = 0;
+        float m11 = 0;
+        float m12 = 0;
+        float m13 = 0;
+        float m20 = 0;
+        float m21 = 0;
+        float m22 = 0;
+        float m23 = 0;
+        float m30 = 0;
+        float m31 = 0;
+        float m32 = 0;
+        float m33 = 0;
+        if(Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m33") != null)
+        {
+            try
+            {
+                m00 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m00")).value.getText());
+                m01 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m01")).value.getText());
+                m02 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m02")).value.getText());
+                m03 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m03")).value.getText());
+                m10 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m10")).value.getText());
+                m11 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m11")).value.getText());
+                m12 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m12")).value.getText());
+                m13 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m13")).value.getText());
+                m20 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m20")).value.getText());
+                m21 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m21")).value.getText());
+                m22 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m22")).value.getText());
+                m23 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m23")).value.getText());
+                m30 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m30")).value.getText());
+                m31 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m31")).value.getText());
+                m32 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m32")).value.getText());
+                m33 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m33")).value.getText());
+            }catch(NumberFormatException e){}
+        }
+        float[] matrixValues = camera.combined.getValues();
+//        System.out.println(matrixValues[Matrix4.M31] + ", " + matrixValues[Matrix4.M13] + "... " + camera.position.x + ", " + camera.position.y);
+        matrixValues[Matrix4.M00] = m00;
+        matrixValues[Matrix4.M01] = m01;
+        matrixValues[Matrix4.M02] = m02;
+        matrixValues[Matrix4.M03] = m03;
+        matrixValues[Matrix4.M10] = m10;
+        matrixValues[Matrix4.M11] = m11;
+        matrixValues[Matrix4.M12] = m12;
+        matrixValues[Matrix4.M13] = m13;
+        matrixValues[Matrix4.M20] = m20;
+        matrixValues[Matrix4.M21] = m21;
+        matrixValues[Matrix4.M22] = m22;
+        matrixValues[Matrix4.M23] = m23;
+        matrixValues[Matrix4.M30] = m30;
+        matrixValues[Matrix4.M31] = m31;
+        matrixValues[Matrix4.M32] = m32;
+        matrixValues[Matrix4.M33] = m33;
+        */
+        float skew = 0;
+        float skewBot = 0;
+        float skewZoom = 0;
+        float m11 = 0;
+
+        if(Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "skew") != null)
+        {
+            try
+            {
+                skew = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "skew")).value.getText());
+            }
+            catch(NumberFormatException e){}
+        }
+        if(Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "skewBot") != null)
+        {
+            try
+            {
+                skewBot = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "skewBot")).value.getText());
+            }
+            catch(NumberFormatException e){}
+        }
+        if(Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "skewZoom") != null)
+        {
+            try
+            {
+                skewZoom = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "skewZoom")).value.getText());
+            }
+            catch(NumberFormatException e){}
+        }
+        if(Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m11") != null)
+        {
+            try
+            {
+                m11 = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "m11")).value.getText());
+            }
+            catch(NumberFormatException e){}
+        }
+
+        float[] matrixValues = camera.combined.getValues();
+        matrixValues[Matrix4.M31] = skew;
+        matrixValues[Matrix4.M13] += skewBot;
+        matrixValues[Matrix4.M33] += skewZoom;
+        matrixValues[Matrix4.M11] += m11;
+
+        camera.invProjectionView.set(camera.combined);
+
+        Matrix4.inv(camera.invProjectionView.val);
+        camera.frustum.update(camera.invProjectionView);
 
         this.rayHandler.setCombinedMatrix(camera.combined, camera.position.x, camera.position.y, camera.viewportWidth * camera.zoom * 2f, camera.viewportHeight * camera.zoom * 2f);
         this.rayHandler.updateAndRender();
 
-//        skew = 0f; // To me, this is between 0 and 0.015
-//        matrixValues = camera.combined.getValues();
-//        matrixValues[Matrix4.M31] = skew;
-//        matrixValues[Matrix4.M13] += skew * 7.5f;
-//
-//        camera.invProjectionView.set(camera.combined);
-//
-//        Matrix4.inv(camera.invProjectionView.val);
-//        camera.frustum.update(camera.invProjectionView);
-//
-//        camera.update();
+        skew = 0f; // To me, this is between 0 and 0.015
+        matrixValues = camera.combined.getValues();
+        matrixValues[Matrix4.M31] = skew;
+        matrixValues[Matrix4.M13] += skew * 7.5f;
+
+        camera.invProjectionView.set(camera.combined);
+
+        Matrix4.inv(camera.invProjectionView.val);
+        camera.frustum.update(camera.invProjectionView);
+
+        camera.update();
     }
 
     private void drawObjectLayers()
@@ -612,12 +719,16 @@ public class Map implements Screen
         {
             SpriteTool spriteTool = getSpriteToolFromSelectedTools();
             Vector3 coords = Utils.unproject(camera, Gdx.input.getX(), Gdx.input.getY());
+            float x = coords.x;
+            float y = coords.y;
             for (int i = 0; i < getSpriteToolFromSelectedTools().previewSprites.size; i++)
             {
                 float randomScale = editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
                 Sprite previewSprite = spriteTool.previewSprites.get(i);
                 if(editor.fileMenu.toolPane.perspective.selected)
                 {
+                    previewSprite.setPosition(x - previewSprite.getWidth() / 2, y - previewSprite.getHeight() / 2);
+
                     float perspective = 0;
                     PropertyField bottomProperty = Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "bottomPerspective");
                     PropertyField topProperty = Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "topPerspective");
@@ -641,10 +752,19 @@ public class Map implements Screen
                     previewSprite.setOriginCenter();
                     previewSprite.setScale(perspectiveScale);
 
-                    float xCenterScreen = selectedLayer.width / 2f;
-                    float xCenterSprite = coords.x + previewSprite.getWidth() / 2;
-                    float perspectiveX = coords.x + ((xCenterSprite - xCenterScreen) * perspective);
-                    previewSprite.setPosition(perspectiveX - ((previewSprite.getWidth() * previewSprite.getScaleX()) / 2f), coords.y - previewSprite.getHeight() / 2);
+                    float yCenterScreen = Utils.unprojectY(camera, Gdx.graphics.getHeight() / 2f);
+                    float yCenterSprite = y + previewSprite.getHeight() / 2f;
+                    float perspectiveY = y + ((yCenterSprite - yCenterScreen) * ((perspective / 2f)));
+
+                    float xCenterScreen = Utils.unprojectX(camera, Gdx.graphics.getWidth() / 2f);
+                    float xCenterSprite = x + previewSprite.getWidth() / 2f;
+                    float perspectiveX = x + ((xCenterSprite - xCenterScreen) * ((perspective * 2f)));
+                    previewSprite.setPosition(perspectiveX - ((previewSprite.getWidth() * previewSprite.getScaleX()) / 2f), perspectiveY - ((previewSprite.getHeight() * previewSprite.getScaleY()) / 2f));
+
+//                    float xCenterScreen = selectedLayer.width / 2f;
+//                    float xCenterSprite = coords.x + previewSprite.getWidth() / 2;
+//                    float perspectiveX = coords.x + ((xCenterSprite - xCenterScreen) * perspective);
+//                    previewSprite.setPosition(perspectiveX - ((previewSprite.getWidth() * previewSprite.getScaleX()) / 2f), coords.y - previewSprite.getHeight() / 2);
                 }
                 else
                 {

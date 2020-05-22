@@ -296,11 +296,19 @@ public class PropertyPresetDialog extends Window
         this.newPerspectiveProperty.background(spriteDrawable);
         this.newPerspectiveProperty.add(new Label("Perspective", this.skin)).padTop(pad / 2).row();
         table = new Table();
-        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("topPerspective", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("skew", "...", this.skin, null, null, false);
         fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad / 6).row();
-        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("bottomPerspective", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("antiDepth", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("topScale", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("bottomScale", "...", this.skin, null, null, false);
         fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad).row();
@@ -320,9 +328,14 @@ public class PropertyPresetDialog extends Window
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
-                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "topPerspective", "0");
-                AddProperty addSecondProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "bottomPerspective", "0");
-                addProperty.addAddPropertyCommandToChain(addSecondProperty);
+                AddProperty chainedProperty;
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "skew", "0");
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "antiDepth", "0");
+                addProperty.addAddPropertyCommandToChain(chainedProperty);
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "topScale", "0");
+                addProperty.addAddPropertyCommandToChain(chainedProperty);
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "bottomScale", "0");
+                addProperty.addAddPropertyCommandToChain(chainedProperty);
                 map.executeCommand(addProperty);
                 return false;
             }

@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Array;
@@ -18,6 +20,7 @@ import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
 import com.bamboo.bridgebuilder.ui.manipulators.RotationBox;
 import com.bamboo.bridgebuilder.ui.manipulators.ScaleBox;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
@@ -122,6 +125,7 @@ public class MapSprite extends LayerChild
         this.updatePerspective();
     }
 
+
     @Override
     public void setPosition(float x, float y)
     {
@@ -134,16 +138,35 @@ public class MapSprite extends LayerChild
 
         if(map.editor.fileMenu.toolPane.perspective.selected)
         {
-            float xCenterScreen = Utils.unprojectX(map.camera, Gdx.graphics.getWidth() / 2);
-            float xCenterSprite = this.x + this.width / 2;
-            float perspectiveX = this.x + ((xCenterSprite - xCenterScreen) * this.perspective);
-            x = perspectiveX;
+            Vector3 p = Utils.project(map.camera, this.x, this.y);
+            x = p.x;
+            y = Gdx.graphics.getHeight() - p.y;
+            float[] m = map.camera.combined.getValues();
+            float skew = 0;
+            float antiDepth = 0;
+            try
+            {
+                FieldFieldPropertyValuePropertyField property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "skew");
+                skew = Float.parseFloat(property.value.getText());
+                property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "antiDepth");
+                antiDepth = Float.parseFloat(property.value.getText());
+            }
+            catch (NumberFormatException e){}
+            m[Matrix4.M31] -= skew;
+            m[Matrix4.M11] += (map.camera.position.y / 10) * (skew / map.camera.zoom) + (antiDepth / map.camera.zoom);
+            map.camera.invProjectionView.set(map.camera.combined);
+            Matrix4.inv(map.camera.invProjectionView.val);
+            map.camera.frustum.update(map.camera.invProjectionView);
+            p = Utils.unproject(map.camera, x, y);
+            x = p.x;
+            y = p.y;
+            map.camera.update();
         }
 
         this.polygon.setPosition(x, y);
         this.sprite.setPosition(x, y);
 
-        x += this.width;
+        x += this.width / 2;
         y += this.height / 2;
         this.rotationBox.setPosition(x, y);
         this.moveBox.setPosition(x, y);
@@ -450,7 +473,7 @@ public class MapSprite extends LayerChild
 
         if(map.editor.fileMenu.toolPane.perspective.selected)
         {
-            float perspectiveScale = this.scale + this.perspective;
+            float perspectiveScale = this.scale + this.perspectiveScale;
             scale = perspectiveScale;
         }
         this.sprite.setScale(scale);
