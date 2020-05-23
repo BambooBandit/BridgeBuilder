@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.FloatArray;
@@ -543,25 +544,25 @@ public class MapInput implements InputProcessor
             Sprite previewSprite = spriteTool.previewSprites.get(i);
             if(editor.fileMenu.toolPane.perspective.selected)
             {
-                previewSprite.setPosition(x - previewSprite.getWidth() / 2, y - previewSprite.getHeight() / 2);
+                previewSprite.setPosition(x - previewSprite.getWidth() * previewSprite.getScaleX() / 2, y - previewSprite.getHeight() * previewSprite.getScaleY() / 2);
 
                 float perspective = 0;
-                PropertyField bottomProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "bottomPerspective");
-                PropertyField topProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "topPerspective");
-                if(bottomProperty != null && topProperty != null)
+                PropertyField topProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "topScale");
+                PropertyField bottomProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "bottomScale");
+                if (bottomProperty != null && topProperty != null)
                 {
                     FieldFieldPropertyValuePropertyField bottomPropertyField = (FieldFieldPropertyValuePropertyField) bottomProperty;
                     FieldFieldPropertyValuePropertyField topPropertyField = (FieldFieldPropertyValuePropertyField) topProperty;
-                    float perspectiveBottom = Float.parseFloat(bottomPropertyField.value.getText());
                     float perspectiveTop = Float.parseFloat(topPropertyField.value.getText());
+                    float perspectiveBottom = Float.parseFloat(bottomPropertyField.value.getText());
 
                     float mapHeight = map.selectedLayer.height;
-                    float positionY = previewSprite.getY();
+                    float positionY = previewSprite.getY() + previewSprite.getHeight() / 2;
 
                     float coeff = positionY / mapHeight;
                     float delta = perspectiveTop - perspectiveBottom;
 
-                    perspective = perspectiveBottom + coeff * delta;
+                    perspective = (perspectiveBottom + coeff * delta) - 1;
                 }
 
                 float randomScale = editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
@@ -569,14 +570,31 @@ public class MapInput implements InputProcessor
                 previewSprite.setOriginCenter();
                 previewSprite.setScale(perspectiveScale);
 
-                float yCenterScreen = Utils.unprojectY(map.camera, Gdx.graphics.getHeight() / 2f);
-                float yCenterSprite = y + previewSprite.getHeight() / 2f;
-                float perspectiveY = y + ((yCenterSprite - yCenterScreen) * (perspective / 2f));
+                Vector3 p = Utils.project(map.camera, x, y);
+                x = p.x;
+                y = Gdx.graphics.getHeight() - p.y;
+                float[] m = map.camera.combined.getValues();
+                float skew = 0;
+                float antiDepth = 0;
+                try
+                {
+                    FieldFieldPropertyValuePropertyField property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "skew");
+                    skew = Float.parseFloat(property.value.getText());
+                    property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "antiDepth");
+                    antiDepth = Float.parseFloat(property.value.getText());
+                }
+                catch (NumberFormatException e){}
+                m[Matrix4.M31] -= skew;
+                m[Matrix4.M11] += (map.camera.position.y / 10) * (skew / map.camera.zoom) + (antiDepth / map.camera.zoom);
+                map.camera.invProjectionView.set(map.camera.combined);
+                Matrix4.inv(map.camera.invProjectionView.val);
+                map.camera.frustum.update(map.camera.invProjectionView);
+                p = Utils.unproject(map.camera, x, y);
+                x = p.x;
+                y = p.y;
+                map.camera.update();
 
-                float xCenterScreen = Utils.unprojectX(map.camera, Gdx.graphics.getWidth() / 2f);
-                float xCenterSprite = x + previewSprite.getWidth() / 2f;
-                float perspectiveX = x + ((xCenterSprite - xCenterScreen) * (perspective * 2f));
-                previewSprite.setPosition(perspectiveX - ((previewSprite.getWidth() / 2 * previewSprite.getScaleX())), perspectiveY - ((previewSprite.getHeight() / 2 * previewSprite.getScaleY())));
+                previewSprite.setPosition(x - previewSprite.getWidth() * previewSprite.getScaleX() / 2, y - previewSprite.getHeight() * previewSprite.getScaleY() / 2);
             }
             else
                 previewSprite.setPosition(x - previewSprite.getWidth() / 2, y - previewSprite.getHeight() / 2);

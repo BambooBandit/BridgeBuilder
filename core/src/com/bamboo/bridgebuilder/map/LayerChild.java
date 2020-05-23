@@ -20,8 +20,8 @@ public abstract class LayerChild
 
     public void updatePerspective()
     {
-        PropertyField topProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "bottomScale");
-        PropertyField bottomProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "topScale");
+        PropertyField topProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "topScale");
+        PropertyField bottomProperty = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "bottomScale");
         if(bottomProperty == null || topProperty == null)
             return;
         try
@@ -35,7 +35,7 @@ public abstract class LayerChild
             float coeff = positionY / mapHeight;
             float delta = perspectiveTop - perspectiveBottom;
 
-            this.perspectiveScale = perspectiveBottom + coeff * delta;
+            this.perspectiveScale = (perspectiveBottom + coeff * delta) - 1;
 
             this.setScale(getScale());
             this.setPosition(getX(), getY());
