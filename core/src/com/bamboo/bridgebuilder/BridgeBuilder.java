@@ -269,6 +269,8 @@ public class BridgeBuilder extends Game
 	@Override
 	public void resize(int width, int height)
 	{
+		if(width == 0 || height == 0) // undo's the weird lwjgl3 change (minimize window calls this with 0, 0)
+			return;
 		this.stage.getViewport().update(width, height, true);
 		this.fileMenu.setSize(Gdx.graphics.getWidth(), buttonHeight, tabHeight, toolHeight);
 		this.fileMenu.setPosition(0, Gdx.graphics.getHeight() - this.fileMenu.getHeight());

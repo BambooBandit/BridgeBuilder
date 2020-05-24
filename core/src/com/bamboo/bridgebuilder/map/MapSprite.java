@@ -138,6 +138,8 @@ public class MapSprite extends LayerChild
 
         if(map.editor.fileMenu.toolPane.perspective.selected)
         {
+            if(Gdx.graphics.getHeight() == 0)
+                return;
             Vector3 p = Utils.project(map.camera, this.x, this.y);
             x = p.x;
             y = Gdx.graphics.getHeight() - p.y;
@@ -151,7 +153,7 @@ public class MapSprite extends LayerChild
                 property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "antiDepth");
                 antiDepth = Float.parseFloat(property.value.getText());
             }
-            catch (NumberFormatException e){}
+            catch (NumberFormatException e){} catch (NullPointerException e){}
             m[Matrix4.M31] -= skew;
             m[Matrix4.M11] += (map.camera.position.y / 10) * (skew / map.camera.zoom) + (antiDepth / map.camera.zoom);
             map.camera.invProjectionView.set(map.camera.combined);

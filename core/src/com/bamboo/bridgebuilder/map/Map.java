@@ -418,8 +418,11 @@ public class Map implements Screen
                 antiDepth = Float.parseFloat(property.value.getText());
             }
             catch (NumberFormatException e){} catch (NullPointerException e){}
-            m[Matrix4.M31] -= skew;
-            m[Matrix4.M11] += (camera.position.y / 10) * (skew / camera.zoom) + (antiDepth / camera.zoom);
+            if(antiDepth >= .1f)
+                skew /= antiDepth * 15;
+            m[Matrix4.M31] += skew;
+            m[Matrix4.M11] += camera.position.y / (-8f / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
+
             camera.invProjectionView.set(camera.combined);
             Matrix4.inv(camera.invProjectionView.val);
             camera.frustum.update(camera.invProjectionView);
