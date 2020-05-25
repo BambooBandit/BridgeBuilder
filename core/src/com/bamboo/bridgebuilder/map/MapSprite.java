@@ -136,33 +136,33 @@ public class MapSprite extends LayerChild
         float offsetDifferenceX = this.x - oldX;
         float offsetDifferenceY = this.y - oldY;
 
-        if(map.editor.fileMenu.toolPane.perspective.selected)
+        if(this.map.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this.map, this.layer))
         {
             if(Gdx.graphics.getHeight() == 0)
                 return;
             Vector3 p = Utils.project(map.camera, this.x, this.y);
             x = p.x;
             y = Gdx.graphics.getHeight() - p.y;
-            float[] m = map.camera.combined.getValues();
+            float[] m = this.map.camera.combined.getValues();
             float skew = 0;
             float antiDepth = 0;
             try
             {
-                FieldFieldPropertyValuePropertyField property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "skew");
+                FieldFieldPropertyValuePropertyField property = Utils.getSkewPerspectiveProperty(this.map, this.layer);
                 skew = Float.parseFloat(property.value.getText());
-                property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "antiDepth");
+                property = Utils.getAntiDepthPerspectiveProperty(this.map, this.layer);
                 antiDepth = Float.parseFloat(property.value.getText());
             }
-            catch (NumberFormatException e){} catch (NullPointerException e){}
+            catch (NumberFormatException e){}
             m[Matrix4.M31] -= skew;
-            m[Matrix4.M11] += (map.camera.position.y / 10) * (skew / map.camera.zoom) + (antiDepth / map.camera.zoom);
-            map.camera.invProjectionView.set(map.camera.combined);
-            Matrix4.inv(map.camera.invProjectionView.val);
-            map.camera.frustum.update(map.camera.invProjectionView);
-            p = Utils.unproject(map.camera, x, y);
+            m[Matrix4.M11] += (this.map.camera.position.y / 10) * (skew / this.map.camera.zoom) + (antiDepth / this.map.camera.zoom);
+            this.map.camera.invProjectionView.set(this.map.camera.combined);
+            Matrix4.inv(this.map.camera.invProjectionView.val);
+            this.map.camera.frustum.update(this.map.camera.invProjectionView);
+            p = Utils.unproject(this.map.camera, x, y);
             x = p.x;
             y = p.y;
-            map.camera.update();
+            this.map.camera.update();
         }
 
         this.polygon.setPosition(x, y);

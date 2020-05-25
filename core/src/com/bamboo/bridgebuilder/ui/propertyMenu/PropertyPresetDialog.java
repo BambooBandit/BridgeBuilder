@@ -10,10 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.bamboo.bridgebuilder.commands.AddProperty;
-import com.bamboo.bridgebuilder.map.Map;
-import com.bamboo.bridgebuilder.map.MapObject;
-import com.bamboo.bridgebuilder.map.MapPoint;
-import com.bamboo.bridgebuilder.map.MapPolygon;
+import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LightPropertyField;
 
@@ -25,9 +22,11 @@ public class PropertyPresetDialog extends Window
     private Table newLightProperty;
     private Table newBlockedProperty;
     private Table newRayhandlerProperty;
+    private Table newDisablePerspectiveProperty;
     private Table newPerspectiveProperty;
 
     private Table presetTable;
+    private ScrollPane scrollPane;
 
     private TextButton close;
 
@@ -41,6 +40,7 @@ public class PropertyPresetDialog extends Window
         this.skin = skin;
         this.map = map;
         this.presetTable = new Table();
+        this.scrollPane = new ScrollPane(this.presetTable);
 
         this.close = new TextButton("Close", skin);
         this.close.setColor(Color.FIREBRICK);
@@ -55,7 +55,7 @@ public class PropertyPresetDialog extends Window
 
         createPropertyPresets();
 
-        this.add(this.presetTable).row();
+        this.add(scrollPane).row();
         this.add(this.close);
 
         setSize(Gdx.graphics.getWidth() / 1.75f, Gdx.graphics.getHeight() / 1.75f);
@@ -95,7 +95,13 @@ public class PropertyPresetDialog extends Window
         }
         else if(this.map.selectedLayer != null)
         {
-            this.presetTable.add(this.newRayhandlerProperty).pad(5);
+            if(this.map.selectedLayer instanceof ObjectLayer)
+                this.presetTable.add(this.newRayhandlerProperty).pad(5);
+            else if(this.map.selectedLayer instanceof SpriteLayer)
+            {
+                this.presetTable.add(this.newDisablePerspectiveProperty).pad(5);
+                this.presetTable.add(this.newPerspectiveProperty).pad(5);
+            }
         }
         else
         {
@@ -121,6 +127,7 @@ public class PropertyPresetDialog extends Window
         this.createBlocked();
         this.createRayhandler();
         this.createPerspective();
+        this.createDisablePerspective();
     }
 
     private void createTop()
@@ -277,6 +284,46 @@ public class PropertyPresetDialog extends Window
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
                 AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "rayhandler", "");
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
+    private void createDisablePerspective()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newDisablePerspectiveProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newDisablePerspectiveProperty.background(spriteDrawable);
+        this.newDisablePerspectiveProperty.add(new Label("Disable Perspective", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("disablePerspective", "", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        this.newDisablePerspectiveProperty.add(table);
+        this.newDisablePerspectiveProperty.setTouchable(Touchable.enabled);
+        this.newDisablePerspectiveProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newDisablePerspectiveProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newDisablePerspectiveProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "disablePerspective", "");
                 map.executeCommand(addProperty);
                 return false;
             }

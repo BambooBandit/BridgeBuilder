@@ -29,7 +29,6 @@ import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
@@ -390,50 +389,49 @@ public class Map implements Screen
             {
                 renderedRayhandler = true;
                 this.editor.batch.end();
-                renderlights();
+                renderlights(layer);
                 this.editor.batch.begin();
             }
         }
         if(!renderedRayhandler)
         {
             this.editor.batch.end();
-            renderlights();
+            renderlights(null);
             this.editor.batch.begin();
         }
     }
 
-    private void renderlights()
+    private void renderlights(Layer layer)
     {
-        if(editor.fileMenu.toolPane.perspective.selected)
+        if(this.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this, layer))
         {
-            camera.update();
-            float[] m = camera.combined.getValues();
+            this.camera.update();
+            float[] m = this.camera.combined.getValues();
             float skew = 0;
             float antiDepth = 0;
             try
             {
-                FieldFieldPropertyValuePropertyField property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "skew");
+                FieldFieldPropertyValuePropertyField property = Utils.getSkewPerspectiveProperty(this, layer);
                 skew = Float.parseFloat(property.value.getText());
-                property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "antiDepth");
+                property = Utils.getAntiDepthPerspectiveProperty(this, layer);
                 antiDepth = Float.parseFloat(property.value.getText());
             }
-            catch (NumberFormatException e){} catch (NullPointerException e){}
+            catch (NumberFormatException e){}
             if(antiDepth >= .1f)
                 skew /= antiDepth * 15;
             m[Matrix4.M31] += skew;
-            m[Matrix4.M11] += camera.position.y / (-8f / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
+            m[Matrix4.M11] += this.camera.position.y / (-8f / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
 
-            camera.invProjectionView.set(camera.combined);
-            Matrix4.inv(camera.invProjectionView.val);
-            camera.frustum.update(camera.invProjectionView);
+            this.camera.invProjectionView.set(this.camera.combined);
+            Matrix4.inv(this.camera.invProjectionView.val);
+            this.camera.frustum.update(this.camera.invProjectionView);
         }
 
-        this.rayHandler.setCombinedMatrix(camera.combined, camera.position.x, camera.position.y, camera.viewportWidth * camera.zoom * 2f, camera.viewportHeight * camera.zoom * 2f);
-//        this.rayHandler.setCombinedMatrix(camera);
+        this.rayHandler.setCombinedMatrix(this.camera.combined, this.camera.position.x, this.camera.position.y, this.camera.viewportWidth * this.camera.zoom * 2f, this.camera.viewportHeight * this.camera.zoom * 2f);
         this.rayHandler.updateAndRender();
 
-        if(editor.fileMenu.toolPane.perspective.selected)
-            camera.update();
+        if(this.editor.fileMenu.toolPane.perspective.selected)
+            this.camera.update();
     }
 
     private void drawObjectLayers()
@@ -455,7 +453,7 @@ public class Map implements Screen
             if(this.layers.get(i) instanceof ObjectLayer)
             {
                 ObjectLayer objectLayer = (ObjectLayer) this.layers.get(i);
-                if (objectLayer.layerField.visibleImg.isVisible() && objectLayer.overrideSprite == null && editor.fileMenu.toolPane.blocked.selected && objectLayer.graph != null)
+                if (objectLayer.layerField.visibleImg.isVisible() && objectLayer.overrideSprite == null && this.editor.fileMenu.toolPane.blocked.selected && objectLayer.graph != null)
                     objectLayer.graph.drawBlocked();
             }
         }
@@ -463,45 +461,45 @@ public class Map implements Screen
 
     private void drawGrid()
     {
-        if(selectedLayer != null)
+        if(this.selectedLayer != null)
         {
             this.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
-            int layerWidth = selectedLayer.width;
-            int layerHeight = selectedLayer.height;
-            if (editor.fileMenu.toolPane.lines.selected)
+            int layerWidth = this.selectedLayer.width;
+            int layerHeight = this.selectedLayer.height;
+            if (this.editor.fileMenu.toolPane.lines.selected)
             {
                 for (int y = 1; y < layerHeight; y++)
-                    this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y + y, selectedLayer.x + layerWidth, selectedLayer.y + y);
+                    this.editor.shapeRenderer.line(this.selectedLayer.x, this.selectedLayer.y + y, this.selectedLayer.x + layerWidth, this.selectedLayer.y + y);
                 for (int x = 1; x < layerWidth; x++)
-                    this.editor.shapeRenderer.line(selectedLayer.x + x, selectedLayer.y, selectedLayer.x + x, selectedLayer.y + layerHeight);
+                    this.editor.shapeRenderer.line(this.selectedLayer.x + x, this.selectedLayer.y, this.selectedLayer.x + x, this.selectedLayer.y + layerHeight);
             }
         }
     }
 
     private void drawLayerOutline()
     {
-        if(selectedLayer != null)
+        if(this.selectedLayer != null)
         {
             this.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
-            int layerWidth = selectedLayer.width;
-            int layerHeight = selectedLayer.height;
-            this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y, selectedLayer.x, selectedLayer.y + layerHeight);
-            this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y, selectedLayer.x + layerWidth, selectedLayer.y);
-            this.editor.shapeRenderer.line(selectedLayer.x, selectedLayer.y + layerHeight, selectedLayer.x + layerWidth, selectedLayer.y + layerHeight);
-            this.editor.shapeRenderer.line(selectedLayer.x + layerWidth, selectedLayer.y, selectedLayer.x + layerWidth, selectedLayer.y + layerHeight);
+            int layerWidth = this.selectedLayer.width;
+            int layerHeight = this.selectedLayer.height;
+            this.editor.shapeRenderer.line(this.selectedLayer.x, this.selectedLayer.y, this.selectedLayer.x, this.selectedLayer.y + layerHeight);
+            this.editor.shapeRenderer.line(this.selectedLayer.x, this.selectedLayer.y, this.selectedLayer.x + layerWidth, this.selectedLayer.y);
+            this.editor.shapeRenderer.line(this.selectedLayer.x, this.selectedLayer.y + layerHeight, this.selectedLayer.x + layerWidth, this.selectedLayer.y + layerHeight);
+            this.editor.shapeRenderer.line(this.selectedLayer.x + layerWidth, this.selectedLayer.y, this.selectedLayer.x + layerWidth, this.selectedLayer.y + layerHeight);
         }
     }
 
     public void setChanged(boolean changed)
     {
-        if(mapPaneButton == null)
+        if(this.mapPaneButton == null)
             return;
         if(this.changed != changed)
         {
             if(changed)
-                mapPaneButton.setText(name + "*");
+                this.mapPaneButton.setText(this.name + "*");
             else
-                mapPaneButton.setText(name);
+                this.mapPaneButton.setText(this.name);
         }
         this.changed = changed;
     }
@@ -509,10 +507,10 @@ public class Map implements Screen
     @Override
     public void resize(int width, int height)
     {
-        virtualWidth = virtualHeight * stage.getWidth() / stage.getHeight();
-        camera.viewportWidth = virtualHeight * width / (float) height;
-        camera.viewportHeight = virtualHeight;
-        camera.update();
+        virtualWidth = virtualHeight * this.stage.getWidth() / this.stage.getHeight();
+        this.camera.viewportWidth = virtualHeight * width / (float) height;
+        this.camera.viewportHeight = virtualHeight;
+        this.camera.update();
 
         this.stage.getViewport().update(width, height, true);
         this.spriteMenu.setSize(Gdx.graphics.getWidth() / 6, (Gdx.graphics.getHeight() - this.editor.fileMenu.getHeight()) / 2);
@@ -557,26 +555,26 @@ public class Map implements Screen
     public void setName(String name)
     {
         this.name = name;
-        mapPaneButton.setText(name);
+        this.mapPaneButton.setText(name);
     }
 
     public Array<SpriteTool> getAllSelectedSpriteTools()
     {
-        if(spriteMenu.selectedSpriteTools.size > 0)
-            if(spriteMenu.selectedSpriteTools.first().tool != SpriteMenuTools.SPRITE)
+        if(this.spriteMenu.selectedSpriteTools.size > 0)
+            if(this.spriteMenu.selectedSpriteTools.first().tool != SpriteMenuTools.SPRITE)
                 return  null;
-        return spriteMenu.selectedSpriteTools;
+        return this.spriteMenu.selectedSpriteTools;
     }
 
     public SpriteTool getSpriteToolFromSelectedTools()
     {
-        if(spriteMenu.selectedSpriteTools.size == 0)
+        if(this.spriteMenu.selectedSpriteTools.size == 0)
             return null;
-        if(spriteMenu.selectedSpriteTools.first().tool != SpriteMenuTools.SPRITE)
+        if(this.spriteMenu.selectedSpriteTools.first().tool != SpriteMenuTools.SPRITE)
             return  null;
-        if(editor.fileMenu.toolPane.random.selected && randomSpriteIndex < spriteMenu.selectedSpriteTools.size)
-            return spriteMenu.selectedSpriteTools.get(randomSpriteIndex);
-        return spriteMenu.selectedSpriteTools.first();
+        if(this.editor.fileMenu.toolPane.random.selected && this.randomSpriteIndex < this.spriteMenu.selectedSpriteTools.size)
+            return this.spriteMenu.selectedSpriteTools.get(this.randomSpriteIndex);
+        return this.spriteMenu.selectedSpriteTools.first();
     }
 
     public void shuffleRandomSpriteTool()
@@ -597,71 +595,66 @@ public class Map implements Screen
             partialSum += Float.parseFloat(Utils.getLockedPropertyField(getAllSelectedSpriteTools().get(i).lockedProperties, "Probability").value.getText());
             if(partialSum >= random)
             {
-                randomSpriteIndex = i;
+                this.randomSpriteIndex = i;
                 break;
             }
         }
-        editor.fileMenu.toolPane.minMaxDialog.generateRandomValues();
+        this.editor.fileMenu.toolPane.minMaxDialog.generateRandomValues();
         if(getSpriteToolFromSelectedTools() != null)
         {
             SpriteTool spriteTool = getSpriteToolFromSelectedTools();
-            Vector3 coords = Utils.unproject(camera, Gdx.input.getX(), Gdx.input.getY());
+            Vector3 coords = Utils.unproject(this.camera, Gdx.input.getX(), Gdx.input.getY());
             float x = coords.x;
             float y = coords.y;
             for (int i = 0; i < getSpriteToolFromSelectedTools().previewSprites.size; i++)
             {
-                float randomScale = editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
+                float randomScale = this.editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
                 Sprite previewSprite = spriteTool.previewSprites.get(i);
-                if(editor.fileMenu.toolPane.perspective.selected)
+                if(this.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this, this.selectedLayer))
                 {
                     previewSprite.setPosition(x - previewSprite.getWidth() * previewSprite.getScaleX() / 2, y - previewSprite.getHeight() * previewSprite.getScaleY() / 2);
 
                     float perspective = 0;
-                    PropertyField topProperty = Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "topScale");
-                    PropertyField bottomProperty = Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "bottomScale");
-                    if (bottomProperty != null && topProperty != null)
-                    {
-                        FieldFieldPropertyValuePropertyField bottomPropertyField = (FieldFieldPropertyValuePropertyField) bottomProperty;
-                        FieldFieldPropertyValuePropertyField topPropertyField = (FieldFieldPropertyValuePropertyField) topProperty;
-                        float perspectiveTop = Float.parseFloat(topPropertyField.value.getText());
-                        float perspectiveBottom = Float.parseFloat(bottomPropertyField.value.getText());
+                    FieldFieldPropertyValuePropertyField topPropertyField = Utils.getTopScalePerspectiveProperty(this, this.selectedLayer);
+                    FieldFieldPropertyValuePropertyField bottomPropertyField = Utils.getBottomScalePerspectiveProperty(this, this.selectedLayer);
+                    float perspectiveTop = Float.parseFloat(topPropertyField.value.getText());
+                    float perspectiveBottom = Float.parseFloat(bottomPropertyField.value.getText());
 
-                        float mapHeight = selectedLayer.height;
-                        float positionY = previewSprite.getY() + previewSprite.getHeight() / 2;
+                    float mapHeight = this.selectedLayer.height;
+                    float positionY = previewSprite.getY() + previewSprite.getHeight() / 2;
 
-                        float coeff = positionY / mapHeight;
-                        float delta = perspectiveTop - perspectiveBottom;
+                    float coeff = positionY / mapHeight;
+                    float delta = perspectiveTop - perspectiveBottom;
 
-                        perspective = (perspectiveBottom + coeff * delta) - 1;
-                    }
+                    perspective = (perspectiveBottom + coeff * delta) - 1;
 
                     float perspectiveScale = randomScale + perspective;
                     previewSprite.setOriginCenter();
                     previewSprite.setScale(perspectiveScale);
 
-                    Vector3 p = Utils.project(camera, coords.x, coords.y);
+                    Vector3 p = Utils.project(this.camera, coords.x, coords.y);
                     x = p.x;
                     y = Gdx.graphics.getHeight() - p.y;
-                    float[] m = camera.combined.getValues();
+                    float[] m = this.camera.combined.getValues();
                     float skew = 0;
                     float antiDepth = 0;
                     try
                     {
-                        FieldFieldPropertyValuePropertyField property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "skew");
+                        FieldFieldPropertyValuePropertyField property = Utils.getSkewPerspectiveProperty(this, this.selectedLayer);
                         skew = Float.parseFloat(property.value.getText());
-                        property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "antiDepth");
+                        property = Utils.getAntiDepthPerspectiveProperty(this, this.selectedLayer);
                         antiDepth = Float.parseFloat(property.value.getText());
                     }
                     catch (NumberFormatException e){}
                     m[Matrix4.M31] -= skew;
-                    m[Matrix4.M11] += (camera.position.y / 10) * (skew / camera.zoom) + (antiDepth / camera.zoom);
-                    camera.invProjectionView.set(camera.combined);
-                    Matrix4.inv(camera.invProjectionView.val);
-                    camera.frustum.update(camera.invProjectionView);
-                    p = Utils.unproject(camera, x, y);
+                    m[Matrix4.M11] += (this.camera.position.y / 10) * (skew / this.camera.zoom) + (antiDepth / this.camera.zoom);
+                    this.camera.invProjectionView.set(this.camera.combined);
+                    Matrix4.inv(this.camera.invProjectionView.val);
+                    this.camera.frustum.update(this.camera.invProjectionView);
+                    p = Utils.unproject(this.camera, x, y);
                     x = p.x;
                     y = p.y;
-                    camera.update();
+                    this.camera.update();
 
                     previewSprite.setPosition(x - previewSprite.getWidth() * previewSprite.getScaleX() / 2, y - previewSprite.getHeight() * previewSprite.getScaleY() / 2);
                 }
@@ -697,48 +690,48 @@ public class Map implements Screen
 
     public void pushCommand(Command command)
     {
-        deleteElementsAfterPointer(undoRedoPointer);
-        commandStack.push(command);
-        undoRedoPointer ++;
+        deleteElementsAfterPointer(this.undoRedoPointer);
+        this.commandStack.push(command);
+        this.undoRedoPointer ++;
         Utils.println("push " + command);
         Utils.println();
-        if(commandStack.size() > stackThreshold)
+        if(this.commandStack.size() > this.stackThreshold)
         {
-            undoRedoPointer --;
-            commandStack.remove(0);
+            this.undoRedoPointer --;
+            this.commandStack.remove(0);
         }
     }
 
     private void deleteElementsAfterPointer(int undoRedoPointer)
     {
-        if(commandStack.size() < 1)
+        if(this.commandStack.size() < 1)
             return;
-        for(int i = commandStack.size() - 1; i > undoRedoPointer; i --)
-            commandStack.remove(i);
+        for(int i = this.commandStack.size() - 1; i > undoRedoPointer; i --)
+            this.commandStack.remove(i);
     }
 
     public void clearUndoRedo()
     {
-        undoRedoPointer = -1;
-        commandStack.clear();
+        this.undoRedoPointer = -1;
+        this.commandStack.clear();
     }
 
     public void undo()
     {
-        if(undoRedoPointer < 0)
+        if(this.undoRedoPointer < 0)
             return;
-        Command command = commandStack.get(undoRedoPointer);
+        Command command = this.commandStack.get(this.undoRedoPointer);
         Utils.println("undo " + command);
         command.undo();
-        undoRedoPointer --;
+        this.undoRedoPointer --;
     }
 
     public void redo()
     {
-        if(undoRedoPointer == commandStack.size() - 1)
+        if(this.undoRedoPointer == this.commandStack.size() - 1)
             return;
-        undoRedoPointer ++;
-        Command command = commandStack.get(undoRedoPointer);
+        this.undoRedoPointer ++;
+        Command command = this.commandStack.get(this.undoRedoPointer);
         Utils.println("redo " + command);
         command.execute();
     }
@@ -749,12 +742,12 @@ public class Map implements Screen
         {
             if(this.selectedObjects.size > 0)
             {
-                DeleteMapObjects deleteMapObjects = new DeleteMapObjects(this.selectedObjects, selectedLayer);
+                DeleteMapObjects deleteMapObjects = new DeleteMapObjects(this.selectedObjects, this.selectedLayer);
                 executeCommand(deleteMapObjects);
             }
             else if(this.selectedSprites.size > 0)
             {
-                DeleteSelectedMapSprites deleteSelectedMapSprites = new DeleteSelectedMapSprites(this.selectedSprites, (SpriteLayer) selectedLayer);
+                DeleteSelectedMapSprites deleteSelectedMapSprites = new DeleteSelectedMapSprites(this.selectedSprites, (SpriteLayer) this.selectedLayer);
                 executeCommand(deleteSelectedMapSprites);
             }
         }

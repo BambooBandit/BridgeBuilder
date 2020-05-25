@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.map.Layer;
+import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
@@ -85,6 +87,86 @@ public class Utils
         unprojector.set(x, y, 0);
         camera.project(unprojector);
         return unprojector;
+    }
+
+    public static boolean doesLayerHavePerspective(Map map, Layer layer)
+    {
+        Array<PropertyField> mapProperties = map.propertyMenu.mapPropertyPanel.properties;
+        PropertyField mapSkew = Utils.getPropertyField(mapProperties, "skew");
+        PropertyField mapAntiDepth = Utils.getPropertyField(mapProperties, "antiDepth");
+        PropertyField mapTopScale = Utils.getPropertyField(mapProperties, "topScale");
+        PropertyField mapBottomScale = Utils.getPropertyField(mapProperties, "bottomScale");
+
+        PropertyField layerDisablePerspective = null;
+        PropertyField layerSkew = null;
+        PropertyField layerAntiDepth = null;
+        PropertyField layerTopScale = null;
+        PropertyField layerBottomScale = null;
+                
+        if(layer != null)
+        {
+            Array<PropertyField> layerProperties = layer.properties;
+            layerDisablePerspective = Utils.getPropertyField(layerProperties, "disablePerspective");
+            layerSkew = Utils.getPropertyField(layerProperties, "skew");
+            layerAntiDepth = Utils.getPropertyField(layerProperties, "antiDepth");
+            layerTopScale = Utils.getPropertyField(layerProperties, "topScale");
+            layerBottomScale = Utils.getPropertyField(layerProperties, "bottomScale");
+        }
+
+        if(layerDisablePerspective != null)
+            return false;
+        if(mapSkew == null && mapAntiDepth == null  && mapTopScale == null && mapBottomScale == null)
+        {
+            if(layerSkew == null && layerAntiDepth == null  && layerTopScale == null && layerBottomScale == null)
+                return false;
+            return true;
+        }
+        return true;
+    }
+
+    /** Gets the perspective property from the map. Gets it from the layer if present there. */
+    public static FieldFieldPropertyValuePropertyField getSkewPerspectiveProperty(Map map, Layer layer)
+    {
+        PropertyField mapSkew = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "skew");
+        PropertyField layerSkew = null;
+        if(layer != null)
+            layerSkew = Utils.getPropertyField(layer.properties, "skew");
+        if(layerSkew == null)
+            return (FieldFieldPropertyValuePropertyField) mapSkew;
+        return (FieldFieldPropertyValuePropertyField) layerSkew;
+    }
+    /** Gets the perspective property from the map. Gets it from the layer if present there. */
+    public static FieldFieldPropertyValuePropertyField getAntiDepthPerspectiveProperty(Map map, Layer layer)
+    {
+        PropertyField mapAntiDepth = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "antiDepth");
+        PropertyField layerAntiDepth = null;
+        if(layer != null)
+            layerAntiDepth = Utils.getPropertyField(layer.properties, "antiDepth");
+        if(layerAntiDepth == null)
+            return (FieldFieldPropertyValuePropertyField) mapAntiDepth;
+        return (FieldFieldPropertyValuePropertyField) layerAntiDepth;
+    }
+    /** Gets the perspective property from the map. Gets it from the layer if present there. */
+    public static FieldFieldPropertyValuePropertyField getTopScalePerspectiveProperty(Map map, Layer layer)
+    {
+        PropertyField mapTopScale = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "topScale");
+        PropertyField layerTopScale = null;
+        if(layer != null)
+            layerTopScale = Utils.getPropertyField(layer.properties, "topScale");
+        if(layerTopScale == null)
+            return (FieldFieldPropertyValuePropertyField) mapTopScale;
+        return (FieldFieldPropertyValuePropertyField) layerTopScale;
+    }
+    /** Gets the perspective property from the map. Gets it from the layer if present there. */
+    public static FieldFieldPropertyValuePropertyField getBottomScalePerspectiveProperty(Map map, Layer layer)
+    {
+        PropertyField mapBottomScale = Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "bottomScale");
+        PropertyField layerBottomScale = null;
+        if(layer != null)
+            layerBottomScale = Utils.getPropertyField(layer.properties, "bottomScale");
+        if(layerBottomScale == null)
+            return (FieldFieldPropertyValuePropertyField) mapBottomScale;
+        return (FieldFieldPropertyValuePropertyField) layerBottomScale;
     }
 
     public static int setBit(int bit, int target)
