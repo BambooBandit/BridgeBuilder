@@ -24,6 +24,7 @@ public class PropertyPresetDialog extends Window
     private Table newRayhandlerProperty;
     private Table newDisablePerspectiveProperty;
     private Table newPerspectiveProperty;
+    private Table newGroundProperty;
 
     private Table presetTable;
     private ScrollPane scrollPane;
@@ -101,6 +102,7 @@ public class PropertyPresetDialog extends Window
             {
                 this.presetTable.add(this.newDisablePerspectiveProperty).pad(5);
                 this.presetTable.add(this.newPerspectiveProperty).pad(5);
+                this.presetTable.add(this.newGroundProperty).pad(5);
             }
         }
         else
@@ -128,6 +130,7 @@ public class PropertyPresetDialog extends Window
         this.createRayhandler();
         this.createPerspective();
         this.createDisablePerspective();
+        this.createGround();
     }
 
     private void createTop()
@@ -383,6 +386,46 @@ public class PropertyPresetDialog extends Window
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
                 chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "bottomScale", "1");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
+    public void createGround()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newGroundProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newGroundProperty.background(spriteDrawable);
+        this.newGroundProperty.add(new Label("Ground", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("ground", "", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        this.newGroundProperty.add(table);
+        this.newGroundProperty.setTouchable(Touchable.enabled);
+        this.newGroundProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newGroundProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newGroundProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "ground", "");
                 map.executeCommand(addProperty);
                 return false;
             }

@@ -124,6 +124,12 @@ public class Utils
         return true;
     }
 
+    public static boolean isLayerGround(Layer layer)
+    {
+        PropertyField groundProperty = Utils.getPropertyField(layer.properties, "ground");
+        return groundProperty != null;
+    }
+
     /** Gets the perspective property from the map. Gets it from the layer if present there. */
     public static FieldFieldPropertyValuePropertyField getSkewPerspectiveProperty(Map map, Layer layer)
     {

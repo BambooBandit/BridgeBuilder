@@ -136,13 +136,11 @@ public class MapSprite extends LayerChild
         float offsetDifferenceX = this.x - oldX;
         float offsetDifferenceY = this.y - oldY;
 
-        if(this.map.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this.map, this.layer))
+        if(this.map.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this.map, this.layer) && !Utils.isLayerGround(this.layer))
         {
             if(Gdx.graphics.getHeight() == 0)
                 return;
-            Vector3 p = Utils.project(map.camera, this.x, this.y);
-            x = p.x;
-            y = Gdx.graphics.getHeight() - p.y;
+            map.camera.update();
             float[] m = this.map.camera.combined.getValues();
             float skew = 0;
             float antiDepth = 0;
@@ -154,15 +152,20 @@ public class MapSprite extends LayerChild
                 antiDepth = Float.parseFloat(property.value.getText());
             }
             catch (NumberFormatException e){}
-            m[Matrix4.M31] -= skew;
-            m[Matrix4.M11] += (this.map.camera.position.y / 10) * (skew / this.map.camera.zoom) + (antiDepth / this.map.camera.zoom);
+            if(antiDepth >= .1f)
+                skew /= antiDepth * 15;
+            m[Matrix4.M31] += skew;
+            m[Matrix4.M11] += this.map.camera.position.y / (-8f / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
             this.map.camera.invProjectionView.set(this.map.camera.combined);
             Matrix4.inv(this.map.camera.invProjectionView.val);
             this.map.camera.frustum.update(this.map.camera.invProjectionView);
+            Vector3 p = Utils.project(this.map.camera, x, y);
+            x = p.x;
+            y = Gdx.graphics.getHeight() - p.y;
+            this.map.camera.update();
             p = Utils.unproject(this.map.camera, x, y);
             x = p.x;
             y = p.y;
-            this.map.camera.update();
         }
 
         this.polygon.setPosition(x, y);
@@ -473,7 +476,7 @@ public class MapSprite extends LayerChild
             return;
         this.scale = scale;
 
-        if(map.editor.fileMenu.toolPane.perspective.selected)
+        if(map.editor.fileMenu.toolPane.perspective.selected && !Utils.isLayerGround(this.layer))
         {
             float perspectiveScale = this.scale + this.perspectiveScale;
             scale = perspectiveScale;
