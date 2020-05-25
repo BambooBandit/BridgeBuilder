@@ -78,9 +78,6 @@ public class Map implements Screen
 
     public Skin skin;
 
-    public boolean shiftToPerspective = true;
-    public float lightShift = 0;
-
     // For undo/redo
     private int undoRedoPointer = -1;
     private Stack<Command> commandStack = new Stack<>();
@@ -99,9 +96,9 @@ public class Map implements Screen
         virtualHeight = 20f;
         virtualWidth = virtualHeight * Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
 
-        b2dr = new Box2DDebugRenderer();
+        this.b2dr = new Box2DDebugRenderer();
 
-        this.input = new MapInput(editor, this);
+        this.input = new MapInput(this.editor, this);
 
         this.layers = new Array<>();
         this.selectedSprites = new Array<>();
@@ -115,20 +112,20 @@ public class Map implements Screen
         this.camera.update();
 
 
-        this.stage = new Stage(new ScreenViewport(), editor.batch);
+        this.stage = new Stage(new ScreenViewport(), this.editor.batch);
         this.skin = EditorAssets.getUISkin();
         // spriteMenu
-        this.spriteMenu = new SpriteMenu(EditorAssets.getUISkin(), editor, this);
+        this.spriteMenu = new SpriteMenu(EditorAssets.getUISkin(), this.editor, this);
         this.spriteMenu.setVisible(true);
         this.stage.addActor(this.spriteMenu);
 
         // propertyMenu
-        this.propertyMenu = new PropertyMenu(EditorAssets.getUISkin(), editor, this);
+        this.propertyMenu = new PropertyMenu(EditorAssets.getUISkin(), this.editor, this);
         this.propertyMenu.setVisible(true);
         this.stage.addActor(this.propertyMenu);
 
         // layerMenu
-        this.layerMenu = new LayerMenu(EditorAssets.getUISkin(), editor, this);
+        this.layerMenu = new LayerMenu(EditorAssets.getUISkin(), this.editor, this);
         this.layerMenu.setVisible(true);
         this.stage.addActor(this.layerMenu);
 
@@ -159,7 +156,7 @@ public class Map implements Screen
     @Override
     public void render(float delta)
     {
-        Gdx.gl.glClearColor(r, g, b, 1);
+        Gdx.gl.glClearColor(this.r, this.g, this.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         this.world.step(delta, 1, 1);
@@ -167,14 +164,14 @@ public class Map implements Screen
         this.camera.zoom = this.zoom;
         this.camera.update();
 
-        this.editor.batch.setProjectionMatrix(camera.combined);
+        this.editor.batch.setProjectionMatrix(this.camera.combined);
         this.editor.batch.begin();
         //spritebatch begin
         drawSpriteLayersAndLights();
         //spritebatch end
         this.editor.batch.end();
 
-        this.editor.shapeRenderer.setProjectionMatrix(camera.combined);
+        this.editor.shapeRenderer.setProjectionMatrix(this.camera.combined);
         this.editor.shapeRenderer.setAutoShapeType(true);
         this.editor.shapeRenderer.setColor(Color.BLACK);
         Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -189,7 +186,7 @@ public class Map implements Screen
         if(this.editor.fileMenu.toolPane.b2drender.selected)
         {
             this.editor.shapeRenderer.end();
-            this.b2dr.render(world, camera.combined);
+            this.b2dr.render(this.world, this.camera.combined);
             this.editor.shapeRenderer.begin();
         }
         drawHoveredOutline();
@@ -241,9 +238,9 @@ public class Map implements Screen
 
     private void drawSelectedOutlines()
     {
-        if(!Utils.isFileToolThisType(editor, Tools.SELECT) && !Utils.isFileToolThisType(editor, Tools.BOXSELECT) && !Utils.isFileToolThisType(editor, Tools.OBJECTVERTICESELECT) && !Utils.isFileToolThisType(editor, Tools.DRAWPOINT) && !Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
+        if(!Utils.isFileToolThisType(this.editor, Tools.SELECT) && !Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) && !Utils.isFileToolThisType(this.editor, Tools.OBJECTVERTICESELECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWPOINT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE))
             return;
-        if(Utils.isFileToolThisType(editor, Tools.DRAWPOINT) || Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) || Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
+        if(Utils.isFileToolThisType(this.editor, Tools.DRAWPOINT) || Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) || Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE))
         {
             if(this.selectedLayer instanceof SpriteLayer && this.selectedSprites.size != 1)
                 return;
@@ -270,35 +267,35 @@ public class Map implements Screen
 
     private void drawUnfinishedMapPolygon()
     {
-        if(!Utils.isFileToolThisType(editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
+        if(!Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE))
             return;
         this.editor.shapeRenderer.setColor(Color.GRAY);
         int oldIndex = 0;
-        if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE) && input.mapPolygonVertices.size == 8)
+        if(Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE) && this.input.mapPolygonVertices.size == 8)
         {
-            input.mapPolygonVertices.removeIndex(2);
-            input.mapPolygonVertices.insert(2, input.currentPos.x - this.input.objectVerticePosition.x);
-            input.mapPolygonVertices.removeIndex(3);
-            input.mapPolygonVertices.insert(3, input.mapPolygonVertices.get(1));
-            input.mapPolygonVertices.removeIndex(4);
-            input.mapPolygonVertices.insert(4, input.currentPos.x - this.input.objectVerticePosition.x);
-            input.mapPolygonVertices.removeIndex(5);
-            input.mapPolygonVertices.insert(5, input.currentPos.y - this.input.objectVerticePosition.y);
-            input.mapPolygonVertices.removeIndex(6);
-            input.mapPolygonVertices.insert(6, input.mapPolygonVertices.get(0));
-            input.mapPolygonVertices.removeIndex(7);
-            input.mapPolygonVertices.insert(7, input.currentPos.y - this.input.objectVerticePosition.y);
+            this.input.mapPolygonVertices.removeIndex(2);
+            this.input.mapPolygonVertices.insert(2, this.input.currentPos.x - this.input.objectVerticePosition.x);
+            this.input.mapPolygonVertices.removeIndex(3);
+            this.input.mapPolygonVertices.insert(3, this.input.mapPolygonVertices.get(1));
+            this.input.mapPolygonVertices.removeIndex(4);
+            this.input.mapPolygonVertices.insert(4, this.input.currentPos.x - this.input.objectVerticePosition.x);
+            this.input.mapPolygonVertices.removeIndex(5);
+            this.input.mapPolygonVertices.insert(5, this.input.currentPos.y - this.input.objectVerticePosition.y);
+            this.input.mapPolygonVertices.removeIndex(6);
+            this.input.mapPolygonVertices.insert(6, this.input.mapPolygonVertices.get(0));
+            this.input.mapPolygonVertices.removeIndex(7);
+            this.input.mapPolygonVertices.insert(7, this.input.currentPos.y - this.input.objectVerticePosition.y);
         }
-        if (input.mapPolygonVertices.size >= 2)
+        if (this.input.mapPolygonVertices.size >= 2)
         {
-            this.editor.shapeRenderer.circle(input.mapPolygonVertices.get(0) + input.objectVerticePosition.x, input.mapPolygonVertices.get(1) + input.objectVerticePosition.y, .1f, 7);
-            for (int i = 2; i < input.mapPolygonVertices.size; i += 2)
+            this.editor.shapeRenderer.circle(this.input.mapPolygonVertices.get(0) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(1) + this.input.objectVerticePosition.y, .1f, 7);
+            for (int i = 2; i < this.input.mapPolygonVertices.size; i += 2)
             {
-                this.editor.shapeRenderer.line(input.mapPolygonVertices.get(oldIndex) + input.objectVerticePosition.x, input.mapPolygonVertices.get(oldIndex + 1) + input.objectVerticePosition.y, input.mapPolygonVertices.get(i) + input.objectVerticePosition.x, input.mapPolygonVertices.get(i + 1) + input.objectVerticePosition.y);
+                this.editor.shapeRenderer.line(this.input.mapPolygonVertices.get(oldIndex) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(oldIndex + 1) + this.input.objectVerticePosition.y, this.input.mapPolygonVertices.get(i) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(i + 1) + this.input.objectVerticePosition.y);
                 oldIndex += 2;
             }
             if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
-                this.editor.shapeRenderer.line(input.mapPolygonVertices.get(oldIndex) + input.objectVerticePosition.x, input.mapPolygonVertices.get(oldIndex + 1) + input.objectVerticePosition.y, input.mapPolygonVertices.get(0) + input.objectVerticePosition.x, input.mapPolygonVertices.get(1) + input.objectVerticePosition.y);
+                this.editor.shapeRenderer.line(this.input.mapPolygonVertices.get(oldIndex) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(oldIndex + 1) + this.input.objectVerticePosition.y, this.input.mapPolygonVertices.get(0) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(1) + this.input.objectVerticePosition.y);
         }
     }
 
@@ -318,7 +315,7 @@ public class Map implements Screen
 
     private void drawBoxSelect()
     {
-        if(!Utils.isFileToolThisType(editor, Tools.BOXSELECT) || !this.input.boxSelect.isDragging || this.selectedLayer == null)
+        if(!Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) || !this.input.boxSelect.isDragging || this.selectedLayer == null)
             return;
 
         for(int i = 0; i < this.selectedLayer.children.size; i ++)
@@ -334,7 +331,7 @@ public class Map implements Screen
         }
 
         this.editor.shapeRenderer.setColor(Color.CYAN);
-        editor.shapeRenderer.rect(input.boxSelect.rectangle.x, input.boxSelect.rectangle.y, input.boxSelect.rectangle.width, input.boxSelect.rectangle.height);
+        this.editor.shapeRenderer.rect(this.input.boxSelect.rectangle.x, this.input.boxSelect.rectangle.y, this.input.boxSelect.rectangle.width, this.input.boxSelect.rectangle.height);
     }
 
     private void drawHoveredOutline()
@@ -729,7 +726,7 @@ public class Map implements Screen
 
     public void colorizeDepth()
     {
-        if(selectedLayer == null)
+        if(this.selectedLayer == null)
             return;
 
         PropertyToolPane.apply(this);
