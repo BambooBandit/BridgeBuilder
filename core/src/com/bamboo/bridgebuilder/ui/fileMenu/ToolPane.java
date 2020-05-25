@@ -36,6 +36,7 @@ public class ToolPane extends Group
     public Tool parallax;
     public Tool perspective;
     public Tool top;
+    public Tool depth;
     public Tool lines;
     public Tool b2drender;
     public Tool selectedTool;
@@ -73,6 +74,7 @@ public class ToolPane extends Group
         this.perspective = new Tool(Tools.PERSPECTIVE, this, true);
         this.top = new Tool(Tools.TOP, this, true);
         this.top.select();
+        this.depth = new Tool(Tools.DEPTH, this, true);
         this.lines = new Tool(Tools.LINES, this, true);
         this.b2drender = new Tool(Tools.B2DR, this, true);
         this.bringUp = new TextButton("^", skin);
@@ -103,6 +105,7 @@ public class ToolPane extends Group
         this.toolTable.add(this.parallax).padRight(1);
         this.toolTable.add(this.perspective).padRight(1);
         this.toolTable.add(this.top).padRight(1);
+        this.toolTable.add(this.depth).padRight(1);
         this.toolTable.add(this.lines).padRight(5);
         this.toolTable.add(this.b2drender).padRight(5);
         this.toolTable.add(this.bringUp).padRight(1);
@@ -144,6 +147,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.parallax).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.perspective).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.top).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.depth).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.lines).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.b2drender).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringUp).size(toolHeight, toolHeight);
@@ -167,9 +171,17 @@ public class ToolPane extends Group
         if(selectedTool.isToggleable)
         {
             if(selectedTool.selected)
+            {
+                if(selectedTool == this.depth && editor.activeMap != null)
+                    PropertyToolPane.apply(editor.activeMap);
                 selectedTool.unselect();
+            }
             else
+            {
+                if(selectedTool == this.depth && editor.activeMap != null)
+                    editor.activeMap.colorizeDepth();
                 selectedTool.select();
+            }
 
             if(selectedTool == this.perspective && editor.activeMap != null)
                 PropertyToolPane.updatePerspective(editor.activeMap);

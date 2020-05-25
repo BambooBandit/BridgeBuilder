@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -27,6 +28,7 @@ import com.bamboo.bridgebuilder.commands.DeleteSelectedMapSprites;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
+import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
@@ -722,6 +724,27 @@ public class Map implements Screen
                 DeleteSelectedMapSprites deleteSelectedMapSprites = new DeleteSelectedMapSprites(this.selectedSprites, (SpriteLayer) this.selectedLayer);
                 executeCommand(deleteSelectedMapSprites);
             }
+        }
+    }
+
+    public void colorizeDepth()
+    {
+        if(selectedLayer == null)
+            return;
+
+        PropertyToolPane.apply(this);
+
+        Array<MapSprite> children;
+        if(this.selectedSprites.size > 0)
+            children = this.selectedSprites;
+        else
+            children = this.selectedLayer.children;
+
+        for(int i = 0; i < children.size; i ++)
+        {
+            float norm = MathUtils.norm(0, children.size, i);
+            MapSprite mapSprite = children.get(i);
+            mapSprite.sprite.setColor(1f - norm, .25f, norm, 1);
         }
     }
 }

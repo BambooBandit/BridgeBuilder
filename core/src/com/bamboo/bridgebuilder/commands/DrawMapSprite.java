@@ -32,11 +32,17 @@ public class DrawMapSprite implements Command
             map.shuffleRandomSpriteTool();
         }
         layer.addMapSprite(this.mapSprite);
+
+        if(map.editor.fileMenu.toolPane.depth.selected)
+            map.colorizeDepth();
     }
 
     @Override
     public void undo()
     {
         layer.children.removeValue(this.mapSprite, true);
+
+        if(map.editor.fileMenu.toolPane.depth.selected)
+            map.colorizeDepth();
     }
 }

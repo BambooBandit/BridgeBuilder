@@ -61,6 +61,9 @@ public class SelectLayerChild implements Command
                 }
                 hoveredMapSprite.select();
             }
+
+            if(map.editor.fileMenu.toolPane.depth.selected)
+                map.colorizeDepth();
         }
         else if(hoveredChild instanceof MapObject)
         {
@@ -114,6 +117,9 @@ public class SelectLayerChild implements Command
                 for (int i = 0; i < this.oldSelectedObjects.size; i++)
                     this.oldSelectedObjects.get(i).select();
             }
+
+            if(map.editor.fileMenu.toolPane.depth.selected)
+                map.colorizeDepth();
         }
         else if(hoveredChild instanceof MapObject)
         {

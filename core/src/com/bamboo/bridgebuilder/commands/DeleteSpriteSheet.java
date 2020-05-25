@@ -50,9 +50,6 @@ public class DeleteSpriteSheet implements Command
     @Override
     public void execute()
     {
-
-
-
         // Delete sprite sheet ui
         this.map.spriteMenu.spriteTable.removeActor(this.spriteSheet.label);
         for(int k = 0; k < this.spriteSheet.children.size; k ++)
@@ -65,9 +62,6 @@ public class DeleteSpriteSheet implements Command
             this.map.spriteMenu.spriteTable.removeActor(child);
         }
         this.map.spriteMenu.spriteSheets.removeValue(this.spriteSheet, true);
-
-
-
 
         // Delete all MapSprites in use
         for(int i = 0; i < this.mapSprites.size; i ++)
@@ -89,6 +83,9 @@ public class DeleteSpriteSheet implements Command
             this.map.propertyMenu.rebuild();
             this.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
         }
+
+        if(map.editor.fileMenu.toolPane.depth.selected)
+            map.colorizeDepth();
     }
 
     @Override
@@ -108,8 +105,6 @@ public class DeleteSpriteSheet implements Command
         map.spriteMenu.spriteTable.row();
         map.spriteMenu.spriteTable.padBottom(500).row();
 
-
-
         // Re-add all the MapSprites
         for(int i = 0; i < this.mapSprites.size; i ++)
         {
@@ -119,5 +114,8 @@ public class DeleteSpriteSheet implements Command
         }
         this.map.propertyMenu.rebuild();
         this.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
+
+        if(map.editor.fileMenu.toolPane.depth.selected)
+            map.colorizeDepth();
     }
 }

@@ -91,6 +91,9 @@ public class SelectLayerChildren implements Command
             }
         }
         this.map.propertyMenu.rebuild();
+
+        if(map.editor.fileMenu.toolPane.depth.selected)
+            map.colorizeDepth();
     }
 
     @Override
@@ -111,5 +114,8 @@ public class SelectLayerChildren implements Command
         for(int i = 0; i < this.oldSelectedObjects.size; i ++)
             this.oldSelectedObjects.get(i).select();
         this.map.propertyMenu.rebuild();
+
+        if(map.editor.fileMenu.toolPane.depth.selected)
+            map.colorizeDepth();
     }
 }

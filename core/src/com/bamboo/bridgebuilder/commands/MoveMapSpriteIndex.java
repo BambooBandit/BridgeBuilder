@@ -31,6 +31,9 @@ public class MoveMapSpriteIndex implements Command
             moveAllTheWayUp();
         else
             moveAllTheWayDown();
+
+        if(map.editor.fileMenu.toolPane.depth.selected)
+            map.colorizeDepth();
     }
 
     @Override
@@ -44,6 +47,9 @@ public class MoveMapSpriteIndex implements Command
             moveUp();
         else if(allTheWay)
             moveToIndex();
+
+        if(map.editor.fileMenu.toolPane.depth.selected)
+            map.colorizeDepth();
     }
 
     private void moveUp()

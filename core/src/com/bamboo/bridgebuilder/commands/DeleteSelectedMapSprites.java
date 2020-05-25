@@ -48,6 +48,9 @@ public class DeleteSelectedMapSprites implements Command
             this.selectedLayer.map.propertyMenu.rebuild();
             this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
         }
+
+        if(selectedLayer.map.editor.fileMenu.toolPane.depth.selected)
+            selectedLayer.map.colorizeDepth();
     }
 
     @Override
@@ -62,5 +65,8 @@ public class DeleteSelectedMapSprites implements Command
         }
         this.selectedLayer.map.propertyMenu.rebuild();
         this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
+
+        if(selectedLayer.map.editor.fileMenu.toolPane.depth.selected)
+            selectedLayer.map.colorizeDepth();
     }
 }

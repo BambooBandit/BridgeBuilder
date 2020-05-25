@@ -29,6 +29,9 @@ public class SelectLayer implements Command
             map.selectedLayer = this.newLayer;
         }
         map.propertyMenu.rebuild();
+
+        if(map.editor.fileMenu.toolPane.depth.selected)
+            map.colorizeDepth();
     }
 
     @Override
@@ -47,5 +50,8 @@ public class SelectLayer implements Command
             }
         }
         map.propertyMenu.rebuild();
+
+        if(map.editor.fileMenu.toolPane.depth.selected)
+            map.colorizeDepth();
     }
 }
