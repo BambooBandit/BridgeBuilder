@@ -735,7 +735,7 @@ public class Map implements Screen
         PropertyToolPane.apply(this);
 
         Array<MapSprite> children;
-        if(this.selectedSprites.size > 0)
+        if(this.selectedSprites.size > 1)
             children = this.selectedSprites;
         else
             children = this.selectedLayer.children;
