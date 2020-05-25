@@ -27,7 +27,6 @@ import com.bamboo.bridgebuilder.commands.DeleteSelectedMapSprites;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
-import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
@@ -160,33 +159,6 @@ public class Map implements Screen
     {
         Gdx.gl.glClearColor(r, g, b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        if(editor.fileMenu.toolPane.lerpPerspective.selected)
-        {
-            FieldFieldPropertyValuePropertyField botPers = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "bottomPerspective");
-            if (botPers != null)
-            {
-                FieldFieldPropertyValuePropertyField topPers = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(propertyMenu.mapPropertyPanel.properties, "topPerspective");
-                float top = Float.parseFloat(topPers.value.getText());
-                float bot = Float.parseFloat(botPers.value.getText());
-                if (this.shiftToPerspective)
-                {
-                    top += .01f;
-                    bot += .02f;
-                    if (bot >= 2.5f)
-                        this.shiftToPerspective = false;
-                } else
-                {
-                    top -= .01f;
-                    bot -= .02f;
-                    if (bot <= 0f)
-                        this.shiftToPerspective = true;
-                }
-                topPers.value.setText("" + top);
-                botPers.value.setText("" + bot);
-                PropertyToolPane.updatePerspective(this);
-            }
-        }
 
         this.world.step(delta, 1, 1);
 

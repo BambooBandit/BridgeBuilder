@@ -35,7 +35,6 @@ public class ToolPane extends Group
     public Tool blocked;
     public Tool parallax;
     public Tool perspective;
-    public Tool lerpPerspective;
     public Tool top;
     public Tool lines;
     public Tool b2drender;
@@ -72,7 +71,6 @@ public class ToolPane extends Group
         this.parallax = new Tool(Tools.PARALLAX, this, true);
         this.parallax.select();
         this.perspective = new Tool(Tools.PERSPECTIVE, this, true);
-        this.lerpPerspective = new Tool(Tools.LERPPERSPECTIVE, this, true);
         this.top = new Tool(Tools.TOP, this, true);
         this.top.select();
         this.lines = new Tool(Tools.LINES, this, true);
@@ -104,7 +102,6 @@ public class ToolPane extends Group
         this.toolTable.add(this.blocked).padRight(1);
         this.toolTable.add(this.parallax).padRight(1);
         this.toolTable.add(this.perspective).padRight(1);
-        this.toolTable.add(this.lerpPerspective).padRight(1);
         this.toolTable.add(this.top).padRight(1);
         this.toolTable.add(this.lines).padRight(5);
         this.toolTable.add(this.b2drender).padRight(5);
@@ -146,7 +143,6 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.blocked).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.parallax).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.perspective).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.lerpPerspective).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.top).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.lines).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.b2drender).size(toolHeight, toolHeight);
