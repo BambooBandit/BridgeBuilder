@@ -10,7 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Json;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.data.*;
 import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.map.ObjectLayer;
+import com.bamboo.bridgebuilder.map.SpriteLayer;
 
 import static com.bamboo.bridgebuilder.map.Map.untitledCount;
 
@@ -212,6 +215,23 @@ public class FileMenu extends Group
 
     private Json createJson()
     {
-        return null;
+        Json json = new Json();
+        json.addClassTag("map", MapData.class);
+        json.addClassTag("prop", PropertyData.class);
+        json.addClassTag("ffProp", FieldFieldPropertyValuePropertyFieldData.class);
+        json.addClassTag("lfProp", LabelFieldPropertyValuePropertyFieldData.class);
+        json.addClassTag("rgbProp", ColorPropertyFieldData.class);
+        json.addClassTag("lightProp", LightPropertyFieldData.class);
+        json.addClassTag("layer", LayerData.class);
+        json.addClassTag("sLayer", SpriteLayer.class);
+        json.addClassTag("oLayer", ObjectLayer.class);
+        json.addClassTag("child", LayerChildData.class);
+        json.addClassTag("sprite", MapSpriteData.class);
+        json.addClassTag("sheet", SpriteSheetData.class);
+        json.addClassTag("tool", ToolData.class);
+        json.addClassTag("obj", MapObjectData.class);
+        json.addClassTag("point", MapPointData.class);
+        json.addClassTag("poly", MapPolygonData.class);
+        return json;
     }
 }
