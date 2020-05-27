@@ -36,6 +36,8 @@ public class BridgeBuilder extends Game
 
 	public InputProcessor shortcutProcessor;
 
+	public static boolean fileChooserOpen = false;
+
 	@Override
 	public void create ()
 	{

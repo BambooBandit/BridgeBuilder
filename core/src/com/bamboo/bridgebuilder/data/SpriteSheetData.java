@@ -1,5 +1,6 @@
 package com.bamboo.bridgebuilder.data;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteSheet;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
@@ -19,9 +20,9 @@ public class SpriteSheetData
 
         for(int i = 0; i < map.spriteMenu.spriteTable.getChildren().size; i ++)
         {
-            if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof SpriteTool)
+            if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof Table)
             {
-                SpriteTool spriteTool = ((SpriteTool) map.spriteMenu.spriteTable.getChildren().get(i));
+                SpriteTool spriteTool = ((Table) map.spriteMenu.spriteTable.getChildren().get(i)).findActor("spriteTool");
                 if(spriteTool.sheet.name == this.name)
                     this.tools.add(new ToolData(spriteTool));
             }

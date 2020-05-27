@@ -1,5 +1,6 @@
 package com.bamboo.bridgebuilder.ui.fileMenu;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -12,9 +13,16 @@ import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.data.*;
 import com.bamboo.bridgebuilder.map.Map;
-import com.bamboo.bridgebuilder.map.ObjectLayer;
-import com.bamboo.bridgebuilder.map.SpriteLayer;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+import static com.bamboo.bridgebuilder.BridgeBuilder.prefs;
 import static com.bamboo.bridgebuilder.map.Map.untitledCount;
 
 public class FileMenu extends Group
@@ -72,6 +80,7 @@ public class FileMenu extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                open();
             }
         });
         this.saveButton.addListener(new ClickListener()
@@ -79,6 +88,8 @@ public class FileMenu extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                if(editor.activeMap != null)
+                    save(editor.activeMap, false, false);
             }
         });
         this.saveAsButton.addListener(new ClickListener()
@@ -86,6 +97,8 @@ public class FileMenu extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                if(editor.activeMap != null)
+                    saveAs(editor.activeMap, false, false);
             }
         });
         this.saveBBMDefaultsButton.addListener(new ClickListener()
@@ -148,6 +161,56 @@ public class FileMenu extends Group
         this.addActor(this.fileMenuTable);
     }
 
+    public void open()
+    {
+        if (editor.fileChooserOpen)
+            return;
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                editor.fileChooserOpen = true;
+                JFileChooser chooser = new JFileChooser();
+                FileNameExtensionFilter bbmFilter = new FileNameExtensionFilter(
+                        "bbm files (*.bbm)", "bbm");
+                chooser.setFileFilter(bbmFilter);
+                String path = prefs.getString("lastSave", "null");
+                if(!path.equals("null"))
+                    chooser.setSelectedFile(new File(path));
+                JFrame f = new JFrame();
+                f.setVisible(true);
+                f.setAlwaysOnTop(true);
+                f.toFront();
+                f.setVisible(false);
+                int res = chooser.showOpenDialog(f);
+                f.dispose();
+                editor.fileChooserOpen = false;
+                if (res == JFileChooser.APPROVE_OPTION)
+                {
+                    Gdx.app.postRunnable(() ->
+                    {
+                        try
+                        {
+                            File file = chooser.getSelectedFile();
+                            String content = new Scanner(file).useDelimiter("\\Z").next();
+                            Json json = createJson();
+                            MapData mapData = json.fromJson(MapData.class, content);
+                            Map newMap = new Map(editor, mapData);
+                            newMap.file = file;
+                            editor.addToMaps(newMap);
+                            mapTabPane.lookAtMap(newMap);
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
     public void newMap()
     {
         new YesNoDialog("Create a new map with BBM default settings/properties?", FileMenu.this.editor.stage, "", EditorAssets.getUISkin(), true)
@@ -170,6 +233,103 @@ public class FileMenu extends Group
 
     public void save(Map map, boolean removeMapAfterSaving, boolean closeApplicationAfterSaving)
     {
+        if (map.file == null)
+        {
+            saveAs(map, removeMapAfterSaving, closeApplicationAfterSaving);
+            return;
+        }
+        MapData mapData = new MapData(map, false);
+
+        Json json = createJson();
+
+        File file = map.file;
+        try
+        {
+            //Create the file
+            if (file.createNewFile())
+                System.out.println("File is created!");
+            else
+                System.out.println("File already exists.");
+
+            //Write Content
+            FileWriter writer = new FileWriter(file);
+            writer.write(json.prettyPrint(mapData));
+            writer.close();
+
+            map.setChanged(false);
+
+            if(removeMapAfterSaving)
+                editor.fileMenu.mapTabPane.removeMap(map);
+            if(closeApplicationAfterSaving)
+                Gdx.app.exit();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveAs(Map map, boolean removeMapAfterSaving, boolean closeApplicationAfterSaving)
+    {
+        if(editor.fileChooserOpen || editor.getScreen() == null)
+            return;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                editor.fileChooserOpen = true;
+                JFileChooser chooser = new JFileChooser();
+                FileNameExtensionFilter flmFilter = new FileNameExtensionFilter(
+                        "bbm files (*.bbm)", "bbm");
+                chooser.setFileFilter(flmFilter);
+                if(map.file != null)
+                    chooser.setSelectedFile(map.file);
+                else
+                    chooser.setSelectedFile(new File("map.bbm"));
+                JFrame f = new JFrame();
+                f.setVisible(true);
+                f.setAlwaysOnTop(true);
+                f.toFront();
+                f.setVisible(false);
+                int res = chooser.showSaveDialog(f);
+                f.dispose();
+                editor.fileChooserOpen = false;
+                if (res == JFileChooser.APPROVE_OPTION)
+                {
+                    Gdx.app.postRunnable(() ->
+                    {
+                        map.setName(chooser.getSelectedFile().getName());
+                        MapData mapData = new MapData(map, false);
+                        Json json = createJson();
+
+                        File file = chooser.getSelectedFile();
+                        map.file = file;
+                        try
+                        {
+                            //Create the file
+                            file.createNewFile();
+                            prefs.putString("lastSave", file.getAbsolutePath());
+                            prefs.flush();
+
+                            //Write Content
+                            FileWriter writer = new FileWriter(file);
+                            writer.write(json.prettyPrint(mapData));
+                            writer.close();
+
+                            map.setChanged(false);
+
+                            if(removeMapAfterSaving)
+                                editor.fileMenu.mapTabPane.removeMap(map);
+                            if(closeApplicationAfterSaving)
+                                Gdx.app.exit();
+                        }
+                        catch (IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
     public void saveBBMDefaults(Map map)
@@ -177,10 +337,6 @@ public class FileMenu extends Group
     }
 
     public void setBBMDefaults(Map map)
-    {
-    }
-
-    public void saveAs(Map map, boolean removeMapAfterSaving, boolean closeApplicationAfterSaving)
     {
     }
 
@@ -223,8 +379,8 @@ public class FileMenu extends Group
         json.addClassTag("rgbProp", ColorPropertyFieldData.class);
         json.addClassTag("lightProp", LightPropertyFieldData.class);
         json.addClassTag("layer", LayerData.class);
-        json.addClassTag("sLayer", SpriteLayer.class);
-        json.addClassTag("oLayer", ObjectLayer.class);
+        json.addClassTag("sLayer", SpriteLayerData.class);
+        json.addClassTag("oLayer", ObjectLayerData.class);
         json.addClassTag("child", LayerChildData.class);
         json.addClassTag("sprite", MapSpriteData.class);
         json.addClassTag("sheet", SpriteSheetData.class);

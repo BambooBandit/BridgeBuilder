@@ -4,13 +4,13 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldProperty
 
 public class LabelFieldPropertyValuePropertyFieldData extends PropertyData
 {
-    public String property;
-    public String value;
+    public String prop;
+    public String val;
     public LabelFieldPropertyValuePropertyFieldData(){}
     public LabelFieldPropertyValuePropertyFieldData(LabelFieldPropertyValuePropertyField property)
     {
         super(property);
-        this.property = property.getProperty();
-        this.value = property.getValue();
+        this.prop = property.getProperty();
+        this.val = property.getValue();
     }
 }

@@ -25,6 +25,7 @@ import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.Command;
 import com.bamboo.bridgebuilder.commands.DeleteMapObjects;
 import com.bamboo.bridgebuilder.commands.DeleteSelectedMapSprites;
+import com.bamboo.bridgebuilder.data.MapData;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
@@ -34,6 +35,7 @@ import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
+import java.io.File;
 import java.util.Stack;
 
 public class Map implements Screen
@@ -78,6 +80,8 @@ public class Map implements Screen
 
     public Skin skin;
 
+    public File file = null;
+
     // For undo/redo
     private int undoRedoPointer = -1;
     private Stack<Command> commandStack = new Stack<>();
@@ -88,6 +92,10 @@ public class Map implements Screen
         this.editor = editor;
         this.name = name;
         init();
+    }
+
+    public Map(BridgeBuilder editor, MapData mapData)
+    {
     }
 
     private void init()

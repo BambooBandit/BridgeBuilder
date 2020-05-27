@@ -4,11 +4,11 @@ import com.bamboo.bridgebuilder.map.MapPolygon;
 
 public class MapPolygonData extends MapObjectData
 {
-    public float[] vertices;
+    public float[] verts;
     public MapPolygonData(){}
     public MapPolygonData(MapPolygon mapPolygon)
     {
         super(mapPolygon);
-        this.vertices = mapPolygon.polygon.getVertices();
+        this.verts = mapPolygon.polygon.getVertices();
     }
 }

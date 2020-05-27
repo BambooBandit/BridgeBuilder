@@ -11,51 +11,42 @@ import java.util.ArrayList;
 public class MapData
 {
     public String name;
-    public ArrayList<SpriteSheetData> spriteSheets;
+    public ArrayList<SpriteSheetData> sheets;
     public ArrayList<LayerData> layers;
-    public ArrayList<PropertyData> mapLockedProperties;
-    public ArrayList<PropertyData> mapProperties;
+    public ArrayList<PropertyData> lProps;
+    public ArrayList<PropertyData> props;
 
     public MapData(){}
     public MapData(Map map, boolean settingFLMDefaults)
     {
         this.name = map.name;
-        this.mapLockedProperties = new ArrayList<>();
-        this.mapProperties = new ArrayList<>();
+        this.lProps = new ArrayList<>();
+        this.props = new ArrayList<>();
         for(int i = 0; i < map.propertyMenu.mapPropertyPanel.lockedProperties.size; i ++)
         {
             PropertyField property = map.propertyMenu.mapPropertyPanel.lockedProperties.get(i);
             if(property instanceof ColorPropertyField)
-                this.mapLockedProperties.add(new ColorPropertyFieldData((ColorPropertyField) property));
+                this.lProps.add(new ColorPropertyFieldData((ColorPropertyField) property));
             else if(property instanceof LightPropertyField)
-                this.mapLockedProperties.add(new LightPropertyFieldData((LightPropertyField) property));
+                this.lProps.add(new LightPropertyFieldData((LightPropertyField) property));
             else if(property instanceof FieldFieldPropertyValuePropertyField)
-                this.mapLockedProperties.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
+                this.lProps.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
             else if(property instanceof LabelFieldPropertyValuePropertyField)
-                this.mapLockedProperties.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
+                this.lProps.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
         }
         for(int i = 0; i < map.propertyMenu.mapPropertyPanel.properties.size; i ++)
         {
             PropertyField property = map.propertyMenu.mapPropertyPanel.properties.get(i);
             if(property instanceof ColorPropertyField)
-                this.mapProperties.add(new ColorPropertyFieldData((ColorPropertyField) property));
+                this.props.add(new ColorPropertyFieldData((ColorPropertyField) property));
             else if(property instanceof LightPropertyField)
-                this.mapProperties.add(new LightPropertyFieldData((LightPropertyField) property));
+                this.props.add(new LightPropertyFieldData((LightPropertyField) property));
             else if(property instanceof FieldFieldPropertyValuePropertyField)
-                this.mapProperties.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
+                this.props.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
             else if(property instanceof LabelFieldPropertyValuePropertyField)
-                this.mapProperties.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
+                this.props.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
         }
-        this.spriteSheets = new ArrayList<>(4);
-
-//        boolean map = false;
-//        boolean tiles = false;
-//        boolean flatMap = false;
-//        boolean canyonMap = false;
-//        boolean canyonBackdrop = false;
-//        boolean desertTiles = false;
-//        boolean canyonTiles = false;
-//        boolean mesaMap = false;
+        this.sheets = new ArrayList<>(4);
 
         this.layers = new ArrayList<>();
         for(int i = 0; i < map.layers.size; i ++)
@@ -67,7 +58,7 @@ public class MapData
                 this.layers.add(new ObjectLayerData(layer));
         }
         for(int i = 0; i < map.spriteMenu.spriteSheets.size; i ++)
-            this.spriteSheets.add(new SpriteSheetData(map, map.spriteMenu.spriteSheets.get(i)));
+            this.sheets.add(new SpriteSheetData(map, map.spriteMenu.spriteSheets.get(i)));
 
         // Remove all the map data such as layers and tiles since they are not default information
         if(settingFLMDefaults)
