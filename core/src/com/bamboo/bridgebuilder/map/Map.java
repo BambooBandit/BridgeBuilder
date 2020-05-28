@@ -25,9 +25,10 @@ import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.Command;
 import com.bamboo.bridgebuilder.commands.DeleteMapObjects;
 import com.bamboo.bridgebuilder.commands.DeleteSelectedMapSprites;
-import com.bamboo.bridgebuilder.data.MapData;
+import com.bamboo.bridgebuilder.data.*;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
+import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
@@ -92,10 +93,20 @@ public class Map implements Screen
         this.editor = editor;
         this.name = name;
         init();
+        // sprite sheets TODO remove when default BBM is added
+        this.spriteMenu.createSpriteSheet("editorMap");
+        this.spriteMenu.createSpriteSheet("flatMap");
+        this.spriteMenu.createSpriteSheet("canyonMap");
+        this.spriteMenu.createSpriteSheet("canyonBackdrop");
+        this.spriteMenu.createSpriteSheet("mesaMap");
+        this.clearUndoRedo();
     }
 
     public Map(BridgeBuilder editor, MapData mapData)
     {
+        this.editor = editor;
+        init();
+        loadMap(mapData);
     }
 
     private void init()
@@ -140,14 +151,6 @@ public class Map implements Screen
         this.world = new World(new Vector2(0, 0), false);
         this.rayHandler = new RayHandler(this.world);
         this.rayHandler.setAmbientLight(1);
-
-        // sprite sheets TODO remove when default BBM is added
-        this.spriteMenu.createSpriteSheet("editorMap");
-        this.spriteMenu.createSpriteSheet("flatMap");
-        this.spriteMenu.createSpriteSheet("canyonMap");
-        this.spriteMenu.createSpriteSheet("canyonBackdrop");
-        this.spriteMenu.createSpriteSheet("mesaMap");
-        this.clearUndoRedo();
     }
 
     @Override
@@ -751,5 +754,170 @@ public class Map implements Screen
             MapSprite mapSprite = children.get(i);
             mapSprite.sprite.setColor(1f - norm, .25f, norm, 1);
         }
+    }
+
+    private void loadMap(MapData mapData)
+    {
+        this.name = mapData.name;
+
+        // map properties
+        int propSize = mapData.props.size();
+        for(int s = 0; s < propSize; s++)
+        {
+            PropertyData propertyData = mapData.props.get(s);
+            propertyMenu.newProperty(propertyData, propertyMenu.mapPropertyPanel.properties);
+        }
+        // map locked properties
+        propSize = mapData.lProps.size();
+        for(int s = 0; s < propSize; s++)
+        {
+            PropertyData propertyData = mapData.lProps.get(s);
+            propertyMenu.changeLockedPropertyValue(propertyData, propertyMenu.mapPropertyPanel.lockedProperties);
+        }
+
+        // create sprite sheets
+        int size = mapData.sheets.size();
+        for(int i = 0; i < size; i ++)
+        {
+            SpriteSheetData spriteSheetData = mapData.sheets.get(i);
+            spriteMenu.createSpriteSheet(spriteSheetData.name);
+
+            // sprite tool properties
+            int toolSize = spriteSheetData.tools.size();
+            for(int k = 0; k < toolSize; k ++)
+            {
+                ToolData toolData = spriteSheetData.tools.get(k);
+                SpriteTool spriteTool = spriteMenu.getSpriteTool(toolData.n, spriteSheetData.name);
+
+                // properties
+                propSize = toolData.props.size();
+                for(int s = 0; s < propSize; s++)
+                {
+                    PropertyData propertyData = toolData.props.get(s);
+                    propertyMenu.newProperty(propertyData, spriteTool.properties);
+                }
+                // locked properties
+                propSize = toolData.lProps.size();
+                for(int s = 0; s < propSize; s++)
+                {
+                    PropertyData propertyData = toolData.lProps.get(s);
+                    propertyMenu.changeLockedPropertyValue(propertyData, spriteTool.lockedProperties);
+                }
+
+                // attached map objects
+                if(toolData.objs != null)
+                {
+                    int objSize = toolData.objs.size();
+                    for (int s = 0; s < objSize; s++)
+                    {
+                        MapObjectData mapObjectData = toolData.objs.get(s);
+                        MapObject mapObject;
+                        if (mapObjectData instanceof MapPolygonData)
+                        {
+                            MapPolygonData mapPolygonData = (MapPolygonData) mapObjectData;
+                            MapPolygon mapPolygon = new MapPolygon(this, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
+                            mapObject = mapPolygon;
+                        } else
+                        {
+                            MapPointData mapPointData = (MapPointData) mapObjectData;
+                            MapPoint mapPoint = new MapPoint(this, mapPointData.x, mapPointData.y);
+                            mapObject = mapPoint;
+                        }
+                        // attached manager
+                        spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.offsetX, mapObjectData.offsetY);
+                        // object properties
+                        propSize = mapObjectData.props.size();
+                        for (int p = 0; p < propSize; p++)
+                        {
+                            PropertyData propertyData = mapObjectData.props.get(p);
+                            propertyMenu.newProperty(propertyData, mapObject.properties);
+                        }
+                    }
+                }
+            }
+        }
+
+        // create layers
+        for(int i = mapData.layers.size() - 1; i >= 0; i --)
+        {
+            LayerData layerData = mapData.layers.get(i);
+            Layer layer;
+            if(layerData instanceof SpriteLayerData)
+                layer = this.layerMenu.newLayer(LayerTypes.SPRITE);
+            else
+                layer = this.layerMenu.newLayer(LayerTypes.OBJECT);
+            layer.layerField.layerName.setText(layerData.name);
+            layer.setPosition(layerData.x, layerData.y);
+            layer.resize(layerData.w, layerData.h, false, false);
+            layer.setZ(layerData.z);
+
+            // layer properties
+            propSize = layerData.props.size();
+            for (int p = 0; p < propSize; p++)
+            {
+                PropertyData propertyData = layerData.props.get(p);
+                propertyMenu.newProperty(propertyData, layer.properties);
+            }
+
+            // create layer children
+            if(layerData instanceof SpriteLayerData)
+            {
+                SpriteLayerData spriteLayerData = (SpriteLayerData) layerData;
+                int childSize = spriteLayerData.children.size();
+                for(int k = 0; k < childSize; k ++)
+                {
+                    MapSpriteData mapSpriteData = spriteLayerData.children.get(k);
+                    SpriteTool spriteTool = spriteMenu.getSpriteTool(mapSpriteData.n, mapSpriteData.sN);
+                    MapSprite mapSprite = new MapSprite(this, layer, spriteTool, mapSpriteData.x, mapSpriteData.y);
+                    mapSprite.setZ(mapSpriteData.z);
+                    mapSprite.setScale(mapSpriteData.scl + MapSpriteData.defaultScaleValue);
+                    mapSprite.setColor(mapSpriteData.r + MapSpriteData.defaultColorValue, mapSpriteData.g + MapSpriteData.defaultColorValue, mapSpriteData.b + MapSpriteData.defaultColorValue, mapSpriteData.a + MapSpriteData.defaultColorValue);
+                    mapSprite.setPosition(mapSpriteData.x, mapSpriteData.y);
+                    mapSprite.setRotation(mapSpriteData.rot);
+                    mapSprite.setID(mapSpriteData.id);
+                    ((SpriteLayer) layer).addMapSprite(mapSprite);
+
+                    // locked properties
+                    propSize = mapSpriteData.lProps.size();
+                    for(int s = 0; s < propSize; s++)
+                    {
+                        PropertyData propertyData = mapSpriteData.lProps.get(s);
+                        propertyMenu.changeLockedPropertyValue(propertyData, spriteTool.lockedProperties);
+                    }
+                }
+            }
+            else if(layerData instanceof ObjectLayerData)
+            {
+                ObjectLayerData objectLayerData = (ObjectLayerData) layerData;
+                int childSize = objectLayerData.children.size();
+                for (int k = 0; k < childSize; k++)
+                {
+                    MapObjectData mapObjectData = objectLayerData.children.get(k);
+                    MapObject mapObject;
+                    if(mapObjectData instanceof MapPolygonData)
+                    {
+                        MapPolygonData mapPolygonData = (MapPolygonData) mapObjectData;
+                        MapPolygon mapPolygon = new MapPolygon(this, layer, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
+                        mapObject = mapPolygon;
+                        ((ObjectLayer)layer).addMapObject(mapPolygon);
+                    }
+                    else
+                    {
+                        MapPointData mapPointData = (MapPointData) mapObjectData;
+                        MapPoint mapPoint = new MapPoint(this, layer, mapPointData.x, mapPointData.y);
+                        mapObject = mapPoint;
+                        ((ObjectLayer)layer).addMapObject(mapPoint);
+                    }
+                    // object properties
+                    propSize = mapObjectData.props.size();
+                    for(int s = 0; s < propSize; s++)
+                    {
+                        PropertyData propertyData = mapObjectData.props.get(s);
+                        propertyMenu.newProperty(propertyData, mapObject.properties);
+                    }
+                }
+            }
+        }
+        PropertyToolPane.apply(this);
     }
 }

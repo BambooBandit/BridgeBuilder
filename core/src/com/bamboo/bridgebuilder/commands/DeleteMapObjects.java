@@ -66,6 +66,7 @@ public class DeleteMapObjects implements Command
                 for(int i = 0; i < this.selectedObjects.size; i ++)
                 {
                     MapObject mapObject = this.selectedObjects.get(i);
+                    mapObject.attachedMapObjectManager.spriteTool.attachedMapObjectManagers.add(mapObject.attachedMapObjectManager);
                     mapObject.attachedMapObjectManager.addCopyOfMapObjectToAllMapSpritesOfThisSpriteTool(mapObject);
                     mapObject.attachedMapObjectManager.selectObjectOfParentSprite(mapObject.attachedSprite);
                 }

@@ -156,13 +156,20 @@ public class SpriteTool extends SpriteMenuTool
         this.attachedMapObjectManagers.add(new AttachedMapObjectManager(map, this, mapObject, mapSprite));
     }
 
+    public void createAttachedMapObject(Map map, MapObject mapObject, float offsetX, float offsetY)
+    {
+        if(this.attachedMapObjectManagers == null)
+            this.attachedMapObjectManagers = new Array<>();
+        this.attachedMapObjectManagers.add(new AttachedMapObjectManager(map, this, mapObject, offsetX, offsetY));
+    }
+
     public void removeAttachedMapObject(MapObject mapObject)
     {
         if(this.attachedMapObjectManagers == null)
             return;
         for(int i = 0; i < this.attachedMapObjectManagers.size; i ++)
         {
-            if (this.attachedMapObjectManagers.get(i).removeAttachedMapObject(mapObject))
+            if (this.attachedMapObjectManagers.get(i).deleteAttachedMapObjectFromAll(mapObject))
             {
                 this.attachedMapObjectManagers.removeIndex(i);
                 i --;
@@ -174,11 +181,8 @@ public class SpriteTool extends SpriteMenuTool
     {
         if(this.attachedMapObjectManagers == null)
             return false;
-        for(int i = 0; i < this.attachedMapObjectManagers.size; i ++)
-        {
-            if(this.attachedMapObjectManagers.get(i).attachedMapObjects.size > 0)
-                return true;
-        }
+        if(this.attachedMapObjectManagers.size > 0)
+            return true;
         return false;
     }
 }

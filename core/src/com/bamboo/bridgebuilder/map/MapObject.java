@@ -30,6 +30,13 @@ public abstract class MapObject extends LayerChild
         this.moveBox.setPosition(x, y);
     }
 
+    public MapObject(Map map, float x, float y)
+    {
+        super(map, x, y);
+        this.moveBox = new MoveBox();
+        this.moveBox.setPosition(x, y);
+    }
+
     @Override
     public void setPosition(float x, float y)
     {

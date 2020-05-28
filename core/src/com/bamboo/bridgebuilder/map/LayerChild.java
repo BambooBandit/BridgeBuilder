@@ -18,6 +18,11 @@ public abstract class LayerChild
         this.layer = layer;
     }
 
+    public LayerChild(Map map, float x, float y)
+    {
+        this.map = map;
+    }
+
     public void updatePerspective()
     {
         PropertyField topProperty = Utils.getTopScalePerspectiveProperty(this.map, this.layer);

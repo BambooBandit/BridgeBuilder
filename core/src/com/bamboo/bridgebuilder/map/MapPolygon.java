@@ -40,6 +40,16 @@ public class MapPolygon extends MapObject
         this.setOriginBasedOnParentSprite();
     }
 
+    public MapPolygon(Map map, float[] vertices, float x, float y)
+    {
+        super(map, x, y);
+        this.polygon = new EditorPolygon(vertices);
+        this.polygon.setPosition(x, y);
+        setPosition(x, y);
+        computeCentroid();
+        this.setOriginBasedOnParentSprite();
+    }
+
     @Override
     public void draw()
     {

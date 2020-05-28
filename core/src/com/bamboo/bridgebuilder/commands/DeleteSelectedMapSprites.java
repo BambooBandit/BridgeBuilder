@@ -3,7 +3,9 @@ package com.bamboo.bridgebuilder.commands;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
-import com.bamboo.bridgebuilder.map.*;
+import com.bamboo.bridgebuilder.map.MapObject;
+import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.map.SpriteLayer;
 
 import java.util.Iterator;
 
@@ -34,10 +36,7 @@ public class DeleteSelectedMapSprites implements Command
                     for (int k = 0; k < mapSprite.attachedMapObjects.size; k++)
                     {
                         MapObject mapObject = mapSprite.attachedMapObjects.get(k);
-                        if (mapObject instanceof MapPoint)
-                            ((MapPoint) mapObject).destroyLight();
-                        else if (mapObject instanceof MapPolygon)
-                            ((MapPolygon) mapObject).destroyBody();
+                        mapObject.attachedMapObjectManager.removeAttachedMapObject(mapObject);
                     }
                 }
                 this.deletedSprites.put(this.selectedLayer.children.indexOf(mapSprite, true), mapSprite);

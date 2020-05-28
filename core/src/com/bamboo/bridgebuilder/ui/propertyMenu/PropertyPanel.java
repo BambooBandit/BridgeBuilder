@@ -122,54 +122,6 @@ public class PropertyPanel extends Group
             this.map.propertyMenu.mapPropertyPanel.properties.add(new FieldFieldPropertyValuePropertyField(property, value, this.skin, menu, this.map.propertyMenu.mapPropertyPanel.properties, true));
     }
 
-    public void newProperty(float r, float g, float b, float a)
-    {
-//        if(map.selectedObjects.size > 0)
-//        {
-//            for (int i = 0; i < map.selectedObjects.size; i++)
-//            {
-//                MapObject mapObject = map.selectedObjects.get(i);
-//                mapObject.properties.add(new ColorPropertyField(this.skin, menu, mapObject.properties, true, r, g, b, a));
-//            }
-//        }
-//        else if(map.spriteMenu.selectedSpriteTools.size > 0)
-//        {
-//            for (int i = 0; i < map.spriteMenu.selectedSpriteTools.size; i++)
-//            {
-//                SpriteTool spriteTool = this.map.spriteMenu.selectedSpriteTools.get(i);
-//                spriteTool.properties.add(new ColorPropertyField(this.skin, menu, spriteTool.properties, true, r, g, b, a));
-//            }
-//        }
-//        else if(map.selectedLayer != null)
-//            this.map.selectedLayer.properties.add(new ColorPropertyField(this.skin, menu, this.map.selectedLayer.properties, true, r, g, b, a));
-//        else
-//            this.map.propertyMenu.mapPropertyPanel.properties.add(new ColorPropertyField(this.skin, menu, this.map.propertyMenu.mapPropertyPanel.properties, true, r, g, b, a));
-    }
-
-    public void newProperty(float r, float g, float b, float a, float distance, int rayAmount)
-    {
-//        if(map.selectedObjects.size > 0)
-//        {
-//            for (int i = 0; i < map.selectedObjects.size; i++)
-//            {
-//                MapObject mapObject = map.selectedObjects.get(i);
-//                mapObject.properties.add(new LightPropertyField(this.skin, menu, mapObject.properties, true, r, g, b, a, distance, rayAmount));
-//            }
-//        }
-//        else if(map.spriteMenu.selectedSpriteTools.size > 0)
-//        {
-//            for (int i = 0; i < map.spriteMenu.selectedSpriteTools.size; i++)
-//            {
-//                SpriteTool spriteTool = this.map.spriteMenu.selectedSpriteTools.get(i);
-//                spriteTool.properties.add(new LightPropertyField(this.skin, menu, spriteTool.properties, true, r, g, b, a, distance, rayAmount));
-//            }
-//        }
-//        else if(map.selectedLayer != null)
-//            this.map.selectedLayer.properties.add(new LightPropertyField(this.skin, menu, this.map.selectedLayer.properties, true, r, g, b, a, distance, rayAmount));
-//        else
-//            this.map.propertyMenu.mapPropertyPanel.properties.add(new LightPropertyField(this.skin, menu, this.map.propertyMenu.mapPropertyPanel.properties, true, r, g, b, a, distance, rayAmount));
-    }
-
     /** Remove all properties with the property value of the string.
      * Return true if something was removed to allow for recursive removing all the properties.
      * External use always returns false. */

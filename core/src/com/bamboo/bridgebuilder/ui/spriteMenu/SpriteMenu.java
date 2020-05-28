@@ -99,7 +99,21 @@ public class SpriteMenu extends Group
     {
         CreateSpriteSheet createSpriteSheet = new CreateSpriteSheet(this.map, name);
         this.map.executeCommand(createSpriteSheet);
-        this.spriteSheets.add(createSpriteSheet.spriteSheet);
+    }
+
+    public SpriteTool getSpriteTool(String spriteName, String spriteSheetName)
+    {
+        for(int i = 0; i < spriteTable.getChildren().size; i ++)
+        {
+            if (spriteTable.getChildren().get(i) instanceof Table)
+            {
+                Table cellTable = (Table) map.spriteMenu.spriteTable.getChildren().get(i);
+                SpriteTool tool = cellTable.findActor("spriteTool");
+                if(tool.name.equals(spriteName) && tool.sheet.name.equals(spriteSheetName))
+                    return tool;
+            }
+        }
+        return null;
     }
 
     public void removeSpriteSheet(String name)

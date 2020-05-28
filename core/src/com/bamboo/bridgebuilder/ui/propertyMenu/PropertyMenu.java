@@ -5,11 +5,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.data.*;
 import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapObject;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
@@ -110,16 +110,65 @@ public class PropertyMenu extends Group
         rebuild();
     }
 
-    public void newProperty(float r, float g, float b, float a)
+    public void newProperty(PropertyData propertyData, Array<PropertyField> properties)
     {
-//        this.propertyPanel.newProperty(r, g, b, a);
-//        rebuild();
+        if(propertyData instanceof FieldFieldPropertyValuePropertyFieldData)
+        {
+            FieldFieldPropertyValuePropertyFieldData data = (FieldFieldPropertyValuePropertyFieldData) propertyData;
+            properties.add(new FieldFieldPropertyValuePropertyField(data.prop, data.val, this.skin, this, properties, true));
+        }
+        else if(propertyData instanceof LabelFieldPropertyValuePropertyFieldData)
+        {
+            LabelFieldPropertyValuePropertyFieldData data = (LabelFieldPropertyValuePropertyFieldData) propertyData;
+            properties.add(new LabelFieldPropertyValuePropertyField(data.prop, data.val, this.skin, this, properties, true));
+        }
+        else if(propertyData instanceof ColorPropertyFieldData)
+        {
+            ColorPropertyFieldData data = (ColorPropertyFieldData) propertyData;
+            properties.add(new ColorPropertyField(this.skin, this, properties, true, data.r, data.g, data.b, data.a));
+        }
+        else if(propertyData instanceof LightPropertyFieldData)
+        {
+            LightPropertyFieldData data = (LightPropertyFieldData) propertyData;
+            properties.add(new LightPropertyField(this.skin, this, properties, true, data.r, data.g, data.b, data.a, data.dis, data.ray));
+        }
     }
 
-    public void newProperty(float r, float g, float b, float a, float distance, int rayAmount)
+    public void changeLockedPropertyValue(PropertyData propertyData, Array<PropertyField> lockedProperties)
     {
-//        this.propertyPanel.newProperty(r, g, b, a, distance, rayAmount);
-//        rebuild();
+        for(int i = 0; i < lockedProperties.size; i ++)
+        {
+            PropertyField propertyField = lockedProperties.get(i);
+
+            if(propertyData instanceof FieldFieldPropertyValuePropertyFieldData && propertyField instanceof FieldFieldPropertyValuePropertyField)
+            {
+                FieldFieldPropertyValuePropertyField property = (FieldFieldPropertyValuePropertyField) propertyField;
+                FieldFieldPropertyValuePropertyFieldData data = (FieldFieldPropertyValuePropertyFieldData) propertyData;
+                if(!data.prop.equals(property.property))
+                    continue;
+                property.value.setText(data.val);
+            }
+            else if(propertyData instanceof LabelFieldPropertyValuePropertyFieldData && propertyField instanceof LabelFieldPropertyValuePropertyField)
+            {
+                LabelFieldPropertyValuePropertyField property = (LabelFieldPropertyValuePropertyField) propertyField;
+                LabelFieldPropertyValuePropertyFieldData data = (LabelFieldPropertyValuePropertyFieldData) propertyData;
+                if(!data.prop.equals(property.getProperty()))
+                    continue;
+                property.value.setText(data.val);
+            }
+            else if(propertyData instanceof ColorPropertyFieldData && propertyField instanceof ColorPropertyField)
+            {
+                ColorPropertyField property = (ColorPropertyField) propertyField;
+                ColorPropertyFieldData data = (ColorPropertyFieldData) propertyData;
+                property.setRGBA(data.r, data.g, data.b, data.a);
+            }
+            else if(propertyData instanceof LightPropertyFieldData && propertyField instanceof LightPropertyField)
+            {
+                LightPropertyField property = (LightPropertyField) propertyField;
+                LightPropertyFieldData data = (LightPropertyFieldData) propertyData;
+                property.setRGBADR(data.r, data.g, data.b, data.a, data.dis, data.ray);
+            }
+        }
     }
 
     public void setSpriteProperties(SpriteTool spriteTool)

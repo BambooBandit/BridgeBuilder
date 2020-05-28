@@ -31,6 +31,15 @@ public class MapPoint extends MapObject
         setOriginBasedOnParentSprite();
     }
 
+    public MapPoint(Map map, float x, float y)
+    {
+        super(map, x, y);
+        this.point = new EditorPoint();
+        this.point.setPosition(x, y);
+        setPosition(x, y);
+        setOriginBasedOnParentSprite();
+    }
+
     @Override
     public void setPosition(float x, float y)
     {
