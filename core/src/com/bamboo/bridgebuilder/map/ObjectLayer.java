@@ -20,6 +20,9 @@ public class ObjectLayer extends Layer
     @Override
     public void draw()
     {
+        if(this.map.zoom < this.z)
+            return;
+
         setCameraZoomToThisLayer();
 
         for(int i = 0; i < this.children.size; i ++)

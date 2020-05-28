@@ -231,6 +231,8 @@ public class Map implements Screen
         for(int i = 0; i < this.layers.size; i ++)
         {
             Layer layer = this.layers.get(i);
+            if(this.zoom < layer.z)
+                continue;
             if(layer instanceof SpriteLayer)
             {
                 layer.setCameraZoomToThisLayer();

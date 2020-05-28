@@ -22,6 +22,9 @@ public class SpriteLayer extends Layer
     @Override
     public void draw()
     {
+        if(this.map.zoom < this.z)
+            return;
+
         setCameraZoomToThisLayer();
 
         conditional:
