@@ -233,6 +233,7 @@ public class Map implements Screen
             Layer layer = this.layers.get(i);
             if(layer instanceof SpriteLayer)
             {
+                layer.setCameraZoomToThisLayer();
                 SpriteLayer spriteLayer = (SpriteLayer) layer;
                 for(int k = 0; k < spriteLayer.children.size; k ++)
                 {
@@ -245,6 +246,17 @@ public class Map implements Screen
                 }
             }
         }
+
+        if(this.selectedLayer == null)
+            return;
+        if(editor.fileMenu.toolPane.parallax.selected)
+        {
+            this.camera.zoom = this.zoom - this.selectedLayer.z;
+            this.camera.update();
+            this.editor.batch.setProjectionMatrix(this.camera.combined);
+            this.editor.shapeRenderer.setProjectionMatrix(this.camera.combined);
+        }
+        PropertyToolPane.updatePerspective(this);
     }
 
     private void drawSelectedOutlines()
@@ -369,6 +381,7 @@ public class Map implements Screen
             }
             else if(Utils.getPropertyField(layer.properties, "rayhandler") != null)
             {
+                layer.setCameraZoomToThisLayer();
                 renderedRayhandler = true;
                 this.editor.batch.end();
                 renderlights(layer);
@@ -377,6 +390,15 @@ public class Map implements Screen
         }
         if(!renderedRayhandler)
         {
+            if(editor.fileMenu.toolPane.parallax.selected)
+            {
+                this.camera.zoom = this.zoom - this.layers.peek().z;
+                this.camera.update();
+                this.editor.batch.setProjectionMatrix(this.camera.combined);
+                this.editor.shapeRenderer.setProjectionMatrix(this.camera.combined);
+            }
+            PropertyToolPane.updatePerspective(this);
+
             this.editor.batch.end();
             renderlights(null);
             this.editor.batch.begin();
