@@ -242,7 +242,79 @@ public class MapInput implements InputProcessor
         else if(this.moveMapObjects != null)
             this.moveMapObjects.update(dragAmount.x, dragAmount.y);
         else if(this.movePolygonVertice != null)
+        {
+            // Magnet. Snap the vertice next to the nearest vertice less than .35 units
+            if(Gdx.input.isKeyPressed(Input.Keys.S))
+            {
+                float units = .35f;
+                float smallestDistance = units;
+                float smallestDistanceX = 0;
+                float smallestDistanceY = 0;
+                for(int i = 0; i < map.layers.size; i ++)
+                {
+                    Layer layer = map.layers.get(i);
+                    if(layer instanceof ObjectLayer)
+                    {
+                        ObjectLayer objectLayer = (ObjectLayer) layer;
+                        for(int k = 0; k < objectLayer.children.size; k ++)
+                        {
+                            MapObject object = objectLayer.children.get(k);
+                            if(object instanceof MapPoint)
+                                continue;
+                            MapPolygon mapPolygon = (MapPolygon) object;
+                            float[] vertices = mapPolygon.polygon.getTransformedVertices();
+                            for(int s = 0; s < vertices.length; s += 2)
+                            {
+                                float verticeX = vertices[s];
+                                float verticeY = vertices[s + 1];
+                                float distance = Utils.getDistance(verticeX, dragCurrentPos.x, verticeY, dragCurrentPos.y);
+                                if(distance < smallestDistance)
+                                {
+                                    smallestDistance = distance;
+                                    smallestDistanceX = verticeX;
+                                    smallestDistanceY = verticeY;
+                                }
+                            }
+                        }
+                    }
+                    else if(layer instanceof SpriteLayer)
+                    {
+                        SpriteLayer spriteLayer = (SpriteLayer) layer;
+                        for(int k = 0; k < spriteLayer.children.size; k ++)
+                        {
+                            MapSprite mapSprite = spriteLayer.children.get(k);
+                            for(int q = 0; q < mapSprite.attachedMapObjects.size; q++)
+                            {
+                                MapObject object = mapSprite.attachedMapObjects.get(q);
+                                if(object instanceof MapPoint)
+                                    continue;
+                                MapPolygon mapPolygon = (MapPolygon) object;
+                                float[] vertices = mapPolygon.polygon.getTransformedVertices();
+                                for (int s = 0; s < vertices.length; s += 2)
+                                {
+                                    float verticeX = vertices[s];
+                                    float verticeY = vertices[s + 1];
+                                    float distance = Utils.getDistance(verticeX, dragCurrentPos.x, verticeY, dragCurrentPos.y);
+                                    if (distance < smallestDistance)
+                                    {
+                                        smallestDistance = distance;
+                                        smallestDistanceX = verticeX;
+                                        smallestDistanceY = verticeY;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if(smallestDistance != units)
+                {
+                    dragCurrentPos.x = smallestDistanceX;
+                    dragCurrentPos.y = smallestDistanceY;
+                }
+            }
+
             this.movePolygonVertice.update(dragCurrentPos.x, dragCurrentPos.y);
+        }
         else if(this.rotateMapSprites != null)
             this.rotateMapSprites.update(this.dragOriginPos.angle(dragCurrentPos));
         else if(this.scaleMapSprites != null)

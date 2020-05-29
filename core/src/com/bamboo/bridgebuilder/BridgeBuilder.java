@@ -68,8 +68,11 @@ public class BridgeBuilder extends Game
 			public boolean keyDown(int keycode)
 			{
 				if(keycode == Input.Keys.N && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
-				{
 					fileMenu.newMap();
+				if(keycode == Input.Keys.S && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+				{
+					if(activeMap != null)
+						fileMenu.save(activeMap, false, false);
 				}
 				else if(keycode == Input.Keys.Z && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
 				{

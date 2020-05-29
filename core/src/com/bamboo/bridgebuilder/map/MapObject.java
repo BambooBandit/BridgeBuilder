@@ -47,8 +47,8 @@ public abstract class MapObject extends LayerChild
 
     public void drawMoveBox()
     {
-        if(selected && map.editor.fileMenu.toolPane.select.selected)
-            moveBox.sprite.draw(map.editor.batch);
+        if(this.selected && this.map.editor.fileMenu.toolPane.select.selected)
+            this.moveBox.sprite.draw(this.map.editor.batch);
     }
 
     @Override

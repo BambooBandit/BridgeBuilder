@@ -249,6 +249,12 @@ public class MapPolygon extends MapObject
         remakeBody();
     }
 
+    @Override
+    public void drawMoveBox()
+    {
+        if(this.selected && (this.map.editor.fileMenu.toolPane.select.selected || (this.map.editor.fileMenu.toolPane.objectVerticeSelect.selected && this.indexOfSelectedVertice != -1)))
+            this.moveBox.sprite.draw(this.map.editor.batch);
+    }
 
     public void createBody()
     {
