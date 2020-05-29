@@ -80,48 +80,55 @@ public class MapInput implements InputProcessor
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button)
     {
-        this.map.stage.unfocusAll();
-        this.editor.stage.unfocusAll();
+        try
+        {
+            this.map.stage.unfocusAll();
+            this.editor.stage.unfocusAll();
 
-        Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
-        this.currentPos.set(coords.x, coords.y);
-        this.dragOriginPos.set(coords.x, coords.y);
+            Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
+            this.currentPos.set(coords.x, coords.y);
+            this.dragOriginPos.set(coords.x, coords.y);
 
-        if(handleMapSpriteCreation(coords.x, coords.y, button))
-            return false;
-        if(handleManipulatorBoxMoveLayerChildTouchDown(coords.x, coords.y, button))
-            return false;
-        if(handleManipulatorBoxMoveVerticeTouchDown(coords.x, coords.y, button))
-            return false;
-        if(handleSelect(button))
-            return false;
-        if(handleBoxSelectTouchDown(coords.x, coords.y, button))
-            return false;
-        if(handleMapPointCreation(coords.x, coords.y, button))
-            return false;
-        if(handleMapPolygonVerticeCreation(coords.x, coords.y, button))
-            return false;
-        if(handleMapPolygonRectangleCreation(button))
-            return false;
-        if(handleMapPolygonCreation(button))
-            return false;
-        if(handlePolygonVertexSelection(button))
-            return false;
-        if(handleGradientStart(coords.x, coords.y, button))
-            return false;
-        if(applyGradient(coords.x, coords.y, button))
-            return false;
-
+            if(handleMapSpriteCreation(coords.x, coords.y, button))
+                return false;
+            if(handleManipulatorBoxMoveLayerChildTouchDown(coords.x, coords.y, button))
+                return false;
+            if(handleManipulatorBoxMoveVerticeTouchDown(coords.x, coords.y, button))
+                return false;
+            if(handleSelect(button))
+                return false;
+            if(handleBoxSelectTouchDown(coords.x, coords.y, button))
+                return false;
+            if(handleMapPointCreation(coords.x, coords.y, button))
+                return false;
+            if(handleMapPolygonVerticeCreation(coords.x, coords.y, button))
+                return false;
+            if(handleMapPolygonRectangleCreation(button))
+                return false;
+            if(handleMapPolygonCreation(button))
+                return false;
+            if(handlePolygonVertexSelection(button))
+                return false;
+            if(handleGradientStart(coords.x, coords.y, button))
+                return false;
+            if(applyGradient(coords.x, coords.y, button))
+                return false;
+        } catch(Exception e){
+            this.editor.crashRecovery(e);
+        }
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button)
     {
-        Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
-
-        handleManipulatorBoxTouchUp();
-        handleBoxSelectTouchUp();
+        try
+        {
+            handleManipulatorBoxTouchUp();
+            handleBoxSelectTouchUp();
+        } catch(Exception e){
+            this.editor.crashRecovery(e);
+        }
 
         return false;
     }
@@ -129,34 +136,48 @@ public class MapInput implements InputProcessor
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer)
     {
-        Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
-        this.currentPos.set(coords.x, coords.y);
-        this.dragDifferencePos.set(coords.x, coords.y);
-        this.dragDifferencePos = this.dragDifferencePos.sub(this.dragOriginPos.x, this.dragOriginPos.y);
-        handleManipulatorBoxDrag(this.dragDifferencePos, this.currentPos);
-        handleBoxSelectDrag(coords.x, coords.y);
+        try
+        {
+            Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
+            this.currentPos.set(coords.x, coords.y);
+            this.dragDifferencePos.set(coords.x, coords.y);
+            this.dragDifferencePos = this.dragDifferencePos.sub(this.dragOriginPos.x, this.dragOriginPos.y);
+            handleManipulatorBoxDrag(this.dragDifferencePos, this.currentPos);
+            handleBoxSelectDrag(coords.x, coords.y);
 
-        handleCameraDrag();
-
+            handleCameraDrag();
+        } catch(Exception e){
+            this.editor.crashRecovery(e);
+        }
         return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY)
     {
-        Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
-        this.currentPos.set(coords.x, coords.y);
-        handlePreviewSpritePositionUpdate(coords.x, coords.y);
-        handleHoveredLayerChildUpdate(coords.x, coords.y);
-        handleManipulatorBoxHover(coords.x, coords.y);
-        handleSelectedPolygonVerticeHover(coords.x, coords.y);
+        try
+        {
+            Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
+            this.currentPos.set(coords.x, coords.y);
+            handlePreviewSpritePositionUpdate(coords.x, coords.y);
+            handleHoveredLayerChildUpdate(coords.x, coords.y);
+            handleManipulatorBoxHover(coords.x, coords.y);
+            handleSelectedPolygonVerticeHover(coords.x, coords.y);
+        } catch(Exception e){
+            this.editor.crashRecovery(e);
+        }
         return false;
     }
 
     @Override
     public boolean scrolled(int amount)
     {
-        handleCameraZoom(amount);
+        try
+        {
+            handleCameraZoom(amount);
+        } catch(Exception e){
+            this.editor.crashRecovery(e);
+        }
         return false;
     }
 
@@ -741,9 +762,5 @@ public class MapInput implements InputProcessor
         this.map.camera.update();
         PropertyToolPane.updatePerspective(this.map);
         return false;
-    }
-
-    private int sign (int x) {
-        return (x > 0) ? 1 : (x < 0) ? -1 : 0;
     }
 }

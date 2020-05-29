@@ -15,6 +15,7 @@ import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.ui.fileMenu.FileMenu;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
+import com.bamboo.bridgebuilder.ui.fileMenu.YesNoDialog;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 
 public class BridgeBuilder extends Game
@@ -264,10 +265,7 @@ public class BridgeBuilder extends Game
 			stage.act();
 			stage.draw();
 		} catch(Exception e){
-			e.printStackTrace();
-			Gdx.app.exit();
-			System.exit(0);
-//			crashRecovery();
+			crashRecovery(e);
 		}
 	}
 
@@ -300,4 +298,39 @@ public class BridgeBuilder extends Game
 	{
 		return this.fileMenu.toolPane.getTool();
 	}
+
+    public void crashRecovery(Exception e)
+    {
+        e.printStackTrace();
+
+        if(maps.size == 0)
+        {
+            Gdx.app.exit();
+            System.exit(0);
+        }
+        for(int i = 0; i < maps.size; i ++)
+        {
+            final int finalI = i;
+            new YesNoDialog("Editor crashed. Save before closing " + maps.get(finalI).name + "?", maps.get(finalI).editor.stage, "", EditorAssets.getUISkin(), false)
+            {
+                @Override
+                public void yes()
+                {
+                    boolean closeApplicationAfterSaving = (maps.size == 1);
+                    fileMenu.saveAs(maps.get(finalI), true, closeApplicationAfterSaving);
+                }
+
+                @Override
+                public void no()
+                {
+                    fileMenu.mapTabPane.removeMap(maps.get(finalI));
+                    if (maps.size == 0)
+                    {
+                        Gdx.app.exit();
+                        System.exit(0);
+                    }
+                }
+            };
+        }
+    }
 }
