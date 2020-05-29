@@ -96,9 +96,9 @@ public class MapInput implements InputProcessor
             return false;
         if(handleMapPointCreation(coords.x, coords.y, button))
             return false;
-        if(handleMapPolygonRectangleCreation(button))
-            return false;
         if(handleMapPolygonVerticeCreation(coords.x, coords.y, button))
+            return false;
+        if(handleMapPolygonRectangleCreation(button))
             return false;
         if(handleMapPolygonCreation(button))
             return false;
@@ -457,6 +457,9 @@ public class MapInput implements InputProcessor
         if((!Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE)) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
             return false;
         if(this.map.selectedLayer instanceof SpriteLayer && this.map.selectedSprites.size != 1)
+            return false;
+
+        if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE) && this.map.input.mapPolygonVertices.size >= 6)
             return false;
 
         DrawMapPolygonVertice drawMapPolygonVertice = new DrawMapPolygonVertice(this.map, x, y, this.objectVerticePosition.x, this.objectVerticePosition.y, Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE));
