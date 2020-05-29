@@ -11,6 +11,7 @@ import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.map.SpriteLayer;
+import com.bamboo.bridgebuilder.ui.GradientDialog;
 import com.bamboo.bridgebuilder.ui.MinMaxDialog;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 
@@ -47,6 +48,9 @@ public class ToolPane extends Group
     private TextButton layerDownOverride;
     private TextButton layerUpOverride;
     private TextButton layerOverrideReset;
+
+    public GradientDialog gradientDialog;
+    private TextButton gradientButton;
 
     public MinMaxDialog minMaxDialog;
     private TextButton minMaxButton;
@@ -85,6 +89,9 @@ public class ToolPane extends Group
         this.layerUpOverride = new TextButton("Layer Override ^", skin);
         this.layerOverrideReset= new TextButton("Layer Override Reset", skin);
 
+        this.gradientDialog = new GradientDialog(editor.stage, skin);
+        this.gradientButton = new TextButton("Gradient", skin);
+
         this.minMaxDialog = new MinMaxDialog(editor.stage, skin);
         this.minMaxButton = new TextButton("Min Max Settings", skin);
 
@@ -106,7 +113,7 @@ public class ToolPane extends Group
         this.toolTable.add(this.perspective).padRight(1);
         this.toolTable.add(this.top).padRight(1);
         this.toolTable.add(this.depth).padRight(1);
-        this.toolTable.add(this.lines).padRight(5);
+        this.toolTable.add(this.lines).padRight(1);
         this.toolTable.add(this.b2drender).padRight(5);
         this.toolTable.add(this.bringUp).padRight(1);
         this.toolTable.add(this.bringDown).padRight(1);
@@ -115,6 +122,7 @@ public class ToolPane extends Group
         this.toolTable.add(this.layerDownOverride).padRight(1);
         this.toolTable.add(this.layerUpOverride).padRight(1);
         this.toolTable.add(this.layerOverrideReset).padRight(5);
+        this.toolTable.add(this.gradientButton).padRight(5);
         this.toolTable.add(this.minMaxButton).padRight(5);
         this.toolTable.add(this.fps).padRight(1);
 
@@ -157,7 +165,8 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.layerDownOverride).size(toolHeight * 4.75f, toolHeight);
         this.toolTable.getCell(this.layerUpOverride).size(toolHeight * 4.75f, toolHeight);
         this.toolTable.getCell(this.layerOverrideReset).size(toolHeight * 4.75f, toolHeight);
-        this.toolTable.getCell(this.minMaxButton).size(toolHeight * 4, toolHeight);
+        this.toolTable.getCell(this.gradientButton).size(toolHeight * 2.75f, toolHeight);
+        this.toolTable.getCell(this.minMaxButton).size(toolHeight * 4.75f, toolHeight);
         this.toolTable.getCell(this.fps).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();
 
@@ -209,6 +218,15 @@ public class ToolPane extends Group
 
     private void setListeners()
     {
+        this.gradientButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                gradientDialog.open();
+            }
+        });
+
         this.bringUp.addListener(new ClickListener()
         {
             @Override

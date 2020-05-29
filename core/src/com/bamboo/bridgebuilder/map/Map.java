@@ -392,7 +392,7 @@ public class Map implements Screen
         }
         if(!renderedRayhandler)
         {
-            if(editor.fileMenu.toolPane.parallax.selected)
+            if(editor.fileMenu.toolPane.parallax.selected && this.layers.size > 0)
             {
                 this.camera.zoom = this.zoom - this.layers.peek().z;
                 this.camera.update();

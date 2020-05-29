@@ -15,7 +15,6 @@ import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.map.SpriteLayer;
 import com.bamboo.bridgebuilder.ui.fileMenu.YesNoDialog;
-import com.bamboo.bridgebuilder.ui.propertyMenu.NewSpriteSheetDialog;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
 

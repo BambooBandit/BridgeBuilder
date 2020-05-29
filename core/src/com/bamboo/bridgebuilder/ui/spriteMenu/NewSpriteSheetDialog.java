@@ -1,4 +1,4 @@
-package com.bamboo.bridgebuilder.ui.propertyMenu;
+package com.bamboo.bridgebuilder.ui.spriteMenu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.bamboo.bridgebuilder.map.Map;
-import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteSheet;
 
 import java.io.File;
 
