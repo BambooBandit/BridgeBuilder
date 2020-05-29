@@ -39,6 +39,9 @@ public class MapInput implements InputProcessor
     public MoveMapObjects moveMapObjects;
     public MovePolygonVertice movePolygonVertice;
 
+    public float gradientX, gradientY; // Used for gradient placement
+    public boolean draggingGradient = false;
+
     public BoxSelect boxSelect;
 
     public MapInput(BridgeBuilder editor, Map map)
@@ -103,6 +106,10 @@ public class MapInput implements InputProcessor
         if(handleMapPolygonCreation(button))
             return false;
         if(handlePolygonVertexSelection(button))
+            return false;
+        if(handleGradientStart(coords.x, coords.y, button))
+            return false;
+        if(applyGradient(coords.x, coords.y, button))
             return false;
 
         return false;
@@ -374,11 +381,9 @@ public class MapInput implements InputProcessor
             SelectLayerChildren selectLayerChildren = new SelectLayerChildren(this.map, this.dragOriginPos.x, this.dragOriginPos.y, this.currentPos.x, this.currentPos.y, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
             this.map.executeCommand(selectLayerChildren);
         }
-//        else if(map.selectedLayer instanceof ObjectLayer || (map.selectedSprites.size == 1 && map.selectedSprites.first().tool.mapObjects.size > 1))
         else if(this.map.selectedLayer instanceof ObjectLayer)
         {
             ObjectLayer objectLayer = (ObjectLayer) this.map.selectedLayer;
-//            SelectObject selectObject = new SelectObject(map, map.selectedObjects);
             if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
             {
                 for (int k = 0; k < this.map.selectedObjects.size; k++)
@@ -388,7 +393,6 @@ public class MapInput implements InputProcessor
             for (int i = 0; i < objectLayer.children.size; i++)
             {
                 MapObject mapObject = objectLayer.children.get(i);
-//                boolean polygon = mapObject.polygon != null && Intersector.overlapConvexPolygons(mapObject.polygon.getTransformedVertices(), map.input.boxSelect.getVertices(), null);
                 boolean polygon = mapObject instanceof MapPolygon && Intersector.overlapConvexPolygons(((MapPolygon) mapObject).polygon.getTransformedVertices(), this.map.input.boxSelect.getVertices(), null);
                 boolean point = Intersector.isPointInPolygon(this.map.input.boxSelect.getVertices(), 0, this.map.input.boxSelect.getVertices().length, mapObject.getX(), mapObject.getY());
                 if (polygon || point)
@@ -401,8 +405,6 @@ public class MapInput implements InputProcessor
                     }
                 }
             }
-//            selectObject.addSelected();
-//            map.executeCommand(selectObject);
         }
         this.map.propertyMenu.rebuild();
         this.map.input.boxSelect.isDragging = false;
@@ -436,6 +438,49 @@ public class MapInput implements InputProcessor
         return false;
     }
 
+    private boolean handleGradientStart(float x, float y, int button)
+    {
+        if((!Utils.isFileToolThisType(this.editor, Tools.GRADIENT) || this.map.selectedLayer == null || button != Input.Buttons.LEFT))
+            return false;
+        if(!(this.map.selectedLayer instanceof SpriteLayer))
+            return false;
+        if(this.map.selectedSprites.size <= 1)
+            return false;
+        if(this.draggingGradient)
+            return false;
+
+        this.gradientX = x;
+        this.gradientY = y;
+        this.draggingGradient = true;
+
+        return true;
+    }
+
+    private boolean applyGradient(float x, float y, int button)
+    {
+        if((!Utils.isFileToolThisType(this.editor, Tools.GRADIENT) || this.map.selectedLayer == null))
+            return false;
+        if(!(this.map.selectedLayer instanceof SpriteLayer))
+            return false;
+        if(this.map.selectedSprites.size <= 1)
+            return false;
+        if(!this.draggingGradient)
+            return false;
+
+        if(button != Input.Buttons.LEFT)
+        {
+            this.draggingGradient = false;
+            return true;
+        }
+
+        ApplyGradient applyGradient = new ApplyGradient(this.map, this.gradientX, this.gradientY, x, y);
+        this.map.executeCommand(applyGradient);
+
+        this.draggingGradient = false;
+
+        return true;
+    }
+
     private boolean handleMapPointCreation(float x, float y, int button)
     {
         if(!Utils.isFileToolThisType(this.editor, Tools.DRAWPOINT) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
@@ -454,12 +499,12 @@ public class MapInput implements InputProcessor
 
     private boolean handleMapPolygonVerticeCreation(float x, float y, int button)
     {
-        if((!Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE)) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
+        if((!Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE)) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
             return false;
         if(this.map.selectedLayer instanceof SpriteLayer && this.map.selectedSprites.size != 1)
             return false;
 
-        if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE) && this.map.input.mapPolygonVertices.size >= 6)
+        if(Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE) && this.map.input.mapPolygonVertices.size >= 6)
             return false;
 
         DrawMapPolygonVertice drawMapPolygonVertice = new DrawMapPolygonVertice(this.map, x, y, this.objectVerticePosition.x, this.objectVerticePosition.y, Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE));

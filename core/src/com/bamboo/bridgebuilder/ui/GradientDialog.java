@@ -72,7 +72,8 @@ public class GradientDialog extends Window
         this.table.add(this.toColorFieldR).width(50).padTop(15);
         this.table.add(this.toColorFieldG).width(50).padTop(15);
         this.table.add(this.toColorFieldB).width(50).padTop(15);
-        this.table.add(this.toColorFieldA).width(50).padTop(15);
+        this.table.add(this.toColorFieldA).width(50).padTop(15).row();
+        this.table.add(this.close);
 
         this.add(this.table);
 

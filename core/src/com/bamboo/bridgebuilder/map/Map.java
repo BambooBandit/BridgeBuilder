@@ -203,6 +203,7 @@ public class Map implements Screen
         drawHoveredOutline();
         drawSelectedOutlines();
         drawUnfinishedMapPolygon();
+        drawGradientLine();
         drawVerticeSelect();
         drawBoxSelect();
         //shaperenderer end
@@ -263,7 +264,7 @@ public class Map implements Screen
 
     private void drawSelectedOutlines()
     {
-        if(!Utils.isFileToolThisType(this.editor, Tools.SELECT) && !Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) && !Utils.isFileToolThisType(this.editor, Tools.OBJECTVERTICESELECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWPOINT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE))
+        if(!Utils.isFileToolThisType(this.editor, Tools.SELECT) && !Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) && !Utils.isFileToolThisType(this.editor, Tools.OBJECTVERTICESELECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWPOINT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE) && !Utils.isFileToolThisType(this.editor, Tools.GRADIENT))
             return;
         if(Utils.isFileToolThisType(this.editor, Tools.DRAWPOINT) || Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) || Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE))
         {
@@ -322,6 +323,15 @@ public class Map implements Screen
             if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
                 this.editor.shapeRenderer.line(this.input.mapPolygonVertices.get(oldIndex) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(oldIndex + 1) + this.input.objectVerticePosition.y, this.input.mapPolygonVertices.get(0) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(1) + this.input.objectVerticePosition.y);
         }
+    }
+
+    private void drawGradientLine()
+    {
+        if(!this.editor.fileMenu.toolPane.gradient.selected || !this.input.draggingGradient)
+            return;
+        this.editor.shapeRenderer.setColor(Color.BLACK);
+        this.editor.shapeRenderer.line(this.input.gradientX, this.input.gradientY, this.input.currentPos.x, this.input.currentPos.y);
+
     }
 
     private void drawVerticeSelect()

@@ -32,6 +32,7 @@ public class ToolPane extends Group
     public Tool boxSelect;
     public Tool select;
     public Tool grab;
+    public Tool gradient;
     public Tool random;
     public Tool blocked;
     public Tool parallax;
@@ -71,6 +72,7 @@ public class ToolPane extends Group
         this.boxSelect = new Tool(Tools.BOXSELECT, this, false);
         this.select = new Tool(Tools.SELECT, this, false);
         this.grab = new Tool(Tools.GRAB, this, false);
+        this.gradient = new Tool(Tools.GRADIENT, this, false);
         this.random = new Tool(Tools.RANDOM, this, true);
         this.blocked = new Tool(Tools.BLOCKED, this, true);
         this.parallax = new Tool(Tools.PARALLAX, this, true);
@@ -107,6 +109,7 @@ public class ToolPane extends Group
         this.toolTable.add(this.boxSelect).padRight(1);
         this.toolTable.add(this.select).padRight(1);
         this.toolTable.add(this.grab).padRight(1);
+        this.toolTable.add(this.gradient).padRight(1);
         this.toolTable.add(this.random).padRight(1);
         this.toolTable.add(this.blocked).padRight(1);
         this.toolTable.add(this.parallax).padRight(1);
@@ -150,6 +153,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.boxSelect).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.select).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.grab).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.gradient).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.random).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.blocked).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.parallax).size(toolHeight, toolHeight);
