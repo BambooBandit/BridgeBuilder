@@ -95,10 +95,16 @@ public class SpriteMenu extends Group
         this.addActor(this.toolPane);
     }
 
-    public void createSpriteSheet(String name)
+    public boolean createSpriteSheet(String name)
     {
+        for(int i = 0; i < this.spriteSheets.size; i++)
+        {
+            if(this.spriteSheets.get(i).name.equals(name))
+                return false;
+        }
         CreateSpriteSheet createSpriteSheet = new CreateSpriteSheet(this.map, name);
         this.map.executeCommand(createSpriteSheet);
+        return true;
     }
 
     public SpriteTool getSpriteTool(String spriteName, String spriteSheetName)

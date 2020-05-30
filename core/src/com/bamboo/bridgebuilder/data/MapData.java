@@ -17,7 +17,7 @@ public class MapData
     public ArrayList<PropertyData> props;
 
     public MapData(){}
-    public MapData(Map map, boolean settingFLMDefaults)
+    public MapData(Map map, boolean settingBBMDefaults)
     {
         this.name = map.name;
         this.lProps = new ArrayList<>();
@@ -60,8 +60,8 @@ public class MapData
         for(int i = 0; i < map.spriteMenu.spriteSheets.size; i ++)
             this.sheets.add(new SpriteSheetData(map, map.spriteMenu.spriteSheets.get(i)));
 
-        // Remove all the map data such as layers and tiles since they are not default information
-        if(settingFLMDefaults)
+        // Remove all the map data such as layers since they are not default information
+        if(settingBBMDefaults)
         {
             this.name = "defaultBBM.bbm";
             this.layers.clear();

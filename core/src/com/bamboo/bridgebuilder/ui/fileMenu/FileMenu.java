@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Json;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.data.*;
 import com.bamboo.bridgebuilder.map.Map;
 
@@ -106,6 +107,23 @@ public class FileMenu extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                if(editor.getScreen() != null)
+                {
+                    Map map = (Map) editor.getScreen();
+                    new YesNoDialog("Override and save new BBM default properties?", editor.stage, "", EditorAssets.getUISkin(), false)
+                    {
+                        @Override
+                        public void yes()
+                        {
+                            editor.fileMenu.saveBBMDefaults(map);
+                        }
+
+                        @Override
+                        public void no()
+                        {
+                        }
+                    };
+                }
             }
         });
         this.setBBMDefaultsButton.addListener(new ClickListener()
@@ -113,6 +131,23 @@ public class FileMenu extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
+                if(editor.getScreen() != null)
+                {
+                    Map map = (Map) editor.getScreen();
+                    new YesNoDialog("Override and set BBM properties to default for this map?", editor.stage, "", EditorAssets.getUISkin(), false)
+                    {
+                        @Override
+                        public void yes()
+                        {
+                            editor.fileMenu.setBBMDefaults(map);
+                        }
+
+                        @Override
+                        public void no()
+                        {
+                        }
+                    };
+                }
             }
         });
         this.undoButton.addListener(new ClickListener()
@@ -247,9 +282,9 @@ public class FileMenu extends Group
         {
             //Create the file
             if (file.createNewFile())
-                System.out.println("File is created!");
+                Utils.println("File is created!");
             else
-                System.out.println("File already exists.");
+                Utils.println("File already exists.");
 
             //Write Content
             FileWriter writer = new FileWriter(file);
@@ -278,9 +313,9 @@ public class FileMenu extends Group
             public void run() {
                 editor.fileChooserOpen = true;
                 JFileChooser chooser = new JFileChooser();
-                FileNameExtensionFilter flmFilter = new FileNameExtensionFilter(
+                FileNameExtensionFilter bbmFilter = new FileNameExtensionFilter(
                         "bbm files (*.bbm)", "bbm");
-                chooser.setFileFilter(flmFilter);
+                chooser.setFileFilter(bbmFilter);
                 if(map.file != null)
                     chooser.setSelectedFile(map.file);
                 else
@@ -334,10 +369,45 @@ public class FileMenu extends Group
 
     public void saveBBMDefaults(Map map)
     {
+        MapData mapData = new MapData(map, true);
+
+        Json json = createJson();
+
+        File file = new File("defaultBBM.bbm");
+        try
+        {
+            //Create the file
+            if (file.createNewFile())
+                Utils.println("File is created!");
+            else
+                Utils.println("File already exists.");
+
+            //Write Content
+            FileWriter writer = new FileWriter(file);
+            writer.write(json.prettyPrint(mapData));
+            writer.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void setBBMDefaults(Map map)
     {
+        try
+        {
+            File file = new File("defaultBBM.bbm");
+            String content = null;
+            content = new Scanner(file).useDelimiter("\\Z").next();
+            Json json = createJson();
+            MapData mapData = json.fromJson(MapData.class, content);
+            map.loadMap(mapData, true);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void setSize(float width, float buttonHeight, float tabHeight, float toolHeight)
