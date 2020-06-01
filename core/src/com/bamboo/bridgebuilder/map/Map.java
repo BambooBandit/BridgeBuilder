@@ -27,6 +27,7 @@ import com.bamboo.bridgebuilder.commands.DeleteMapObjects;
 import com.bamboo.bridgebuilder.commands.DeleteSelectedMapSprites;
 import com.bamboo.bridgebuilder.data.*;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
+import com.bamboo.bridgebuilder.ui.layerMenu.LayerField;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
@@ -909,6 +910,7 @@ public class Map implements Screen
                 layer.setPosition(layerData.x, layerData.y);
                 layer.resize(layerData.w, layerData.h, false, false);
                 layer.setZ(layerData.z);
+                LayerField.createOrRemoveGrid(layer, layer.layerField.layerName);
 
                 // layer properties
                 int propSize = layerData.props.size();

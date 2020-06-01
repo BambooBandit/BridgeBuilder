@@ -19,7 +19,7 @@ import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 public class SpriteGrid
 {
     private ObjectLayer objectLayer;
-    private Array<SpriteCell> grid; // Going from bottom left to top right. Every x amount of indices is x width of the layer and height of 1. False is not blocked, true is blocked.
+    public Array<SpriteCell> grid; // Going from bottom left to top right. Every x amount of indices is x width of the layer and height of 1. False is not blocked, true is blocked.
 
     private FrameBuffer fbo;
 

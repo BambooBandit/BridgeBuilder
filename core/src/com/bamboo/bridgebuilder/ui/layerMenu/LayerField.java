@@ -58,15 +58,7 @@ public class LayerField extends Group
             {
                 if(keycode == Input.Keys.ENTER)
                 {
-                    if(mapLayer instanceof ObjectLayer)
-                    {
-                        String name = layerName.getText();
-                        ObjectLayer objectLayer = (ObjectLayer) mapLayer;
-                        if (name.startsWith("floor ") && Character.isDigit(name.charAt(name.length() - 1)))
-                            objectLayer.createGrid();
-                        else
-                            objectLayer.removeGrid();
-                    }
+                    createOrRemoveGrid(mapLayer, layerName);
                     return true;
                 }
                 return false;
@@ -228,6 +220,19 @@ public class LayerField extends Group
         this.up.setColor(Color.WHITE);
         this.down.setColor(Color.WHITE);
         this.isSelected = false;
+    }
+
+    public static void createOrRemoveGrid(Layer mapLayer, TextField layerName)
+    {
+        if(mapLayer instanceof ObjectLayer)
+        {
+            String name = layerName.getText();
+            ObjectLayer objectLayer = (ObjectLayer) mapLayer;
+            if (name.startsWith("floor ") && Character.isDigit(name.charAt(name.length() - 1)))
+                objectLayer.createGrid();
+            else
+                objectLayer.removeGrid();
+        }
     }
 }
 
