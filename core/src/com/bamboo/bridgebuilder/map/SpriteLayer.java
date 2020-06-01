@@ -74,6 +74,7 @@ public class SpriteLayer extends Layer
     {
         this.children.add(mapSprite);
         if(mapSprite.attachedMapObjects != null)
-            this.map.updateLayerGraphs();
+            this.map.updateLayerBlockedGrids();
+        this.map.updateLayerSpriteGrids();
     }
 }

@@ -178,7 +178,8 @@ public class Map implements Screen
         this.editor.batch.setProjectionMatrix(this.camera.combined);
         this.editor.batch.begin();
         //spritebatch begin
-        drawSpriteLayersAndLights();
+        if(!editor.fileMenu.toolPane.blocked.selected)
+            drawSpriteLayersAndLights();
         //spritebatch end
         this.editor.batch.end();
 
@@ -190,10 +191,11 @@ public class Map implements Screen
         this.editor.shapeRenderer.begin();
         //shaperenderer begin
         drawLayerOutline();
-        drawGrid();
         drawAttachedObjects();
         drawObjectLayers();
         drawBlocked();
+        drawSpriteGrid();
+        drawGrid();
         if(this.editor.fileMenu.toolPane.b2drender.selected)
         {
             this.editor.shapeRenderer.end();
@@ -469,8 +471,21 @@ public class Map implements Screen
             if(this.layers.get(i) instanceof ObjectLayer)
             {
                 ObjectLayer objectLayer = (ObjectLayer) this.layers.get(i);
-                if (objectLayer.layerField.visibleImg.isVisible() && objectLayer.overrideSprite == null && this.editor.fileMenu.toolPane.blocked.selected && objectLayer.graph != null)
-                    objectLayer.graph.drawBlocked();
+                if (objectLayer.layerField.visibleImg.isVisible() && objectLayer.overrideSprite == null && this.editor.fileMenu.toolPane.blocked.selected && objectLayer.blockedGrid != null)
+                    objectLayer.blockedGrid.drawBlocked();
+            }
+        }
+    }
+
+    private void drawSpriteGrid()
+    {
+        for(int i = 0; i < this.layers.size; i ++)
+        {
+            if(this.layers.get(i) instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) this.layers.get(i);
+                if (objectLayer.layerField.visibleImg.isVisible() && objectLayer.overrideSprite == null && this.editor.fileMenu.toolPane.blocked.selected && objectLayer.spriteGrid != null)
+                    objectLayer.spriteGrid.drawColor();
             }
         }
     }
@@ -683,7 +698,7 @@ public class Map implements Screen
         }
     }
 
-    public void updateLayerGraphs()
+    public void updateLayerBlockedGrids()
     {
         for(int i = 0; i < this.layers.size; i ++)
         {
@@ -691,7 +706,20 @@ public class Map implements Screen
             if(layer instanceof ObjectLayer)
             {
                 ObjectLayer objectLayer = (ObjectLayer) layer;
-                objectLayer.updateGraph();
+                objectLayer.updateBlockedGrid();
+            }
+        }
+    }
+
+    public void updateLayerSpriteGrids()
+    {
+        for(int i = 0; i < this.layers.size; i ++)
+        {
+            Layer layer = this.layers.get(i);
+            if(layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                objectLayer.updateSpriteGrid();
             }
         }
     }

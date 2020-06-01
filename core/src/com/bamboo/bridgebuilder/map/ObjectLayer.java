@@ -9,7 +9,8 @@ public class ObjectLayer extends Layer
 {
     public Array<MapObject> children;
 
-    public Graph graph;
+    public BlockedGrid blockedGrid;
+    public SpriteGrid spriteGrid;
 
     public ObjectLayer(BridgeBuilder editor, Map map, LayerTypes type, LayerField layerField)
     {
@@ -38,23 +39,41 @@ public class ObjectLayer extends Layer
 
     public void createGrid()
     {
-        if(this.graph != null)
-            return;
-        this.graph = new Graph(this);
+        if(this.blockedGrid == null)
+            this.blockedGrid = new BlockedGrid(this);
+        if(this.spriteGrid == null)
+            this.spriteGrid = new SpriteGrid(this);
     }
 
     public void removeGrid()
     {
-        if(this.graph == null)
-            return;
-        this.graph.clear();
-        this.graph = null;
+        if(this.blockedGrid != null)
+            this.blockedGrid.clear();
+        this.blockedGrid = null;
+        if(this.spriteGrid != null)
+            this.spriteGrid.clear();
+        this.spriteGrid = null;
     }
 
-    public void updateGraph()
+    public void updateBlockedGrid()
     {
-        if(this.graph == null)
-            return;
-        this.graph.update();
+        if(this.blockedGrid != null)
+            this.blockedGrid.update();
+    }
+
+    public void updateSpriteGrid()
+    {
+        if(this.spriteGrid != null)
+            this.spriteGrid.update();
+    }
+
+    @Override
+    public void resize(int width, int height, boolean down, boolean right)
+    {
+        super.resize(width, height, down, right);
+        if(this.blockedGrid != null)
+            this.blockedGrid.resizeGrid();
+        if(this.spriteGrid != null)
+            this.spriteGrid.resizeGrid();
     }
 }
