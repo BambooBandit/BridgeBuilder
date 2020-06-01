@@ -143,6 +143,9 @@ public class LayerMenu extends Group
 
         rearrangeLayers();
         rebuild();
+
+        if(this.editor.fileMenu.toolPane.spriteGridColors.selected)
+            this.map.updateLayerSpriteGrids();
     }
 
     /** Fixes the Map array to draw in the correct order. */

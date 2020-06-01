@@ -35,6 +35,7 @@ public class ToolPane extends Group
     public Tool gradient;
     public Tool random;
     public Tool blocked;
+    public Tool spriteGridColors;
     public Tool parallax;
     public Tool perspective;
     public Tool top;
@@ -75,6 +76,7 @@ public class ToolPane extends Group
         this.gradient = new Tool(Tools.GRADIENT, this, false);
         this.random = new Tool(Tools.RANDOM, this, true);
         this.blocked = new Tool(Tools.BLOCKED, this, true);
+        this.spriteGridColors = new Tool(Tools.SPRITEGRIDCOLORS, this, true);
         this.parallax = new Tool(Tools.PARALLAX, this, true);
         this.parallax.select();
         this.perspective = new Tool(Tools.PERSPECTIVE, this, true);
@@ -112,6 +114,7 @@ public class ToolPane extends Group
         this.toolTable.add(this.gradient).padRight(1);
         this.toolTable.add(this.random).padRight(1);
         this.toolTable.add(this.blocked).padRight(1);
+        this.toolTable.add(this.spriteGridColors).padRight(1);
         this.toolTable.add(this.parallax).padRight(1);
         this.toolTable.add(this.perspective).padRight(1);
         this.toolTable.add(this.top).padRight(1);
@@ -156,6 +159,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.gradient).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.random).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.blocked).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.spriteGridColors).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.parallax).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.perspective).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.top).size(toolHeight, toolHeight);
@@ -191,8 +195,10 @@ public class ToolPane extends Group
             }
             else
             {
-                if(selectedTool == this.depth && editor.activeMap != null)
-                    editor.activeMap.colorizeDepth();
+                if(selectedTool == this.depth && this.editor.activeMap != null)
+                    this.editor.activeMap.colorizeDepth();
+                else if(selectedTool == this.spriteGridColors && this.editor.activeMap != null)
+                    this.editor.activeMap.updateLayerSpriteGrids();
                 selectedTool.select();
             }
 

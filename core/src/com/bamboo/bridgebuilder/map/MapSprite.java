@@ -386,7 +386,7 @@ public class MapSprite extends LayerChild
     }
     public void drawScaleBox()
     {
-        if(selected && map.editor.fileMenu.toolPane.select.selected)
+        if(selected )
             scaleBox.sprite.draw(map.editor.batch);
     }
 

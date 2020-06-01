@@ -75,6 +75,7 @@ public class SpriteLayer extends Layer
         this.children.add(mapSprite);
         if(mapSprite.attachedMapObjects != null)
             this.map.updateLayerBlockedGrids();
-        this.map.updateLayerSpriteGrids();
+        if(this.editor.fileMenu.toolPane.spriteGridColors.selected)
+            this.map.updateLayerSpriteGrids();
     }
 }

@@ -128,13 +128,11 @@ public class SpriteGrid
             int x = (int) Math.floor(i % this.objectLayer.width);
             int y = (int) Math.floor(i / this.objectLayer.width);
             float r = 0, g = 0, b = 0, a = 0;
-            System.out.println();
             for(int px = 0; px < 64; px ++)
             {
                 for(int py = 0; py < 64; py ++)
                 {
                     int rgba8888 = pixmap.getPixel((x * 64) + px, (y * 64) + py);
-                    System.out.println((x + px) + ", " + (y + py));
                     Color.rgba8888ToColor(rgba8888ToColor, rgba8888);
                     r += rgba8888ToColor.r;
                     g += rgba8888ToColor.g;

@@ -84,8 +84,11 @@ public class DeleteSpriteSheet implements Command
             this.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
         }
 
-        if(map.editor.fileMenu.toolPane.depth.selected)
-            map.colorizeDepth();
+        if(this.map.editor.fileMenu.toolPane.depth.selected)
+            this.map.colorizeDepth();
+
+        if(this.map.editor.fileMenu.toolPane.spriteGridColors.selected)
+            this.map.updateLayerSpriteGrids();
     }
 
     @Override
@@ -115,7 +118,10 @@ public class DeleteSpriteSheet implements Command
         this.map.propertyMenu.rebuild();
         this.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
 
-        if(map.editor.fileMenu.toolPane.depth.selected)
-            map.colorizeDepth();
+        if(this.map.editor.fileMenu.toolPane.depth.selected)
+            this.map.colorizeDepth();
+
+        if(this.map.editor.fileMenu.toolPane.spriteGridColors.selected)
+            this.map.updateLayerSpriteGrids();
     }
 }

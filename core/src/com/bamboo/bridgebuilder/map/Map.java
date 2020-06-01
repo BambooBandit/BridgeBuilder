@@ -178,7 +178,7 @@ public class Map implements Screen
         this.editor.batch.setProjectionMatrix(this.camera.combined);
         this.editor.batch.begin();
         //spritebatch begin
-        if(!editor.fileMenu.toolPane.blocked.selected)
+        if(!editor.fileMenu.toolPane.spriteGridColors.selected)
             drawSpriteLayersAndLights();
         //spritebatch end
         this.editor.batch.end();
@@ -484,7 +484,7 @@ public class Map implements Screen
             if(this.layers.get(i) instanceof ObjectLayer)
             {
                 ObjectLayer objectLayer = (ObjectLayer) this.layers.get(i);
-                if (objectLayer.layerField.visibleImg.isVisible() && objectLayer.overrideSprite == null && this.editor.fileMenu.toolPane.blocked.selected && objectLayer.spriteGrid != null)
+                if (objectLayer.layerField.visibleImg.isVisible() && objectLayer.overrideSprite == null && this.editor.fileMenu.toolPane.spriteGridColors.selected && objectLayer.spriteGrid != null)
                     objectLayer.spriteGrid.drawColor();
             }
         }

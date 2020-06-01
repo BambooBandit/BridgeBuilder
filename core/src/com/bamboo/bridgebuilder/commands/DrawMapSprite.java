@@ -24,25 +24,28 @@ public class DrawMapSprite implements Command
     @Override
     public void execute()
     {
-        if(mapSprite == null)
+        if(this.mapSprite == null)
         {
-            SpriteLayer layer = (SpriteLayer) map.selectedLayer;
-            SpriteTool spriteTool = map.getSpriteToolFromSelectedTools();
-            this.mapSprite = new MapSprite(map, layer, spriteTool, x, y);
-            map.shuffleRandomSpriteTool();
+            SpriteLayer layer = (SpriteLayer) this.map.selectedLayer;
+            SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
+            this.mapSprite = new MapSprite(this.map, layer, spriteTool, this.x, this.y);
+            this.map.shuffleRandomSpriteTool();
         }
-        layer.addMapSprite(this.mapSprite);
+        this.layer.addMapSprite(this.mapSprite);
 
-        if(map.editor.fileMenu.toolPane.depth.selected)
-            map.colorizeDepth();
+        if(this.map.editor.fileMenu.toolPane.depth.selected)
+            this.map.colorizeDepth();
     }
 
     @Override
     public void undo()
     {
-        layer.children.removeValue(this.mapSprite, true);
+        this.layer.children.removeValue(this.mapSprite, true);
 
-        if(map.editor.fileMenu.toolPane.depth.selected)
-            map.colorizeDepth();
+        if(this.map.editor.fileMenu.toolPane.depth.selected)
+            this.map.colorizeDepth();
+
+        if(this.map.editor.fileMenu.toolPane.spriteGridColors.selected)
+            this.map.updateLayerSpriteGrids();
     }
 }
