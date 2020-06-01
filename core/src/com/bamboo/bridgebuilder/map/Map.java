@@ -190,12 +190,12 @@ public class Map implements Screen
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         this.editor.shapeRenderer.begin();
         //shaperenderer begin
+        drawSpriteGrid();
+        drawBlocked();
         drawLayerOutline();
+        drawGrid();
         drawAttachedObjects();
         drawObjectLayers();
-        drawBlocked();
-        drawSpriteGrid();
-        drawGrid();
         if(this.editor.fileMenu.toolPane.b2drender.selected)
         {
             this.editor.shapeRenderer.end();
@@ -471,8 +471,8 @@ public class Map implements Screen
             if(this.layers.get(i) instanceof ObjectLayer)
             {
                 ObjectLayer objectLayer = (ObjectLayer) this.layers.get(i);
-                if (objectLayer.layerField.visibleImg.isVisible() && objectLayer.overrideSprite == null && this.editor.fileMenu.toolPane.blocked.selected && objectLayer.blockedGrid != null)
-                    objectLayer.blockedGrid.drawBlocked();
+                if (objectLayer.layerField.visibleImg.isVisible() && objectLayer.overrideSprite == null && this.editor.fileMenu.toolPane.blocked.selected && objectLayer.spriteGrid != null)
+                    objectLayer.spriteGrid.drawBlocked();
             }
         }
     }
@@ -495,6 +495,7 @@ public class Map implements Screen
         if(this.selectedLayer != null)
         {
             this.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+            this.editor.shapeRenderer.setColor(Color.BLACK);
             int layerWidth = this.selectedLayer.width;
             int layerHeight = this.selectedLayer.height;
             if (this.editor.fileMenu.toolPane.lines.selected)
@@ -512,6 +513,7 @@ public class Map implements Screen
         if(this.selectedLayer != null)
         {
             this.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+            this.editor.shapeRenderer.setColor(Color.BLACK);
             int layerWidth = this.selectedLayer.width;
             int layerHeight = this.selectedLayer.height;
             this.editor.shapeRenderer.line(this.selectedLayer.x, this.selectedLayer.y, this.selectedLayer.x, this.selectedLayer.y + layerHeight);
@@ -694,19 +696,6 @@ public class Map implements Screen
                     previewSprite.setScale(randomScale, randomScale);
                     previewSprite.setPosition(coords.x - previewSprite.getWidth() / 2, coords.y - previewSprite.getHeight() / 2);
                 }
-            }
-        }
-    }
-
-    public void updateLayerBlockedGrids()
-    {
-        for(int i = 0; i < this.layers.size; i ++)
-        {
-            Layer layer = this.layers.get(i);
-            if(layer instanceof ObjectLayer)
-            {
-                ObjectLayer objectLayer = (ObjectLayer) layer;
-                objectLayer.updateBlockedGrid();
             }
         }
     }

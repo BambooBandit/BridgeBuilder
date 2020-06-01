@@ -34,9 +34,23 @@ public class SpriteGrid
         this.resizeGrid();
     }
 
+    public void drawBlocked()
+    {
+        objectLayer.map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+        objectLayer.map.editor.shapeRenderer.setColor(1, 0, 0, .35f);
+        for(int i = 0; i < this.grid.size; i ++)
+        {
+            if(this.grid.get(i).blocked)
+            {
+                int x = (int) Math.floor(i % this.objectLayer.width);
+                int y = (int) Math.floor(i / this.objectLayer.width);
+                objectLayer.map.editor.shapeRenderer.rect(x, y, 1, 1);
+            }
+        }
+    }
+
     public void drawColor()
     {
-//        objectLayer.map.editor.batch.draw(texture, 0, texture.getHeight() / 64, texture.getWidth() / 64, texture.getHeight() / -64);
         objectLayer.map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
         for(int i = 0; i < this.grid.size; i ++)
         {
@@ -59,6 +73,7 @@ public class SpriteGrid
 
             SpriteCell cell = this.grid.get(i);
             cell.dustType = checkCellForDustTypePolygons(x, y);
+            cell.blocked = checkCellForBlockedPolygons(x, y);
         }
     }
 
@@ -247,6 +262,97 @@ public class SpriteGrid
         return null;
     }
 
+    public boolean checkCellForBlockedPolygons(int x, int y)
+    {
+        float bezelSize = .1f;
+        rectangle[0] = x + bezelSize;
+        rectangle[1] = y + bezelSize;
+        rectangle[2] = x + 1f - (bezelSize * 2f);
+        rectangle[3] = y + bezelSize;
+        rectangle[4] = x + 1f - (bezelSize * 2f);
+        rectangle[5] = y + 1f - (bezelSize * 2f);
+        rectangle[6] = x + bezelSize;
+        rectangle[7] = y + 1f - (bezelSize * 2f);
+
+        // Check bodies in this object layer
+        for(int i = 0; i < this.objectLayer.children.size; i ++)
+        {
+            MapObject mapObject = this.objectLayer.children.get(i);
+            if(mapObject instanceof MapPolygon)
+            {
+                MapPolygon mapPolygon = (MapPolygon) mapObject;
+                if(mapPolygon.body != null)
+                {
+                    if(Intersector.overlapConvexPolygons(rectangle, mapPolygon.polygon.getTransformedVertices(), null))
+                        return true;
+                }
+            }
+        }
+
+        // Check attached bodies in all sprite layers in the same floor, as well as other object layers in the same floor
+        int currentFloor = Integer.parseInt(this.objectLayer.layerField.layerName.getText().substring(6));
+        int iterationFloor = -1;
+        for(int i = 0; i < this.objectLayer.map.layers.size; i ++)
+        {
+            Layer layer = this.objectLayer.map.layers.get(i);
+            if(layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                String name = objectLayer.layerField.layerName.getText();
+                if(name.startsWith("floor ") && Character.isDigit(name.charAt(name.length() - 1)))
+                {
+                    iterationFloor = Integer.parseInt(name.substring(6));
+                    continue;
+                }
+            }
+            if(layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                for(int k = 0; k < objectLayer.children.size; k ++)
+                {
+                    MapObject mapObject = objectLayer.children.get(k);
+                    if(mapObject instanceof MapPolygon)
+                    {
+                        MapPolygon mapPolygon = (MapPolygon) mapObject;
+                        if(mapPolygon.body != null)
+                        {
+                            if(Intersector.overlapConvexPolygons(rectangle, mapPolygon.polygon.getTransformedVertices(), null))
+                                return true;
+                        }
+                    }
+                }
+            }
+            else if(layer instanceof SpriteLayer)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                if(iterationFloor == currentFloor)
+                {
+                    for(int k = 0; k < spriteLayer.children.size; k ++)
+                    {
+                        MapSprite mapSprite = spriteLayer.children.get(k);
+                        if(mapSprite.attachedMapObjects != null)
+                        {
+                            for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
+                            {
+                                MapObject mapObject = mapSprite.attachedMapObjects.get(s);
+                                if(mapObject instanceof MapPolygon)
+                                {
+                                    MapPolygon mapPolygon = (MapPolygon) mapObject;
+                                    if(mapPolygon.body != null)
+                                    {
+                                        if(Intersector.overlapConvexPolygons(rectangle, mapPolygon.polygon.getTransformedVertices(), null))
+                                            return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public void resizeGrid()
     {
         this.grid.clear();
@@ -270,5 +376,6 @@ public class SpriteGrid
     {
         public String dustType;
         public float r, g, b, a;
+        public boolean blocked;
     }
 }
