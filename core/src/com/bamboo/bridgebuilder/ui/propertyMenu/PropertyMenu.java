@@ -160,7 +160,8 @@ public class PropertyMenu extends Group
             {
                 ColorPropertyField property = (ColorPropertyField) propertyField;
                 ColorPropertyFieldData data = (ColorPropertyFieldData) propertyData;
-                property.setRGBA(data.r, data.g, data.b, data.a);
+                property.setRGBA(data.r, data.g, data.b, data.a + ColorPropertyFieldData.defaultAlphaValue);
+
             }
             else if(propertyData instanceof LightPropertyFieldData && propertyField instanceof LightPropertyField)
             {

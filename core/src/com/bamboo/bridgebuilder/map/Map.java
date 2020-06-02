@@ -1001,5 +1001,6 @@ public class Map implements Screen
             }
         }
         PropertyToolPane.apply(this);
+        propertyMenu.mapPropertyPanel.apply();
     }
 }

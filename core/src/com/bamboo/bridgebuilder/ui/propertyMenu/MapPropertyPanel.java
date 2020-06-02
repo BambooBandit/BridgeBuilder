@@ -65,14 +65,7 @@ public class MapPropertyPanel extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                ColorPropertyField mapRGBAProperty = Utils.getLockedColorField(lockedProperties);
-                menu.map.rayHandler.setAmbientLight(Float.parseFloat(mapRGBAProperty.rValue.getText()), Float.parseFloat(mapRGBAProperty.gValue.getText()), Float.parseFloat(mapRGBAProperty.bValue.getText()), Float.parseFloat(mapRGBAProperty.aValue.getText()));
-
-                LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = Utils.getLockedPropertyField(lockedProperties, "Virtual Height");
-                menu.map.virtualHeight = Float.parseFloat(mapVirtualHeightProperty.value.getText());
-                menu.map.virtualWidth = menu.map.virtualHeight * Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-                menu.map.camera.viewportWidth = menu.map.virtualWidth;
-                menu.map.camera.viewportHeight = menu.map.virtualHeight;
+                apply();
             }
         });
 
@@ -105,5 +98,17 @@ public class MapPropertyPanel extends Group
             super.setSize(0, 0);
         else
             super.setSize(width, newHeight);
+    }
+
+    public void apply()
+    {
+        ColorPropertyField mapRGBAProperty = Utils.getLockedColorField(lockedProperties);
+        menu.map.rayHandler.setAmbientLight(Float.parseFloat(mapRGBAProperty.rValue.getText()), Float.parseFloat(mapRGBAProperty.gValue.getText()), Float.parseFloat(mapRGBAProperty.bValue.getText()), Float.parseFloat(mapRGBAProperty.aValue.getText()));
+
+        LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = Utils.getLockedPropertyField(lockedProperties, "Virtual Height");
+        menu.map.virtualHeight = Float.parseFloat(mapVirtualHeightProperty.value.getText());
+        menu.map.virtualWidth = menu.map.virtualHeight * Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
+        menu.map.camera.viewportWidth = menu.map.virtualWidth;
+        menu.map.camera.viewportHeight = menu.map.virtualHeight;
     }
 }
