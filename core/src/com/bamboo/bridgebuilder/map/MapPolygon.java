@@ -122,7 +122,8 @@ public class MapPolygon extends MapObject
         if(this.body != null)
             this.body.setTransform(this.polygon.getTransformedVertices()[0], this.polygon.getTransformedVertices()[1], (float) Math.toRadians(this.getRotation()));
 
-        this.map.updateLayerSpriteGrids();
+        if(this.map.editor.fileMenu.toolPane.blocked.selected || this.map.editor.fileMenu.toolPane.spriteGridColors.selected)
+            this.map.updateLayerSpriteGrids();
 
     }
 

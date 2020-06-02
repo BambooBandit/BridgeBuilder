@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -469,36 +468,9 @@ public class MapInput implements InputProcessor
         if(!Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) || this.map.selectedLayer == null || !this.boxSelect.isDragging)
             return false;
 
-        if(this.map.selectedLayer instanceof SpriteLayer)
-        {
-            SelectLayerChildren selectLayerChildren = new SelectLayerChildren(this.map, this.dragOriginPos.x, this.dragOriginPos.y, this.currentPos.x, this.currentPos.y, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
-            this.map.executeCommand(selectLayerChildren);
-        }
-        else if(this.map.selectedLayer instanceof ObjectLayer)
-        {
-            ObjectLayer objectLayer = (ObjectLayer) this.map.selectedLayer;
-            if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
-            {
-                for (int k = 0; k < this.map.selectedObjects.size; k++)
-                    this.map.selectedObjects.get(k).unselect();
-                this.map.selectedObjects.clear();
-            }
-            for (int i = 0; i < objectLayer.children.size; i++)
-            {
-                MapObject mapObject = objectLayer.children.get(i);
-                boolean polygon = mapObject instanceof MapPolygon && Intersector.overlapConvexPolygons(((MapPolygon) mapObject).polygon.getTransformedVertices(), this.map.input.boxSelect.getVertices(), null);
-                boolean point = Intersector.isPointInPolygon(this.map.input.boxSelect.getVertices(), 0, this.map.input.boxSelect.getVertices().length, mapObject.getX(), mapObject.getY());
-                if (polygon || point)
-                {
-                    boolean selected = this.map.selectedObjects.contains(mapObject, true);
-                    if (!selected)
-                    {
-                        this.map.selectedObjects.add(mapObject);
-                        mapObject.select();
-                    }
-                }
-            }
-        }
+        SelectLayerChildren selectLayerChildren = new SelectLayerChildren(this.map, this.dragOriginPos.x, this.dragOriginPos.y, this.currentPos.x, this.currentPos.y, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+        this.map.executeCommand(selectLayerChildren);
+
         this.map.propertyMenu.rebuild();
         this.map.input.boxSelect.isDragging = false;
         return false;
@@ -638,10 +610,17 @@ public class MapInput implements InputProcessor
     {
         if(!Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
         {
+            if(Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE) && button == Input.Buttons.RIGHT)
+            {
+                clearMapPolygonVertices(button);
+                return true;
+            }
+
             if(button == Input.Buttons.LEFT && this.map.input.mapPolygonVertices.size < 2)
                 clearMapPolygonVertices(button);
             return false;
         }
+
         if(this.map.input.mapPolygonVertices.size < 2)
         {
             clearMapPolygonVertices(button);
@@ -665,7 +644,7 @@ public class MapInput implements InputProcessor
 
     private boolean clearMapPolygonVertices(int button)
     {
-        if(Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && button == Input.Buttons.RIGHT || Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE) && button == Input.Buttons.LEFT)
+        if(Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && button == Input.Buttons.RIGHT || Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE))
         {
             ClearMapPolygonVertices clearMapPolygonVertices = new ClearMapPolygonVertices(this.map, this.map.input.mapPolygonVertices);
             this.map.executeCommand(clearMapPolygonVertices);
