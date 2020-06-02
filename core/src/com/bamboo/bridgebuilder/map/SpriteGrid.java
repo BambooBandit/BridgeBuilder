@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 
-import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
+import static com.badlogic.gdx.graphics.GL20.*;
 
 /** Creates a grid of information based on sprites on whichever floor this represents. Information such as average sprite color in cells, and what material you are walking on. */
 public class SpriteGrid
@@ -153,7 +153,7 @@ public class SpriteGrid
         this.objectLayer.map.camera.position.set(oldCamX, oldCamY, 0);
         this.objectLayer.map.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        this.objectLayer.map.editor.batch.setBlendFunction(-1, -1);
+        this.objectLayer.map.editor.batch.setBlendFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl20.glBlendFuncSeparate(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA,GL20.GL_ONE, GL20.GL_DST_ALPHA);
 
 
