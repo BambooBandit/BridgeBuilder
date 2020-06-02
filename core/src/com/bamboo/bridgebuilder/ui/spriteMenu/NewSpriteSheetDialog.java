@@ -8,9 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.Map;
-
-import java.io.File;
 
 public class NewSpriteSheetDialog extends Window
 {
@@ -106,27 +105,8 @@ public class NewSpriteSheetDialog extends Window
 
     private void checkTextField()
     {
-        String string = sheetName.getText() + ".atlas";
-        File tempFile = new File(string);
-        boolean exists = tempFile.exists();
-
-        conditional:
-        if(exists)
-        {
-            for(int i = 0; i < map.spriteMenu.spriteSheets.size; i ++)
-            {
-                SpriteSheet spriteSheet = map.spriteMenu.spriteSheets.get(i);
-                if(spriteSheet.name.equals(sheetName.getText()))
-                {
-                    this.valid = false;
-                    break conditional;
-                }
-            }
-            this.valid = true;
-        }
-        else
-            this.valid = false;
-
+        String string = sheetName.getText();
+        this.valid = Utils.canSpriteSheetBeCreated(map, string);
         if(this.valid)
             this.create.setColor(Color.GREEN);
         else

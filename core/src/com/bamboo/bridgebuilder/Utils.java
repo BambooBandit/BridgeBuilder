@@ -13,6 +13,9 @@ import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
+import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteSheet;
+
+import java.io.File;
 
 public class Utils
 {
@@ -214,6 +217,33 @@ public class Utils
         float h = EditorAssets.getGlyph().height;
         EditorAssets.getFont().draw(batch, string, x - w / 2, y + h / 2, w, Align.center, false);
         EditorAssets.getFont().getData().setScale(1, 1);
+    }
+
+    public static boolean canSpriteSheetBeCreated(Map map, String path)
+    {
+        File tempFile = new File(path + ".atlas");
+        boolean exists = tempFile.exists();
+
+        boolean valid;
+
+        conditional:
+        if(exists)
+        {
+            for(int i = 0; i < map.spriteMenu.spriteSheets.size; i ++)
+            {
+                SpriteSheet spriteSheet = map.spriteMenu.spriteSheets.get(i);
+                if(spriteSheet.name.equals(path))
+                {
+                    valid = false;
+                    break conditional;
+                }
+            }
+            valid = true;
+        }
+        else
+            valid = false;
+
+        return valid;
     }
 
     public static float getDistance(float x1, float x2, float y1, float y2)

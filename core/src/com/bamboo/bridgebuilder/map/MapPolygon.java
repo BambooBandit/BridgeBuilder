@@ -190,8 +190,8 @@ public class MapPolygon extends MapObject
 
     private void drawCentroidAndAngle(float angle)
     {
-        map.editor.shapeRenderer.circle(centroidX, centroidY, 5);
-        map.editor.shapeRenderer.line(centroidX, centroidY, (float) (centroidX + Math.cos(angle) * 25), (float) (centroidY + Math.sin(angle) * 25));
+        map.editor.shapeRenderer.circle(centroidX, centroidY, .075f, 8);
+        map.editor.shapeRenderer.line(centroidX, centroidY, (float) (centroidX + Math.cos(angle) * .4), (float) (centroidY + Math.sin(angle) * .4));
     }
 
     @Override

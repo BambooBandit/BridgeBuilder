@@ -36,6 +36,7 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldProperty
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
+import com.sun.xml.internal.ws.util.StringUtils;
 
 import java.io.File;
 import java.util.Stack;
@@ -851,13 +852,18 @@ public class Map implements Screen
         for(int i = 0; i < size; i ++)
         {
             SpriteSheetData spriteSheetData = mapData.sheets.get(i);
-            spriteMenu.createSpriteSheet(spriteSheetData.name);
+            String sheetName;
+            if(Utils.canSpriteSheetBeCreated(this, "editor" + StringUtils.capitalize(spriteSheetData.name)))
+                sheetName = "editor" + StringUtils.capitalize(spriteSheetData.name);
+            else
+                sheetName = spriteSheetData.name;
+            spriteMenu.createSpriteSheet(sheetName);
             // sprite tool properties
             int toolSize = spriteSheetData.tools.size();
             for(int k = 0; k < toolSize; k ++)
             {
                 ToolData toolData = spriteSheetData.tools.get(k);
-                SpriteTool spriteTool = spriteMenu.getSpriteTool(toolData.n, spriteSheetData.name);
+                SpriteTool spriteTool = spriteMenu.getSpriteTool(toolData.n, sheetName);
                 spriteTool.properties.clear();
 
                 // properties

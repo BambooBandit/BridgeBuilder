@@ -15,7 +15,13 @@ public class SpriteSheetData
     public SpriteSheetData(){}
     public SpriteSheetData(Map map, SpriteSheet spriteSheet)
     {
-        this.name = spriteSheet.name;
+        if(spriteSheet.name.startsWith("editor"))
+        {
+            this.name = spriteSheet.name.substring(6);
+            this.name = Character.toLowerCase(this.name.charAt(0)) + this.name.substring(1);
+        }
+        else
+            this.name = spriteSheet.name;
         this.tools = new ArrayList<>();
 
         for(int i = 0; i < map.spriteMenu.spriteTable.getChildren().size; i ++)
@@ -23,7 +29,7 @@ public class SpriteSheetData
             if(map.spriteMenu.spriteTable.getChildren().get(i) instanceof Table)
             {
                 SpriteTool spriteTool = ((Table) map.spriteMenu.spriteTable.getChildren().get(i)).findActor("spriteTool");
-                if(spriteTool.sheet.name == this.name)
+                if(spriteTool.sheet.name == spriteSheet.name)
                     this.tools.add(new ToolData(spriteTool));
             }
         }
