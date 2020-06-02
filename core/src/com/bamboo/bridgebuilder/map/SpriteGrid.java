@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.bamboo.bridgebuilder.Utils;
@@ -36,30 +37,49 @@ public class SpriteGrid
 
     public void drawBlocked()
     {
-        objectLayer.map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-        objectLayer.map.editor.shapeRenderer.setColor(1, 0, 0, .35f);
+        this.objectLayer.map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+        this.objectLayer.map.editor.shapeRenderer.setColor(1, 0, 0, .35f);
         for(int i = 0; i < this.grid.size; i ++)
         {
             if(this.grid.get(i).blocked)
             {
                 int x = (int) Math.floor(i % this.objectLayer.width);
                 int y = (int) Math.floor(i / this.objectLayer.width);
-                objectLayer.map.editor.shapeRenderer.rect(x, y, 1, 1);
+                this.objectLayer.map.editor.shapeRenderer.rect(x, y, 1, 1);
             }
         }
     }
 
     public void drawColor()
     {
-        objectLayer.map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+        this.objectLayer.map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
         for(int i = 0; i < this.grid.size; i ++)
         {
             SpriteCell cell = this.grid.get(i);
-            objectLayer.map.editor.shapeRenderer.setColor(cell.r, cell.g, cell.b, cell.a);
+            this.objectLayer.map.editor.shapeRenderer.setColor(cell.r, cell.g, cell.b, cell.a);
             int x = (int) Math.floor(i % this.objectLayer.width);
             int y = (int) Math.floor(i / this.objectLayer.width);
-            objectLayer.map.editor.shapeRenderer.rect(x, y, 1, 1);
+            this.objectLayer.map.editor.shapeRenderer.rect(x, y, 1, 1);
         }
+    }
+
+    public void drawTypes()
+    {
+        this.objectLayer.map.editor.batch.setProjectionMatrix(this.objectLayer.map.editor.stage.getCamera().combined);
+
+        for(int i = 0; i < this.grid.size; i ++)
+        {
+            int x = (int) Math.floor(i % this.objectLayer.width);
+            int y = (int) Math.floor(i / this.objectLayer.width);
+            SpriteCell spriteCell = this.grid.get(i);
+            if(spriteCell.dustType != null)
+            {
+                Vector3 project = Utils.project(objectLayer.map.camera, x + .5f, y + .5f);
+                Utils.centerPrint(objectLayer.map.editor.batch, spriteCell.dustType, project.x, project.y);
+            }
+        }
+
+        this.objectLayer.map.editor.batch.setProjectionMatrix(this.objectLayer.map.camera.combined);
     }
 
     public void update()
@@ -91,8 +111,8 @@ public class SpriteGrid
         Gdx.gl20.glBlendFuncSeparate(Gdx.gl.GL_SRC_ALPHA,Gdx.gl.GL_ONE_MINUS_SRC_ALPHA, Gdx.gl.GL_ONE,Gdx.gl.GL_ONE);
 
         // Prepare camera to handle fbo
-        float oldCamX = objectLayer.map.camera.position.x;
-        float oldCamY = objectLayer.map.camera.position.y;
+        float oldCamX = this.objectLayer.map.camera.position.x;
+        float oldCamY = this.objectLayer.map.camera.position.y;
         this.objectLayer.map.camera.viewportWidth = this.objectLayer.width / this.objectLayer.map.camera.zoom;
         this.objectLayer.map.camera.viewportHeight = this.objectLayer.height / this.objectLayer.map.camera.zoom;
         this.objectLayer.map.camera.position.set(this.objectLayer.map.camera.viewportWidth * this.objectLayer.map.camera.zoom / 2f, this.objectLayer.map.camera.viewportHeight * this.objectLayer.map.camera.zoom / 2f, 0);
@@ -122,7 +142,7 @@ public class SpriteGrid
         }
         this.objectLayer.map.editor.batch.end();
 
-        Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, objectLayer.width * 64, objectLayer.height * 64);
+        Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, this.objectLayer.width * 64, this.objectLayer.height * 64);
 
         this.fbo.end();
         FrameBuffer.unbind();
@@ -181,6 +201,8 @@ public class SpriteGrid
         rectangle[7] = y + 1f - (bezelSize * 2f);
 
         // Check polygons in this object layer
+        String dustType = null;
+        int dustTypeLayerIndex = -1;
         for(int i = 0; i < this.objectLayer.children.size; i ++)
         {
             MapObject mapObject = this.objectLayer.children.get(i);
@@ -191,7 +213,15 @@ public class SpriteGrid
                 if(property != null)
                 {
                     if(Intersector.overlapConvexPolygons(rectangle, mapPolygon.polygon.getTransformedVertices(), null))
-                        return property.value.getText();
+                    {
+                        String comparedDustType = property.value.getText();
+                        int layerIndex = this.objectLayer.map.layers.indexOf(this.objectLayer, true);
+                        if(doesDustTypeHavePriority(dustType, dustTypeLayerIndex, comparedDustType, layerIndex))
+                        {
+                            dustType = comparedDustType;
+                            dustTypeLayerIndex = layerIndex;
+                        }
+                    }
                 }
             }
         }
@@ -225,7 +255,14 @@ public class SpriteGrid
                         if(property != null)
                         {
                             if(Intersector.overlapConvexPolygons(rectangle, mapPolygon.polygon.getTransformedVertices(), null))
-                                return property.value.getText();
+                            {
+                                String comparedDustType = property.value.getText();
+                                if(doesDustTypeHavePriority(dustType, dustTypeLayerIndex, comparedDustType, i))
+                                {
+                                    dustType = comparedDustType;
+                                    dustTypeLayerIndex = i;
+                                }
+                            }
                         }
                     }
                 }
@@ -250,7 +287,14 @@ public class SpriteGrid
                                     if(property != null)
                                     {
                                         if(Intersector.overlapConvexPolygons(rectangle, mapPolygon.polygon.getTransformedVertices(), null))
-                                            return property.value.getText();
+                                        {
+                                            String comparedDustType = property.value.getText();
+                                            if(doesDustTypeHavePriority(dustType, dustTypeLayerIndex, comparedDustType, i))
+                                            {
+                                                dustType = comparedDustType;
+                                                dustTypeLayerIndex = i;
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -259,7 +303,7 @@ public class SpriteGrid
                 }
             }
         }
-        return null;
+        return dustType;
     }
 
     public boolean checkCellForBlockedPolygons(int x, int y)
@@ -360,10 +404,8 @@ public class SpriteGrid
         if(this.grid.size >= newSize)
             this.grid.removeRange(newSize, this.grid.size - 1);
         for(int i = this.grid.size; i < newSize; i ++)
-        {
             this.grid.add(new SpriteCell());
-        }
-        this.fbo = new FrameBuffer(Pixmap.Format.RGBA8888, objectLayer.width * 64, objectLayer.height * 64, false);
+        this.fbo = new FrameBuffer(Pixmap.Format.RGBA8888, this.objectLayer.width * 64, this.objectLayer.height * 64, false);
         update();
     }
 
@@ -377,5 +419,30 @@ public class SpriteGrid
         public String dustType;
         public float r, g, b, a;
         public boolean blocked;
+    }
+
+    private boolean doesDustTypeHavePriority(String dustType, int layerIndex, String comparingDustType, int comparingLayerIndex)
+    {
+        if(dustType == null)
+            return true;
+        if(comparingDustType == null)
+            return false;
+        if(comparingLayerIndex > layerIndex)
+            return true;
+        if(comparingLayerIndex < layerIndex)
+            return false;
+        return getDustTypePriority(dustType) < getDustTypePriority(comparingDustType);
+    }
+
+    private int getDustTypePriority(String dustType)
+    {
+        if(dustType == null)
+            return -1;
+        switch (dustType)
+        {
+            case "dirt": return 0;
+            case "grass": return 1;
+            default: return -1;
+        }
     }
 }

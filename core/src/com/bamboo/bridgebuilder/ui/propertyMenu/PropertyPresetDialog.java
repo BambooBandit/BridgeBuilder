@@ -25,6 +25,7 @@ public class PropertyPresetDialog extends Window
     private Table newDisablePerspectiveProperty;
     private Table newPerspectiveProperty;
     private Table newGroundProperty;
+    private Table newDustTypeProperty;
 
     private Table presetTable;
     private ScrollPane scrollPane;
@@ -88,6 +89,7 @@ public class PropertyPresetDialog extends Window
             else if(allPolygons)
             {
                 this.presetTable.add(this.newBlockedProperty).pad(5);
+                this.presetTable.add(this.newDustTypeProperty).pad(5);
             }
         }
         else if(this.map.spriteMenu.selectedSpriteTools.size > 0)
@@ -131,6 +133,7 @@ public class PropertyPresetDialog extends Window
         this.createPerspective();
         this.createDisablePerspective();
         this.createGround();
+        this.createDustType();
     }
 
     private void createTop()
@@ -147,7 +150,7 @@ public class PropertyPresetDialog extends Window
         this.newTopProperty.add(new Label("Top Sprite", this.skin)).padTop(pad / 2).row();
         table = new Table();
         fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("top", "...4tree1...", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
         this.newTopProperty.add(table);
@@ -187,7 +190,7 @@ public class PropertyPresetDialog extends Window
         this.newLightProperty.add(new Label("Point Light", this.skin)).padTop(pad / 2).row();
         table = new Table();
         lightPropertyField = new LightPropertyField(this.skin, null, null, false, 1, 1, 1, 1, 5, 25);
-        lightPropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        lightPropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         lightPropertyField.clearListeners();
         table.add(lightPropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
         this.newLightProperty.add(table);
@@ -227,7 +230,7 @@ public class PropertyPresetDialog extends Window
         this.newBlockedProperty.add(new Label("Blocked Polygon", this.skin)).padTop(pad / 2).row();
         table = new Table();
         fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("blocked", "", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
         this.newBlockedProperty.add(table);
@@ -267,7 +270,7 @@ public class PropertyPresetDialog extends Window
         this.newRayhandlerProperty.add(new Label("Rayhandler", this.skin)).padTop(pad / 2).row();
         table = new Table();
         fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("rayhandler", "", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
         this.newRayhandlerProperty.add(table);
@@ -307,7 +310,7 @@ public class PropertyPresetDialog extends Window
         this.newDisablePerspectiveProperty.add(new Label("Disable Perspective", this.skin)).padTop(pad / 2).row();
         table = new Table();
         fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("disablePerspective", "", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
         this.newDisablePerspectiveProperty.add(table);
@@ -347,19 +350,19 @@ public class PropertyPresetDialog extends Window
         this.newPerspectiveProperty.add(new Label("Perspective", this.skin)).padTop(pad / 2).row();
         table = new Table();
         fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("skew", "...", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad / 6).row();
         fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("antiDepth", "...", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
         fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("topScale", "...", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
         fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("bottomScale", "...", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad).row();
         this.newPerspectiveProperty.add(table);
@@ -406,7 +409,7 @@ public class PropertyPresetDialog extends Window
         this.newGroundProperty.add(new Label("Ground", this.skin)).padTop(pad / 2).row();
         table = new Table();
         fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("ground", "", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 4.5f, toolHeight);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
         this.newGroundProperty.add(table);
@@ -426,6 +429,46 @@ public class PropertyPresetDialog extends Window
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
                 AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "ground", "");
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
+    public void createDustType()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newDustTypeProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newDustTypeProperty.background(spriteDrawable);
+        this.newDustTypeProperty.add(new Label("Dust Type", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("dustType", "...dirt...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        this.newDustTypeProperty.add(table);
+        this.newDustTypeProperty.setTouchable(Touchable.enabled);
+        this.newDustTypeProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newDustTypeProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newDustTypeProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "dustType", "");
                 map.executeCommand(addProperty);
                 return false;
             }

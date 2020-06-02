@@ -215,6 +215,8 @@ public class Map implements Screen
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         this.editor.batch.begin();
+        if(this.editor.fileMenu.toolPane.spriteGridColors.selected)
+            printDustTypes();
         for(int i = 0; i < this.selectedSprites.size; i ++)
         {
             this.selectedSprites.get(i).drawMoveBox();
@@ -461,6 +463,20 @@ public class Map implements Screen
             {
                 if (this.layers.get(i).layerField.visibleImg.isVisible() && this.layers.get(i).overrideSprite == null)
                     this.layers.get(i).draw();
+            }
+        }
+    }
+
+    private void printDustTypes()
+    {
+        for(int i = 0; i < this.layers.size; i ++)
+        {
+            Layer layer = this.layers.get(i);
+            if(layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                if(objectLayer.spriteGrid != null)
+                    objectLayer.spriteGrid.drawTypes();
             }
         }
     }

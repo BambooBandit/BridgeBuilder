@@ -2,9 +2,11 @@ package com.bamboo.bridgebuilder;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
@@ -202,6 +204,16 @@ public class Utils
     public static boolean coordInRect(float x, float y, float rectX, float rectY, int rectWidth, int rectHeight)
     {
         return x >= rectX && x <= rectX + rectWidth && y >= rectY && y <= rectY + rectHeight;
+    }
+
+    public static void centerPrint(SpriteBatch batch, String string, float x, float y)
+    {
+        EditorAssets.getGlyph().setText(EditorAssets.getFont(), string);
+        EditorAssets.getFont().getData().setScale(1, 1);
+        float w = EditorAssets.getGlyph().width;
+        float h = EditorAssets.getGlyph().height;
+        EditorAssets.getFont().draw(batch, string, x - w / 2, y + h / 2, w, Align.center, false);
+        EditorAssets.getFont().getData().setScale(1, 1);
     }
 
     public static float getDistance(float x1, float x2, float y1, float y2)

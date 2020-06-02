@@ -39,6 +39,8 @@ public class BridgeBuilder extends Game
 
 	public static boolean fileChooserOpen = false;
 
+	private boolean crashed = false;
+
 	@Override
 	public void create ()
 	{
@@ -301,17 +303,27 @@ public class BridgeBuilder extends Game
 
     public void crashRecovery(Exception e)
     {
+    	if(this.crashed)
+		{
+			this.stage.act();
+			this.stage.draw();
+			return;
+		}
+
+    	this.crashed = true;
+
         e.printStackTrace();
 
-        if(maps.size == 0)
+        if(this.maps.size == 0)
         {
             Gdx.app.exit();
             System.exit(0);
         }
-        for(int i = 0; i < maps.size; i ++)
+
+		for(int i = 0; i < this.maps.size; i ++)
         {
             final int finalI = i;
-            new YesNoDialog("Editor crashed. Save before closing " + maps.get(finalI).name + "?", maps.get(finalI).editor.stage, "", EditorAssets.getUISkin(), false)
+            new YesNoDialog("Editor crashed. Save before closing " + this.maps.get(finalI).name + "?", this.maps.get(finalI).editor.stage, "", EditorAssets.getUISkin(), false)
             {
                 @Override
                 public void yes()
@@ -332,5 +344,8 @@ public class BridgeBuilder extends Game
                 }
             };
         }
+
+		this.stage.act();
+		this.stage.draw();
     }
 }

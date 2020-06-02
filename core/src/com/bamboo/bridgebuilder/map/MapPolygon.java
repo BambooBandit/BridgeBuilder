@@ -120,10 +120,10 @@ public class MapPolygon extends MapObject
         setOriginBasedOnParentSprite();
 
         if(this.body != null)
-        {
             this.body.setTransform(this.polygon.getTransformedVertices()[0], this.polygon.getTransformedVertices()[1], (float) Math.toRadians(this.getRotation()));
-            this.map.updateLayerSpriteGrids();
-        }
+
+        this.map.updateLayerSpriteGrids();
+
     }
 
     @Override
