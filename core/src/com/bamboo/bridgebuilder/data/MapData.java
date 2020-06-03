@@ -19,6 +19,10 @@ public class MapData
     public MapData(){}
     public MapData(Map map, boolean settingBBMDefaults)
     {
+        boolean perspective = map.editor.fileMenu.toolPane.perspective.selected;
+        if(perspective)
+            map.editor.fileMenu.toolPane.selectTool(map.editor.fileMenu.toolPane.perspective);
+
         this.name = map.name;
         this.lProps = new ArrayList<>();
         this.props = new ArrayList<>();
@@ -66,6 +70,9 @@ public class MapData
             this.name = "defaultBBM.bbm";
             this.layers.clear();
         }
+
+        if(perspective)
+            map.editor.fileMenu.toolPane.selectTool(map.editor.fileMenu.toolPane.perspective);
     }
 }
 
