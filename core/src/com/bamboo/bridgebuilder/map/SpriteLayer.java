@@ -46,7 +46,7 @@ public class SpriteLayer extends Layer
             if(antiDepth >= .1f)
                 skew /= antiDepth * 15;
             m[Matrix4.M31] += skew;
-            m[Matrix4.M11] += this.map.camera.position.y / (-8f / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
+            m[Matrix4.M11] += this.map.camera.position.y / ((-10f * this.map.camera.zoom) / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
             this.map.camera.invProjectionView.set(this.map.camera.combined);
             Matrix4.inv(this.map.camera.invProjectionView.val);
             this.map.camera.frustum.update(this.map.camera.invProjectionView);

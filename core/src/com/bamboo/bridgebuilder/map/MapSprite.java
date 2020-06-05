@@ -125,68 +125,6 @@ public class MapSprite extends LayerChild
         this.updatePerspective();
     }
 
-
-    @Override
-    public void setPosition(float x, float y)
-    {
-        float oldX = this.x;
-        float oldY = this.y;
-        this.x = x;
-        this.y = y;
-        float offsetDifferenceX = this.x - oldX;
-        float offsetDifferenceY = this.y - oldY;
-
-        if(this.map.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this.map, this.layer) && !Utils.isLayerGround(this.layer))
-        {
-            if(Gdx.graphics.getHeight() == 0)
-                return;
-            map.camera.update();
-            float[] m = this.map.camera.combined.getValues();
-            float skew = 0;
-            float antiDepth = 0;
-            try
-            {
-                FieldFieldPropertyValuePropertyField property = Utils.getSkewPerspectiveProperty(this.map, this.layer);
-                skew = Float.parseFloat(property.value.getText());
-                property = Utils.getAntiDepthPerspectiveProperty(this.map, this.layer);
-                antiDepth = Float.parseFloat(property.value.getText());
-            }
-            catch (NumberFormatException e){}
-            if(antiDepth >= .1f)
-                skew /= antiDepth * 15;
-            m[Matrix4.M31] += skew;
-            m[Matrix4.M11] += this.map.camera.position.y / (-8f / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
-            this.map.camera.invProjectionView.set(this.map.camera.combined);
-            Matrix4.inv(this.map.camera.invProjectionView.val);
-            this.map.camera.frustum.update(this.map.camera.invProjectionView);
-            Vector3 p = Utils.project(this.map.camera, x, y);
-            x = p.x;
-            y = Gdx.graphics.getHeight() - p.y;
-            this.map.camera.update();
-            p = Utils.unproject(this.map.camera, x, y);
-            x = p.x;
-            y = p.y;
-        }
-
-        this.polygon.setPosition(x, y);
-        this.sprite.setPosition(x, y);
-
-        x += this.width / 2;
-        y += this.height / 2;
-        this.rotationBox.setPosition(x, y);
-        this.moveBox.setPosition(x, y);
-        this.scaleBox.setPosition(x, y);
-
-        if(this.tool.hasAttachedMapObjects())
-        {
-            for(int i = 0; i < this.attachedMapObjects.size; i ++)
-            {
-                MapObject mapObject = this.attachedMapObjects.get(i);
-                mapObject.setPosition(mapObject.getX() + offsetDifferenceX, mapObject.getY() + offsetDifferenceY);
-            }
-        }
-    }
-
     @Override
     public float getX()
     {
@@ -467,6 +405,82 @@ public class MapSprite extends LayerChild
     public float getRotation()
     {
         return this.rotation;
+    }
+
+    @Override
+    public void setPosition(float x, float y)
+    {
+        float oldX = this.x;
+        float oldY = this.y;
+        this.x = x;
+        this.y = y;
+        float offsetDifferenceX = this.x - oldX;
+        float offsetDifferenceY = this.y - oldY;
+
+        float yScaleDisplacement = 0;
+        float xScaleDisplacement = 0;
+        if(this.map.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this.map, this.layer) && !Utils.isLayerGround(this.layer))
+        {
+            if(Gdx.graphics.getHeight() == 0)
+                return;
+
+            float spriteAtlasWidth = this.sprite.getRegionWidth() / 64;
+            float spriteAtlasHeight = this.sprite.getRegionHeight() / 64;
+            float whiteSpaceWidth = (sprite.getWidth() - spriteAtlasWidth);
+
+            map.camera.update();
+            float[] m = this.map.camera.combined.getValues();
+            float skew = 0;
+            float antiDepth = 0;
+            try
+            {
+                FieldFieldPropertyValuePropertyField property = Utils.getSkewPerspectiveProperty(this.map, this.layer);
+                skew = Float.parseFloat(property.value.getText());
+                property = Utils.getAntiDepthPerspectiveProperty(this.map, this.layer);
+                antiDepth = Float.parseFloat(property.value.getText());
+            }
+            catch (NumberFormatException e){}
+            if(antiDepth >= .1f)
+                skew /= antiDepth * 15;
+            m[Matrix4.M31] += skew;
+            m[Matrix4.M11] += this.map.camera.position.y / ((-10f * this.map.camera.zoom) / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
+            this.map.camera.invProjectionView.set(this.map.camera.combined);
+            Matrix4.inv(this.map.camera.invProjectionView.val);
+            this.map.camera.frustum.update(this.map.camera.invProjectionView);
+
+            xScaleDisplacement = sprite.getWidth() / 2;
+
+            Vector3 p = Utils.project(this.map.camera, x + xScaleDisplacement, y);
+            x = p.x;
+            y = Gdx.graphics.getHeight() - p.y;
+            this.map.camera.update();
+            p = Utils.unproject(this.map.camera, x, y);
+            x = p.x;
+            y = p.y;
+
+            yScaleDisplacement = ((spriteAtlasHeight * this.sprite.getScaleY()) - spriteAtlasHeight) / 2f;
+            xScaleDisplacement = -(spriteAtlasWidth / 2);
+            xScaleDisplacement -= (whiteSpaceWidth * sprite.getScaleX() / 2);
+        }
+
+
+        this.polygon.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
+        this.sprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
+
+        x += this.width / 2;
+        y += this.height / 2;
+        this.rotationBox.setPosition(x, y);
+        this.moveBox.setPosition(x, y);
+        this.scaleBox.setPosition(x, y);
+
+        if(this.tool.hasAttachedMapObjects())
+        {
+            for(int i = 0; i < this.attachedMapObjects.size; i ++)
+            {
+                MapObject mapObject = this.attachedMapObjects.get(i);
+                mapObject.setPosition(mapObject.getX() + offsetDifferenceX, mapObject.getY() + offsetDifferenceY);
+            }
+        }
     }
 
     @Override

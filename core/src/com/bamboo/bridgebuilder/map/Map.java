@@ -33,6 +33,7 @@ import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
@@ -442,7 +443,7 @@ public class Map implements Screen
             if(antiDepth >= .1f)
                 skew /= antiDepth * 15;
             m[Matrix4.M31] += skew;
-            m[Matrix4.M11] += this.camera.position.y / (-8f / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
+            m[Matrix4.M11] += this.camera.position.y / ((-10f * this.camera.zoom) / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
 
             this.camera.invProjectionView.set(this.camera.combined);
             Matrix4.inv(this.camera.invProjectionView.val);
@@ -663,51 +664,67 @@ public class Map implements Screen
                 Sprite previewSprite = spriteTool.previewSprites.get(i);
                 if(this.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this, this.selectedLayer))
                 {
-                    previewSprite.setPosition(x - previewSprite.getWidth() * previewSprite.getScaleX() / 2, y - previewSprite.getHeight() * previewSprite.getScaleY() / 2);
-
-                    float perspective = 0;
-                    FieldFieldPropertyValuePropertyField topPropertyField = Utils.getTopScalePerspectiveProperty(this, this.selectedLayer);
-                    FieldFieldPropertyValuePropertyField bottomPropertyField = Utils.getBottomScalePerspectiveProperty(this, this.selectedLayer);
-                    float perspectiveTop = Float.parseFloat(topPropertyField.value.getText());
-                    float perspectiveBottom = Float.parseFloat(bottomPropertyField.value.getText());
-
-                    float mapHeight = this.selectedLayer.height;
-                    float positionY = previewSprite.getY() + previewSprite.getHeight() / 2;
-
-                    float coeff = positionY / mapHeight;
-                    float delta = perspectiveTop - perspectiveBottom;
-
-                    perspective = (perspectiveBottom + coeff * delta) - 1;
-
-                    float perspectiveScale = randomScale + perspective;
-                    previewSprite.setOriginCenter();
-                    previewSprite.setScale(perspectiveScale);
-
-                    Vector3 p = Utils.project(this.camera, coords.x, coords.y);
-                    x = p.x;
-                    y = Gdx.graphics.getHeight() - p.y;
+                    x -= previewSprite.getWidth() / 2;
+                    y -= previewSprite.getHeight() / 2;
+                    camera.update();
                     float[] m = this.camera.combined.getValues();
                     float skew = 0;
                     float antiDepth = 0;
+                    float perspectiveTop = 0;
+                    float perspectiveBottom = 0;
                     try
                     {
+                        PropertyField topProperty = Utils.getTopScalePerspectiveProperty(this, this.selectedLayer);
+                        PropertyField bottomProperty = Utils.getBottomScalePerspectiveProperty(this, this.selectedLayer);
                         FieldFieldPropertyValuePropertyField property = Utils.getSkewPerspectiveProperty(this, this.selectedLayer);
                         skew = Float.parseFloat(property.value.getText());
                         property = Utils.getAntiDepthPerspectiveProperty(this, this.selectedLayer);
                         antiDepth = Float.parseFloat(property.value.getText());
+                        if(topProperty != null)
+                            perspectiveTop = Float.parseFloat(((FieldFieldPropertyValuePropertyField) topProperty).value.getText());
+                        if(bottomProperty != null)
+                            perspectiveBottom = Float.parseFloat(((FieldFieldPropertyValuePropertyField) bottomProperty).value.getText());
                     }
                     catch (NumberFormatException e){}
-                    m[Matrix4.M31] -= skew;
-                    m[Matrix4.M11] += (this.camera.position.y / 10) * (skew / this.camera.zoom) + (antiDepth / this.camera.zoom);
+                    if(antiDepth >= .1f)
+                        skew /= antiDepth * 15;
+                    m[Matrix4.M31] += skew;
+                    m[Matrix4.M11] += this.camera.position.y / ((-10f * this.camera.zoom) / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
                     this.camera.invProjectionView.set(this.camera.combined);
                     Matrix4.inv(this.camera.invProjectionView.val);
                     this.camera.frustum.update(this.camera.invProjectionView);
+
+                    float yScaleDisplacement = 0;
+                    float xScaleDisplacement = 0;
+                    float spriteAtlasWidth = previewSprite.getRegionWidth() / 64;
+                    float spriteAtlasHeight = previewSprite.getRegionHeight() / 64;
+                    float whiteSpaceWidth = (previewSprite.getWidth() - spriteAtlasWidth);
+
+                    xScaleDisplacement = previewSprite.getWidth() / 2;
+
+                    Vector3 p = Utils.project(this.camera, x + xScaleDisplacement, y);
+                    x = p.x;
+                    y = Gdx.graphics.getHeight() - p.y;
+                    this.camera.update();
                     p = Utils.unproject(this.camera, x, y);
                     x = p.x;
                     y = p.y;
-                    this.camera.update();
 
-                    previewSprite.setPosition(x - previewSprite.getWidth() * previewSprite.getScaleX() / 2, y - previewSprite.getHeight() * previewSprite.getScaleY() / 2);
+                    yScaleDisplacement = ((spriteAtlasHeight * previewSprite.getScaleY()) - spriteAtlasHeight) / 2f;
+                    xScaleDisplacement = -(spriteAtlasWidth / 2);
+                    xScaleDisplacement -= (whiteSpaceWidth * previewSprite.getScaleX() / 2);
+
+                    previewSprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
+
+                    float mapHeight = this.selectedLayer.height;
+                    float positionY = y;
+
+                    float coeff = positionY / mapHeight;
+                    float delta = perspectiveTop - perspectiveBottom;
+
+                    float perspectiveScale = (perspectiveBottom + coeff * delta);
+
+                    previewSprite.setScale(perspectiveScale);
                 }
                 else
                 {
