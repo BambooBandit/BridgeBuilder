@@ -754,6 +754,7 @@ public class Map implements Screen
         Utils.println();
         Utils.println("execute " + command);
         pushCommand(command);
+        setChanged(true);
     }
 
     public void pushCommand(Command command)

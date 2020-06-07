@@ -51,7 +51,7 @@ public class MapSprite extends LayerChild
         super(map, layer, x, y);
         this.lockedProperties = new Array<>();
         this.sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) tool.textureRegion);
-        this.sprite.setSize(this.sprite.getWidth() / 64, this.sprite.getHeight() / 64);
+        this.sprite.setSize(sprite.getAtlasRegion().originalWidth / 64, sprite.getAtlasRegion().originalHeight / 64);
         this.sprite.setOriginCenter();
         x -= this.sprite.getWidth() / 2;
         y -= this.sprite.getHeight() / 2;
@@ -61,7 +61,8 @@ public class MapSprite extends LayerChild
         float[] vertices = {0, 0, this.width, 0, this.width, this.height, 0, this.height};
         this.polygon = new EditorPolygon(vertices);
         this.polygon.setPosition(x, y);
-        this.polygon.setOrigin(this.width / 2, this.height / 2);
+        this.polygon.setOrigin(this.sprite.getOriginX(), this.sprite.getOriginY());
+
         this.rotationBox = new RotationBox();
         this.rotationBox.setPosition(x + this.width, y + this.height / 2);
         this.moveBox = new MoveBox();
@@ -91,6 +92,66 @@ public class MapSprite extends LayerChild
         this.lockedProperties.add(scaleProperty);
         this.lockedProperties.add(zProperty);
         this.lockedProperties.add(colorProperty);
+
+        idProperty.value.setTextFieldFilter(valueFilter);
+        idProperty.value.getListeners().clear();
+        TextField.TextFieldClickListener idListener = idProperty.value.new TextFieldClickListener(){
+            @Override
+            public boolean keyDown (InputEvent event, int keycode)
+            {
+                try
+                {
+                    if (keycode == Input.Keys.ENTER)
+                    {
+                        for(int i = 0; i < map.selectedSprites.size; i ++)
+                            map.selectedSprites.get(i).setID(Integer.parseInt(idProperty.value.getText()));
+                    }
+                }
+                catch (NumberFormatException e) { }
+                return true;
+            }
+        };
+        idProperty.value.addListener(idListener);
+
+        rotationProperty.value.setTextFieldFilter(valueFilter);
+        rotationProperty.value.getListeners().clear();
+        TextField.TextFieldClickListener rotationListener = rotationProperty.value.new TextFieldClickListener(){
+            @Override
+            public boolean keyDown (InputEvent event, int keycode)
+            {
+                try
+                {
+                    if (keycode == Input.Keys.ENTER)
+                    {
+                        for(int i = 0; i < map.selectedSprites.size; i ++)
+                            map.selectedSprites.get(i).setRotation(Float.parseFloat(rotationProperty.value.getText()));
+                    }
+                }
+                catch (NumberFormatException e) { }
+                return true;
+            }
+        };
+        rotationProperty.value.addListener(rotationListener);
+
+        scaleProperty.value.setTextFieldFilter(valueFilter);
+        scaleProperty.value.getListeners().clear();
+        TextField.TextFieldClickListener scaleListener = scaleProperty.value.new TextFieldClickListener(){
+            @Override
+            public boolean keyDown (InputEvent event, int keycode)
+            {
+                try
+                {
+                    if (keycode == Input.Keys.ENTER)
+                    {
+                        for(int i = 0; i < map.selectedSprites.size; i ++)
+                            map.selectedSprites.get(i).setScale(Float.parseFloat(scaleProperty.value.getText()));
+                    }
+                }
+                catch (NumberFormatException e) { }
+                return true;
+            }
+        };
+        scaleProperty.value.addListener(scaleListener);
 
         zProperty.value.setTextFieldFilter(valueFilter);
         zProperty.value.getListeners().clear();
@@ -203,7 +264,7 @@ public class MapSprite extends LayerChild
         verts[18] = u;
         verts[19] = v2;
 
-        sprite.draw(map.editor.batch);
+        map.editor.batch.draw(sprite.getTexture(), verts, 0, verts.length);
 
         if(map.editor.fileMenu.toolPane.top.selected)
         {

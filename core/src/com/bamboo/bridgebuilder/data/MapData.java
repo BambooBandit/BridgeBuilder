@@ -19,6 +19,8 @@ public class MapData
     public MapData(){}
     public MapData(Map map, boolean settingBBMDefaults)
     {
+        map.updateLayerSpriteGrids();
+
         boolean perspective = map.editor.fileMenu.toolPane.perspective.selected;
         if(perspective)
             map.editor.fileMenu.toolPane.selectTool(map.editor.fileMenu.toolPane.perspective);
