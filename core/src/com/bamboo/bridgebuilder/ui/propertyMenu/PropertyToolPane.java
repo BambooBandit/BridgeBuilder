@@ -214,10 +214,14 @@ public class PropertyToolPane extends Group
         for(int i = 0; i < map.layers.size; i++)
         {
             Layer layer = map.layers.get(i);
-            for(int k = 0; k < layer.children.size; k ++)
+            if(layer instanceof SpriteLayer)
             {
-                LayerChild layerChild = (LayerChild) layer.children.get(k);
-                layerChild.updatePerspective();
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                for (int k = 0; k < spriteLayer.children.size; k++)
+                {
+                    MapSprite mapSprite = spriteLayer.children.get(k);
+                    mapSprite.updatePerspective();
+                }
             }
         }
     }

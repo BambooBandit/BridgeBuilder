@@ -1,9 +1,5 @@
 package com.bamboo.bridgebuilder.map;
 
-import com.bamboo.bridgebuilder.Utils;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
-
 public abstract class LayerChild
 {
     public float x, y;
@@ -21,31 +17,6 @@ public abstract class LayerChild
     public LayerChild(Map map, float x, float y)
     {
         this.map = map;
-    }
-
-    public void updatePerspective()
-    {
-        PropertyField topProperty = Utils.getTopScalePerspectiveProperty(this.map, this.layer);
-        PropertyField bottomProperty = Utils.getBottomScalePerspectiveProperty(this.map, this.layer);
-        if(bottomProperty == null || topProperty == null)
-            return;
-        try
-        {
-            float perspectiveBottom = Float.parseFloat(((FieldFieldPropertyValuePropertyField) bottomProperty).value.getText());
-            float perspectiveTop = Float.parseFloat(((FieldFieldPropertyValuePropertyField) topProperty).value.getText());
-
-            float mapHeight = this.layer.height;
-            float positionY = getY();
-
-            float coeff = positionY / mapHeight;
-            float delta = perspectiveTop - perspectiveBottom;
-
-            this.perspectiveScale = (perspectiveBottom + coeff * delta) - 1;
-
-            this.setScale(getScale());
-            this.setPosition(getX(), getY());
-        }
-        catch (NumberFormatException e){}
     }
 
     public abstract void draw();

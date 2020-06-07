@@ -3,7 +3,6 @@ package com.bamboo.bridgebuilder.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -35,7 +34,7 @@ public class MapSprite extends LayerChild
     public Array<PropertyField> lockedProperties; // properties such as rotation. They belong to all sprites
     public float z;
     public int id; // Used to be able to set any sprites id and specifically retrieve it in the game
-    public Sprite sprite;
+    public TextureAtlas.AtlasSprite sprite;
     public SpriteTool tool;
     public float width, height;
 
@@ -204,7 +203,7 @@ public class MapSprite extends LayerChild
         verts[18] = u;
         verts[19] = v2;
 
-        map.editor.batch.draw(sprite.getTexture(), verts, 0, verts.length);
+        sprite.draw(map.editor.batch);
 
         if(map.editor.fileMenu.toolPane.top.selected)
         {
@@ -419,6 +418,7 @@ public class MapSprite extends LayerChild
 
         float yScaleDisplacement = 0;
         float xScaleDisplacement = 0;
+        float scale = this.scale;
         if(this.map.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this.map, this.layer) && !Utils.isLayerGround(this.layer))
         {
             if(Gdx.graphics.getHeight() == 0)
@@ -461,11 +461,29 @@ public class MapSprite extends LayerChild
             yScaleDisplacement = ((spriteAtlasHeight * this.sprite.getScaleY()) - spriteAtlasHeight) / 2f;
             xScaleDisplacement = -(spriteAtlasWidth / 2);
             xScaleDisplacement -= (whiteSpaceWidth * sprite.getScaleX() / 2);
-        }
 
+            PropertyField topProperty = Utils.getTopScalePerspectiveProperty(this.map, this.layer);
+            PropertyField bottomProperty = Utils.getBottomScalePerspectiveProperty(this.map, this.layer);
+            try
+            {
+                float perspectiveBottom = Float.parseFloat(((FieldFieldPropertyValuePropertyField) bottomProperty).value.getText());
+                float perspectiveTop = Float.parseFloat(((FieldFieldPropertyValuePropertyField) topProperty).value.getText());
+
+                float mapHeight = this.layer.height;
+                float positionY = this.y;
+
+                float coeff = positionY / mapHeight;
+                float delta = perspectiveTop - perspectiveBottom;
+
+                this.perspectiveScale = (perspectiveBottom + coeff * delta) - 1;
+                scale = this.scale + this.perspectiveScale;
+            }
+            catch (NumberFormatException e){} catch (NullPointerException e){}
+        }
 
         this.polygon.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
         this.sprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
+        this.sprite.setScale(scale);
 
         x += this.width / 2;
         y += this.height / 2;
@@ -568,5 +586,10 @@ public class MapSprite extends LayerChild
     public boolean isHoveredOver(float[] vertices)
     {
         return Intersector.overlapConvexPolygons(polygon.getTransformedVertices(), vertices, null);
+    }
+
+    public void updatePerspective()
+    {
+        this.setPosition(getX(), getY());
     }
 }
