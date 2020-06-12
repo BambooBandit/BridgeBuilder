@@ -181,6 +181,15 @@ public class MapSprite extends LayerChild
                 attachedMapObjectManager.addCopyOfMapObjectToThisMapSprite(this);
             }
         }
+        float randomScale = this.map.editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
+        float randomRotation = this.map.editor.fileMenu.toolPane.minMaxDialog.randomRotationValue;
+        float randomR = this.map.editor.fileMenu.toolPane.minMaxDialog.randomRValue;
+        float randomG = this.map.editor.fileMenu.toolPane.minMaxDialog.randomGValue;
+        float randomB = this.map.editor.fileMenu.toolPane.minMaxDialog.randomBValue;
+        float randomA = this.map.editor.fileMenu.toolPane.minMaxDialog.randomAValue;
+        this.setScale(randomScale);
+        this.setRotation(randomRotation);
+        this.setColor(randomR, randomG, randomB, randomA);
         this.setPosition(x, y);
         this.updatePerspective();
     }
@@ -485,9 +494,10 @@ public class MapSprite extends LayerChild
             if(Gdx.graphics.getHeight() == 0)
                 return;
 
-            float spriteAtlasWidth = this.sprite.getRegionWidth() / 64;
-            float spriteAtlasHeight = this.sprite.getRegionHeight() / 64;
-            float whiteSpaceWidth = (sprite.getWidth() - spriteAtlasWidth);
+            float trimX = x + sprite.getAtlasRegion().offsetX / 64f;
+            float trimY = y + sprite.getAtlasRegion().offsetY / 64f;
+            float trimWidth = sprite.getAtlasRegion().getRegionWidth() / 64f;
+            float trimHeight = sprite.getAtlasRegion().getRegionHeight() / 64f;
 
             map.camera.update();
             float[] m = this.map.camera.combined.getValues();
@@ -509,19 +519,16 @@ public class MapSprite extends LayerChild
             Matrix4.inv(this.map.camera.invProjectionView.val);
             this.map.camera.frustum.update(this.map.camera.invProjectionView);
 
-            xScaleDisplacement = sprite.getWidth() / 2;
+            x = trimX;
+            y = trimY;
 
-            Vector3 p = Utils.project(this.map.camera, x + xScaleDisplacement, y);
+            Vector3 p = Utils.project(this.map.camera, x, y);
             x = p.x;
             y = Gdx.graphics.getHeight() - p.y;
             this.map.camera.update();
             p = Utils.unproject(this.map.camera, x, y);
             x = p.x;
             y = p.y;
-
-            yScaleDisplacement = ((spriteAtlasHeight * this.sprite.getScaleY()) - spriteAtlasHeight) / 2f;
-            xScaleDisplacement = -(spriteAtlasWidth / 2);
-            xScaleDisplacement -= (whiteSpaceWidth * sprite.getScaleX() / 2);
 
             PropertyField topProperty = Utils.getTopScalePerspectiveProperty(this.map, this.layer);
             PropertyField bottomProperty = Utils.getBottomScalePerspectiveProperty(this.map, this.layer);
@@ -531,13 +538,16 @@ public class MapSprite extends LayerChild
                 float perspectiveTop = Float.parseFloat(((FieldFieldPropertyValuePropertyField) topProperty).value.getText());
 
                 float mapHeight = this.layer.height;
-                float positionY = this.y;
+                float positionY = trimY;
 
                 float coeff = positionY / mapHeight;
                 float delta = perspectiveTop - perspectiveBottom;
 
                 this.perspectiveScale = (perspectiveBottom + coeff * delta) - 1;
                 scale = this.scale + this.perspectiveScale;
+
+                yScaleDisplacement += ((trimHeight * scale) - trimHeight) / 2f;
+                xScaleDisplacement += ((trimWidth * scale) - trimWidth) / 2f;
             }
             catch (NumberFormatException e){} catch (NullPointerException e){}
         }

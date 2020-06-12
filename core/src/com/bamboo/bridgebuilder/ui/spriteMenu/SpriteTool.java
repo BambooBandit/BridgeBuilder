@@ -44,6 +44,7 @@ public class SpriteTool extends SpriteMenuTool
         else
             sprite = new Sprite(textureRegion);
         sprite.setSize(sprite.getWidth() / 64, sprite.getHeight() / 64);
+        sprite.setOriginCenter();
         this.previewSprites.add(sprite);
 
         this.lockedProperties = new Array<>();
@@ -127,6 +128,7 @@ public class SpriteTool extends SpriteMenuTool
                 return;
             TextureAtlas.AtlasSprite sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) textureRegion);
             sprite.setSize(sprite.getWidth() / 64, sprite.getHeight() / 64);
+            sprite.setOriginCenter();
             this.topSprites.add(sprite);
             this.previewSprites.add(sprite);
         }
@@ -142,6 +144,7 @@ public class SpriteTool extends SpriteMenuTool
                 this.topSprites.add(sprite);
                 sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) textureRegion);
                 sprite.setSize(sprite.getWidth() / 64, sprite.getHeight() / 64);
+                sprite.setOriginCenter();
                 this.previewSprites.add(sprite);
                 number ++;
                 textureRegion = EditorAssets.getTextureRegion(sheet.name, (topSpriteNoDigits + number));

@@ -661,6 +661,11 @@ public class Map implements Screen
             for (int i = 0; i < getSpriteToolFromSelectedTools().previewSprites.size; i++)
             {
                 float randomScale = this.editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
+                float randomRotation = this.editor.fileMenu.toolPane.minMaxDialog.randomRotationValue;
+                float randomR = this.editor.fileMenu.toolPane.minMaxDialog.randomRValue;
+                float randomG = this.editor.fileMenu.toolPane.minMaxDialog.randomGValue;
+                float randomB = this.editor.fileMenu.toolPane.minMaxDialog.randomBValue;
+                float randomA = this.editor.fileMenu.toolPane.minMaxDialog.randomAValue;
                 Sprite previewSprite = spriteTool.previewSprites.get(i);
                 if(this.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this, this.selectedLayer))
                 {
@@ -729,6 +734,8 @@ public class Map implements Screen
                 else
                 {
                     previewSprite.setScale(randomScale, randomScale);
+                    previewSprite.setRotation(randomRotation);
+                    previewSprite.setColor(randomR, randomG, randomB, randomA);
                     previewSprite.setPosition(coords.x - previewSprite.getWidth() / 2, coords.y - previewSprite.getHeight() / 2);
                 }
             }
