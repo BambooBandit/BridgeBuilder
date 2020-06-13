@@ -350,6 +350,8 @@ public class MapPolygon extends MapObject
 
     private void computeCentroid()
     {
+        centroidX = 0;
+        centroidY = 0;
         float[] vertices = polygon.getTransformedVertices();
         float signedArea = 0;
         float x0; // Current vertex X
