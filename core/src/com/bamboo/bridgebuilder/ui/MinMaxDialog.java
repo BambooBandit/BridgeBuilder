@@ -56,12 +56,12 @@ public class MinMaxDialog extends Window
     private float maxAValue = 1;
     
     // Set after every click so everything uses the same random value.
-    public float randomSizeValue;
-    public float randomRotationValue;
-    public float randomRValue;
-    public float randomGValue;
-    public float randomBValue;
-    public float randomAValue;
+    public float randomSizeValue = 1;
+    public float randomRotationValue = 0;
+    public float randomRValue = 1;
+    public float randomGValue = 1;
+    public float randomBValue = 1;
+    public float randomAValue = 1;
 
     public MinMaxDialog(Stage stage, Skin skin)
     {
