@@ -219,6 +219,22 @@ public class Utils
         EditorAssets.getFont().getData().setScale(1, 1);
     }
 
+    public static boolean isSpriteSheetInFolder(String path)
+    {
+        File tempFile = new File(path + ".atlas");
+        boolean exists = tempFile.exists();
+
+        boolean valid;
+
+        conditional:
+        if(exists)
+            valid = true;
+        else
+            valid = false;
+
+        return valid;
+    }
+
     public static boolean canSpriteSheetBeCreated(Map map, String path)
     {
         File tempFile = new File(path + ".atlas");

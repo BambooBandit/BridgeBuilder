@@ -975,7 +975,12 @@ public class Map implements Screen
                     for (int k = 0; k < childSize; k++)
                     {
                         MapSpriteData mapSpriteData = spriteLayerData.children.get(k);
-                        SpriteTool spriteTool = spriteMenu.getSpriteTool(mapSpriteData.n, mapSpriteData.sN);
+                        String sheetName;
+                        if(Utils.isSpriteSheetInFolder("editor" + StringUtils.capitalize(mapSpriteData.sN)))
+                            sheetName = "editor" + StringUtils.capitalize(mapSpriteData.sN);
+                        else
+                            sheetName = mapSpriteData.sN;
+                        SpriteTool spriteTool = spriteMenu.getSpriteTool(mapSpriteData.n, sheetName);
                         MapSprite mapSprite = new MapSprite(this, layer, spriteTool, mapSpriteData.x, mapSpriteData.y);
                         mapSprite.setZ(mapSpriteData.z);
                         mapSprite.setScale(mapSpriteData.scl + MapSpriteData.defaultScaleValue);
