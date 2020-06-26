@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.bamboo.bridgebuilder.commands.Command;
 import com.bamboo.bridgebuilder.commands.CreateLayer;
 import com.bamboo.bridgebuilder.commands.MoveMapSpriteIndex;
 import com.bamboo.bridgebuilder.commands.SelectLayer;
@@ -187,9 +188,12 @@ public class BridgeBuilder extends Game
 						{
 							if(layerIndex < 0)
 								return true;
-							Layer layer = activeMap.layers.get(layerIndex);
-							SelectLayer selectLayer = new SelectLayer(activeMap, activeMap.selectedLayer, layer, true);
-							activeMap.executeCommand(selectLayer);
+							if(Command.shouldExecute(activeMap, SelectLayer.class))
+							{
+								Layer layer = activeMap.layers.get(layerIndex);
+								SelectLayer selectLayer = new SelectLayer(activeMap, activeMap.selectedLayer, layer, true);
+								activeMap.executeCommand(selectLayer);
+							}
 							return true;
 						}
 						layerIndex --;

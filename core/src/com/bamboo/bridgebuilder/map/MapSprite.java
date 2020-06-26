@@ -45,6 +45,8 @@ public class MapSprite extends LayerChild
 
     public Array<MapObject> attachedMapObjects;
 
+    public SpriteLayer attachedSprites; // For when this map sprite has other map sprites attached to it. They all will act as one whole map sprite.
+    public MapSprite parentSprite; // For the above
 
     public MapSprite(Map map, Layer layer, SpriteTool tool, float x, float y)
     {
@@ -212,6 +214,9 @@ public class MapSprite extends LayerChild
         if(layerOverride != null)
             layerOverride.draw();
 
+        if(map.editAttachedMapSpritesModeOn && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
+            sprite.setAlpha(sprite.getColor().a / 3.5f);
+
         float lowestYOffset = -1;
         float tinyHeight = -1;
         if(sprite instanceof TextureAtlas.AtlasSprite)
@@ -275,31 +280,38 @@ public class MapSprite extends LayerChild
 
         map.editor.batch.draw(sprite.getTexture(), verts, 0, verts.length);
 
+        if(map.editAttachedMapSpritesModeOn && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
+            sprite.setAlpha(sprite.getColor().a * 3.5f);
+
         if(map.editor.fileMenu.toolPane.top.selected)
         {
             if (tool.topSprites != null)
             {
                 for (int i = 0; i < tool.topSprites.size; i++)
                 {
-                    tool.topSprites.get(i).setPosition(sprite.getX(), sprite.getY());
-                    tool.topSprites.get(i).setRotation(sprite.getRotation());
+                    TextureAtlas.AtlasSprite topsprite = tool.topSprites.get(i);
+                    topsprite.setPosition(sprite.getX(), sprite.getY());
+                    topsprite.setRotation(sprite.getRotation());
 
-                    tinyHeight = tool.topSprites.get(i).getAtlasRegion().offsetY - lowestYOffset;
+                    tinyHeight = topsprite.getAtlasRegion().offsetY - lowestYOffset;
 
-                    u = tool.topSprites.get(i).getU();
-                    v = tool.topSprites.get(i).getV();
-                    u2 = tool.topSprites.get(i).getU2();
-                    v2 = tool.topSprites.get(i).getV2();
+                    if(map.editAttachedMapSpritesModeOn && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
+                        topsprite.setAlpha(topsprite.getColor().a / 3.5f);
+
+                    u = topsprite.getU();
+                    v = topsprite.getV();
+                    u2 = topsprite.getU2();
+                    v2 = topsprite.getV2();
                     xCenterScreen = Gdx.graphics.getWidth() / 2;
-                    xCenterSprite = Utils.project(map.camera, tool.topSprites.get(i).getX() + tool.topSprites.get(i).getWidth() / 2, tool.topSprites.get(i).getY()).x;
+                    xCenterSprite = Utils.project(map.camera, topsprite.getX() + topsprite.getWidth() / 2, topsprite.getY()).x;
                     yCenterScreen = Gdx.graphics.getHeight() / 2;
-                    ySprite = Utils.project(map.camera, tool.topSprites.get(i).getX(), tool.topSprites.get(i).getY()).y;
+                    ySprite = Utils.project(map.camera, topsprite.getX(), topsprite.getY()).y;
                     xSkewAmount = ((xCenterSprite - xCenterScreen) / 3) * z;
                     ySkewAmount = ((ySprite - yCenterScreen) / 5) * z;
-                    xOffset = xSkewAmount * (tinyHeight / tool.topSprites.get(i).getHeight());
-                    yOffset = ySkewAmount * (tinyHeight / tool.topSprites.get(i).getHeight());
+                    xOffset = xSkewAmount * (tinyHeight / topsprite.getHeight());
+                    yOffset = ySkewAmount * (tinyHeight / topsprite.getHeight());
 
-                    heightDifferencePercentage = tool.topSprites.get(i).getRegionHeight() / tool.topSprites.get(i).getHeight();
+                    heightDifferencePercentage = topsprite.getRegionHeight() / topsprite.getHeight();
 
                     xSkewAmount *= heightDifferencePercentage;
                     ySkewAmount *= heightDifferencePercentage;
@@ -311,7 +323,7 @@ public class MapSprite extends LayerChild
                         xOffset = 0;
                         yOffset = 0;
                     }
-                    vertices = tool.topSprites.get(i).getVertices();
+                    vertices = topsprite.getVertices();
 
                     verts[0] = vertices[SpriteBatch.X2] + xSkewAmount + xOffset;
                     verts[1] = vertices[SpriteBatch.Y2] + ySkewAmount + yOffset;
@@ -337,10 +349,14 @@ public class MapSprite extends LayerChild
                     verts[18] = u;
                     verts[19] = v2;
 
-                    map.editor.batch.draw(tool.topSprites.get(i).getTexture(), verts, 0, verts.length);
+                    map.editor.batch.draw(topsprite.getTexture(), verts, 0, verts.length);
+
+                    if(map.editAttachedMapSpritesModeOn && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
+                        topsprite.setAlpha(topsprite.getColor().a * 3.5f);
                 }
             }
         }
+
         if(this.map.editor.fileMenu.toolPane.top.selected)
             drawTopSprites();
     }
@@ -457,6 +473,18 @@ public class MapSprite extends LayerChild
             for(int i = 0; i < this.tool.topSprites.size; i++)
                 this.tool.topSprites.get(i).setRotation(degree);
         }
+
+        if(this.attachedSprites != null)
+        {
+            for(int i = 0; i < this.attachedSprites.children.size; i ++)
+            {
+                MapSprite mapSprite = this.attachedSprites.children.get(i);
+                if(mapSprite == this)
+                    continue;
+                mapSprite.setRotation(degree);
+            }
+        }
+
         LabelFieldPropertyValuePropertyField labelFieldProperty = Utils.getLockedPropertyField(this.lockedProperties, "Rotation");
         labelFieldProperty.value.setText(Float.toString(this.rotation));
 
@@ -489,6 +517,18 @@ public class MapSprite extends LayerChild
         float yScaleDisplacement = 0;
         float xScaleDisplacement = 0;
         float scale = this.scale;
+
+        if(this.attachedSprites != null)
+        {
+            for(int i = 0; i < this.attachedSprites.children.size; i ++)
+            {
+                MapSprite mapSprite = this.attachedSprites.children.get(i);
+                if(mapSprite == this)
+                    continue;
+                mapSprite.setPosition(mapSprite.getX() + offsetDifferenceX, mapSprite.getY() + offsetDifferenceY);
+            }
+        }
+
         if(this.map.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this.map, this.layer) && !Utils.isLayerGround(this.layer))
         {
             if(Gdx.graphics.getHeight() == 0)
@@ -592,6 +632,17 @@ public class MapSprite extends LayerChild
                 this.tool.topSprites.get(i).setScale(scale);
         }
 
+        if(this.attachedSprites != null)
+        {
+            for(int i = 0; i < this.attachedSprites.children.size; i ++)
+            {
+                MapSprite mapSprite = this.attachedSprites.children.get(i);
+                if(mapSprite == this)
+                    continue;
+                mapSprite.setScale(scale);
+            }
+        }
+
         if(this.tool.hasAttachedMapObjects())
         {
             for(int i = 0; i < this.attachedMapObjects.size; i ++)
@@ -662,5 +713,66 @@ public class MapSprite extends LayerChild
     public void updatePerspective()
     {
         this.setPosition(getX(), getY());
+    }
+
+    public void enableEditAttachedSpritesMode()
+    {
+        if(map.editAttachedMapSpritesModeOn)
+            return;
+
+        if(this.attachedSprites == null)
+        {
+            this.attachedSprites = new SpriteLayer(map.editor, map, null);
+            this.attachedSprites.addMapSprite(this);
+        }
+
+        map.selectedLayerPriorToAttachedSpriteEditMode = map.selectedLayer;
+        map.selectedLayer.layerField.unselect();
+        map.selectedLayer = this.attachedSprites;
+        map.editAttachedMapSpritesModeOn = true;
+    }
+
+    public void disableEditAttachedSpritesMode()
+    {
+        if(!map.editAttachedMapSpritesModeOn)
+            return;
+
+        map.selectedLayer = map.selectedLayerPriorToAttachedSpriteEditMode;
+        map.selectedLayer.layerField.select();
+        map.editAttachedMapSpritesModeOn = false;
+    }
+
+    public void updateBounds()
+    {
+        if(attachedSprites == null)
+            return;
+
+        float lowestX = this.getX();
+        float highestX = this.getX() + this.width;
+        float lowestY = this.getY();
+        float highestY = this.getY() + this.height;
+        for(int i = 0; i < attachedSprites.children.size; i ++)
+        {
+            MapSprite mapSprite = attachedSprites.children.get(i);
+            if(mapSprite.getX() < lowestX)
+                lowestX = mapSprite.getX();
+            if(mapSprite.getX() + mapSprite.width > highestX)
+                highestX = mapSprite.getX() + mapSprite.width;
+
+            if(mapSprite.getY() < lowestY)
+                lowestY = mapSprite.getY();
+            if(mapSprite.getY() + mapSprite.height > highestY)
+                highestY = mapSprite.getY() + mapSprite.height;
+        }
+        float xDifference = getX() - lowestX;
+        float yDifference = getY() - lowestY;
+
+        highestX -= (lowestX + xDifference);
+        lowestX = -xDifference;
+        highestY -= (lowestY + yDifference);
+        lowestY = -yDifference;
+
+        float[] vertices = {lowestX, lowestY, highestX, lowestY, highestX, highestY, lowestX, highestY};
+        this.polygon.setVertices(vertices);
     }
 }

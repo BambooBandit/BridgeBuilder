@@ -11,9 +11,9 @@ public class ObjectLayer extends Layer
 
     public SpriteGrid spriteGrid;
 
-    public ObjectLayer(BridgeBuilder editor, Map map, LayerTypes type, LayerField layerField)
+    public ObjectLayer(BridgeBuilder editor, Map map, LayerField layerField)
     {
-        super(editor, map, type, layerField);
+        super(editor, map, LayerTypes.OBJECT, layerField);
         this.children = super.children;
     }
 

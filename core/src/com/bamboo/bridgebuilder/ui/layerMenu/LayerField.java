@@ -47,9 +47,9 @@ public class LayerField extends Group
         this.type = type;
 
         if(type == LayerTypes.SPRITE)
-            this.mapLayer = new SpriteLayer(editor, map, type, this);
+            this.mapLayer = new SpriteLayer(editor, map, this);
         else if(type == LayerTypes.OBJECT)
-            this.mapLayer = new ObjectLayer(editor, map, type, this);
+            this.mapLayer = new ObjectLayer(editor, map, this);
 
         this.layerName = new TextField(name, skin);
         this.layerName.addListener(new InputListener()

@@ -33,6 +33,11 @@ public interface Command
             if(noneSelected && noneHovered)
                 return false;
         }
+        else if(command == SelectLayer.class)
+        {
+            System.out.println("wot");
+            return !map.editAttachedMapSpritesModeOn;
+        }
         return true;
     }
 }

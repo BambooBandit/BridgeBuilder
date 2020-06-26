@@ -42,6 +42,7 @@ public class ToolPane extends Group
     public Tool depth;
     public Tool lines;
     public Tool b2drender;
+    public Tool attachedSprites;
     public Tool selectedTool;
     private TextButton bringUp;
     private TextButton bringDown;
@@ -85,6 +86,7 @@ public class ToolPane extends Group
         this.depth = new Tool(Tools.DEPTH, this, true);
         this.lines = new Tool(Tools.LINES, this, true);
         this.b2drender = new Tool(Tools.B2DR, this, true);
+        this.attachedSprites = new Tool(Tools.ATTACHEDSPRITES, this, true);
         this.bringUp = new TextButton("^", skin);
         this.bringDown = new TextButton("v", skin);
         this.bringTop = new TextButton("^^", skin);
@@ -120,7 +122,8 @@ public class ToolPane extends Group
         this.toolTable.add(this.top).padRight(1);
         this.toolTable.add(this.depth).padRight(1);
         this.toolTable.add(this.lines).padRight(1);
-        this.toolTable.add(this.b2drender).padRight(5);
+        this.toolTable.add(this.b2drender).padRight(1);
+        this.toolTable.add(this.attachedSprites).padRight(5);
         this.toolTable.add(this.bringUp).padRight(1);
         this.toolTable.add(this.bringDown).padRight(1);
         this.toolTable.add(this.bringTop).padRight(1);
@@ -166,6 +169,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.depth).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.lines).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.b2drender).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.attachedSprites).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringUp).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringDown).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringTop).size(toolHeight, toolHeight);
@@ -191,6 +195,8 @@ public class ToolPane extends Group
             {
                 if(selectedTool == this.depth && editor.activeMap != null)
                     PropertyToolPane.apply(editor.activeMap);
+                else if(selectedTool == this.attachedSprites)
+                    this.editor.activeMap.selectedSprites.first().disableEditAttachedSpritesMode();
                 selectedTool.unselect();
             }
             else
@@ -200,6 +206,14 @@ public class ToolPane extends Group
                 else if(selectedTool == this.spriteGridColors && this.editor.activeMap != null)
                     this.editor.activeMap.updateLayerSpriteGrids();
                 selectedTool.select();
+
+                if(selectedTool == this.attachedSprites)
+                {
+                    if(this.editor.activeMap.selectedSprites.size == 1)
+                        this.editor.activeMap.selectedSprites.first().enableEditAttachedSpritesMode();
+                    else
+                        selectedTool.unselect();
+                }
             }
 
             if(selectedTool == this.perspective && editor.activeMap != null)

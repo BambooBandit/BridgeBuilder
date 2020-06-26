@@ -13,9 +13,9 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldProperty
 public class SpriteLayer extends Layer
 {
     public Array<MapSprite> children;
-    public SpriteLayer(BridgeBuilder editor, Map map, LayerTypes type, LayerField layerField)
+    public SpriteLayer(BridgeBuilder editor, Map map, LayerField layerField)
     {
-        super(editor, map, type, layerField);
+        super(editor, map, LayerTypes.SPRITE, layerField);
         this.children = super.children;
     }
 
@@ -54,7 +54,16 @@ public class SpriteLayer extends Layer
         }
 
         for(int i = 0; i < this.children.size; i ++)
-            this.children.get(i).draw();
+        {
+            MapSprite mapSprite = this.children.get(i);
+            if(mapSprite.attachedSprites != null)
+            {
+                for(int k = 0; k < mapSprite.attachedSprites.children.size; k ++)
+                    mapSprite.attachedSprites.children.get(k).draw();
+            }
+            else
+                mapSprite.draw();
+        }
 
         if(map.selectedLayer == this && layerField.visibleImg.isVisible() && Utils.isFileToolThisType(editor, Tools.BRUSH) && this.map.getSpriteToolFromSelectedTools() != null)
         {
@@ -73,6 +82,13 @@ public class SpriteLayer extends Layer
     public void addMapSprite(MapSprite mapSprite)
     {
         this.children.add(mapSprite);
+
+        if(map.editAttachedMapSpritesModeOn)
+        {
+            mapSprite.parentSprite = map.selectedSprites.first();
+            map.selectedSprites.first().updateBounds();
+        }
+
         if(this.editor.fileMenu.toolPane.spriteGridColors.selected)
             this.map.updateLayerSpriteGrids();
     }
