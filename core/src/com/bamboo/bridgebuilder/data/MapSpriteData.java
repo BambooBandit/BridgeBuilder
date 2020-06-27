@@ -17,6 +17,7 @@ public class MapSpriteData extends LayerChildData
     public static int defaultColorValue = 1;
     public static int defaultScaleValue = 1;
     public ArrayList<PropertyData> lProps;
+    public boolean parent;
 
     public MapSpriteData() {}
     public MapSpriteData(MapSprite mapSprite)
@@ -25,6 +26,9 @@ public class MapSpriteData extends LayerChildData
         this.z = mapSprite.z;
         this.id = mapSprite.id;
         this.n = mapSprite.tool.name;
+
+        if(mapSprite.attachedSprites != null && mapSprite.attachedSprites.children.size > 0)
+            parent = true;
 
         if(mapSprite.tool.sheet.name.startsWith("editor"))
         {

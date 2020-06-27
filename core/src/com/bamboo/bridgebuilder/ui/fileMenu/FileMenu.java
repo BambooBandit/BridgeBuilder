@@ -453,6 +453,7 @@ public class FileMenu extends Group
         json.addClassTag("oLayer", ObjectLayerData.class);
         json.addClassTag("child", LayerChildData.class);
         json.addClassTag("sprite", MapSpriteData.class);
+        json.addClassTag("aSprite", AttachedMapSpriteData.class);
         json.addClassTag("sheet", SpriteSheetData.class);
         json.addClassTag("tool", ToolData.class);
         json.addClassTag("obj", MapObjectData.class);

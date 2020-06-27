@@ -980,28 +980,35 @@ public class Map implements Screen
                     for (int k = 0; k < childSize; k++)
                     {
                         MapSpriteData mapSpriteData = spriteLayerData.children.get(k);
-                        String sheetName;
-                        if(Utils.isSpriteSheetInFolder("editor" + StringUtils.capitalize(mapSpriteData.sN)))
-                            sheetName = "editor" + StringUtils.capitalize(mapSpriteData.sN);
-                        else
-                            sheetName = mapSpriteData.sN;
-                        SpriteTool spriteTool = spriteMenu.getSpriteTool(mapSpriteData.n, sheetName);
-                        MapSprite mapSprite = new MapSprite(this, layer, spriteTool, mapSpriteData.x, mapSpriteData.y);
-                        mapSprite.setZ(mapSpriteData.z);
-                        mapSprite.setScale(mapSpriteData.scl + MapSpriteData.defaultScaleValue);
-                        mapSprite.setColor(mapSpriteData.r + MapSpriteData.defaultColorValue, mapSpriteData.g + MapSpriteData.defaultColorValue, mapSpriteData.b + MapSpriteData.defaultColorValue, mapSpriteData.a + MapSpriteData.defaultColorValue);
-                        mapSprite.setPosition(mapSpriteData.x, mapSpriteData.y);
-                        mapSprite.setRotation(mapSpriteData.rot);
-                        mapSprite.setID(mapSpriteData.id);
-                        ((SpriteLayer) layer).addMapSprite(mapSprite);
-
-                        // locked properties
-                        propSize = mapSpriteData.lProps.size();
-                        for (int s = 0; s < propSize; s++)
+                        if(mapSpriteData instanceof AttachedMapSpriteData)
                         {
-                            PropertyData propertyData = mapSpriteData.lProps.get(s);
-                            propertyMenu.changeLockedPropertyValue(propertyData, spriteTool.lockedProperties);
+                            AttachedMapSpriteData attachedMapSpriteData = (AttachedMapSpriteData) mapSpriteData;
+                            MapSprite parentMapSprite = null;
+                            for(int s = 0; s < attachedMapSpriteData.sprites.size(); s++)
+                            {
+                                MapSpriteData attachedData = attachedMapSpriteData.sprites.get(s);
+                                if(attachedData.parent)
+                                {
+                                    parentMapSprite = loadMapSpriteData(attachedData, layer);
+                                    ((SpriteLayer) layer).addMapSprite(parentMapSprite);
+                                    break;
+                                }
+                            }
+                            parentMapSprite.attachedSprites = new SpriteLayer(editor, this, null);
+                            for(int s = 0; s < attachedMapSpriteData.sprites.size(); s++)
+                            {
+                                MapSpriteData attachedData = attachedMapSpriteData.sprites.get(s);
+                                if (attachedData.parent)
+                                {
+                                    parentMapSprite.attachedSprites.addMapSprite(parentMapSprite);
+                                    continue;
+                                }
+                                MapSprite childMapSprite = loadMapSpriteData(attachedData, layer);
+                                parentMapSprite.attachedSprites.addMapSprite(childMapSprite);
+                            }
                         }
+                        else
+                            ((SpriteLayer) layer).addMapSprite(loadMapSpriteData(mapSpriteData, layer));
                     }
                 } else if (layerData instanceof ObjectLayerData)
                 {
@@ -1037,5 +1044,31 @@ public class Map implements Screen
         }
         PropertyToolPane.apply(this);
         propertyMenu.mapPropertyPanel.apply();
+    }
+
+    private MapSprite loadMapSpriteData(MapSpriteData mapSpriteData, Layer layer)
+    {
+        String sheetName;
+        if (Utils.isSpriteSheetInFolder("editor" + StringUtils.capitalize(mapSpriteData.sN)))
+            sheetName = "editor" + StringUtils.capitalize(mapSpriteData.sN);
+        else
+            sheetName = mapSpriteData.sN;
+        SpriteTool spriteTool = spriteMenu.getSpriteTool(mapSpriteData.n, sheetName);
+        MapSprite mapSprite = new MapSprite(this, layer, spriteTool, mapSpriteData.x, mapSpriteData.y);
+        mapSprite.setZ(mapSpriteData.z);
+        mapSprite.setScale(mapSpriteData.scl + MapSpriteData.defaultScaleValue);
+        mapSprite.setColor(mapSpriteData.r + MapSpriteData.defaultColorValue, mapSpriteData.g + MapSpriteData.defaultColorValue, mapSpriteData.b + MapSpriteData.defaultColorValue, mapSpriteData.a + MapSpriteData.defaultColorValue);
+        mapSprite.setPosition(mapSpriteData.x, mapSpriteData.y);
+        mapSprite.setRotation(mapSpriteData.rot);
+        mapSprite.setID(mapSpriteData.id);
+
+        // locked properties
+        int propSize = mapSpriteData.lProps.size();
+        for (int s = 0; s < propSize; s++)
+        {
+            PropertyData propertyData = mapSpriteData.lProps.get(s);
+            propertyMenu.changeLockedPropertyValue(propertyData, spriteTool.lockedProperties);
+        }
+        return mapSprite;
     }
 }

@@ -59,9 +59,9 @@ public class MapData
         {
             Layer layer = map.layers.get(i);
             if(layer instanceof SpriteLayer)
-                this.layers.add(new SpriteLayerData(layer));
+                this.layers.add(new SpriteLayerData((SpriteLayer) layer));
             else if(layer instanceof ObjectLayer)
-                this.layers.add(new ObjectLayerData(layer));
+                this.layers.add(new ObjectLayerData((ObjectLayer) layer));
         }
         for(int i = 0; i < map.spriteMenu.spriteSheets.size; i ++)
             this.sheets.add(new SpriteSheetData(map, map.spriteMenu.spriteSheets.get(i)));

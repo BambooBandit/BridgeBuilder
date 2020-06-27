@@ -1,6 +1,9 @@
 package com.bamboo.bridgebuilder.data;
 
-import com.bamboo.bridgebuilder.map.*;
+import com.bamboo.bridgebuilder.map.MapObject;
+import com.bamboo.bridgebuilder.map.MapPoint;
+import com.bamboo.bridgebuilder.map.MapPolygon;
+import com.bamboo.bridgebuilder.map.ObjectLayer;
 
 import java.util.ArrayList;
 
@@ -9,19 +12,19 @@ public class ObjectLayerData extends LayerData
     public ArrayList<MapObjectData> children;
     public ArrayList<CellData> grid;
     public ObjectLayerData(){}
-    public ObjectLayerData(Layer layer)
+    public ObjectLayerData(ObjectLayer layer)
     {
         super(layer);
         this.children = new ArrayList<>();
         for(int i = 0; i < layer.children.size; i ++)
         {
-            MapObject mapObject = (MapObject) layer.children.get(i);
+            MapObject mapObject = layer.children.get(i);
             if(mapObject instanceof MapPoint)
                 this.children.add(new MapPointData((MapPoint) mapObject));
             else
                 this.children.add(new MapPolygonData((MapPolygon) mapObject));
         }
-        ObjectLayer objectLayer = (ObjectLayer) layer;
+        ObjectLayer objectLayer = layer;
         if(objectLayer.spriteGrid != null)
         {
             this.grid = new ArrayList<>(objectLayer.spriteGrid.grid.size);
