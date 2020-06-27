@@ -432,7 +432,7 @@ public class MapSprite extends LayerChild
             if(propertyField instanceof LabelFieldPropertyValuePropertyField)
             {
                 LabelFieldPropertyValuePropertyField labelFieldProperty = (LabelFieldPropertyValuePropertyField) propertyField;
-                if(labelFieldProperty.getProperty().equals("z"))
+                if(labelFieldProperty.getProperty().equals("Z"))
                 {
                     labelFieldProperty.value.setText(Float.toString(z));
                     break;
