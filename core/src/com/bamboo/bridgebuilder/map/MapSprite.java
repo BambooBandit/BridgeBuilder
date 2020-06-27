@@ -208,6 +208,32 @@ public class MapSprite extends LayerChild
         return this.y;
     }
 
+    private static Vector2 skewProject = new Vector2();
+    /** Take a coordinate on the local sprite and return where it would be skewed. */
+    public Vector2 skewOffset(float x, float y, float height)
+    {
+        if(!map.editor.fileMenu.toolPane.parallax.selected)
+        {
+            skewProject.set(0, 0);
+            return skewProject;
+        }
+
+        Vector3 screenCenter = Utils.unproject(map.camera, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+
+        float xDis = x - screenCenter.x;
+        float yDis = y - screenCenter.y;
+
+
+        float xOffset = z * xDis;
+        float yFactor = z * yDis;
+        float yOffset = yFactor * height;
+        xOffset *= height;
+
+        skewProject.set(xOffset, yOffset);
+
+        return skewProject;
+    }
+
     @Override
     public void draw()
     {
@@ -217,66 +243,53 @@ public class MapSprite extends LayerChild
         if(map.editAttachedMapSpritesModeOn && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
             sprite.setAlpha(sprite.getColor().a / 3.5f);
 
-        float lowestYOffset = -1;
-        float tinyHeight = -1;
-        if(sprite instanceof TextureAtlas.AtlasSprite)
-            lowestYOffset = ((TextureAtlas.AtlasSprite) sprite).getAtlasRegion().offsetY;
-        if(tool.topSprites != null)
-            for (int i = 0; i < tool.topSprites.size; i++)
-                if(tool.topSprites.get(i).getAtlasRegion().offsetY < lowestYOffset)
-                    lowestYOffset = tool.topSprites.get(i).getAtlasRegion().offsetY;
-        if(sprite instanceof TextureAtlas.AtlasSprite)
-            tinyHeight = ((TextureAtlas.AtlasSprite) sprite).getAtlasRegion().offsetY - lowestYOffset;
 
         float u = sprite.getU();
         float v = sprite.getV();
         float u2 = sprite.getU2();
         float v2 = sprite.getV2();
-        float xCenterScreen = Gdx.graphics.getWidth() / 2;
-        float xCenterSprite = Utils.project(map.camera,sprite.getX() + sprite.getWidth() / 2, sprite.getY()).x;
-        float yCenterScreen = Gdx.graphics.getHeight() / 2;
-        float ySprite = Utils.project(map.camera,sprite.getX(), sprite.getY()).y;
-        float xSkewAmount = ((xCenterSprite - xCenterScreen) / 3) * z;
-        float ySkewAmount = ((ySprite - yCenterScreen) / 5) * z;
-        float xOffset = xSkewAmount * (tinyHeight / sprite.getHeight());
-        float yOffset = ySkewAmount * (tinyHeight / sprite.getHeight());
-        float heightDifferencePercentage = sprite.getRegionHeight() / sprite.getHeight();
-        xSkewAmount *= heightDifferencePercentage;
-        ySkewAmount *= heightDifferencePercentage;
-
-        if(!map.editor.fileMenu.toolPane.parallax.selected)
-        {
-            xSkewAmount = 0;
-            ySkewAmount = 0;
-            xOffset = 0;
-            yOffset = 0;
-        }
         float[] vertices = sprite.getVertices();
-
-        verts[0] = vertices[SpriteBatch.X2] + xSkewAmount + xOffset;
-        verts[1] = vertices[SpriteBatch.Y2] + ySkewAmount + yOffset;
         float colorFloatBits = sprite.getColor().toFloatBits();
+
+        Vector2 offset;
+        offset = skewOffset(getX() + width / 2f, getY() + (sprite.getAtlasRegion().offsetY), height);
+        verts[0] = vertices[SpriteBatch.X2] + offset.x;
+        verts[1] = vertices[SpriteBatch.Y2] + offset.y;
         verts[2] = colorFloatBits;
         verts[3] = u;
         verts[4] = v;
-
-        verts[5] = vertices[SpriteBatch.X3] + xSkewAmount + xOffset;
-        verts[6] = vertices[SpriteBatch.Y3] + ySkewAmount + yOffset ;
+        verts[5] = vertices[SpriteBatch.X3] + offset.x;
+        verts[6] = vertices[SpriteBatch.Y3] + offset.y;
         verts[7] = colorFloatBits;
         verts[8] = u2;
         verts[9] = v;
 
-        verts[10] = vertices[SpriteBatch.X4] + xOffset;
-        verts[11] = vertices[SpriteBatch.Y4] + yOffset;
+        offset = skewOffset(getX() + width / 2f, getY() + (sprite.getAtlasRegion().offsetY), 0);
+        verts[10] = vertices[SpriteBatch.X4] + offset.x;
+        verts[11] = vertices[SpriteBatch.Y4] + offset.y;
         verts[12] = colorFloatBits;
         verts[13] = u2;
         verts[14] = v2;
-
-        verts[15] = vertices[SpriteBatch.X1] + xOffset;
-        verts[16] = vertices[SpriteBatch.Y1] + yOffset;
+        verts[15] = vertices[SpriteBatch.X1] + offset.x;
+        verts[16] = vertices[SpriteBatch.Y1] + offset.y;
         verts[17] = colorFloatBits;
         verts[18] = u;
         verts[19] = v2;
+
+        if(parentSprite != null)
+        {
+            offset = parentSprite.skewOffset(parentSprite.getX() + (parentSprite.width / 2f), parentSprite.getY() + (parentSprite.sprite.getAtlasRegion().offsetY), (getY() + height) - parentSprite.getY());
+            verts[0] = vertices[SpriteBatch.X2] + offset.x;
+            verts[1] = vertices[SpriteBatch.Y2] + offset.y;
+            verts[5] = vertices[SpriteBatch.X3] + offset.x;
+            verts[6] = vertices[SpriteBatch.Y3] + offset.y;
+
+            offset = parentSprite.skewOffset(parentSprite.getX() + parentSprite.width / 2f, parentSprite.getY() + (parentSprite.sprite.getAtlasRegion().offsetY), getY() - parentSprite.getY());
+            verts[10] = vertices[SpriteBatch.X4] + offset.x;
+            verts[11] = vertices[SpriteBatch.Y4] + offset.y;
+            verts[15] = vertices[SpriteBatch.X1] + offset.x;
+            verts[16] = vertices[SpriteBatch.Y1] + offset.y;
+        }
 
         map.editor.batch.draw(sprite.getTexture(), verts, 0, verts.length);
 
@@ -293,7 +306,6 @@ public class MapSprite extends LayerChild
                     topsprite.setPosition(sprite.getX(), sprite.getY());
                     topsprite.setRotation(sprite.getRotation());
 
-                    tinyHeight = topsprite.getAtlasRegion().offsetY - lowestYOffset;
 
                     if(map.editAttachedMapSpritesModeOn && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
                         topsprite.setAlpha(topsprite.getColor().a / 3.5f);
@@ -302,49 +314,28 @@ public class MapSprite extends LayerChild
                     v = topsprite.getV();
                     u2 = topsprite.getU2();
                     v2 = topsprite.getV2();
-                    xCenterScreen = Gdx.graphics.getWidth() / 2;
-                    xCenterSprite = Utils.project(map.camera, topsprite.getX() + topsprite.getWidth() / 2, topsprite.getY()).x;
-                    yCenterScreen = Gdx.graphics.getHeight() / 2;
-                    ySprite = Utils.project(map.camera, topsprite.getX(), topsprite.getY()).y;
-                    xSkewAmount = ((xCenterSprite - xCenterScreen) / 3) * z;
-                    ySkewAmount = ((ySprite - yCenterScreen) / 5) * z;
-                    xOffset = xSkewAmount * (tinyHeight / topsprite.getHeight());
-                    yOffset = ySkewAmount * (tinyHeight / topsprite.getHeight());
-
-                    heightDifferencePercentage = topsprite.getRegionHeight() / topsprite.getHeight();
-
-                    xSkewAmount *= heightDifferencePercentage;
-                    ySkewAmount *= heightDifferencePercentage;
-
-                    if (!map.editor.fileMenu.toolPane.parallax.selected)
-                    {
-                        xSkewAmount = 0;
-                        ySkewAmount = 0;
-                        xOffset = 0;
-                        yOffset = 0;
-                    }
                     vertices = topsprite.getVertices();
 
-                    verts[0] = vertices[SpriteBatch.X2] + xSkewAmount + xOffset;
-                    verts[1] = vertices[SpriteBatch.Y2] + ySkewAmount + yOffset;
+                    offset = skewOffset(getX() + width / 2f, getY() + (sprite.getAtlasRegion().offsetY), height);
+                    verts[0] = vertices[SpriteBatch.X2] + offset.x;
+                    verts[1] = vertices[SpriteBatch.Y2] + offset.y;
                     verts[2] = Color.toFloatBits(255, 255, 255, 255);
                     verts[3] = u;
                     verts[4] = v;
-
-                    verts[5] = vertices[SpriteBatch.X3] + xSkewAmount + xOffset;
-                    verts[6] = vertices[SpriteBatch.Y3] + ySkewAmount + yOffset;
+                    verts[5] = vertices[SpriteBatch.X3] + offset.x;
+                    verts[6] = vertices[SpriteBatch.Y3] + offset.y;
                     verts[7] = Color.toFloatBits(255, 255, 255, 255);
                     verts[8] = u2;
                     verts[9] = v;
 
-                    verts[10] = vertices[SpriteBatch.X4] + xOffset;
-                    verts[11] = vertices[SpriteBatch.Y4] + yOffset;
+                    offset = skewOffset(getX() + width / 2f, getY() + (sprite.getAtlasRegion().offsetY), 0);
+                    verts[10] = vertices[SpriteBatch.X4] + offset.x;
+                    verts[11] = vertices[SpriteBatch.Y4] + offset.y;
                     verts[12] = Color.toFloatBits(255, 255, 255, 255);
                     verts[13] = u2;
                     verts[14] = v2;
-
-                    verts[15] = vertices[SpriteBatch.X1] + xOffset;
-                    verts[16] = vertices[SpriteBatch.Y1] + yOffset;
+                    verts[15] = vertices[SpriteBatch.X1] + offset.x;
+                    verts[16] = vertices[SpriteBatch.Y1] + offset.y;
                     verts[17] = Color.toFloatBits(255, 255, 255, 255);
                     verts[18] = u;
                     verts[19] = v2;
