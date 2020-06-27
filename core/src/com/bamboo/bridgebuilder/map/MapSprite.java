@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.commands.DisableAttachedSpriteEditMode;
+import com.bamboo.bridgebuilder.commands.EnableAttachedSpriteEditMode;
 import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
 import com.bamboo.bridgebuilder.ui.manipulators.RotationBox;
 import com.bamboo.bridgebuilder.ui.manipulators.ScaleBox;
@@ -711,16 +713,8 @@ public class MapSprite extends LayerChild
         if(map.editAttachedMapSpritesModeOn)
             return;
 
-        if(this.attachedSprites == null)
-        {
-            this.attachedSprites = new SpriteLayer(map.editor, map, null);
-            this.attachedSprites.addMapSprite(this);
-        }
-
-        map.selectedLayerPriorToAttachedSpriteEditMode = map.selectedLayer;
-        map.selectedLayer.layerField.unselect();
-        map.selectedLayer = this.attachedSprites;
-        map.editAttachedMapSpritesModeOn = true;
+        EnableAttachedSpriteEditMode enableAttachedSpriteEditMode = new EnableAttachedSpriteEditMode(map, this);
+        map.executeCommand(enableAttachedSpriteEditMode);
     }
 
     public void disableEditAttachedSpritesMode()
@@ -728,9 +722,8 @@ public class MapSprite extends LayerChild
         if(!map.editAttachedMapSpritesModeOn)
             return;
 
-        map.selectedLayer = map.selectedLayerPriorToAttachedSpriteEditMode;
-        map.selectedLayer.layerField.select();
-        map.editAttachedMapSpritesModeOn = false;
+        DisableAttachedSpriteEditMode disableAttachedSpriteEditMode = new DisableAttachedSpriteEditMode(map, this);
+        map.executeCommand(disableAttachedSpriteEditMode);
     }
 
     public void updateBounds()

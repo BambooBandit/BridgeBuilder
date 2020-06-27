@@ -825,8 +825,11 @@ public class Map implements Screen
             }
             else if(this.selectedSprites.size > 0)
             {
-                DeleteSelectedMapSprites deleteSelectedMapSprites = new DeleteSelectedMapSprites(this.selectedSprites, (SpriteLayer) this.selectedLayer);
-                executeCommand(deleteSelectedMapSprites);
+                if (Command.shouldExecute(this, DeleteSelectedMapSprites.class))
+                {
+                    DeleteSelectedMapSprites deleteSelectedMapSprites = new DeleteSelectedMapSprites(this.selectedSprites, (SpriteLayer) this.selectedLayer);
+                    executeCommand(deleteSelectedMapSprites);
+                }
             }
         }
     }

@@ -3,6 +3,7 @@ package com.bamboo.bridgebuilder.commands;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.map.MapPolygon;
+import com.bamboo.bridgebuilder.map.MapSprite;
 
 /** Command pattern used for undo/redo. TODO pool them. */
 public interface Command
@@ -35,8 +36,24 @@ public interface Command
         }
         else if(command == SelectLayer.class)
         {
-            System.out.println("wot");
             return !map.editAttachedMapSpritesModeOn;
+        }
+        else if(command == DeleteSelectedMapSprites.class)
+        {
+            boolean attachedParentSelected = false;
+            if(map.editAttachedMapSpritesModeOn)
+            {
+                for(int i = 0; i < map.selectedSprites.size; i ++)
+                {
+                    MapSprite mapSprite = map.selectedSprites.get(i);
+                    if(mapSprite.attachedSprites != null)
+                    {
+                        attachedParentSelected = true;
+                        break;
+                    }
+                }
+            }
+            return !attachedParentSelected;
         }
         return true;
     }
