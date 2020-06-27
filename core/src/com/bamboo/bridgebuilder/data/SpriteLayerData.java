@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class SpriteLayerData extends LayerData
 {
-    public ArrayList<MapSpriteData> children;
+    public ArrayList<LayerChildData> children;
     public SpriteLayerData(){}
     public SpriteLayerData(SpriteLayer layer)
     {

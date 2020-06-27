@@ -4,7 +4,7 @@ import com.bamboo.bridgebuilder.map.MapSprite;
 
 import java.util.ArrayList;
 
-public class AttachedMapSpriteData extends MapSpriteData
+public class AttachedMapSpriteData extends LayerChildData
 {
     public ArrayList<MapSpriteData> sprites;
 

@@ -979,7 +979,7 @@ public class Map implements Screen
                     int childSize = spriteLayerData.children.size();
                     for (int k = 0; k < childSize; k++)
                     {
-                        MapSpriteData mapSpriteData = spriteLayerData.children.get(k);
+                        LayerChildData mapSpriteData = spriteLayerData.children.get(k);
                         if(mapSpriteData instanceof AttachedMapSpriteData)
                         {
                             AttachedMapSpriteData attachedMapSpriteData = (AttachedMapSpriteData) mapSpriteData;
@@ -1008,7 +1008,7 @@ public class Map implements Screen
                             }
                         }
                         else
-                            ((SpriteLayer) layer).addMapSprite(loadMapSpriteData(mapSpriteData, layer));
+                            ((SpriteLayer) layer).addMapSprite(loadMapSpriteData((MapSpriteData) mapSpriteData, layer));
                     }
                 } else if (layerData instanceof ObjectLayerData)
                 {
