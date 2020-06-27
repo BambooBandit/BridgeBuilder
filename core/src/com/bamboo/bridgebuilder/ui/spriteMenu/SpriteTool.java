@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -17,11 +18,15 @@ import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
+import static com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu.toolHeight;
+
 /** The sprite buttons in the SpriteMenu. Holds data that belongs with the sprite, such as locked properties.*/
 public class SpriteTool extends SpriteMenuTool
 {
     public Array<PropertyField> lockedProperties; // properties such as probability. They belong to all MapSprites and cannot be removed
     public Array<PropertyField> properties;
+    public Label toolNameLabel;
+    public Label spriteNameLabel;
 
     public int x, y;
     public String name;
@@ -52,6 +57,11 @@ public class SpriteTool extends SpriteMenuTool
         this.name = name;
         this.x = x;
         this.y = y;
+
+        this.toolNameLabel = new Label(name, skin);
+        this.toolNameLabel.setHeight(toolHeight);
+        this.spriteNameLabel = new Label(name, skin);
+        this.spriteNameLabel.setHeight(toolHeight);
     }
 
     @Override

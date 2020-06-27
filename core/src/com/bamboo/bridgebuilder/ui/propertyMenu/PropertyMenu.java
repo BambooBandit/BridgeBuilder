@@ -224,6 +224,7 @@ public class PropertyMenu extends Group
             if(map.spriteMenu.selectedSpriteTools.first().tool == SpriteMenuTools.SPRITE)
             {
                 Array<PropertyField> spriteProperties = map.spriteMenu.selectedSpriteTools.first().lockedProperties;
+                this.spritePropertyPanel.table.add(map.spriteMenu.selectedSpriteTools.first().toolNameLabel).padBottom(1).row();
                 for (int i = 0; i < spriteProperties.size; i++)
                     this.spritePropertyPanel.table.add(spriteProperties.get(i)).padBottom(1).row();
                 this.spritePropertyPanel.setVisible(true);
@@ -232,6 +233,8 @@ public class PropertyMenu extends Group
         if(map.selectedSprites.size > 0)
         {
             Array<PropertyField> spriteProperties = map.selectedSprites.first().lockedProperties;
+            if(map.selectedSprites.size == 1)
+                this.spritePropertyPanel.table.add(map.selectedSprites.first().tool.spriteNameLabel).padBottom(1).row();
             for (int i = 0; i < spriteProperties.size; i++)
                 this.spritePropertyPanel.table.add(spriteProperties.get(i)).padBottom(1).row();
             this.spritePropertyPanel.setVisible(true);
