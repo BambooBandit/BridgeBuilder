@@ -1005,6 +1005,7 @@ public class Map implements Screen
                                 }
                                 MapSprite childMapSprite = loadMapSpriteData(attachedData, layer);
                                 parentMapSprite.attachedSprites.addMapSprite(childMapSprite);
+                                childMapSprite.parentSprite = parentMapSprite;
                             }
                         }
                         else
