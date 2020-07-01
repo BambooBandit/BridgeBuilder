@@ -205,6 +205,13 @@ public class ToolPane extends Group
                     this.editor.activeMap.colorizeDepth();
                 else if(selectedTool == this.spriteGridColors && this.editor.activeMap != null)
                     this.editor.activeMap.updateLayerSpriteGrids();
+                if((selectedTool == this.spriteGridColors || selectedTool == this.blocked) && this.perspective.selected)
+                    this.perspective.unselect();
+                else if(selectedTool == this.perspective && (this.spriteGridColors.selected || this.blocked.selected))
+                {
+                    this.spriteGridColors.unselect();
+                    this.blocked.unselect();
+                }
                 selectedTool.select();
 
                 if(selectedTool == this.attachedSprites)
