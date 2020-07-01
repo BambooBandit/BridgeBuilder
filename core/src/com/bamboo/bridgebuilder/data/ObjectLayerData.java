@@ -20,9 +20,9 @@ public class ObjectLayerData extends LayerData
         {
             MapObject mapObject = layer.children.get(i);
             if(mapObject instanceof MapPoint)
-                this.children.add(new MapPointData((MapPoint) mapObject));
+                this.children.add(new MapPointData((MapPoint) mapObject, 0, 0));
             else
-                this.children.add(new MapPolygonData((MapPolygon) mapObject));
+                this.children.add(new MapPolygonData((MapPolygon) mapObject, 0, 0));
         }
         ObjectLayer objectLayer = layer;
         if(objectLayer.spriteGrid != null)

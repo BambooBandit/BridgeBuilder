@@ -303,6 +303,8 @@ public class MapInput implements InputProcessor
                         for(int k = 0; k < spriteLayer.children.size; k ++)
                         {
                             MapSprite mapSprite = spriteLayer.children.get(k);
+                            if(mapSprite.attachedMapObjects == null)
+                                continue;
                             for(int q = 0; q < mapSprite.attachedMapObjects.size; q++)
                             {
                                 MapObject object = mapSprite.attachedMapObjects.get(q);

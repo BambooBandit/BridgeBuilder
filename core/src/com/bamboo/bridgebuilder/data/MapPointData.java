@@ -5,8 +5,8 @@ import com.bamboo.bridgebuilder.map.MapPoint;
 public class MapPointData extends MapObjectData
 {
     public MapPointData(){}
-    public MapPointData(MapPoint mapPoint)
+    public MapPointData(MapPoint mapPoint, float offsetX, float offsetY)
     {
-        super(mapPoint);
+        super(mapPoint, offsetX, offsetY);
     }
 }

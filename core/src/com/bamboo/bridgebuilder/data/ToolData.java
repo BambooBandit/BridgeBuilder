@@ -57,9 +57,9 @@ public class ToolData
                 MapObject mapObject = attachedMapObjectManager.attachedMapObjects.first();
                 MapObjectData mapObjectData;
                 if (mapObject instanceof MapPoint)
-                    mapObjectData = new MapPointData((MapPoint) mapObject);
+                    mapObjectData = new MapPointData((MapPoint) mapObject, attachedMapObjectManager.offsetX, attachedMapObjectManager.offsetY);
                 else
-                    mapObjectData = new MapPolygonData((MapPolygon) mapObject);
+                    mapObjectData = new MapPolygonData((MapPolygon) mapObject, attachedMapObjectManager.offsetX, attachedMapObjectManager.offsetY);
                 this.objs.add(mapObjectData);
             }
         }

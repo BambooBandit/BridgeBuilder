@@ -10,11 +10,10 @@ public abstract class MapObjectData extends LayerChildData
     public ArrayList<PropertyData> props;
 
     // Used for attached map objects only
-    public boolean attached = false;
     public float offsetX, offsetY;
 
     public MapObjectData() {}
-    public MapObjectData(MapObject mapObject)
+    public MapObjectData(MapObject mapObject, float offsetX, float offsetY)
     {
         super(mapObject);
 
@@ -32,11 +31,7 @@ public abstract class MapObjectData extends LayerChildData
                 this.props.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
         }
 
-        if(mapObject.attachedSprite != null)
-        {
-            this.attached = true;
-            this.offsetX = mapObject.getX() - mapObject.attachedSprite.getX();
-            this.offsetY = mapObject.getY() - mapObject.attachedSprite.getY();
-        }
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
     }
 }

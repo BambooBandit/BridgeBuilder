@@ -248,13 +248,12 @@ public class MapSprite extends LayerChild
         float[] vertices = sprite.getVertices();
         float colorFloatBits = sprite.getColor().toFloatBits();
 
-
         if(parentSprite == null)
         {
             float height = sprite.getRegionHeight() / 64f;
 
             Vector2 offset;
-            offset = skewOffset(getX() + width / 2f, getY() + (sprite.getAtlasRegion().offsetY), height);
+            offset = skewOffset(getX() + (width / 2f), getY(), sprite.getAtlasRegion().offsetY + height);
             verts[0] = vertices[SpriteBatch.X2] + offset.x;
             verts[1] = vertices[SpriteBatch.Y2] + offset.y;
             verts[2] = colorFloatBits;
@@ -266,7 +265,7 @@ public class MapSprite extends LayerChild
             verts[8] = u2;
             verts[9] = v;
 
-            offset = skewOffset(getX() + width / 2f, getY() + (sprite.getAtlasRegion().offsetY), 0);
+            offset = skewOffset(getX() + (width / 2f), getY(), (sprite.getAtlasRegion().offsetY));
             verts[10] = vertices[SpriteBatch.X4] + offset.x;
             verts[11] = vertices[SpriteBatch.Y4] + offset.y;
             verts[12] = colorFloatBits;
@@ -282,7 +281,7 @@ public class MapSprite extends LayerChild
         {
             float width = parentSprite.width;
             float height = sprite.getRegionHeight() / 64f;
-            Vector2 offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY() + (parentSprite.sprite.getAtlasRegion().offsetY), sprite.getAtlasRegion().offsetY + + (getY() + height) - parentSprite.getY());
+            Vector2 offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY() + (parentSprite.sprite.getAtlasRegion().offsetY), sprite.getAtlasRegion().offsetY + (getY() + height) - parentSprite.getY());
             verts[0] = vertices[SpriteBatch.X2] + offset.x;
             verts[1] = vertices[SpriteBatch.Y2] + offset.y;
             verts[2] = colorFloatBits;
@@ -293,7 +292,7 @@ public class MapSprite extends LayerChild
             verts[7] = colorFloatBits;
             verts[8] = u2;
             verts[9] = v;
-            offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY() + (parentSprite.sprite.getAtlasRegion().offsetY), sprite.getAtlasRegion().offsetY +  + getY() - parentSprite.getY());
+            offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY() + (parentSprite.sprite.getAtlasRegion().offsetY), sprite.getAtlasRegion().offsetY + getY() - parentSprite.getY());
             verts[10] = vertices[SpriteBatch.X4] + offset.x;
             verts[11] = vertices[SpriteBatch.Y4] + offset.y;
             verts[12] = colorFloatBits;
@@ -320,7 +319,6 @@ public class MapSprite extends LayerChild
                     TextureAtlas.AtlasSprite topsprite = tool.topSprites.get(i);
                     topsprite.setPosition(sprite.getX(), sprite.getY());
                     topsprite.setRotation(sprite.getRotation());
-
 
                     if(map.editAttachedMapSpritesModeOn && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
                         topsprite.setAlpha(topsprite.getColor().a / 3.5f);

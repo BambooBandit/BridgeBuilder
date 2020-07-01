@@ -6,9 +6,9 @@ public class MapPolygonData extends MapObjectData
 {
     public float[] verts;
     public MapPolygonData(){}
-    public MapPolygonData(MapPolygon mapPolygon)
+    public MapPolygonData(MapPolygon mapPolygon, float offsetX, float offsetY)
     {
-        super(mapPolygon);
+        super(mapPolygon, offsetX, offsetY);
         this.verts = mapPolygon.polygon.getVertices();
     }
 }
