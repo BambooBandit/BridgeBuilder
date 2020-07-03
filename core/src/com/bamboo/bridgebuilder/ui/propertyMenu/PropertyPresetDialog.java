@@ -29,6 +29,7 @@ public class PropertyPresetDialog extends Window
     private Table newCollisionSortProperty;
     private Table newCollisionSortBackProperty;
     private Table newAnimatedProperty;
+    private Table newFadeLimitProperty;
 
     private Table presetTable;
     private ScrollPane scrollPane;
@@ -101,6 +102,7 @@ public class PropertyPresetDialog extends Window
         {
             this.presetTable.add(this.newTopProperty).pad(5);
             this.presetTable.add(this.newAnimatedProperty).pad(5);
+            this.presetTable.add(this.newFadeLimitProperty).pad(5);
         }
         else if(this.map.selectedLayer != null)
         {
@@ -143,6 +145,7 @@ public class PropertyPresetDialog extends Window
         this.createCollisionSort();
         this.createCollisionSortBack();
         this.createAnimated();
+        this.createFadeLimit();
     }
 
     private void createTop()
@@ -430,6 +433,46 @@ public class PropertyPresetDialog extends Window
         });
     }
 
+    private void createFadeLimit()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newFadeLimitProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newFadeLimitProperty.background(spriteDrawable);
+        this.newFadeLimitProperty.add(new Label("Fade Limit", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("fadeLimit", "", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        this.newFadeLimitProperty.add(table);
+        this.newFadeLimitProperty.setTouchable(Touchable.enabled);
+        this.newFadeLimitProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newFadeLimitProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newFadeLimitProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "fadeLimit", "");
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
     private void createAnimated()
     {
         SpriteDrawable spriteDrawable;
@@ -459,7 +502,7 @@ public class PropertyPresetDialog extends Window
         fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
-        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("fadeLimit", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("random", "...", this.skin, null, null, false);
         fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad).row();
@@ -487,7 +530,7 @@ public class PropertyPresetDialog extends Window
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
                 chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "loop", "Value");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
-                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "fadeLimit", ".2");
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "random", ".2");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
                 map.executeCommand(addProperty);
                 return false;
