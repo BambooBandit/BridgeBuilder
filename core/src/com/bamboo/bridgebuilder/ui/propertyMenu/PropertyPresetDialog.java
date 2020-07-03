@@ -26,6 +26,9 @@ public class PropertyPresetDialog extends Window
     private Table newPerspectiveProperty;
     private Table newGroundProperty;
     private Table newDustTypeProperty;
+    private Table newCollisionSortProperty;
+    private Table newCollisionSortBackProperty;
+    private Table newAnimatedProperty;
 
     private Table presetTable;
     private ScrollPane scrollPane;
@@ -90,11 +93,14 @@ public class PropertyPresetDialog extends Window
             {
                 this.presetTable.add(this.newBlockedProperty).pad(5);
                 this.presetTable.add(this.newDustTypeProperty).pad(5);
+                this.presetTable.add(this.newCollisionSortProperty).pad(5);
+                this.presetTable.add(this.newCollisionSortBackProperty).pad(5);
             }
         }
         else if(this.map.spriteMenu.selectedSpriteTools.size > 0)
         {
             this.presetTable.add(this.newTopProperty).pad(5);
+            this.presetTable.add(this.newAnimatedProperty).pad(5);
         }
         else if(this.map.selectedLayer != null)
         {
@@ -134,6 +140,9 @@ public class PropertyPresetDialog extends Window
         this.createDisablePerspective();
         this.createGround();
         this.createDustType();
+        this.createCollisionSort();
+        this.createCollisionSortBack();
+        this.createAnimated();
     }
 
     private void createTop()
@@ -150,6 +159,10 @@ public class PropertyPresetDialog extends Window
         this.newTopProperty.add(new Label("Top Sprite", this.skin)).padTop(pad / 2).row();
         table = new Table();
         fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("top", "...4tree1...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("fade0", "true", this.skin, null, null, false);
         fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
@@ -170,6 +183,7 @@ public class PropertyPresetDialog extends Window
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
                 AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "top", "");
+                addProperty.addAddPropertyCommandToChain(new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "fade0", "true"));
                 map.executeCommand(addProperty);
                 return false;
             }
@@ -296,6 +310,86 @@ public class PropertyPresetDialog extends Window
         });
     }
 
+    private void createCollisionSort()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newCollisionSortProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newCollisionSortProperty.background(spriteDrawable);
+        this.newCollisionSortProperty.add(new Label("Collision Sort Front", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("collisionSort", "", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        this.newCollisionSortProperty.add(table);
+        this.newCollisionSortProperty.setTouchable(Touchable.enabled);
+        this.newCollisionSortProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newCollisionSortProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newCollisionSortProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "collisionSort", "");
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
+    private void createCollisionSortBack()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newCollisionSortBackProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newCollisionSortBackProperty.background(spriteDrawable);
+        this.newCollisionSortBackProperty.add(new Label("Collision Sort Back", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("collisionSortBack", "", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        this.newCollisionSortBackProperty.add(table);
+        this.newCollisionSortBackProperty.setTouchable(Touchable.enabled);
+        this.newCollisionSortBackProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newCollisionSortBackProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newCollisionSortBackProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "collisionSortBack", "");
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
     private void createDisablePerspective()
     {
         SpriteDrawable spriteDrawable;
@@ -330,6 +424,71 @@ public class PropertyPresetDialog extends Window
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
                 AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "disablePerspective", "");
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
+    private void createAnimated()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newAnimatedProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newAnimatedProperty.background(spriteDrawable);
+        this.newAnimatedProperty.add(new Label("Animated", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("animated", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad / 6).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("fps", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("pingPong", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("loop", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("fadeLimit", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad).row();
+        this.newAnimatedProperty.add(table);
+        this.newAnimatedProperty.setTouchable(Touchable.enabled);
+        this.newAnimatedProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newAnimatedProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newAnimatedProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty chainedProperty;
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "animated", "Value");
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "fps", "10");
+                addProperty.addAddPropertyCommandToChain(chainedProperty);
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "pingPong", "Value");
+                addProperty.addAddPropertyCommandToChain(chainedProperty);
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "loop", "Value");
+                addProperty.addAddPropertyCommandToChain(chainedProperty);
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "fadeLimit", ".2");
+                addProperty.addAddPropertyCommandToChain(chainedProperty);
                 map.executeCommand(addProperty);
                 return false;
             }
