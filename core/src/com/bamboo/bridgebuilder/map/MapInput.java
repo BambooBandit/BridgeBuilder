@@ -434,9 +434,13 @@ public class MapInput implements InputProcessor
         if(this.map.spriteMenu.selectedSpriteTools.size == 0)
             return false;
 
-        DrawMapSprite drawMapSprite = new DrawMapSprite(this.map, (SpriteLayer) this.map.selectedLayer, x, y);
-        this.map.executeCommand(drawMapSprite);
-        return true;
+        if(Command.shouldExecute(map, DrawMapSprite.class))
+        {
+            DrawMapSprite drawMapSprite = new DrawMapSprite(this.map, (SpriteLayer) this.map.selectedLayer, x, y);
+            this.map.executeCommand(drawMapSprite);
+            return true;
+        }
+        return false;
     }
 
     private boolean handleSelect(int button)

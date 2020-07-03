@@ -55,6 +55,10 @@ public interface Command
             }
             return !attachedParentSelected;
         }
+        else if(command == DrawMapSprite.class)
+        {
+            return !(map.editAttachedMapSpritesModeOn && (map.selectedSprites.size != 1 || (map.selectedSprites.first().attachedSprites == null || !map.selectedSprites.first().attachedSprites.equals(map.selectedLayer))));
+        }
         return true;
     }
 }
