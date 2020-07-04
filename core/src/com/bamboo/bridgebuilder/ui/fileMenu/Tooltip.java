@@ -22,7 +22,6 @@ public class Tooltip extends Stack
     {
         if(editor.activeMap != null)
             this.label.setPosition(editor.activeMap.propertyMenu.getWidth() + 10, 10);
-//            this.label.setPosition((Gdx.graphics.getWidth() / 6f) + 10, 10);
         else
             this.label.setPosition(10, 10);
         this.label.draw(batch, parentAlpha);
