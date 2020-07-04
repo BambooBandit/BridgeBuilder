@@ -238,7 +238,7 @@ public class MapSprite extends LayerChild
         if(layerOverride != null)
             layerOverride.draw();
 
-        if(map.editAttachedMapSpritesModeOn && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
+        if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
             sprite.setAlpha(sprite.getColor().a / 3.5f);
 
         float u = sprite.getU();
@@ -307,7 +307,7 @@ public class MapSprite extends LayerChild
 
         map.editor.batch.draw(sprite.getTexture(), verts, 0, verts.length);
 
-        if(map.editAttachedMapSpritesModeOn && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
+        if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
             sprite.setAlpha(sprite.getColor().a * 3.5f);
 
         if(map.editor.fileMenu.toolPane.top.selected)
@@ -320,7 +320,7 @@ public class MapSprite extends LayerChild
                     topsprite.setPosition(sprite.getX(), sprite.getY());
                     topsprite.setRotation(sprite.getRotation());
 
-                    if(map.editAttachedMapSpritesModeOn && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
+                    if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
                         topsprite.setAlpha(topsprite.getColor().a / 3.5f);
 
                     u = topsprite.getU();
@@ -358,7 +358,7 @@ public class MapSprite extends LayerChild
 
                     map.editor.batch.draw(topsprite.getTexture(), verts, 0, verts.length);
 
-                    if(map.editAttachedMapSpritesModeOn && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
+                    if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
                         topsprite.setAlpha(topsprite.getColor().a * 3.5f);
                 }
             }
@@ -724,7 +724,7 @@ public class MapSprite extends LayerChild
 
     public void enableEditAttachedSpritesMode()
     {
-        if(map.editAttachedMapSpritesModeOn)
+        if(map.editAttachedMapSprite != null)
             return;
 
         EnableAttachedSpriteEditMode enableAttachedSpriteEditMode = new EnableAttachedSpriteEditMode(map, this);
@@ -733,7 +733,7 @@ public class MapSprite extends LayerChild
 
     public void disableEditAttachedSpritesMode()
     {
-        if(!map.editAttachedMapSpritesModeOn)
+        if(map.editAttachedMapSprite == null)
             return;
 
         DisableAttachedSpriteEditMode disableAttachedSpriteEditMode = new DisableAttachedSpriteEditMode(map, this);

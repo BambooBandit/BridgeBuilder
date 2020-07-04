@@ -75,7 +75,7 @@ public class Map implements Screen
     public Array<Layer> layers;
     public Layer selectedLayer;
     public Layer selectedLayerPriorToAttachedSpriteEditMode;
-    public boolean editAttachedMapSpritesModeOn = false;
+    public MapSprite editAttachedMapSprite = null;
     public LayerChild hoveredChild; // Whatever the mouse is hovering when SELECT tool is selected
     public Array<MapSprite> selectedSprites;
     public Array<MapObject> selectedObjects;

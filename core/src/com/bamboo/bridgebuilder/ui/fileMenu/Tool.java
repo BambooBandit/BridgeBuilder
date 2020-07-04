@@ -49,7 +49,7 @@ public class Tool extends Group
             }
         });
 
-        this.tooltip = new Tooltip(tool.name, tool.shortcut, EditorAssets.getUISkin());
+        this.tooltip = new Tooltip(editor, tool.name, tool.shortcut, EditorAssets.getUISkin());
         this.tooltip.setVisible(false);
         editor.stage.addActor(this.tooltip);
         addListener(new InputListener()

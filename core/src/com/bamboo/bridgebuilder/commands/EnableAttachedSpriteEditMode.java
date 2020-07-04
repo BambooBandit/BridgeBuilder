@@ -26,7 +26,7 @@ public class EnableAttachedSpriteEditMode implements Command
         map.selectedLayerPriorToAttachedSpriteEditMode = map.selectedLayer;
         map.selectedLayer.layerField.unselect();
         map.selectedLayer = this.parentSprite.attachedSprites;
-        map.editAttachedMapSpritesModeOn = true;
+        map.editAttachedMapSprite = parentSprite;
         map.editor.fileMenu.toolPane.attachedSprites.select();
     }
 
@@ -35,7 +35,7 @@ public class EnableAttachedSpriteEditMode implements Command
     {
         map.selectedLayer = map.selectedLayerPriorToAttachedSpriteEditMode;
         map.selectedLayer.layerField.select();
-        map.editAttachedMapSpritesModeOn = false;
+        map.editAttachedMapSprite = null;
         map.editor.fileMenu.toolPane.attachedSprites.unselect();
     }
 }

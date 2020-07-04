@@ -36,12 +36,12 @@ public interface Command
         }
         else if(command == SelectLayer.class)
         {
-            return !map.editAttachedMapSpritesModeOn;
+            return map.editAttachedMapSprite == null;
         }
         else if(command == DeleteSelectedMapSprites.class)
         {
             boolean attachedParentSelected = false;
-            if(map.editAttachedMapSpritesModeOn)
+            if(map.editAttachedMapSprite != null)
             {
                 for(int i = 0; i < map.selectedSprites.size; i ++)
                 {
@@ -57,7 +57,7 @@ public interface Command
         }
         else if(command == DrawMapSprite.class)
         {
-            return !(map.editAttachedMapSpritesModeOn && (map.selectedSprites.size != 1 || (map.selectedSprites.first().attachedSprites == null || !map.selectedSprites.first().attachedSprites.equals(map.selectedLayer))));
+            return !(map.editAttachedMapSprite != null && (map.selectedSprites.size != 1 || (map.selectedSprites.first().attachedSprites == null || !map.selectedSprites.first().attachedSprites.equals(map.selectedLayer))));
         }
         return true;
     }

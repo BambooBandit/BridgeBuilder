@@ -196,7 +196,7 @@ public class ToolPane extends Group
                 if(selectedTool == this.depth && editor.activeMap != null)
                     PropertyToolPane.apply(editor.activeMap);
                 else if(selectedTool == this.attachedSprites)
-                    this.editor.activeMap.selectedSprites.first().disableEditAttachedSpritesMode();
+                    this.editor.activeMap.editAttachedMapSprite.disableEditAttachedSpritesMode();
                 selectedTool.unselect();
             }
             else

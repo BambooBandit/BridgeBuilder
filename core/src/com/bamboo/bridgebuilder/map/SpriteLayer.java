@@ -83,7 +83,7 @@ public class SpriteLayer extends Layer
     {
         this.children.add(mapSprite);
 
-        if(map.editAttachedMapSpritesModeOn)
+        if(map.editAttachedMapSprite != null)
         {
             mapSprite.parentSprite = map.selectedSprites.first();
             map.selectedSprites.first().updateBounds();
