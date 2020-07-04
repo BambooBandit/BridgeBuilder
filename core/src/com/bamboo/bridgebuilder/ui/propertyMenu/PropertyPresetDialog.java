@@ -46,6 +46,7 @@ public class PropertyPresetDialog extends Window
         this.skin = skin;
         this.map = map;
         this.presetTable = new Table();
+        this.presetTable.pad(toolHeight * 3f);
         this.scrollPane = new ScrollPane(this.presetTable);
 
         this.close = new TextButton("Close", skin);
@@ -530,7 +531,7 @@ public class PropertyPresetDialog extends Window
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
                 chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "loop", "Value");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
-                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "random", ".2");
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "random", "Value");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
                 map.executeCommand(addProperty);
                 return false;

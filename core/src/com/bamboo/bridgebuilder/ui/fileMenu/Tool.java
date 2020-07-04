@@ -2,10 +2,13 @@ package com.bamboo.bridgebuilder.ui.fileMenu;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
@@ -21,7 +24,9 @@ public class Tool extends Group
 
     public boolean isToggleable;
 
-    public Tool(Tools tool, final ToolPane toolPane, boolean isToggleable)
+    public Tooltip tooltip;
+
+    public Tool(BridgeBuilder editor, final ToolPane toolPane, boolean isToggleable, Tools tool)
     {
         this.isToggleable = isToggleable;
         this.tool = tool;
@@ -41,6 +46,24 @@ public class Tool extends Group
             public void clicked(InputEvent event, float x, float y)
             {
                 toolPane.selectTool(selectedTool);
+            }
+        });
+
+        this.tooltip = new Tooltip(tool.name, tool.shortcut, EditorAssets.getUISkin());
+        this.tooltip.setVisible(false);
+        editor.stage.addActor(this.tooltip);
+        addListener(new InputListener()
+        {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                tooltip.setVisible(true);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor)
+            {
+                tooltip.setVisible(false);
             }
         });
     }

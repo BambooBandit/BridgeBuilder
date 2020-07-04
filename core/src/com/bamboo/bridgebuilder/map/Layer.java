@@ -124,6 +124,13 @@ public abstract class Layer<T extends LayerChild>
 
             PropertyToolPane.updatePerspective(map);
         }
+        else
+        {
+            this.map.camera.zoom = this.map.zoom;
+            this.map.camera.update();
+            this.editor.batch.setProjectionMatrix(map.camera.combined);
+            this.editor.shapeRenderer.setProjectionMatrix(map.camera.combined);
+        }
     }
 
     public void setCameraZoomToSelectedLayer()
