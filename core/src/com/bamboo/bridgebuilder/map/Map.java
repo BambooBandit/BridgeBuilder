@@ -894,6 +894,8 @@ public class Map implements Screen
             {
                 ToolData toolData = spriteSheetData.tools.get(k);
                 SpriteTool spriteTool = spriteMenu.getSpriteTool(toolData.n, sheetName);
+                if(spriteTool == null)
+                    continue;
                 spriteTool.properties.clear();
 
                 // properties
@@ -977,6 +979,7 @@ public class Map implements Screen
                 {
                     SpriteLayerData spriteLayerData = (SpriteLayerData) layerData;
                     int childSize = spriteLayerData.children.size();
+                    parent:
                     for (int k = 0; k < childSize; k++)
                     {
                         LayerChildData mapSpriteData = spriteLayerData.children.get(k);
@@ -990,11 +993,14 @@ public class Map implements Screen
                                 if(attachedData.parent)
                                 {
                                     parentMapSprite = loadMapSpriteData(attachedData, layer);
+                                    if(parentMapSprite == null)
+                                        continue parent;
                                     ((SpriteLayer) layer).addMapSprite(parentMapSprite);
                                     break;
                                 }
                             }
                             parentMapSprite.attachedSprites = new SpriteLayer(editor, this, null);
+                            child:
                             for(int s = 0; s < attachedMapSpriteData.sprites.size(); s++)
                             {
                                 MapSpriteData attachedData = attachedMapSpriteData.sprites.get(s);
@@ -1004,12 +1010,18 @@ public class Map implements Screen
                                     continue;
                                 }
                                 MapSprite childMapSprite = loadMapSpriteData(attachedData, layer);
+                                if(childMapSprite == null)
+                                    continue child;
                                 parentMapSprite.attachedSprites.addMapSprite(childMapSprite);
                                 childMapSprite.parentSprite = parentMapSprite;
                             }
                         }
                         else
-                            ((SpriteLayer) layer).addMapSprite(loadMapSpriteData((MapSpriteData) mapSpriteData, layer));
+                        {
+                            MapSprite mapSprite = loadMapSpriteData((MapSpriteData) mapSpriteData, layer);
+                            if(mapSprite != null)
+                                ((SpriteLayer) layer).addMapSprite(mapSprite);
+                        }
                     }
                 } else if (layerData instanceof ObjectLayerData)
                 {
@@ -1055,6 +1067,8 @@ public class Map implements Screen
         else
             sheetName = mapSpriteData.sN;
         SpriteTool spriteTool = spriteMenu.getSpriteTool(mapSpriteData.n, sheetName);
+        if(spriteTool == null)
+            return null;
         MapSprite mapSprite = new MapSprite(this, layer, spriteTool, mapSpriteData.x, mapSpriteData.y);
         mapSprite.setZ(mapSpriteData.z);
         mapSprite.setScale(mapSpriteData.scl + MapSpriteData.defaultScaleValue);

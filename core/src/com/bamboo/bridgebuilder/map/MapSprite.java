@@ -363,9 +363,6 @@ public class MapSprite extends LayerChild
                 }
             }
         }
-
-        if(this.map.editor.fileMenu.toolPane.top.selected)
-            drawTopSprites();
     }
 
     @Override

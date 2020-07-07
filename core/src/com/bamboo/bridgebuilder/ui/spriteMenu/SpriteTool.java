@@ -124,7 +124,7 @@ public class SpriteTool extends SpriteMenuTool
         if(this.previewSprites.size > 1)
             this.previewSprites.removeRange(1, this.previewSprites.size - 1);
         int digits = 0;
-        for(int i = topSpriteName.length() - 1; i >= 0; i --)
+        for(int i = 0; i < topSpriteName.length() - 1; i ++)
         {
             if(Character.isDigit(topSpriteName.charAt(i)))
                 digits++;
@@ -144,8 +144,8 @@ public class SpriteTool extends SpriteMenuTool
         }
         else
         {
-            String topSpriteNoDigits = topSpriteName.substring(0, topSpriteName.length() - digits);
-            int number = Integer.parseInt(topSpriteName.substring(topSpriteName.length() - digits));
+            String topSpriteNoDigits = topSpriteName.substring(digits, topSpriteName.length());
+            int number = Integer.parseInt(topSpriteName.substring(0, digits));
             TextureRegion textureRegion = EditorAssets.getTextureRegion(sheet.name, topSpriteName);
             while(textureRegion != null)
             {
@@ -157,7 +157,7 @@ public class SpriteTool extends SpriteMenuTool
                 sprite.setOriginCenter();
                 this.previewSprites.add(sprite);
                 number ++;
-                textureRegion = EditorAssets.getTextureRegion(sheet.name, (topSpriteNoDigits + number));
+                textureRegion = EditorAssets.getTextureRegion(sheet.name, (number + topSpriteNoDigits));
             }
         }
     }
