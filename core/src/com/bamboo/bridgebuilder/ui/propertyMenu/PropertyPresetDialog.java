@@ -495,7 +495,7 @@ public class PropertyPresetDialog extends Window
         fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
-        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("pingPong", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("pingpong", "...", this.skin, null, null, false);
         fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
@@ -527,7 +527,7 @@ public class PropertyPresetDialog extends Window
                 AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "animated", "Value");
                 chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "fps", "10");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
-                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "pingPong", "Value");
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "pingpong", "Value");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
                 chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "loop", "Value");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
