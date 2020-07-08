@@ -245,6 +245,8 @@ public class Map implements Screen
                 continue;
             if(layer instanceof SpriteLayer)
             {
+                if (!layer.layerField.attachedVisibleImg.isVisible())
+                    continue;
                 layer.setCameraZoomToThisLayer();
                 SpriteLayer spriteLayer = (SpriteLayer) layer;
                 for(int k = 0; k < spriteLayer.children.size; k ++)
