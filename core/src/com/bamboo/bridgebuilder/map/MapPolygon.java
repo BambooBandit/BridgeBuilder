@@ -281,7 +281,8 @@ public class MapPolygon extends MapObject
         fixtureDef.filter.maskBits = PhysicsBits.LIGHT_PHYSICS;
         this.body = this.map.world.createBody(bodyDef).createFixture(fixtureDef).getBody();
         this.body.setTransform(this.polygon.getTransformedVertices()[0], this.polygon.getTransformedVertices()[1], (float) Math.toRadians(this.getRotation()));
-        this.map.updateLayerSpriteGrids();
+        if(map.editor.fileMenu.toolPane.blocked.selected)
+            this.map.updateLayerSpriteGrids();
     }
 
     public void destroyBody()
