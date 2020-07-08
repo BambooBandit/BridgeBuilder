@@ -1076,6 +1076,7 @@ public class Map implements Screen
         mapSprite.setScale(mapSpriteData.scl + MapSpriteData.defaultScaleValue);
         mapSprite.setColor(mapSpriteData.r + MapSpriteData.defaultColorValue, mapSpriteData.g + MapSpriteData.defaultColorValue, mapSpriteData.b + MapSpriteData.defaultColorValue, mapSpriteData.a + MapSpriteData.defaultColorValue);
         mapSprite.setPosition(mapSpriteData.x, mapSpriteData.y);
+        Utils.setCenterOrigin(mapSprite.getX(), mapSprite.getY());
         mapSprite.setRotation(mapSpriteData.rot);
         mapSprite.setID(mapSpriteData.id);
 
