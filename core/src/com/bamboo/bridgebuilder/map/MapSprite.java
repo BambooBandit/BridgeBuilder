@@ -404,17 +404,26 @@ public class MapSprite extends LayerChild
     public void drawRotationBox()
     {
         if(selected && map.editor.fileMenu.toolPane.select.selected)
+        {
+            rotationBox.setScale(map.zoom);
             rotationBox.sprite.draw(map.editor.batch);
+        }
     }
     public void drawMoveBox()
     {
         if(selected && map.editor.fileMenu.toolPane.select.selected)
+        {
+            moveBox.setScale(map.zoom);
             moveBox.sprite.draw(map.editor.batch);
+        }
     }
     public void drawScaleBox()
     {
-        if(selected )
+        if(selected)
+        {
+            scaleBox.setScale(map.zoom);
             scaleBox.sprite.draw(map.editor.batch);
+        }
     }
 
     public void setID(int id)

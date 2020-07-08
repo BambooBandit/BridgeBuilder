@@ -7,9 +7,10 @@ import com.bamboo.bridgebuilder.BBColors;
 
 public abstract class ManipulatorBox
 {
+    public float x, y;
     public Sprite sprite;
     protected Rectangle rectangle;
-    public float width, height;
+    public float width, height, scale = 1;
     public ManipulatorBox()
     {
         this.width = .625f;
@@ -19,8 +20,18 @@ public abstract class ManipulatorBox
 
     public void setPosition(float x, float y)
     {
+        this.x = x;
+        this.y = y;
         this.sprite.setPosition(x, y);
         this.rectangle.setPosition(x, y);
+    }
+
+    public void setScale(float scale)
+    {
+        this.scale = scale;
+        this.rectangle.setSize(width * scale, height * scale);
+        this.sprite.setSize(width * scale, width * scale);
+        setPosition(x, y);
     }
 
     public boolean contains(float x, float y)

@@ -15,6 +15,8 @@ public class RotationBox extends ManipulatorBox
     @Override
     public void setPosition(float x, float y)
     {
-        super.setPosition(x + width, y);
+        super.setPosition(x + width * scale, y);
+        this.x = x;
+        this.y = y;
     }
 }

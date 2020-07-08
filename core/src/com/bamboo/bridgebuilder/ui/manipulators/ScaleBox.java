@@ -15,6 +15,8 @@ public class ScaleBox extends ManipulatorBox
     @Override
     public void setPosition(float x, float y)
     {
-        super.setPosition(x + (2 * width), y);
+        super.setPosition(x + (2f * width * scale), y);
+        this.x = x;
+        this.y = y;
     }
 }
