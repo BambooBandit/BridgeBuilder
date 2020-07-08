@@ -254,7 +254,10 @@ public class MapPolygon extends MapObject
     public void drawMoveBox()
     {
         if(this.selected && (this.map.editor.fileMenu.toolPane.select.selected || (this.map.editor.fileMenu.toolPane.objectVerticeSelect.selected && this.indexOfSelectedVertice != -1)))
+        {
+            this.moveBox.setScale(this.map.zoom);
             this.moveBox.sprite.draw(this.map.editor.batch);
+        }
     }
 
     public void createBody()
@@ -291,7 +294,8 @@ public class MapPolygon extends MapObject
             return;
         this.map.world.destroyBody(this.body);
         this.body = null;
-        this.map.updateLayerSpriteGrids();
+        if(map.editor.fileMenu.toolPane.blocked.selected)
+            this.map.updateLayerSpriteGrids();
     }
 
     /** Used for when the vertices of the body are affected, like during scaling, etc.*/

@@ -414,7 +414,7 @@ public class MapInput implements InputProcessor
                     float verticeX = mapPolygon.polygon.getTransformedVertices()[k];
                     float verticeY = mapPolygon.polygon.getTransformedVertices()[k + 1];
                     double distance = Math.sqrt(Math.pow((x - verticeX), 2) + Math.pow((y - verticeY), 2));
-                    if (distance <= .25f && !vertexFound)
+                    if (distance <= .25f * map.camera.zoom && !vertexFound)
                     {
                         vertexFound = true;
                         mapPolygon.indexOfHoveredVertice = k;
