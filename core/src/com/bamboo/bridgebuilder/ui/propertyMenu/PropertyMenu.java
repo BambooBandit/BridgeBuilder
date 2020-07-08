@@ -43,7 +43,7 @@ public class PropertyMenu extends Group
 
         this.stack = new Stack();
         this.background = new Image(EditorAssets.getUIAtlas().createPatch("load-background"));
-        this.mapPropertyPanel = new MapPropertyPanel(skin, this, this.editor);
+        this.mapPropertyPanel = new MapPropertyPanel(skin, this, this.editor, map);
         this.layerPropertyPanel = new LayerPropertyPanel(skin, this, this.editor);
         this.layerPropertyPanel.setVisible(false);
         this.spritePropertyPanel = new RemoveablePropertyPanel(skin, this, this.editor);
@@ -161,6 +161,13 @@ public class PropertyMenu extends Group
                 ColorPropertyField property = (ColorPropertyField) propertyField;
                 ColorPropertyFieldData data = (ColorPropertyFieldData) propertyData;
                 property.setRGBA(data.r, data.g, data.b, data.a + ColorPropertyFieldData.defaultAlphaValue);
+
+            }
+            else if(propertyData instanceof OpaqueColorPropertyFieldData && propertyField instanceof OpaqueColorPropertyField)
+            {
+                OpaqueColorPropertyField property = (OpaqueColorPropertyField) propertyField;
+                OpaqueColorPropertyFieldData data = (OpaqueColorPropertyFieldData) propertyData;
+                property.setRGB(data.r, data.g, data.b);
 
             }
             else if(propertyData instanceof LightPropertyFieldData && propertyField instanceof LightPropertyField)

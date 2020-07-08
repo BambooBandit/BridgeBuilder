@@ -33,6 +33,8 @@ public class MapData
             PropertyField property = map.propertyMenu.mapPropertyPanel.lockedProperties.get(i);
             if(property instanceof ColorPropertyField)
                 this.lProps.add(new ColorPropertyFieldData((ColorPropertyField) property));
+            else if(property instanceof OpaqueColorPropertyField)
+                this.lProps.add(new OpaqueColorPropertyFieldData((OpaqueColorPropertyField) property));
             else if(property instanceof LightPropertyField)
                 this.lProps.add(new LightPropertyFieldData((LightPropertyField) property));
             else if(property instanceof FieldFieldPropertyValuePropertyField)

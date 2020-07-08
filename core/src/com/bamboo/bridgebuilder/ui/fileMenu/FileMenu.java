@@ -446,7 +446,8 @@ public class FileMenu extends Group
         json.addClassTag("prop", PropertyData.class);
         json.addClassTag("ffProp", FieldFieldPropertyValuePropertyFieldData.class);
         json.addClassTag("lfProp", LabelFieldPropertyValuePropertyFieldData.class);
-        json.addClassTag("rgbProp", ColorPropertyFieldData.class);
+        json.addClassTag("rgbaProp", ColorPropertyFieldData.class);
+        json.addClassTag("rgbProp", OpaqueColorPropertyFieldData.class);
         json.addClassTag("lightProp", LightPropertyFieldData.class);
         json.addClassTag("layer", LayerData.class);
         json.addClassTag("sLayer", SpriteLayerData.class);

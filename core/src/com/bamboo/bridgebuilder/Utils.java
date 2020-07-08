@@ -289,6 +289,17 @@ public class Utils
         return null;
     }
 
+    public static OpaqueColorPropertyField getLockedOpaqueColorField(Array<PropertyField> lockedProperties)
+    {
+        for(int i = 0; i < lockedProperties.size; i ++)
+        {
+            PropertyField propertyField = lockedProperties.get(i);
+            if (propertyField instanceof OpaqueColorPropertyField && !(propertyField instanceof ColorPropertyField))
+                return (OpaqueColorPropertyField) propertyField;
+        }
+        return null;
+    }
+
     public static LightPropertyField getLightField(Array<PropertyField> properties)
     {
         for(int i = 0; i < properties.size; i ++)

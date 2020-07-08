@@ -9,8 +9,10 @@ import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.OpaqueColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public class MapPropertyPanel extends Group
@@ -30,7 +32,7 @@ public class MapPropertyPanel extends Group
     public TextButton apply;
 
 
-    public MapPropertyPanel(Skin skin, PropertyMenu menu, BridgeBuilder editor)
+    public MapPropertyPanel(Skin skin, PropertyMenu menu, BridgeBuilder editor, Map map)
     {
         this.editor = editor;
         this.menu = menu;
@@ -40,7 +42,8 @@ public class MapPropertyPanel extends Group
         this.table = new Table();
         this.table.left().top();
 
-        ColorPropertyField mapRGBAProperty = new ColorPropertyField(skin, menu, this.properties, false, 0, 0, 0, 1);
+        OpaqueColorPropertyField mapBackgroundColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, map.r, map.g, map.b);
+        ColorPropertyField mapAmbientColorProperty = new ColorPropertyField(skin, menu, this.properties, false, 0, 0, 0, 1);
         LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = new LabelFieldPropertyValuePropertyField("Virtual Height", "20", skin, menu, properties, false);
 
         TextField.TextFieldFilter valueFilter = new TextField.TextFieldFilter()
@@ -55,7 +58,8 @@ public class MapPropertyPanel extends Group
         mapVirtualHeightProperty.value.setTextFieldFilter(valueFilter);
 
         this.lockedProperties = new Array<>();
-        this.lockedProperties.add(mapRGBAProperty);
+        this.lockedProperties.add(mapBackgroundColorProperty);
+        this.lockedProperties.add(mapAmbientColorProperty);
         this.lockedProperties.add(mapVirtualHeightProperty);
         this.properties = new Array<>();
 
@@ -69,7 +73,8 @@ public class MapPropertyPanel extends Group
             }
         });
 
-        this.table.add(mapRGBAProperty).padBottom(1).row();
+        this.table.add(mapBackgroundColorProperty).padBottom(1).row();
+        this.table.add(mapAmbientColorProperty).padBottom(1).row();
         this.table.add(mapVirtualHeightProperty).padBottom(1).row();
         this.table.add(this.apply).padBottom(1).row();
 
@@ -88,7 +93,7 @@ public class MapPropertyPanel extends Group
             this.table.getCell(this.table.getChildren().get(i)).size(width, textFieldHeight);
         }
 
-        float newHeight = textFieldHeight * 3;
+        float newHeight = textFieldHeight * 4;
 
         this.background.setBounds(0, 0, width, newHeight);
         this.stack.setSize(width, newHeight);
@@ -102,8 +107,12 @@ public class MapPropertyPanel extends Group
 
     public void apply()
     {
-        ColorPropertyField mapRGBAProperty = Utils.getLockedColorField(lockedProperties);
-        menu.map.rayHandler.setAmbientLight(Float.parseFloat(mapRGBAProperty.rValue.getText()), Float.parseFloat(mapRGBAProperty.gValue.getText()), Float.parseFloat(mapRGBAProperty.bValue.getText()), Float.parseFloat(mapRGBAProperty.aValue.getText()));
+        OpaqueColorPropertyField mapBackgroundColorProperty = Utils.getLockedOpaqueColorField(lockedProperties);
+        ColorPropertyField mapAmbientColorProperty = Utils.getLockedColorField(lockedProperties);
+        menu.map.rayHandler.setAmbientLight(Float.parseFloat(mapAmbientColorProperty.rValue.getText()), Float.parseFloat(mapAmbientColorProperty.gValue.getText()), Float.parseFloat(mapAmbientColorProperty.bValue.getText()), Float.parseFloat(mapAmbientColorProperty.aValue.getText()));
+        menu.map.r = mapBackgroundColorProperty.getR();
+        menu.map.g = mapBackgroundColorProperty.getG();
+        menu.map.b = mapBackgroundColorProperty.getB();
 
         LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = Utils.getLockedPropertyField(lockedProperties, "Virtual Height");
         menu.map.virtualHeight = Float.parseFloat(mapVirtualHeightProperty.value.getText());
