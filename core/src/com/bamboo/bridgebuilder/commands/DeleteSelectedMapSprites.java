@@ -28,6 +28,7 @@ public class DeleteSelectedMapSprites implements Command
     {
         if(this.selectedLayer != null)
         {
+            this.deletedSprites.clear();
             for(int i = 0; i < this.selectedSprites.size; i ++)
             {
                 MapSprite mapSprite = this.selectedSprites.get(i);

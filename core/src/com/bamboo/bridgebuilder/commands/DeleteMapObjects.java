@@ -23,6 +23,7 @@ public class DeleteMapObjects implements Command
     {
         if(this.selectedLayer != null)
         {
+            this.deletedObjects.clear();
             if(this.selectedLayer instanceof SpriteLayer)
             {
                 if(this.selectedObjects.size > 0)
