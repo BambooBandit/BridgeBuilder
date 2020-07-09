@@ -1056,6 +1056,23 @@ public class Map implements Screen
                     }
                 }
             }
+            // re-override the layers
+            for(int i = 0; i < layers.size; i ++)
+            {
+                Layer layer = layers.get(i);
+                if(!(layer instanceof SpriteLayer))
+                    continue;
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                for(int k = 0; k < spriteLayer.children.size; k ++)
+                {
+                    MapSprite mapSprite = spriteLayer.children.get(k);
+                    if(mapSprite.layerOverrideIndex > 0)
+                    {
+                        mapSprite.layerOverride = layers.get(mapSprite.layerOverrideIndex - 1);
+                        mapSprite.layerOverride.overrideSprite = mapSprite;
+                    }
+                }
+            }
         }
         PropertyToolPane.apply(this);
         propertyMenu.mapPropertyPanel.apply();
@@ -1079,6 +1096,7 @@ public class Map implements Screen
         Utils.setCenterOrigin(mapSprite.getX(), mapSprite.getY());
         mapSprite.setRotation(mapSpriteData.rot);
         mapSprite.setID(mapSpriteData.id);
+        mapSprite.layerOverrideIndex = mapSpriteData.loi;
 
         // locked properties
         int propSize = mapSpriteData.lProps.size();

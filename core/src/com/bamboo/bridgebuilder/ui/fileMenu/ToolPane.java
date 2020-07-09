@@ -335,6 +335,8 @@ public class ToolPane extends Group
                         {
                             SpriteLayer spriteLayer = (SpriteLayer) layer;
                             MapSprite mapSprite = spriteLayer.children.peek();
+                            if(mapSprite.layerOverride != null)
+                                continue;
                             map.selectedLayer.overrideSprite = mapSprite;
                             mapSprite.layerOverride = map.selectedLayer;
                             return;
@@ -346,6 +348,7 @@ public class ToolPane extends Group
                     int layerIndex = map.layers.indexOf(map.selectedLayer.overrideSprite.layer, true);
                     int spriteIndex = map.selectedLayer.overrideSprite.layer.children.indexOf(map.selectedLayer.overrideSprite, true);
                     spriteIndex --;
+                    MapSprite mapSprite;
                     if(spriteIndex < 0)
                     {
                         while(layerIndex - 1 > 0)
@@ -356,10 +359,22 @@ public class ToolPane extends Group
                         }
                         if(layerIndex < 0 || !(map.layers.get(layerIndex) instanceof SpriteLayer))
                             return;
-                        spriteIndex = ((SpriteLayer) map.layers.get(layerIndex)).children.size - 1;
+                        int i = ((SpriteLayer) map.layers.get(layerIndex)).children.size - 1;
+                        while(i >= 0)
+                        {
+                            mapSprite = (MapSprite) map.layers.get(layerIndex).children.get(i);
+                            if(mapSprite.layerOverride != null)
+                                i --;
+                            else
+                                break;
+                        }
+                        spriteIndex = i;
                     }
+                    if(spriteIndex < 0)
+                        return;
+                    mapSprite = (MapSprite) map.layers.get(layerIndex).children.get(spriteIndex);
                     map.selectedLayer.overrideSprite.layerOverride = null;
-                    map.selectedLayer.overrideSprite = (MapSprite) map.layers.get(layerIndex).children.get(spriteIndex);
+                    map.selectedLayer.overrideSprite = mapSprite;
                     map.selectedLayer.overrideSprite.layerOverride = map.selectedLayer;
                 }
             }
@@ -385,6 +400,8 @@ public class ToolPane extends Group
                         {
                             SpriteLayer spriteLayer = (SpriteLayer) layer;
                             MapSprite mapSprite = spriteLayer.children.peek();
+                            if(mapSprite.layerOverride != null)
+                                continue;
                             map.selectedLayer.overrideSprite = mapSprite;
                             mapSprite.layerOverride = map.selectedLayer;
                             return;
@@ -396,6 +413,7 @@ public class ToolPane extends Group
                     int layerIndex = map.layers.indexOf(map.selectedLayer.overrideSprite.layer, true);
                     int spriteIndex = map.selectedLayer.overrideSprite.layer.children.indexOf(map.selectedLayer.overrideSprite, true);
                     spriteIndex ++;
+                    MapSprite mapSprite;
                     if(spriteIndex >= map.selectedLayer.overrideSprite.layer.children.size)
                     {
                         while(layerIndex + 1 < map.layers.size - 1)
@@ -406,10 +424,24 @@ public class ToolPane extends Group
                         }
                         if(layerIndex >= map.layers.size || !(map.layers.get(layerIndex) instanceof SpriteLayer))
                             return;
-                        spriteIndex = 0;
+                        int i = 0;
+                        while(i < map.layers.get(layerIndex).children.size)
+                        {
+                            mapSprite = (MapSprite) map.layers.get(layerIndex).children.get(i);
+                            if(mapSprite.layerOverride != null)
+                                i ++;
+                            else
+                                break;
+                        }
+                        spriteIndex = i;
                     }
+
+                    if(spriteIndex >= map.layers.get(layerIndex).children.size)
+                        return;
+
+                    mapSprite = (MapSprite) map.layers.get(layerIndex).children.get(spriteIndex);
                     map.selectedLayer.overrideSprite.layerOverride = null;
-                    map.selectedLayer.overrideSprite = (MapSprite) map.layers.get(layerIndex).children.get(spriteIndex);
+                    map.selectedLayer.overrideSprite = mapSprite;
                     map.selectedLayer.overrideSprite.layerOverride = map.selectedLayer;
                 }
             }

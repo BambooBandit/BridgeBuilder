@@ -248,6 +248,9 @@ public class MapSprite extends LayerChild
         float[] vertices = sprite.getVertices();
         float colorFloatBits = sprite.getColor().toFloatBits();
 
+        if(layerOverride != null && layerOverride.layerField.isSelected)
+            colorFloatBits = Color.BLUE.toFloatBits();
+
         if(parentSprite == null)
         {
             float height = sprite.getRegionHeight() / 64f;
