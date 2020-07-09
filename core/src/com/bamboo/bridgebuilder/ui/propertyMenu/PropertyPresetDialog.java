@@ -30,6 +30,7 @@ public class PropertyPresetDialog extends Window
     private Table newCollisionSortBackProperty;
     private Table newAnimatedProperty;
     private Table newFadeLimitProperty;
+    private Table newBlowableProperty;
 
     private Table presetTable;
     private ScrollPane scrollPane;
@@ -94,9 +95,12 @@ public class PropertyPresetDialog extends Window
             else if(allPolygons)
             {
                 this.presetTable.add(this.newBlockedProperty).pad(5);
-                this.presetTable.add(this.newDustTypeProperty).pad(5);
                 this.presetTable.add(this.newCollisionSortProperty).pad(5);
                 this.presetTable.add(this.newCollisionSortBackProperty).pad(5);
+                this.presetTable.add(this.newDustTypeProperty).pad(5);
+
+                if(this.map.selectedLayer instanceof SpriteLayer)
+                    this.presetTable.add(this.newBlowableProperty).pad(5);
             }
         }
         else if(this.map.spriteMenu.selectedSpriteTools.size > 0)
@@ -146,6 +150,7 @@ public class PropertyPresetDialog extends Window
         this.createCollisionSort();
         this.createCollisionSortBack();
         this.createAnimated();
+        this.createWind();
         this.createFadeLimit();
     }
 
@@ -532,6 +537,71 @@ public class PropertyPresetDialog extends Window
                 chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "loop", "Value");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
                 chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "random", "Value");
+                addProperty.addAddPropertyCommandToChain(chainedProperty);
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
+    private void createWind()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newBlowableProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newBlowableProperty.background(spriteDrawable);
+        this.newBlowableProperty.add(new Label("Blowable", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("wind", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad / 6).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("skewWind", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("fpsWind", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("blowResistTop", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("blowResit", "...", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad).row();
+        this.newBlowableProperty.add(table);
+        this.newBlowableProperty.setTouchable(Touchable.enabled);
+        this.newBlowableProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newBlowableProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newBlowableProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty chainedProperty;
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "wind", "Value");
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "skewWind", "Value");
+                addProperty.addAddPropertyCommandToChain(chainedProperty);
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "fpsWind", "Value");
+                addProperty.addAddPropertyCommandToChain(chainedProperty);
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "blowResistTop", "17.5");
+                addProperty.addAddPropertyCommandToChain(chainedProperty);
+                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "blowResist", "17.5");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
                 map.executeCommand(addProperty);
                 return false;
