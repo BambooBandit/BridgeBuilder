@@ -14,16 +14,23 @@ public class PasteItems implements Command
     private Layer toLayer;
     Map fromMap;
     Map toMap;
+    MapSprite oldParent;
 
     public PasteItems(Map map, Layer toLayer)
     {
         this.cutItems = new Array(map.editor.copiedItems);
+
 
         this.fromLayer = cutItems.first().layer;
         this.toLayer = toLayer;
 
         this.fromMap = cutItems.first().layer.map;
         this.toMap = map;
+
+        if(toMap.editAttachedMapSprite != null && cutItems.first() instanceof MapSprite)
+        {
+            oldParent = ((MapSprite) cutItems.first()).parentSprite;
+        }
     }
 
     @Override
@@ -31,6 +38,18 @@ public class PasteItems implements Command
     {
         for(int i = 0; i < cutItems.size; i ++)
             this.toLayer.children.add(cutItems.get(i));
+
+        if(toMap.editAttachedMapSprite != null && cutItems.first() instanceof MapSprite)
+        {
+            for(int i = 0; i < cutItems.size; i ++)
+            {
+                MapSprite mapSprite = (MapSprite) cutItems.get(i);
+                if(mapSprite == toMap.editAttachedMapSprite)
+                    continue;
+                mapSprite.parentSprite = toMap.editAttachedMapSprite;
+                toMap.selectedSprites.first().updateBounds();
+            }
+        }
 
         fromMap.editor.copiedItems.clear();
 
@@ -49,6 +68,18 @@ public class PasteItems implements Command
     @Override
     public void undo()
     {
+        if(toMap.editAttachedMapSprite != null && cutItems.first() instanceof MapSprite)
+        {
+            for(int i = 0; i < cutItems.size; i ++)
+            {
+                MapSprite mapSprite = (MapSprite) cutItems.get(i);
+                if(mapSprite == toMap.editAttachedMapSprite)
+                    continue;
+                mapSprite.parentSprite = oldParent;
+                toMap.selectedSprites.first().updateBounds();
+            }
+        }
+
         for(int i = 0; i < cutItems.size; i ++)
             this.toLayer.children.removeValue(cutItems.get(i), true);
 

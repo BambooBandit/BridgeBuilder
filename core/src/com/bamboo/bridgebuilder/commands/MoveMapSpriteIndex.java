@@ -55,6 +55,8 @@ public class MoveMapSpriteIndex implements Command
     private void moveUp()
     {
         SpriteLayer layer = (SpriteLayer) this.mapSprite.layer;
+        if(map.editAttachedMapSprite == this.mapSprite)
+            layer = map.editAttachedMapSprite.attachedSprites;
         int index = layer.children.indexOf(this.mapSprite, true);
         if(index < layer.children.size - 1)
         {
@@ -68,6 +70,8 @@ public class MoveMapSpriteIndex implements Command
     private void moveDown()
     {
         SpriteLayer layer = (SpriteLayer) this.mapSprite.layer;
+        if(map.editAttachedMapSprite == this.mapSprite)
+            layer = map.editAttachedMapSprite.attachedSprites;
         int index = layer.children.indexOf(this.mapSprite, true);
         if (index > 0)
         {
@@ -81,6 +85,8 @@ public class MoveMapSpriteIndex implements Command
     private void moveAllTheWayUp()
     {
         SpriteLayer layer = (SpriteLayer) this.mapSprite.layer;
+        if(map.editAttachedMapSprite == this.mapSprite)
+            layer = map.editAttachedMapSprite.attachedSprites;
         this.oldIndex = layer.children.indexOf(this.mapSprite, true);
         layer.children.removeIndex(this.oldIndex);
         layer.children.add(this.mapSprite);
@@ -90,6 +96,8 @@ public class MoveMapSpriteIndex implements Command
     private void moveAllTheWayDown()
     {
         SpriteLayer layer = (SpriteLayer) this.mapSprite.layer;
+        if(map.editAttachedMapSprite == this.mapSprite)
+            layer = map.editAttachedMapSprite.attachedSprites;
         this.oldIndex = layer.children.indexOf(this.mapSprite, true);
         layer.children.removeIndex(this.oldIndex);
         layer.children.insert(0, this.mapSprite);
@@ -99,6 +107,8 @@ public class MoveMapSpriteIndex implements Command
     private void moveToIndex()
     {
         SpriteLayer layer = (SpriteLayer) this.mapSprite.layer;
+        if(map.editAttachedMapSprite == this.mapSprite)
+            layer = map.editAttachedMapSprite.attachedSprites;
         layer.children.removeValue(this.mapSprite, true);
         layer.children.insert(this.oldIndex, this.mapSprite);
         this.moved = true;
