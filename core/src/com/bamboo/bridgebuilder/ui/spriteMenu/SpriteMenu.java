@@ -206,4 +206,14 @@ public class SpriteMenu extends Group
             }
         }
     }
+
+    public boolean hasSpriteSheet(String name)
+    {
+        for(int i = 0; i < spriteSheets.size; i ++)
+        {
+            if(spriteSheets.get(i).name.equals(name))
+                return true;
+        }
+        return false;
+    }
 }

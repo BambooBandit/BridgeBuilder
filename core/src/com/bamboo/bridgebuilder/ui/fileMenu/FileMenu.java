@@ -12,8 +12,14 @@ import com.badlogic.gdx.utils.Json;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.commands.CreateSpriteSheet;
+import com.bamboo.bridgebuilder.commands.CutMapObjects;
+import com.bamboo.bridgebuilder.commands.CutSelectedMapSprites;
+import com.bamboo.bridgebuilder.commands.PasteItems;
 import com.bamboo.bridgebuilder.data.*;
 import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.map.SpriteLayer;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -38,7 +44,9 @@ public class FileMenu extends Group
     private TextButton saveButton;
     private TextButton saveAsButton;
     private TextButton saveBBMDefaultsButton;
-    private TextButton setBBMDefaultsButton;
+    private TextButton applyBBMDefaultsButton;
+    public TextButton cutButton;
+    public TextButton pasteButton;
     private TextButton undoButton;
     private TextButton redoButton;
 
@@ -52,8 +60,10 @@ public class FileMenu extends Group
         this.openButton = new TextButton("Open", skin);
         this.saveButton = new TextButton("Save", skin);
         this.saveAsButton = new TextButton("Save As", skin);
-        this.saveBBMDefaultsButton = new TextButton("Save BBM Defaults", skin);
-        this.setBBMDefaultsButton = new TextButton("Set BBM Defaults", skin);
+        this.saveBBMDefaultsButton = new TextButton("Save Default", skin);
+        this.applyBBMDefaultsButton = new TextButton("Apply Default", skin);
+        this.cutButton = new TextButton("Cut", skin, "checked");
+        this.pasteButton = new TextButton("Paste", skin, "checked");
         this.undoButton = new TextButton("Undo", skin);
         this.redoButton = new TextButton("Redo", skin);
 
@@ -63,7 +73,9 @@ public class FileMenu extends Group
         this.saveButton.getLabel().setColor(Color.BLACK);
         this.saveAsButton.getLabel().setColor(Color.BLACK);
         this.saveBBMDefaultsButton.getLabel().setColor(Color.BLACK);
-        this.setBBMDefaultsButton.getLabel().setColor(Color.BLACK);
+        this.applyBBMDefaultsButton.getLabel().setColor(Color.BLACK);
+        this.cutButton.getLabel().setColor(Color.BLACK);
+        this.pasteButton.getLabel().setColor(Color.BLACK);
         this.undoButton.getLabel().setColor(Color.BLACK);
         this.redoButton.getLabel().setColor(Color.BLACK);
 
@@ -126,7 +138,7 @@ public class FileMenu extends Group
                 }
             }
         });
-        this.setBBMDefaultsButton.addListener(new ClickListener()
+        this.applyBBMDefaultsButton.addListener(new ClickListener()
         {
             @Override
             public void clicked(InputEvent event, float x, float y)
@@ -147,6 +159,54 @@ public class FileMenu extends Group
                         {
                         }
                     };
+                }
+            }
+        });
+        this.cutButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                if(editor.getScreen() != null)
+                {
+                    Map map = (Map) editor.getScreen();
+                    if(map.selectedLayer == null)
+                        return;
+                    if(map.selectedObjects.size != 0)
+                    {
+                        CutMapObjects cutMapObjects = new CutMapObjects(map.selectedObjects, map.selectedLayer);
+                        map.executeCommand(cutMapObjects);
+                    }
+                    else if(map.selectedSprites.size != 0)
+                    {
+                        CutSelectedMapSprites cutSelectedMapSprites = new CutSelectedMapSprites(map.selectedSprites, (SpriteLayer) map.selectedLayer);
+                        map.executeCommand(cutSelectedMapSprites);
+                    }
+                }
+            }
+        });
+        this.pasteButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                if(editor.getScreen() != null && editor.copiedItems.size != 0)
+                {
+                    Map map = (Map) editor.getScreen();
+                    if(map.editor.copiedItems.first() instanceof MapSprite)
+                    {
+                        for (int i = 0; i < map.editor.copiedItems.size; i++)
+                        {
+                            MapSprite copiedMapSprite = (MapSprite) map.editor.copiedItems.get(i);
+                            if(!map.spriteMenu.hasSpriteSheet(copiedMapSprite.tool.sheet.name))
+                            {
+                                CreateSpriteSheet createSpriteSheet = new CreateSpriteSheet(map, copiedMapSprite.tool.sheet.name);
+                                map.executeCommand(createSpriteSheet);
+                            }
+                        }
+                    }
+                    PasteItems pasteItems = new PasteItems(map, map.selectedLayer);
+                    map.executeCommand(pasteItems);
                 }
             }
         });
@@ -182,7 +242,9 @@ public class FileMenu extends Group
         this.buttonTable.add(this.saveButton);
         this.buttonTable.add(this.saveAsButton);
         this.buttonTable.add(this.saveBBMDefaultsButton);
-        this.buttonTable.add(this.setBBMDefaultsButton);
+        this.buttonTable.add(this.applyBBMDefaultsButton);
+        this.buttonTable.add(this.cutButton);
+        this.buttonTable.add(this.pasteButton);
         this.buttonTable.add(this.undoButton);
         this.buttonTable.add(this.redoButton);
 
@@ -419,7 +481,9 @@ public class FileMenu extends Group
         this.buttonTable.getCell(this.saveButton).size(buttonWidth, buttonHeight);
         this.buttonTable.getCell(this.saveAsButton).size(buttonWidth, buttonHeight);
         this.buttonTable.getCell(this.saveBBMDefaultsButton).size(buttonWidth, buttonHeight);
-        this.buttonTable.getCell(this.setBBMDefaultsButton).size(buttonWidth, buttonHeight);
+        this.buttonTable.getCell(this.applyBBMDefaultsButton).size(buttonWidth, buttonHeight);
+        this.buttonTable.getCell(this.cutButton).size(buttonWidth, buttonHeight);
+        this.buttonTable.getCell(this.pasteButton).size(buttonWidth, buttonHeight);
         this.buttonTable.getCell(this.undoButton).size(buttonWidth, buttonHeight);
         this.buttonTable.getCell(this.redoButton).size(buttonWidth, buttonHeight);
         this.buttonTable.invalidateHierarchy();

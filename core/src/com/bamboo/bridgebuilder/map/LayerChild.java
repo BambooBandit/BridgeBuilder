@@ -3,7 +3,7 @@ package com.bamboo.bridgebuilder.map;
 public abstract class LayerChild
 {
     public float x, y;
-    protected Map map;
+    public Map map;
     public Layer layer;
     public boolean selected;
     public float perspectiveScale = 0;

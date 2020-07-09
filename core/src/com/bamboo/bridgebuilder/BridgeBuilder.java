@@ -11,9 +11,7 @@ import com.bamboo.bridgebuilder.commands.Command;
 import com.bamboo.bridgebuilder.commands.CreateLayer;
 import com.bamboo.bridgebuilder.commands.MoveMapSpriteIndex;
 import com.bamboo.bridgebuilder.commands.SelectLayer;
-import com.bamboo.bridgebuilder.map.Layer;
-import com.bamboo.bridgebuilder.map.Map;
-import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.fileMenu.FileMenu;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
 import com.bamboo.bridgebuilder.ui.fileMenu.YesNoDialog;
@@ -41,6 +39,8 @@ public class BridgeBuilder extends Game
 	public static boolean fileChooserOpen = false;
 
 	private boolean crashed = false;
+
+	public Array<LayerChild> copiedItems = new Array<>();
 
 	@Override
 	public void create ()
@@ -267,6 +267,22 @@ public class BridgeBuilder extends Game
 			}
 			else // Render the active map
 				super.render();
+
+			boolean cut = false;
+			boolean paste = false;
+			if(activeMap != null)
+			{
+				if(activeMap.selectedLayer != null && (activeMap.selectedSprites.size != 0 || activeMap.selectedObjects.size != 0))
+					cut = true;
+				if(copiedItems.size != 0 && activeMap.selectedLayer != null)
+                {
+                    if((copiedItems.first() instanceof MapSprite && activeMap.selectedLayer instanceof SpriteLayer) || (copiedItems.first() instanceof MapObject && activeMap.selectedLayer instanceof ObjectLayer))
+                    paste = true;
+                }
+			}
+			fileMenu.cutButton.setChecked(!cut);
+			fileMenu.pasteButton.setChecked(!paste);
+
 
 			stage.act();
 			stage.draw();
