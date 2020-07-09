@@ -140,6 +140,18 @@ public class PropertyToolPane extends Group
                     ColorPropertyField colorProperty = Utils.getLockedColorField(mapSprite.lockedProperties);
                     mapSprite.setColor(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
 
+                    // Attached map sprites
+                    if(mapSprite.attachedSprites != null)
+                    {
+                        for(int s = 0; s < mapSprite.attachedSprites.children.size; s++)
+                        {
+                            MapSprite attachedMapSprite = mapSprite.attachedSprites.children.get(s);
+                            // Set sprite color
+                            colorProperty = Utils.getLockedColorField(attachedMapSprite.lockedProperties);
+                            attachedMapSprite.setColor(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
+                        }
+                    }
+
                     // Attached map objects
                     if(mapSprite.attachedMapObjects != null)
                     {
