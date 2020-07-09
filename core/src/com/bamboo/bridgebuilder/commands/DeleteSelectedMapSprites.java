@@ -59,12 +59,18 @@ public class DeleteSelectedMapSprites implements Command
     @Override
     public void undo()
     {
-        Iterator<IntMap.Entry<MapSprite>> iterator = this.deletedSprites.iterator();
-        while(iterator.hasNext())
+        while(this.deletedSprites.size > 0)
         {
-            IntMap.Entry<MapSprite> entry = iterator.next();
-            this.selectedLayer.children.insert(entry.key, entry.value);
-            entry.value.select();
+            Iterator<IntMap.Entry<MapSprite>> iterator = this.deletedSprites.iterator();
+            while (iterator.hasNext())
+            {
+                IntMap.Entry<MapSprite> entry = iterator.next();
+                if(entry.key > this.selectedLayer.children.size)
+                    continue;
+                this.selectedLayer.children.insert(entry.key, entry.value);
+                this.deletedSprites.remove(entry.key);
+                entry.value.select();
+            }
         }
         this.selectedLayer.map.propertyMenu.rebuild();
         this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
