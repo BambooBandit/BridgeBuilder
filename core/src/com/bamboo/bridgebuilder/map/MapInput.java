@@ -436,9 +436,31 @@ public class MapInput implements InputProcessor
 
         if(Command.shouldExecute(map, DrawMapSprite.class))
         {
-            DrawMapSprite drawMapSprite = new DrawMapSprite(this.map, (SpriteLayer) this.map.selectedLayer, x, y);
-            this.map.executeCommand(drawMapSprite);
-            return true;
+            if(!editor.fileMenu.toolPane.splat.selected)
+            {
+                DrawMapSprite drawMapSprite = new DrawMapSprite(this.map, (SpriteLayer) this.map.selectedLayer, x, y);
+                this.map.executeCommand(drawMapSprite);
+                return true;
+            }
+            else
+            {
+                int randomSpawnAmount = Utils.randomInt(editor.fileMenu.toolPane.splatDialog.getMinSpawn(), editor.fileMenu.toolPane.splatDialog.getMaxSpawn());
+                DrawMapSprite drawMapSprite = null;
+                for(int i = 0; i < randomSpawnAmount; i ++)
+                {
+                    float randomX = Utils.randomFloat(x - editor.fileMenu.toolPane.splatDialog.getMaxXDisplacement(), x + editor.fileMenu.toolPane.splatDialog.getMaxXDisplacement());
+                    float randomY = Utils.randomFloat(y - editor.fileMenu.toolPane.splatDialog.getMaxYDisplacement(), y + editor.fileMenu.toolPane.splatDialog.getMaxYDisplacement());
+                    if(i == 0)
+                        drawMapSprite = new DrawMapSprite(this.map, (SpriteLayer) this.map.selectedLayer, randomX, randomY);
+                    else
+                        drawMapSprite.addCommandToChain(new DrawMapSprite(this.map, (SpriteLayer) this.map.selectedLayer, randomX, randomY));
+                }
+                if(randomSpawnAmount > 0)
+                {
+                    this.map.executeCommand(drawMapSprite);
+                    return true;
+                }
+            }
         }
         return false;
     }

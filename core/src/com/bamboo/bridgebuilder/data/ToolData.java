@@ -50,7 +50,8 @@ public class ToolData
 
         if(spriteTool.attachedMapObjectManagers != null)
         {
-            this.objs = new ArrayList<>();
+            if(spriteTool.attachedMapObjectManagers.size > 0)
+                this.objs = new ArrayList<>();
             for (int i = 0; i < spriteTool.attachedMapObjectManagers.size; i++)
             {
                 AttachedMapObjectManager attachedMapObjectManager = spriteTool.attachedMapObjectManagers.get(i);

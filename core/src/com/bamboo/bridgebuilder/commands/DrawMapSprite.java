@@ -1,5 +1,6 @@
 package com.bamboo.bridgebuilder.commands;
 
+import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.map.SpriteLayer;
@@ -12,6 +13,8 @@ public class DrawMapSprite implements Command
     private MapSprite mapSprite = null;
     private float x;
     private float y;
+
+    private Array<DrawMapSprite> chainedCommands; // Used for adding multiple mapsprites in one execution
 
     public DrawMapSprite(Map map, SpriteLayer layer, float x, float y)
     {
@@ -35,6 +38,10 @@ public class DrawMapSprite implements Command
 
         if(this.map.editor.fileMenu.toolPane.depth.selected)
             this.map.colorizeDepth();
+
+        if(this.chainedCommands != null)
+            for(int i = 0; i < this.chainedCommands.size; i ++)
+                this.chainedCommands.get(i).execute();
     }
 
     @Override
@@ -47,5 +54,16 @@ public class DrawMapSprite implements Command
 
         if(this.map.editor.fileMenu.toolPane.spriteGridColors.selected)
             this.map.updateLayerSpriteGrids();
+
+        if(this.chainedCommands != null)
+            for(int i = 0; i < this.chainedCommands.size; i ++)
+                this.chainedCommands.get(i).undo();
+    }
+
+    public void addCommandToChain(DrawMapSprite command)
+    {
+        if(this.chainedCommands == null)
+            this.chainedCommands = new Array<>();
+        this.chainedCommands.add(command);
     }
 }

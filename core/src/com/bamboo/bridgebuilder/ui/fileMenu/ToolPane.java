@@ -13,6 +13,7 @@ import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.map.SpriteLayer;
 import com.bamboo.bridgebuilder.ui.GradientDialog;
 import com.bamboo.bridgebuilder.ui.MinMaxDialog;
+import com.bamboo.bridgebuilder.ui.SplatDialog;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
@@ -43,6 +44,7 @@ public class ToolPane extends Group
     public Tool lines;
     public Tool b2drender;
     public Tool attachedSprites;
+    public Tool splat;
     public Tool selectedTool;
     private TextButton bringUp;
     private TextButton bringDown;
@@ -54,6 +56,9 @@ public class ToolPane extends Group
 
     public GradientDialog gradientDialog;
     private TextButton gradientButton;
+
+    public SplatDialog splatDialog;
+    private TextButton splatButton;
 
     public MinMaxDialog minMaxDialog;
     private TextButton minMaxButton;
@@ -87,6 +92,7 @@ public class ToolPane extends Group
         this.lines = new Tool(editor, this, true, Tools.LINES);
         this.b2drender = new Tool(editor, this, true, Tools.B2DR);
         this.attachedSprites = new Tool(editor, this, true, Tools.ATTACHEDSPRITES);
+        this.splat = new Tool(editor, this, true, Tools.SPLAT);
         this.bringUp = new TextButton("^", skin);
         this.bringDown = new TextButton("v", skin);
         this.bringTop = new TextButton("^^", skin);
@@ -97,6 +103,9 @@ public class ToolPane extends Group
 
         this.gradientDialog = new GradientDialog(editor.stage, skin);
         this.gradientButton = new TextButton("Gradient", skin);
+
+        this.splatDialog = new SplatDialog(editor.stage, skin);
+        this.splatButton = new TextButton("Splat", skin);
 
         this.minMaxDialog = new MinMaxDialog(editor.stage, skin);
         this.minMaxButton = new TextButton("Min Max Settings", skin);
@@ -123,7 +132,8 @@ public class ToolPane extends Group
         this.toolTable.add(this.depth).padRight(1);
         this.toolTable.add(this.lines).padRight(1);
         this.toolTable.add(this.b2drender).padRight(1);
-        this.toolTable.add(this.attachedSprites).padRight(5);
+        this.toolTable.add(this.attachedSprites).padRight(1);
+        this.toolTable.add(this.splat).padRight(5);
         this.toolTable.add(this.bringUp).padRight(1);
         this.toolTable.add(this.bringDown).padRight(1);
         this.toolTable.add(this.bringTop).padRight(1);
@@ -132,6 +142,7 @@ public class ToolPane extends Group
         this.toolTable.add(this.layerUpOverride).padRight(1);
         this.toolTable.add(this.layerOverrideReset).padRight(5);
         this.toolTable.add(this.gradientButton).padRight(5);
+        this.toolTable.add(this.splatButton).padRight(5);
         this.toolTable.add(this.minMaxButton).padRight(5);
         this.toolTable.add(this.fps).padRight(1);
 
@@ -170,6 +181,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.lines).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.b2drender).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.attachedSprites).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.splat).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringUp).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringDown).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringTop).size(toolHeight, toolHeight);
@@ -178,6 +190,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.layerUpOverride).size(toolHeight * 4.75f, toolHeight);
         this.toolTable.getCell(this.layerOverrideReset).size(toolHeight * 4.75f, toolHeight);
         this.toolTable.getCell(this.gradientButton).size(toolHeight * 2.75f, toolHeight);
+        this.toolTable.getCell(this.splatButton).size(toolHeight * 2.75f, toolHeight);
         this.toolTable.getCell(this.minMaxButton).size(toolHeight * 4.75f, toolHeight);
         this.toolTable.getCell(this.fps).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();
@@ -255,6 +268,15 @@ public class ToolPane extends Group
             public void clicked(InputEvent event, float x, float y)
             {
                 gradientDialog.open();
+            }
+        });
+
+        this.splatButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                splatDialog.open();
             }
         });
 

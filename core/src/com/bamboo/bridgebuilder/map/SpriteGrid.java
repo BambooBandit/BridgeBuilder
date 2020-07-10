@@ -32,7 +32,13 @@ public class SpriteGrid
 
         this.fbo = new FrameBuffer(Pixmap.Format.RGBA8888, objectLayer.width * 64, objectLayer.height * 64, false);
 
-        this.resizeGrid();
+        this.grid.clear();
+        int newSize = this.objectLayer.width * this.objectLayer.height;
+        if(this.grid.size >= newSize)
+            this.grid.removeRange(newSize, this.grid.size - 1);
+        for(int i = this.grid.size; i < newSize; i ++)
+            this.grid.add(new SpriteCell());
+        this.fbo = new FrameBuffer(Pixmap.Format.RGBA8888, this.objectLayer.width * 64, this.objectLayer.height * 64, false);
     }
 
     public void drawBlocked()
