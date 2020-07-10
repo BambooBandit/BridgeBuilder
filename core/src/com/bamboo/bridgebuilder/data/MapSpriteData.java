@@ -1,9 +1,6 @@
 package com.bamboo.bridgebuilder.data;
 
 import com.bamboo.bridgebuilder.map.MapSprite;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
-
-import java.util.ArrayList;
 
 public class MapSpriteData extends LayerChildData
 {
@@ -16,7 +13,6 @@ public class MapSpriteData extends LayerChildData
     public int loi; // layer override index. The index of the layer that has been overridden to always draw behind this sprite. It is also counting from 1 rather than 0 for JSON purposes.
     public static int defaultColorValue = 1;
     public static int defaultScaleValue = 1;
-    public ArrayList<PropertyData> lProps;
     public boolean parent;
 
     public MapSpriteData() {}
@@ -50,19 +46,5 @@ public class MapSpriteData extends LayerChildData
             this.loi = mapSprite.layer.map.layers.indexOf(mapSprite.layerOverride, true) + 1;
         else
             this.loi = 0;
-
-        this.lProps = new ArrayList<>();
-        for(int i = 0; i < mapSprite.lockedProperties.size; i ++)
-        {
-            PropertyField property = mapSprite.lockedProperties.get(i);
-            if(property instanceof ColorPropertyField)
-                this.lProps.add(new ColorPropertyFieldData((ColorPropertyField) property));
-            else if(property instanceof LightPropertyField)
-                this.lProps.add(new LightPropertyFieldData((LightPropertyField) property));
-            else if(property instanceof FieldFieldPropertyValuePropertyField)
-                this.lProps.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
-            else if(property instanceof LabelFieldPropertyValuePropertyField)
-                this.lProps.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
-        }
     }
 }

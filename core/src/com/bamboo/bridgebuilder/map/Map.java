@@ -1097,14 +1097,6 @@ public class Map implements Screen
         mapSprite.setRotation(mapSpriteData.rot);
         mapSprite.setID(mapSpriteData.id);
         mapSprite.layerOverrideIndex = mapSpriteData.loi;
-
-        // locked properties
-        int propSize = mapSpriteData.lProps.size();
-        for (int s = 0; s < propSize; s++)
-        {
-            PropertyData propertyData = mapSpriteData.lProps.get(s);
-            propertyMenu.changeLockedPropertyValue(propertyData, spriteTool.lockedProperties);
-        }
         return mapSprite;
     }
 }
