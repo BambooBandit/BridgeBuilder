@@ -692,7 +692,7 @@ public class MapSprite extends LayerChild
     {
         this.map.selectedSprites.removeValue(this, true);
         this.selected = false;
-        if(this.tool.attachedMapObjectManagers == null)
+        if(this.tool.attachedMapObjectManagers == null || !this.tool.hasAttachedMapObjects())
             return;
         for(int i = 0; i < this.attachedMapObjects.size; i ++)
             this.attachedMapObjects.get(i).unselect();

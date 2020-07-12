@@ -59,7 +59,10 @@ public class SpriteLayer extends Layer
             if(mapSprite.attachedSprites != null)
             {
                 for(int k = 0; k < mapSprite.attachedSprites.children.size; k ++)
-                    mapSprite.attachedSprites.children.get(k).draw();
+                {
+                    if(map.editor.fileMenu.toolPane.top.selected || mapSprite.attachedSprites.children.get(k) == mapSprite)
+                        mapSprite.attachedSprites.children.get(k).draw();
+                }
             }
             else
                 mapSprite.draw();
