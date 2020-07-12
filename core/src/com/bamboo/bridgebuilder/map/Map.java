@@ -185,6 +185,7 @@ public class Map implements Screen
         //spritebatch begin
         if(!editor.fileMenu.toolPane.spriteGridColors.selected)
             drawSpriteLayersAndLights();
+        drawDepthIndexes();
         //spritebatch end
         this.editor.batch.end();
 
@@ -426,6 +427,41 @@ public class Map implements Screen
             renderlights(null);
             this.editor.batch.begin();
         }
+    }
+
+    private void drawDepthIndexes()
+    {
+        if(!editor.fileMenu.toolPane.depth.selected)
+            return;
+        this.editor.batch.setProjectionMatrix(this.editor.stage.getCamera().combined);
+        for(int i = 0; i < layers.size; i ++)
+        {
+            Layer layer = layers.get(i);
+            if(layer instanceof SpriteLayer)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                sprite:
+                for(int k = 0; k < spriteLayer.children.size; k ++)
+                {
+                    MapSprite mapSprite = spriteLayer.children.get(k);
+                    if(mapSprite.attachedMapObjects == null)
+                        continue sprite;
+                    boolean collisionSort = false;
+                    for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
+                    {
+                        MapObject mapObject = mapSprite.attachedMapObjects.get(s);
+                        if(Utils.getPropertyField(mapObject.properties, "collisionSort") != null || Utils.getPropertyField(mapObject.properties, "collisionSortBack") != null)
+                            collisionSort = true;
+                    }
+                    if(!collisionSort)
+                        continue sprite;
+
+                    Vector3 project = Utils.project(camera, mapSprite.getX() + mapSprite.width / 2f, mapSprite.getY() + mapSprite.height / 2f);
+                    Utils.centerPrint(editor.batch, "" + k, project.x, project.y);
+                }
+            }
+        }
+        this.editor.batch.setProjectionMatrix(this.camera.combined);
     }
 
     private void renderlights(Layer layer)
