@@ -124,7 +124,7 @@ public class SpriteGrid
         this.objectLayer.map.camera.position.set(this.objectLayer.map.camera.viewportWidth * this.objectLayer.map.camera.zoom / 2f, this.objectLayer.map.camera.viewportHeight * this.objectLayer.map.camera.zoom / 2f, 0);
         this.objectLayer.map.camera.update();
 
-        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClearColor(this.objectLayer.map.r, this.objectLayer.map.g, this.objectLayer.map.b, 1);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
         this.objectLayer.map.editor.batch.begin();
