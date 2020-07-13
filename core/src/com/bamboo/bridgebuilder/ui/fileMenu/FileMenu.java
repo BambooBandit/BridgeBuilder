@@ -335,7 +335,12 @@ public class FileMenu extends Group
             saveAs(map, removeMapAfterSaving, closeApplicationAfterSaving);
             return;
         }
+        boolean depthSelected = editor.fileMenu.toolPane.depth.selected;
+        if(depthSelected)
+            editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.depth);
         MapData mapData = new MapData(map, false);
+        if(depthSelected)
+            editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.depth);
 
         Json json = createJson();
 
