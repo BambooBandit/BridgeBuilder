@@ -6,7 +6,7 @@ public abstract class LayerChild
     public Map map;
     public Layer layer;
     public boolean selected;
-    public float perspectiveScale = 0;
+    public float perspectiveScale = 1;
 
     public LayerChild(Map map, Layer layer, float x, float y)
     {

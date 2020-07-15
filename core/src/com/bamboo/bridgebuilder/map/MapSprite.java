@@ -221,11 +221,13 @@ public class MapSprite extends LayerChild
         }
 
         Vector3 screenCenter = Utils.unproject(map.camera, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+        float perspectiveScaleX = this.perspectiveScale;
+        float perspectiveScaleY = this.perspectiveScale / 2f;
         float xDis = x - screenCenter.x;
         float yDis = y - screenCenter.y;
-        float xOffset = z * xDis;
+        float xOffset = z * xDis * perspectiveScaleX;
         float yFactor = z * yDis;
-        float yOffset = yFactor * height;
+        float yOffset = (yFactor * height * perspectiveScaleY) / 2f;
         xOffset *= height;
 
         skewProject.set(xOffset, yOffset);
@@ -322,6 +324,8 @@ public class MapSprite extends LayerChild
                     TextureAtlas.AtlasSprite topsprite = tool.topSprites.get(i);
                     topsprite.setPosition(sprite.getX(), sprite.getY());
                     topsprite.setRotation(sprite.getRotation());
+                    topsprite.setOrigin(sprite.getOriginX(), sprite.getOriginY());
+                    topsprite.setScale( this.scale * perspectiveScale);
 
                     if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
                         topsprite.setAlpha(topsprite.getColor().a / 3.5f);
@@ -391,18 +395,6 @@ public class MapSprite extends LayerChild
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.YELLOW);
         map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
-    }
-
-    public void drawTopSprites()
-    {
-        if(this.sprite != null)
-        {
-            if(this.tool.topSprites != null)
-            {
-                for(int i = 0; i < this.tool.topSprites.size; i ++)
-                    map.editor.batch.draw(this.tool.topSprites.get(i), getX(), getY());
-            }
-        }
     }
 
     public void drawRotationBox()
@@ -600,14 +592,16 @@ public class MapSprite extends LayerChild
                 float coeff = positionY / mapHeight;
                 float delta = perspectiveTop - perspectiveBottom;
 
-                this.perspectiveScale = (perspectiveBottom + coeff * delta) - 1;
-                scale = this.scale + this.perspectiveScale;
+                this.perspectiveScale = (perspectiveBottom + coeff * delta);
+                scale = this.scale * this.perspectiveScale;
 
                 yScaleDisplacement += ((trimHeight * scale) - trimHeight) / 2f;
                 xScaleDisplacement += ((trimWidth * scale) - trimWidth) / 2f;
             }
             catch (NumberFormatException e){} catch (NullPointerException e){}
         }
+        else
+            this.perspectiveScale = 1;
 
         this.polygon.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
         this.sprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
@@ -638,7 +632,7 @@ public class MapSprite extends LayerChild
 
         if(map.editor.fileMenu.toolPane.perspective.selected && !Utils.isLayerGround(this.layer))
         {
-            float perspectiveScale = this.scale + this.perspectiveScale;
+            float perspectiveScale = this.scale * this.perspectiveScale;
             scale = perspectiveScale;
         }
         this.sprite.setScale(scale);

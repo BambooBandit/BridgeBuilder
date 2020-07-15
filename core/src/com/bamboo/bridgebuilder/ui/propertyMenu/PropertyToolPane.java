@@ -223,8 +223,6 @@ public class PropertyToolPane extends Group
 
     public static void updatePerspective(Map map)
     {
-        if(!map.editor.fileMenu.toolPane.perspective.selected)
-            return;
         for(int i = 0; i < map.layers.size; i++)
         {
             Layer layer = map.layers.get(i);
