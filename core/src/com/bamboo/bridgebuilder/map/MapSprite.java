@@ -523,20 +523,17 @@ public class MapSprite extends LayerChild
         float offsetDifferenceX = this.x - oldX;
         float offsetDifferenceY = this.y - oldY;
 
+        float xOffsetFromParent = 0;
+        float yOffsetFromParent = 0;
+        if(parentSprite != null)
+        {
+            xOffsetFromParent = (this.x - parentSprite.x) * parentSprite.perspectiveScale;
+            yOffsetFromParent = (this.y - parentSprite.y) * parentSprite.perspectiveScale;
+        }
+
         float yScaleDisplacement = 0;
         float xScaleDisplacement = 0;
         float scale = this.scale;
-
-        if(this.attachedSprites != null)
-        {
-            for(int i = 0; i < this.attachedSprites.children.size; i ++)
-            {
-                MapSprite mapSprite = this.attachedSprites.children.get(i);
-                if(mapSprite == this)
-                    continue;
-                mapSprite.setPosition(mapSprite.getX() + offsetDifferenceX, mapSprite.getY() + offsetDifferenceY);
-            }
-        }
 
         if(this.map.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this.map, this.layer) && !Utils.isLayerGround(this.layer))
         {
@@ -547,6 +544,12 @@ public class MapSprite extends LayerChild
             float trimY = y + sprite.getAtlasRegion().offsetY / 64f;
             float trimWidth = sprite.getAtlasRegion().getRegionWidth() / 64f;
             float trimHeight = sprite.getAtlasRegion().getRegionHeight() / 64f;
+
+            if(parentSprite != null)
+            {
+                trimX = parentSprite.x + sprite.getAtlasRegion().offsetX / 64f;
+                trimY = parentSprite.y + sprite.getAtlasRegion().offsetX / 64f;
+            }
 
             map.camera.update();
             float[] m = this.map.camera.combined.getValues();
@@ -595,6 +598,9 @@ public class MapSprite extends LayerChild
                 this.perspectiveScale = (perspectiveBottom + coeff * delta);
                 scale = this.scale * this.perspectiveScale;
 
+                if(parentSprite != null)
+                    scale = this.scale * parentSprite.perspectiveScale;
+
                 yScaleDisplacement += ((trimHeight * scale) - trimHeight) / 2f;
                 xScaleDisplacement += ((trimWidth * scale) - trimWidth) / 2f;
             }
@@ -603,9 +609,20 @@ public class MapSprite extends LayerChild
         else
             this.perspectiveScale = 1;
 
-        this.polygon.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
-        this.sprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
+        this.polygon.setPosition(x + xScaleDisplacement + xOffsetFromParent, y + yScaleDisplacement + yOffsetFromParent);
+        this.sprite.setPosition(x + xScaleDisplacement + xOffsetFromParent, y + yScaleDisplacement + yOffsetFromParent);
         this.sprite.setScale(scale);
+
+        if(this.attachedSprites != null)
+        {
+            for(int i = 0; i < this.attachedSprites.children.size; i ++)
+            {
+                MapSprite mapSprite = this.attachedSprites.children.get(i);
+                if(mapSprite == this)
+                    continue;
+                mapSprite.setPosition(mapSprite.getX() + offsetDifferenceX, mapSprite.getY() + offsetDifferenceY);
+            }
+        }
 
         x += this.width / 2;
         y += this.height / 2;
