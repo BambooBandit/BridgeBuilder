@@ -629,14 +629,6 @@ public class PropertyPresetDialog extends Window
         fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("antiDepth", "...", this.skin, null, null, false);
         fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
         fieldFieldPropertyValuePropertyField.clearListeners();
-        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
-        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("topScale", "...", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
-        fieldFieldPropertyValuePropertyField.clearListeners();
-        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad / 6).row();
-        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("bottomScale", "...", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
-        fieldFieldPropertyValuePropertyField.clearListeners();
         table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad).row();
         this.newPerspectiveProperty.add(table);
         this.newPerspectiveProperty.setTouchable(Touchable.enabled);
@@ -657,10 +649,6 @@ public class PropertyPresetDialog extends Window
                 AddProperty chainedProperty;
                 AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "skew", "0");
                 chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "antiDepth", "0");
-                addProperty.addAddPropertyCommandToChain(chainedProperty);
-                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "topScale", "1");
-                addProperty.addAddPropertyCommandToChain(chainedProperty);
-                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "bottomScale", "1");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
                 map.executeCommand(addProperty);
                 return false;

@@ -15,7 +15,6 @@ import com.bamboo.bridgebuilder.commands.*;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 
@@ -698,20 +697,12 @@ public class MapInput implements InputProcessor
                 float[] m = this.map.camera.combined.getValues();
                 float skew = 0;
                 float antiDepth = 0;
-                float perspectiveTop = 0;
-                float perspectiveBottom = 0;
                 try
                 {
-                    PropertyField topProperty = Utils.getTopScalePerspectiveProperty(this.map, this.map.selectedLayer);
-                    PropertyField bottomProperty = Utils.getBottomScalePerspectiveProperty(this.map, this.map.selectedLayer);
                     FieldFieldPropertyValuePropertyField property = Utils.getSkewPerspectiveProperty(this.map, this.map.selectedLayer);
                     skew = Float.parseFloat(property.value.getText());
                     property = Utils.getAntiDepthPerspectiveProperty(this.map, this.map.selectedLayer);
                     antiDepth = Float.parseFloat(property.value.getText());
-                    if(topProperty != null)
-                        perspectiveTop = Float.parseFloat(((FieldFieldPropertyValuePropertyField) topProperty).value.getText());
-                    if(bottomProperty != null)
-                        perspectiveBottom = Float.parseFloat(((FieldFieldPropertyValuePropertyField) bottomProperty).value.getText());
                 }
                 catch (NumberFormatException e){}
                 if(antiDepth >= .1f)
@@ -744,13 +735,7 @@ public class MapInput implements InputProcessor
 
                 previewSprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
 
-                float mapHeight = this.map.selectedLayer.height;
-                float positionY = y;
-
-                float coeff = positionY / mapHeight;
-                float delta = perspectiveTop - perspectiveBottom;
-
-                float perspectiveScale = (perspectiveBottom + coeff * delta);
+                float perspectiveScale = Utils.getPerspectiveScaleFactor(this.map, this.map.selectedLayer, this.map.camera, y);
 
                 previewSprite.setScale(perspectiveScale);
             }

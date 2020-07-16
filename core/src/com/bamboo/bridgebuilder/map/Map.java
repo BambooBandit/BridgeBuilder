@@ -33,7 +33,6 @@ import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
@@ -208,6 +207,7 @@ public class Map implements Screen
             this.b2dr.render(this.world, this.camera.combined);
             this.editor.shapeRenderer.begin();
         }
+
         drawHoveredOutline();
         drawSelectedOutlines();
         drawUnfinishedMapPolygon();
@@ -715,20 +715,12 @@ public class Map implements Screen
                     float[] m = this.camera.combined.getValues();
                     float skew = 0;
                     float antiDepth = 0;
-                    float perspectiveTop = 0;
-                    float perspectiveBottom = 0;
                     try
                     {
-                        PropertyField topProperty = Utils.getTopScalePerspectiveProperty(this, this.selectedLayer);
-                        PropertyField bottomProperty = Utils.getBottomScalePerspectiveProperty(this, this.selectedLayer);
                         FieldFieldPropertyValuePropertyField property = Utils.getSkewPerspectiveProperty(this, this.selectedLayer);
                         skew = Float.parseFloat(property.value.getText());
                         property = Utils.getAntiDepthPerspectiveProperty(this, this.selectedLayer);
                         antiDepth = Float.parseFloat(property.value.getText());
-                        if(topProperty != null)
-                            perspectiveTop = Float.parseFloat(((FieldFieldPropertyValuePropertyField) topProperty).value.getText());
-                        if(bottomProperty != null)
-                            perspectiveBottom = Float.parseFloat(((FieldFieldPropertyValuePropertyField) bottomProperty).value.getText());
                     }
                     catch (NumberFormatException e){}
                     if(antiDepth >= .1f)
@@ -761,13 +753,7 @@ public class Map implements Screen
 
                     previewSprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
 
-                    float mapHeight = this.selectedLayer.height;
-                    float positionY = y;
-
-                    float coeff = positionY / mapHeight;
-                    float delta = perspectiveTop - perspectiveBottom;
-
-                    float perspectiveScale = (perspectiveBottom + coeff * delta);
+                    float perspectiveScale = Utils.getPerspectiveScaleFactor(this, selectedLayer, this.camera, y);
 
                     previewSprite.setScale(perspectiveScale);
                 }

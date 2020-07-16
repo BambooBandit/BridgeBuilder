@@ -13,6 +13,7 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldProperty
 public class SpriteLayer extends Layer
 {
     public Array<MapSprite> children;
+
     public SpriteLayer(BridgeBuilder editor, Map map, LayerField layerField)
     {
         super(editor, map, LayerTypes.SPRITE, layerField);

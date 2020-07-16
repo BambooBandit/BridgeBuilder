@@ -542,7 +542,6 @@ public class MapSprite extends LayerChild
 
             float trimX = x + sprite.getAtlasRegion().offsetX / 64f;
             float trimY = y + sprite.getAtlasRegion().offsetY / 64f;
-            float trimWidth = sprite.getAtlasRegion().getRegionWidth() / 64f;
             float trimHeight = sprite.getAtlasRegion().getRegionHeight() / 64f;
 
             if(parentSprite != null)
@@ -582,29 +581,15 @@ public class MapSprite extends LayerChild
             x = p.x;
             y = p.y;
 
-            PropertyField topProperty = Utils.getTopScalePerspectiveProperty(this.map, this.layer);
-            PropertyField bottomProperty = Utils.getBottomScalePerspectiveProperty(this.map, this.layer);
-            try
-            {
-                float perspectiveBottom = Float.parseFloat(((FieldFieldPropertyValuePropertyField) bottomProperty).value.getText());
-                float perspectiveTop = Float.parseFloat(((FieldFieldPropertyValuePropertyField) topProperty).value.getText());
 
-                float mapHeight = this.layer.height;
-                float positionY = trimY;
+            this.perspectiveScale = (Utils.getPerspectiveScaleFactor(this.map, this.layer, this.map.camera, trimY));
+            scale = this.scale * this.perspectiveScale;
 
-                float coeff = positionY / mapHeight;
-                float delta = perspectiveTop - perspectiveBottom;
+            if(parentSprite != null)
+                scale = this.scale * parentSprite.perspectiveScale;
 
-                this.perspectiveScale = (perspectiveBottom + coeff * delta);
-                scale = this.scale * this.perspectiveScale;
-
-                if(parentSprite != null)
-                    scale = this.scale * parentSprite.perspectiveScale;
-
-                yScaleDisplacement += ((trimHeight * scale) - trimHeight) / 2f;
-                xScaleDisplacement += ((trimWidth * scale) - trimWidth) / 2f;
-            }
-            catch (NumberFormatException e){} catch (NullPointerException e){}
+            yScaleDisplacement += ((trimHeight * scale) - trimHeight) / 2f;
+            xScaleDisplacement += ((width * scale) - width) / 2f;
         }
         else
             this.perspectiveScale = 1;
