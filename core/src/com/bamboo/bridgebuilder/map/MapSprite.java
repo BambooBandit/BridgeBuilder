@@ -210,6 +210,36 @@ public class MapSprite extends LayerChild
         return this.y;
     }
 
+    public float getLowestY()
+    {
+        float[] vertices = sprite.getVertices();
+        float lowestY = vertices[SpriteBatch.Y4];
+        float secondLowestY = lowestY + 1;
+
+        yVerts[0] = vertices[SpriteBatch.Y2];
+        yVerts[1] = vertices[SpriteBatch.Y3];
+        yVerts[2] = vertices[SpriteBatch.Y4];
+        yVerts[3] = vertices[SpriteBatch.Y1];
+        int index = 0;
+        for(int i = 0; i < yVerts.length; i ++)
+        {
+            float y = yVerts[i];
+            if(y <= lowestY)
+            {
+                lowestY = y;
+                index = i;
+            }
+
+        }
+        for(int i = 0; i < yVerts.length; i ++)
+        {
+            float y = yVerts[i];
+            if(y < secondLowestY && i != index)
+                secondLowestY = y;
+        }
+        return (lowestY + secondLowestY) / 2f;
+    }
+
     private static Vector2 skewProject = new Vector2();
     /** Take a coordinate on the local sprite and return where it would be skewed. */
     public Vector2 skewOffset(float x, float y, float height)
@@ -254,50 +284,32 @@ public class MapSprite extends LayerChild
         if(layerOverride != null && layerOverride.layerField.isSelected)
             colorFloatBits = Color.BLUE.toFloatBits();
 
-        float lowestY = vertices[SpriteBatch.Y4];
-        float secondLowestY = vertices[SpriteBatch.Y1];
-        yVerts[0] = vertices[SpriteBatch.Y2];
-        yVerts[1] = vertices[SpriteBatch.Y3];
-        yVerts[2] = vertices[SpriteBatch.Y4];
-        yVerts[3] = vertices[SpriteBatch.Y1];
-        for(int i = 0; i < yVerts.length; i ++)
-        {
-            float y = yVerts[i];
-            if(y < lowestY)
-                lowestY = y;
-        }
-        for(int i = 0; i < yVerts.length; i ++)
-        {
-            float y = yVerts[i];
-            if(y < secondLowestY && y > lowestY)
-                secondLowestY = y;
-        }
+        float lowestY = getLowestY();
 
         if(parentSprite == null)
         {
-            float height = sprite.getRegionHeight() / 64f;
 
             Vector2 offset;
-            offset = skewOffset(getX() + (width / 2f), getY(), sprite.getAtlasRegion().offsetY + (vertices[SpriteBatch.Y2] - lowestY));
+            offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y2] - lowestY));
             verts[0] = vertices[SpriteBatch.X2] + offset.x;
             verts[1] = vertices[SpriteBatch.Y2] + offset.y;
             verts[2] = colorFloatBits;
             verts[3] = u;
             verts[4] = v;
-            offset = skewOffset(getX() + (width / 2f), getY(), sprite.getAtlasRegion().offsetY + (vertices[SpriteBatch.Y3] - lowestY));
+            offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y3] - lowestY));
             verts[5] = vertices[SpriteBatch.X3] + offset.x;
             verts[6] = vertices[SpriteBatch.Y3] + offset.y;
             verts[7] = colorFloatBits;
             verts[8] = u2;
             verts[9] = v;
 
-            offset = skewOffset(getX() + (width / 2f), getY(), (sprite.getAtlasRegion().offsetY + (vertices[SpriteBatch.Y4] - lowestY)));
+            offset = skewOffset(getX() + (width / 2f), getY(), ((vertices[SpriteBatch.Y4] - lowestY)));
             verts[10] = vertices[SpriteBatch.X4] + offset.x;
             verts[11] = vertices[SpriteBatch.Y4] + offset.y;
             verts[12] = colorFloatBits;
             verts[13] = u2;
             verts[14] = v2;
-            offset = skewOffset(getX() + (width / 2f), getY(), (sprite.getAtlasRegion().offsetY + (vertices[SpriteBatch.Y1] - lowestY)));
+            offset = skewOffset(getX() + (width / 2f), getY(), ((vertices[SpriteBatch.Y1] - lowestY)));
             verts[15] = vertices[SpriteBatch.X1] + offset.x;
             verts[16] = vertices[SpriteBatch.Y1] + offset.y;
             verts[17] = colorFloatBits;
@@ -306,56 +318,33 @@ public class MapSprite extends LayerChild
         }
         else
         {
-//            float width = parentSprite.width;
-//            float height = sprite.getRegionHeight() / 64f;
-//            Vector2 offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), (sprite.getAtlasRegion().offsetY + (getY() + vertices[SpriteBatch.Y2] - lowestY) - parentSprite.getY()));
-//            verts[0] = vertices[SpriteBatch.X2] + offset.x;
-//            verts[1] = vertices[SpriteBatch.Y2] + offset.y;
-//            verts[2] = colorFloatBits;
-//            verts[3] = u;
-//            verts[4] = v;
-//            offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), (sprite.getAtlasRegion().offsetY + (getY() + vertices[SpriteBatch.Y3] - lowestY) - parentSprite.getY()));
-//            verts[5] = vertices[SpriteBatch.X3] + offset.x;
-//            verts[6] = vertices[SpriteBatch.Y3] + offset.y;
-//            verts[7] = colorFloatBits;
-//            verts[8] = u2;
-//            verts[9] = v;
-//            offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), (sprite.getAtlasRegion().offsetY + (getY() + vertices[SpriteBatch.Y4] - lowestY) - parentSprite.getY()));
-//            verts[10] = vertices[SpriteBatch.X4] + offset.x;
-//            verts[11] = vertices[SpriteBatch.Y4] + offset.y;
-//            verts[12] = colorFloatBits;
-//            verts[13] = u2;
-//            verts[14] = v2;
-//            offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), (sprite.getAtlasRegion().offsetY + (getY() + vertices[SpriteBatch.Y1] - lowestY) - parentSprite.getY()));
-//            verts[15] = vertices[SpriteBatch.X1] + offset.x;
-//            verts[16] = vertices[SpriteBatch.Y1] + offset.y;
-//            verts[17] = colorFloatBits;
-//            verts[18] = u;
-//            verts[19] = v2;
-
+            lowestY = parentSprite.getLowestY();
             float width = parentSprite.width;
-            float height = sprite.getRegionHeight() / 64f;
-            Vector2 offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), sprite.getAtlasRegion().offsetY + (getY() + height) - parentSprite.getY());
+            Vector2 offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), vertices[SpriteBatch.Y2] - lowestY);
+
             verts[0] = vertices[SpriteBatch.X2] + offset.x;
             verts[1] = vertices[SpriteBatch.Y2] + offset.y;
             verts[2] = colorFloatBits;
             verts[3] = u;
             verts[4] = v;
+            offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), vertices[SpriteBatch.Y3] - lowestY);
             verts[5] = vertices[SpriteBatch.X3] + offset.x;
             verts[6] = vertices[SpriteBatch.Y3] + offset.y;
             verts[7] = colorFloatBits;
             verts[8] = u2;
             verts[9] = v;
-            offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), sprite.getAtlasRegion().offsetY + getY() - parentSprite.getY());
+            offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), vertices[SpriteBatch.Y4] - lowestY);
             verts[10] = vertices[SpriteBatch.X4] + offset.x;
             verts[11] = vertices[SpriteBatch.Y4] + offset.y;
             verts[12] = colorFloatBits;
             verts[13] = u2;
             verts[14] = v2;
+            offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), vertices[SpriteBatch.Y1] - lowestY);
             verts[15] = vertices[SpriteBatch.X1] + offset.x;
             verts[16] = vertices[SpriteBatch.Y1] + offset.y;
             verts[17] = colorFloatBits;
             verts[18] = u;
+            verts[19] = v2;
         }
 
         map.editor.batch.draw(sprite.getTexture(), verts, 0, verts.length);
@@ -389,11 +378,13 @@ public class MapSprite extends LayerChild
                     float height = topsprite.getRegionHeight() / 64f;
 
                     Vector2 offset = skewOffset(getX() + width / 2f, getY(), topsprite.getAtlasRegion().offsetY + height);
+                    offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y2] - lowestY));
                     verts[0] = vertices[SpriteBatch.X2] + offset.x;
                     verts[1] = vertices[SpriteBatch.Y2] + offset.y;
                     verts[2] = colorToFloatBits;
                     verts[3] = u;
                     verts[4] = v;
+                    offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y3] - lowestY));
                     verts[5] = vertices[SpriteBatch.X3] + offset.x;
                     verts[6] = vertices[SpriteBatch.Y3] + offset.y;
                     verts[7] = colorToFloatBits;
@@ -401,11 +392,13 @@ public class MapSprite extends LayerChild
                     verts[9] = v;
 
                     offset = skewOffset(getX() + width / 2f, getY(), topsprite.getAtlasRegion().offsetY);
+                    offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y4] - lowestY));
                     verts[10] = vertices[SpriteBatch.X4] + offset.x;
                     verts[11] = vertices[SpriteBatch.Y4] + offset.y;
                     verts[12] = colorToFloatBits;
                     verts[13] = u2;
                     verts[14] = v2;
+                    offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y1] - lowestY));
                     verts[15] = vertices[SpriteBatch.X1] + offset.x;
                     verts[16] = vertices[SpriteBatch.Y1] + offset.y;
                     verts[17] = colorToFloatBits;
@@ -571,17 +564,20 @@ public class MapSprite extends LayerChild
         float offsetDifferenceX = this.x - oldX;
         float offsetDifferenceY = this.y - oldY;
 
-        float xOffsetFromParent = 0;
-        float yOffsetFromParent = 0;
-        if(parentSprite != null)
-        {
-            xOffsetFromParent = (this.x - parentSprite.x) * parentSprite.perspectiveScale;
-            yOffsetFromParent = (this.y - parentSprite.y) * parentSprite.perspectiveScale;
-        }
-
         float yScaleDisplacement = 0;
         float xScaleDisplacement = 0;
         float scale = this.scale;
+
+        if(this.attachedSprites != null)
+        {
+            for(int i = 0; i < this.attachedSprites.children.size; i ++)
+            {
+                MapSprite mapSprite = this.attachedSprites.children.get(i);
+                if(mapSprite == this)
+                    continue;
+                mapSprite.setPosition(mapSprite.getX() + offsetDifferenceX, mapSprite.getY() + offsetDifferenceY);
+            }
+        }
 
         if(this.map.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this.map, this.layer) && !Utils.isLayerGround(this.layer))
         {
@@ -590,13 +586,8 @@ public class MapSprite extends LayerChild
 
             float trimX = x + sprite.getAtlasRegion().offsetX / 64f;
             float trimY = y + sprite.getAtlasRegion().offsetY / 64f;
+            float trimWidth = sprite.getAtlasRegion().getRegionWidth() / 64f;
             float trimHeight = sprite.getAtlasRegion().getRegionHeight() / 64f;
-
-            if(parentSprite != null)
-            {
-                trimX = parentSprite.x + sprite.getAtlasRegion().offsetX / 64f;
-                trimY = parentSprite.y + sprite.getAtlasRegion().offsetX / 64f;
-            }
 
             map.camera.update();
             float[] m = this.map.camera.combined.getValues();
@@ -609,7 +600,7 @@ public class MapSprite extends LayerChild
                 property = Utils.getAntiDepthPerspectiveProperty(this.map, this.layer);
                 antiDepth = Float.parseFloat(property.value.getText());
             }
-            catch (NumberFormatException e){}
+            catch (NumberFormatException e){} catch (NullPointerException e){}
             if(antiDepth >= .1f)
                 skew /= antiDepth * 15;
             m[Matrix4.M31] += skew;
@@ -629,33 +620,22 @@ public class MapSprite extends LayerChild
             x = p.x;
             y = p.y;
 
+            try
+            {
+                this.perspectiveScale = Utils.getPerspectiveScaleFactor(map, layer, map.camera, trimY);
+                scale = this.scale * this.perspectiveScale;
 
-            this.perspectiveScale = (Utils.getPerspectiveScaleFactor(this.map, this.layer, this.map.camera, trimY));
-            scale = this.scale * this.perspectiveScale;
-
-            if(parentSprite != null)
-                scale = this.scale * parentSprite.perspectiveScale;
-
-            yScaleDisplacement += ((trimHeight * scale) - trimHeight) / 2f;
-            xScaleDisplacement += ((width * scale) - width) / 2f;
+                yScaleDisplacement += ((trimHeight * scale) - trimHeight) / 2f;
+                xScaleDisplacement += ((trimWidth * scale) - trimWidth) / 2f;
+            }
+            catch (NumberFormatException e){} catch (NullPointerException e){}
         }
         else
             this.perspectiveScale = 1;
 
-        this.polygon.setPosition(x + xScaleDisplacement + xOffsetFromParent, y + yScaleDisplacement + yOffsetFromParent);
-        this.sprite.setPosition(x + xScaleDisplacement + xOffsetFromParent, y + yScaleDisplacement + yOffsetFromParent);
+        this.polygon.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
+        this.sprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
         this.sprite.setScale(scale);
-
-        if(this.attachedSprites != null)
-        {
-            for(int i = 0; i < this.attachedSprites.children.size; i ++)
-            {
-                MapSprite mapSprite = this.attachedSprites.children.get(i);
-                if(mapSprite == this)
-                    continue;
-                mapSprite.setPosition(mapSprite.getX() + offsetDifferenceX, mapSprite.getY() + offsetDifferenceY);
-            }
-        }
 
         x += this.width / 2;
         y += this.height / 2;

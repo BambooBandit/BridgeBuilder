@@ -416,8 +416,13 @@ public class Utils
         perspectiveCamera.zoom = camera.zoom;
         perspectiveCamera.update();
 
-        float skew = Float.parseFloat(Utils.getSkewPerspectiveProperty(map, layer).value.getText());
-        float antiDepth = Float.parseFloat(Utils.getAntiDepthPerspectiveProperty(map, layer).value.getText());
+        float skew = 0;
+        float antiDepth = 0;
+        try
+        {
+            skew = Float.parseFloat(Utils.getSkewPerspectiveProperty(map, layer).value.getText());
+            antiDepth = Float.parseFloat(Utils.getAntiDepthPerspectiveProperty(map, layer).value.getText());
+        }catch (Exception e){}
 
         float[] m = perspectiveCamera.combined.getValues();
         if (antiDepth >= .1f)
