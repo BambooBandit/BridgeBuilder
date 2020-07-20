@@ -456,7 +456,7 @@ public class MapSprite extends LayerChild
     }
     public void drawScaleBox()
     {
-        if(selected)
+        if(selected && map.editor.fileMenu.toolPane.select.selected)
         {
             scaleBox.setScale(map.zoom);
             scaleBox.sprite.draw(map.editor.batch);
@@ -727,6 +727,7 @@ public class MapSprite extends LayerChild
         if(this.attachedMapObjects == null)
             this.attachedMapObjects = new Array<>();
         this.attachedMapObjects.add(mapObject);
+        this.attachedMapObjects.sort();
     }
 
     public void createAttachedMapObject(Map map, MapObject mapObject)

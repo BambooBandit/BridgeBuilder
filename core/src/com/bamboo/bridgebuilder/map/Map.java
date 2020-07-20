@@ -1076,6 +1076,7 @@ public class Map implements Screen
                             propertyMenu.newProperty(propertyData, mapObject.properties);
                         }
                     }
+                    layer.children.sort();
                 }
             }
             // re-override the layers

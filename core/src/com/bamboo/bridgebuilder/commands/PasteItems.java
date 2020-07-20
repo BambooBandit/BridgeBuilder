@@ -2,10 +2,7 @@ package com.bamboo.bridgebuilder.commands;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.bamboo.bridgebuilder.map.Layer;
-import com.bamboo.bridgebuilder.map.LayerChild;
-import com.bamboo.bridgebuilder.map.Map;
-import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.map.*;
 
 public class PasteItems implements Command
 {
@@ -38,6 +35,8 @@ public class PasteItems implements Command
     {
         for(int i = 0; i < cutItems.size; i ++)
             this.toLayer.children.add(cutItems.get(i));
+        if(this.toLayer instanceof ObjectLayer)
+            ((ObjectLayer) this.toLayer).children.sort();
 
         if(toMap.editAttachedMapSprite != null && cutItems.first() instanceof MapSprite)
         {

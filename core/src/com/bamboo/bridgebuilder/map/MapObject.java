@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
-public abstract class MapObject extends LayerChild
+public abstract class MapObject extends LayerChild implements Comparable<MapObject>
 {
     public MoveBox moveBox;
     public Array<PropertyField> properties;
@@ -78,4 +78,22 @@ public abstract class MapObject extends LayerChild
     public abstract void draw(float xOffset, float yOffset);
     public abstract MapObject copy();
     public abstract void setOriginBasedOnParentSprite();
+
+    public float getArea()
+    {
+        return 0;
+    }
+
+    @Override
+    public int compareTo(MapObject other)
+    {
+        if(this instanceof MapPoint && other instanceof MapPoint)
+            return 0;
+        if(this instanceof MapPoint)
+            return 1;
+        if(other instanceof MapPoint)
+            return -1;
+
+        return Float.compare(other.getArea(), getArea());
+    }
 }

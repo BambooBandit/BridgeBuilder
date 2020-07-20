@@ -353,6 +353,12 @@ public class MapPolygon extends MapObject
         }
     }
 
+    @Override
+    public float getArea()
+    {
+        return polygon.area();
+    }
+
     private void computeCentroid()
     {
         centroidX = 0;

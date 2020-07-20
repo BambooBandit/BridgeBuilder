@@ -34,6 +34,7 @@ public class ObjectLayer extends Layer
     public void addMapObject(MapObject mapObject)
     {
         this.children.add(mapObject);
+        this.children.sort();
     }
 
     public void createGrid()

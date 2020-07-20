@@ -95,6 +95,7 @@ public class CutMapObjects implements Command
             this.selectedLayer.children.add(mapObject);
             mapObject.select();
         }
+        this.selectedLayer.children.sort();
         this.selectedLayer.map.propertyMenu.rebuild();
         this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
     }
