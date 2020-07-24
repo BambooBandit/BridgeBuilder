@@ -32,6 +32,11 @@ public class DeleteSelectedMapSprites implements Command
             for(int i = 0; i < this.selectedSprites.size; i ++)
             {
                 MapSprite mapSprite = this.selectedSprites.get(i);
+                if(mapSprite.fromEdgeSprites != null)
+                {
+                    for (int k = 0; k < mapSprite.fromEdgeSprites.size; k++)
+                        mapSprite.fromEdgeSprites.get(k).toEdgeSprite = null;
+                }
                 if(mapSprite.attachedMapObjects != null)
                 {
                     for (int k = 0; k < mapSprite.attachedMapObjects.size; k++)
@@ -68,6 +73,11 @@ public class DeleteSelectedMapSprites implements Command
                 if(entry.key > this.selectedLayer.children.size)
                     continue;
                 this.selectedLayer.children.insert(entry.key, entry.value);
+                if(entry.value.fromEdgeSprites != null)
+                {
+                    for (int k = 0; k < entry.value.fromEdgeSprites.size; k++)
+                        entry.value.fromEdgeSprites.get(k).toEdgeSprite = entry.value;
+                }
                 this.deletedSprites.remove(entry.key);
                 entry.value.select();
             }

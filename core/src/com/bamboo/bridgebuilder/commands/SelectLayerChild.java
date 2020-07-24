@@ -10,15 +10,15 @@ public class SelectLayerChild implements Command
 {
     private Map map;
     private LayerChild hoveredChild;
-    private boolean ctrlHeld;
+    private boolean shiftHeld;
 
     private Array<MapSprite> oldSelectedSprites;
     private Array<MapObject> oldSelectedObjects;
 
-    public SelectLayerChild(Map map, LayerChild hoveredChild, boolean ctrlHeld)
+    public SelectLayerChild(Map map, LayerChild hoveredChild, boolean shiftHeld)
     {
         this.map = map;
-        this.ctrlHeld = ctrlHeld;
+        this.shiftHeld = shiftHeld;
         this.hoveredChild = hoveredChild;
     }
 
@@ -45,7 +45,7 @@ public class SelectLayerChild implements Command
                 }
             }
             MapSprite hoveredMapSprite = (MapSprite) hoveredChild;
-            if(this.ctrlHeld)
+            if(this.shiftHeld)
             {
                 if(map.selectedSprites.contains(hoveredMapSprite, true))
                     hoveredMapSprite.unselect();
@@ -75,7 +75,7 @@ public class SelectLayerChild implements Command
                 this.oldSelectedObjects.addAll(map.selectedObjects);
             }
             MapObject hoveredMapObject = (MapObject) hoveredChild;
-            if(this.ctrlHeld)
+            if(this.shiftHeld)
             {
                 if(map.selectedObjects.contains(hoveredMapObject, true))
                     hoveredMapObject.unselect();

@@ -1,9 +1,6 @@
 package com.bamboo.bridgebuilder.data;
 
-import com.bamboo.bridgebuilder.map.Layer;
-import com.bamboo.bridgebuilder.map.Map;
-import com.bamboo.bridgebuilder.map.ObjectLayer;
-import com.bamboo.bridgebuilder.map.SpriteLayer;
+import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 
 import java.util.ArrayList;
@@ -19,6 +16,7 @@ public class MapData
     public MapData(){}
     public MapData(Map map, boolean settingBBMDefaults)
     {
+        MapSprite.resetIdCounter();
         map.updateLayerSpriteGrids();
 
         boolean perspective = map.editor.fileMenu.toolPane.perspective.selected;

@@ -9,15 +9,15 @@ import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 public class SelectSpriteTool implements Command
 {
     private Map map;
-    private boolean ctrlHeld;
+    private boolean shiftHeld;
 
     private SpriteTool clickedSpriteTool;
     private Array<SpriteTool> oldSelectedSpriteTools;
 
-    public SelectSpriteTool(Map map, SpriteTool clickedSpriteTool, boolean ctrlHeld)
+    public SelectSpriteTool(Map map, SpriteTool clickedSpriteTool, boolean shiftHeld)
     {
         this.map = map;
-        this.ctrlHeld = ctrlHeld;
+        this.shiftHeld = shiftHeld;
         this.clickedSpriteTool = clickedSpriteTool;
     }
 
@@ -40,7 +40,7 @@ public class SelectSpriteTool implements Command
                 SpriteTool tool = cellTable.findActor("spriteTool");
                 if (tool == clickedSpriteTool)
                 {
-                    if (this.ctrlHeld)
+                    if (this.shiftHeld)
                     {
                         if (tool.isSelected)
                         {
@@ -65,7 +65,7 @@ public class SelectSpriteTool implements Command
                 }
                 else if (tool.tool == SpriteMenuTools.SPRITE)
                 {
-                    if (!this.ctrlHeld)
+                    if (!this.shiftHeld)
                     {
                         map.spriteMenu.selectedSpriteTools.removeValue(tool, false);
                         this.map.propertyMenu.rebuild();

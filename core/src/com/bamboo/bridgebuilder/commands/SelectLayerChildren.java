@@ -11,17 +11,17 @@ public class SelectLayerChildren implements Command
 {
     private Map map;
     private Array<LayerChild> hoveredChildren;
-    private boolean ctrlHeld;
+    private boolean shiftHeld;
 
     private Array<MapSprite> oldSelectedSprites;
     private Array<MapObject> oldSelectedObjects;
 
     private boolean areAllHoveredAreSelected;
 
-    public SelectLayerChildren(Map map, float dragStartX, float dragStartY, float dragCurrentX, float dragCurrentY, boolean ctrlHeld)
+    public SelectLayerChildren(Map map, float dragStartX, float dragStartY, float dragCurrentX, float dragCurrentY, boolean shiftHeld)
     {
         this.map = map;
-        this.ctrlHeld = ctrlHeld;
+        this.shiftHeld = shiftHeld;
 
         Utils.boxSelectCommandVertices[0] = dragStartX;
         Utils.boxSelectCommandVertices[1] = dragStartY;
@@ -65,7 +65,7 @@ public class SelectLayerChildren implements Command
             this.oldSelectedObjects.addAll(map.selectedObjects);
         }
 
-        if(!ctrlHeld)
+        if(!shiftHeld)
         {
             for (int i = 0; i < this.map.selectedSprites.size; i++)
             {

@@ -95,7 +95,7 @@ public class LayerMenu extends Group
             {
                 if(Command.shouldExecute(map, SelectLayer.class))
                 {
-                    SelectLayer selectLayer = new SelectLayer(selectedMap, selectedMap.selectedLayer, layer.mapLayer, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+                    SelectLayer selectLayer = new SelectLayer(selectedMap, selectedMap.selectedLayer, layer.mapLayer, Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT));
                     selectedMap.executeCommand(selectLayer);
                 }
             }

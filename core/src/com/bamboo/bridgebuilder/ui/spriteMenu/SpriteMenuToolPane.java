@@ -130,7 +130,7 @@ public class SpriteMenuToolPane extends Group
                     map.spriteMenu.removeSpriteSheet(selectedTool.sheet.name);
                 return;
             }
-            SelectSpriteTool selectSpriteTool = new SelectSpriteTool(map, (SpriteTool) selectedTool, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+            SelectSpriteTool selectSpriteTool = new SelectSpriteTool(map, (SpriteTool) selectedTool, Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT));
             map.executeCommand(selectSpriteTool);
         }
         else if(selectedTool.tool == SpriteMenuTools.NEW_SPRITESHEET)

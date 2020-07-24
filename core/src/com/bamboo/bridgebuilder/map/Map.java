@@ -25,6 +25,7 @@ import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.Command;
 import com.bamboo.bridgebuilder.commands.DeleteMapObjects;
 import com.bamboo.bridgebuilder.commands.DeleteSelectedMapSprites;
+import com.bamboo.bridgebuilder.commands.SnapMapSpriteEdge;
 import com.bamboo.bridgebuilder.data.*;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerField;
@@ -201,6 +202,7 @@ public class Map implements Screen
         drawGrid();
         drawAttachedObjects();
         drawObjectLayers();
+        drawSnapEdge();
         if(this.editor.fileMenu.toolPane.b2drender.selected)
         {
             this.editor.shapeRenderer.end();
@@ -222,7 +224,7 @@ public class Map implements Screen
         this.editor.batch.begin();
         if(this.editor.fileMenu.toolPane.spriteGridColors.selected)
             printDustTypes();
-        for(int i = 0; i < this.selectedSprites.size; i ++)
+        for (int i = 0; i < this.selectedSprites.size; i++)
         {
             this.selectedSprites.get(i).drawMoveBox();
             this.selectedSprites.get(i).drawRotationBox();
@@ -235,6 +237,28 @@ public class Map implements Screen
         this.stage.getBatch().enableBlending();
         this.stage.act();
         this.stage.draw();
+    }
+
+    private void drawSnapEdge()
+    {
+        if(this.input.snapEdgeFromThisSprite == null)
+            return;
+        editor.shapeRenderer.setColor(Color.YELLOW);
+        if(this.hoveredChild != null && this.hoveredChild instanceof MapSprite && this.input.snapEdgeFromThisSprite != this.hoveredChild)
+        {
+            MapSprite hoveredSprite = (MapSprite) this.hoveredChild;
+            editor.shapeRenderer.line(this.input.snapEdgeFromThisSprite.x + (this.input.snapEdgeFromThisSprite.width / 2f),
+                    this.input.snapEdgeFromThisSprite.y + (this.input.snapEdgeFromThisSprite.height / 2f),
+                    hoveredSprite.x + (hoveredSprite.width / 2f),
+                    hoveredSprite.y + (hoveredSprite.height / 2f));
+        }
+        else
+        {
+            editor.shapeRenderer.line(this.input.snapEdgeFromThisSprite.x + (this.input.snapEdgeFromThisSprite.width / 2f),
+                    this.input.snapEdgeFromThisSprite.y + (this.input.snapEdgeFromThisSprite.height / 2f),
+                    input.currentPos.x,
+                    input.currentPos.y);
+        }
     }
 
     private void drawAttachedObjects()
@@ -881,6 +905,7 @@ public class Map implements Screen
 
     public void loadMap(MapData mapData, boolean setDefaultsOnly)
     {
+        MapSprite.resetIdCounter();
         if(!setDefaultsOnly)
         {
             this.name = mapData.name;
@@ -1079,6 +1104,49 @@ public class Map implements Screen
                     layer.children.sort();
                 }
             }
+
+            // edge sprites and ID's
+            for(int i = 0; i < layers.size; i ++)
+            {
+                Layer layer = layers.get(i);
+                if(!(layer instanceof SpriteLayer))
+                    continue;
+                // ID
+                for (int s = 0; s < layer.children.size; s++)
+                {
+                    MapSprite mapSprite = (MapSprite) layer.children.get(s);
+                    mapSprite.setID(MapSprite.getAndIncrementId());
+                    if (mapSprite.attachedSprites != null)
+                    {
+                        for (int k = 0; k < mapSprite.attachedSprites.children.size; k++)
+                        {
+                            MapSprite attached = mapSprite.attachedSprites.children.get(k);
+                            attached.setID(attached.getAndIncrementId());
+                        }
+                    }
+                }
+                // Edge
+                edge:
+                for (int s = 0; s < layer.children.size; s++)
+                {
+                    MapSprite mapSprite = (MapSprite) layer.children.get(s);
+                    long edgeId = mapSprite.edgeId;
+                    if (edgeId <= 0)
+                        continue edge;
+                    for (int k = 0; k < layer.children.size; k++)
+                    {
+                        MapSprite edge = (MapSprite) layer.children.get(k);
+                        int id = edge.id;
+                        if (edgeId == id)
+                        {
+                            SnapMapSpriteEdge snapMapSpriteEdge = new SnapMapSpriteEdge(mapSprite, edge);
+                            executeCommand(snapMapSpriteEdge);
+                            continue edge;
+                        }
+                    }
+                }
+            }
+
             // re-override the layers
             for(int i = 0; i < layers.size; i ++)
             {
@@ -1112,14 +1180,22 @@ public class Map implements Screen
         if(spriteTool == null)
             return null;
         MapSprite mapSprite = new MapSprite(this, layer, spriteTool, mapSpriteData.x, mapSpriteData.y);
+        mapSprite.edgeId = mapSpriteData.eId;
         mapSprite.setZ(mapSpriteData.z);
         mapSprite.setScale(mapSpriteData.scl + MapSpriteData.defaultScaleValue);
         mapSprite.setColor(mapSpriteData.r + MapSpriteData.defaultColorValue, mapSpriteData.g + MapSpriteData.defaultColorValue, mapSpriteData.b + MapSpriteData.defaultColorValue, mapSpriteData.a + MapSpriteData.defaultColorValue);
         mapSprite.setPosition(mapSpriteData.x, mapSpriteData.y);
         Utils.setCenterOrigin(mapSprite.getX(), mapSprite.getY());
         mapSprite.setRotation(mapSpriteData.rot);
-        mapSprite.setID(mapSpriteData.id);
         mapSprite.layerOverrideIndex = mapSpriteData.loi;
+        mapSprite.x1Offset = mapSpriteData.x1;
+        mapSprite.y1Offset = mapSpriteData.y1;
+        mapSprite.x2Offset = mapSpriteData.x2;
+        mapSprite.y2Offset = mapSpriteData.y2;
+        mapSprite.x3Offset = mapSpriteData.x3;
+        mapSprite.y3Offset = mapSpriteData.y3;
+        mapSprite.x4Offset = mapSpriteData.x4;
+        mapSprite.y4Offset = mapSpriteData.y4;
         return mapSprite;
     }
 }

@@ -8,14 +8,14 @@ public class SelectLayer implements Command
     private Map map;
     private Layer oldLayer;
     private Layer newLayer;
-    private boolean ctrlHeld;
+    private boolean shiftHeld;
 
-    public SelectLayer(Map map, Layer oldLayer, Layer newLayer, boolean ctrlHeld)
+    public SelectLayer(Map map, Layer oldLayer, Layer newLayer, boolean shiftHeld)
     {
         this.map = map;
         this.oldLayer = oldLayer;
         this.newLayer = newLayer;
-        this.ctrlHeld = ctrlHeld;
+        this.shiftHeld = shiftHeld;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class SelectLayer implements Command
     {
         boolean wasSelected = this.newLayer.layerField.isSelected;
         this.map.layerMenu.unselectAll();
-        if (!ctrlHeld || (ctrlHeld && !wasSelected))
+        if (!shiftHeld || (shiftHeld && !wasSelected))
         {
             this.newLayer.layerField.select();
             map.selectedLayer = this.newLayer;
@@ -41,7 +41,7 @@ public class SelectLayer implements Command
         if(this.oldLayer != null)
             wasSelected = this.oldLayer.layerField.isSelected;
         this.map.layerMenu.unselectAll();
-        if (!ctrlHeld || (ctrlHeld && !wasSelected))
+        if (!shiftHeld || (shiftHeld && !wasSelected))
         {
             if(this.oldLayer != null)
             {

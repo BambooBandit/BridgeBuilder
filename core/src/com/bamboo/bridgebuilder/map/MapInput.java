@@ -31,6 +31,7 @@ public class MapInput implements InputProcessor
     public Vector2 objectVerticePosition;
 
     // Null if not currently drag/moving any layer child
+    public MoveMapSpriteOffset moveMapSpriteOffset;
     public MoveMapSprites moveMapSprites;
     public RotateMapSprites rotateMapSprites;
     public ScaleMapSprites scaleMapSprites;
@@ -39,6 +40,8 @@ public class MapInput implements InputProcessor
 
     public float gradientX, gradientY; // Used for gradient placement
     public boolean draggingGradient = false;
+
+    public MapSprite snapEdgeFromThisSprite = null; // Hold control while having one sprite selecting, you can snap to another mapsprite
 
     public BoxSelect boxSelect;
 
@@ -60,12 +63,28 @@ public class MapInput implements InputProcessor
     @Override
     public boolean keyDown(int keycode)
     {
+        handleEdgeSnapKeyDown(keycode);
         return false;
+    }
+
+    private void handleEdgeSnapKeyDown(int keycode)
+    {
+        if(!(keycode == Input.Keys.CONTROL_LEFT && map.selectedSprites.size == 1 && map.editor.fileMenu.toolPane.select.selected))
+            return;
+        snapEdgeFromThisSprite = map.selectedSprites.first();
+    }
+
+    private void handleEdgeSnapKeyUp(int keycode)
+    {
+        if(keycode != Input.Keys.CONTROL_LEFT)
+            return;
+        snapEdgeFromThisSprite = null;
     }
 
     @Override
     public boolean keyUp(int keycode)
     {
+        handleEdgeSnapKeyUp(keycode);
         return false;
     }
 
@@ -205,6 +224,30 @@ public class MapInput implements InputProcessor
                 this.map.pushCommand(this.scaleMapSprites);
                 return true;
             }
+            else if(selectedSprite.offsetMovebox1.contains(x, y))
+            {
+                this.moveMapSpriteOffset = new MoveMapSpriteOffset(this.map.selectedSprites.first(), MoveMapSpriteOffset.Location.ONE);
+                this.map.pushCommand(this.moveMapSpriteOffset);
+                return true;
+            }
+            else if(selectedSprite.offsetMovebox2.contains(x, y))
+            {
+                this.moveMapSpriteOffset = new MoveMapSpriteOffset(this.map.selectedSprites.first(), MoveMapSpriteOffset.Location.TWO);
+                this.map.pushCommand(this.moveMapSpriteOffset);
+                return true;
+            }
+            else if(selectedSprite.offsetMovebox3.contains(x, y))
+            {
+                this.moveMapSpriteOffset = new MoveMapSpriteOffset(this.map.selectedSprites.first(), MoveMapSpriteOffset.Location.THREE);
+                this.map.pushCommand(this.moveMapSpriteOffset);
+                return true;
+            }
+            else if(selectedSprite.offsetMovebox4.contains(x, y))
+            {
+                this.moveMapSpriteOffset = new MoveMapSpriteOffset(this.map.selectedSprites.first(), MoveMapSpriteOffset.Location.FOUR);
+                this.map.pushCommand(this.moveMapSpriteOffset);
+                return true;
+            }
         }
 
         for(int i = 0; i < this.map.selectedObjects.size; i++)
@@ -247,6 +290,7 @@ public class MapInput implements InputProcessor
     private boolean handleManipulatorBoxTouchUp()
     {
         this.moveMapSprites = null;
+        this.moveMapSpriteOffset = null;
         this.rotateMapSprites = null;
         this.scaleMapSprites = null;
         this.moveMapObjects = null;
@@ -260,6 +304,8 @@ public class MapInput implements InputProcessor
             this.moveMapSprites.update(dragAmount.x, dragAmount.y);
         else if(this.moveMapObjects != null)
             this.moveMapObjects.update(dragAmount.x, dragAmount.y);
+        else if(this.moveMapSpriteOffset != null)
+            this.moveMapSpriteOffset.update(dragAmount.x, dragAmount.y);
         else if(this.movePolygonVertice != null)
         {
             // Magnet. Snap the vertice next to the nearest vertice less than .35 units
@@ -390,6 +436,15 @@ public class MapInput implements InputProcessor
             mapSprite.rotationBox.hover(mapSprite.rotationBox.contains(x, y));
             mapSprite.scaleBox.hover(mapSprite.scaleBox.contains(x, y));
         }
+        if(this.map.selectedSprites.size == 1)
+        {
+            MapSprite mapSprite = this.map.selectedSprites.first();
+            mapSprite.offsetMovebox1.hover(mapSprite.offsetMovebox1.contains(x, y));
+            mapSprite.offsetMovebox2.hover(mapSprite.offsetMovebox2.contains(x, y));
+            mapSprite.offsetMovebox3.hover(mapSprite.offsetMovebox3.contains(x, y));
+            mapSprite.offsetMovebox4.hover(mapSprite.offsetMovebox4.contains(x, y));
+
+        }
         for(int i = 0; i < this.map.selectedObjects.size; i ++)
         {
             MapObject mapObject = this.map.selectedObjects.get(i);
@@ -468,10 +523,19 @@ public class MapInput implements InputProcessor
     {
         if(!Utils.isFileToolThisType(this.editor, Tools.SELECT) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
             return false;
+
+        if(this.snapEdgeFromThisSprite != null && this.map.hoveredChild != this.snapEdgeFromThisSprite && !(this.map.hoveredChild instanceof MapObject))
+        {
+            SnapMapSpriteEdge snapMapSpriteEdge = new SnapMapSpriteEdge(this.snapEdgeFromThisSprite, (MapSprite) this.map.hoveredChild);
+            this.snapEdgeFromThisSprite = null;
+            this.map.executeCommand(snapMapSpriteEdge);
+            return true;
+        }
+
         if(this.map.hoveredChild == null)
             return false;
 
-        SelectLayerChild selectLayerChild = new SelectLayerChild(this.map, this.map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+        SelectLayerChild selectLayerChild = new SelectLayerChild(this.map, this.map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT));
         this.map.executeCommand(selectLayerChild);
         return true;
     }
@@ -495,7 +559,7 @@ public class MapInput implements InputProcessor
         if(!Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) || this.map.selectedLayer == null || !this.boxSelect.isDragging)
             return false;
 
-        SelectLayerChildren selectLayerChildren = new SelectLayerChildren(this.map, this.dragOriginPos.x, this.dragOriginPos.y, this.currentPos.x, this.currentPos.y, Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+        SelectLayerChildren selectLayerChildren = new SelectLayerChildren(this.map, this.dragOriginPos.x, this.dragOriginPos.y, this.currentPos.x, this.currentPos.y, Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT));
         this.map.executeCommand(selectLayerChildren);
 
         this.map.propertyMenu.rebuild();

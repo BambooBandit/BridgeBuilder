@@ -17,6 +17,7 @@ public class AttachedMapSpriteData extends LayerChildData
         for(int i = 0; i < mapSprite.attachedSprites.children.size; i ++)
         {
             MapSprite child = mapSprite.attachedSprites.children.get(i);
+            child.setID(MapSprite.getAndIncrementId());
             MapSpriteData mapSpriteData = new MapSpriteData(child);
             sprites.add(mapSpriteData);
         }

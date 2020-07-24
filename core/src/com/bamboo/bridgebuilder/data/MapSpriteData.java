@@ -6,7 +6,7 @@ public class MapSpriteData extends LayerChildData
 {
     public float z;
     public float r, g, b, a;
-    public int id; // Manually definable ID
+    public long id;
     public String n; // Sprite name
     public String sN; // Sheet name
     public float rot, scl, w, h;
@@ -14,6 +14,8 @@ public class MapSpriteData extends LayerChildData
     public static int defaultColorValue = 1;
     public static int defaultScaleValue = 1;
     public boolean parent;
+    public float x1, y1, x2, y2, x3, y3, x4, y4;
+    public int eId; // to edge mapSprite id
 
     public MapSpriteData() {}
     public MapSpriteData(MapSprite mapSprite)
@@ -46,5 +48,17 @@ public class MapSpriteData extends LayerChildData
             this.loi = mapSprite.layer.map.layers.indexOf(mapSprite.layerOverride, true) + 1;
         else
             this.loi = 0;
+
+        this.x1 = mapSprite.x1Offset;
+        this.y1 = mapSprite.y1Offset;
+        this.x2 = mapSprite.x2Offset;
+        this.y2 = mapSprite.y2Offset;
+        this.x3 = mapSprite.x3Offset;
+        this.y3 = mapSprite.y3Offset;
+        this.x4 = mapSprite.x4Offset;
+        this.y4 = mapSprite.y4Offset;
+
+        if(mapSprite.toEdgeSprite != null)
+            this.eId = mapSprite.toEdgeSprite.id;
     }
 }

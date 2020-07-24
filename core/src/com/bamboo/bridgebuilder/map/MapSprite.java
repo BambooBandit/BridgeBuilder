@@ -20,10 +20,7 @@ import com.bamboo.bridgebuilder.commands.EnableAttachedSpriteEditMode;
 import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
 import com.bamboo.bridgebuilder.ui.manipulators.RotationBox;
 import com.bamboo.bridgebuilder.ui.manipulators.ScaleBox;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 public class MapSprite extends LayerChild
@@ -35,6 +32,7 @@ public class MapSprite extends LayerChild
     public ScaleBox scaleBox;
     public Array<PropertyField> lockedProperties; // properties such as rotation. They belong to all sprites
     public float z;
+    public static int idCounter = 1;
     public int id; // Used to be able to set any sprites id and specifically retrieve it in the game
     public TextureAtlas.AtlasSprite sprite;
     public SpriteTool tool;
@@ -49,6 +47,12 @@ public class MapSprite extends LayerChild
 
     public SpriteLayer attachedSprites; // For when this map sprite has other map sprites attached to it. They all will act as one whole map sprite.
     public MapSprite parentSprite; // For the above
+    public MapSprite toEdgeSprite;
+    public int edgeId;
+    public Array<MapSprite> fromEdgeSprites;
+
+    public float x1Offset = 0, y1Offset = 0, x2Offset = 0, y2Offset = 0, x3Offset = 0, y3Offset = 0, x4Offset = 0, y4Offset = 0;
+    public MoveBox offsetMovebox1, offsetMovebox2, offsetMovebox3, offsetMovebox4;
 
     public MapSprite(Map map, Layer layer, SpriteTool tool, float x, float y)
     {
@@ -73,6 +77,17 @@ public class MapSprite extends LayerChild
         this.moveBox.setPosition(x + this.width, y + this.height / 2);
         this.scaleBox = new ScaleBox();
         this.scaleBox.setPosition(x + this.width, y + this.height / 2);
+
+        float[] spriteVertices = sprite.getVertices();
+        this.offsetMovebox1 = new MoveBox();
+        this.offsetMovebox1.setPosition(x + spriteVertices[SpriteBatch.X2], y + spriteVertices[SpriteBatch.Y2]);
+        this.offsetMovebox2 = new MoveBox();
+        this.offsetMovebox2.setPosition(x + spriteVertices[SpriteBatch.X3], y + spriteVertices[SpriteBatch.Y3]);
+        this.offsetMovebox3 = new MoveBox();
+        this.offsetMovebox3.setPosition(x + spriteVertices[SpriteBatch.X4], y + spriteVertices[SpriteBatch.Y4]);
+        this.offsetMovebox4 = new MoveBox();
+        this.offsetMovebox4.setPosition(x + spriteVertices[SpriteBatch.X1], y + spriteVertices[SpriteBatch.Y1]);
+
         this.verts = new float[20];
         this.scale = 1;
 
@@ -84,8 +99,7 @@ public class MapSprite extends LayerChild
                 return c == '.' || c == '-' || Character.isDigit(c);
             }
         };
-
-        LabelFieldPropertyValuePropertyField idProperty = new LabelFieldPropertyValuePropertyField("ID", "0", map.skin, map.propertyMenu, null, false);
+        LabelLabelPropertyValuePropertyField idProperty = new LabelLabelPropertyValuePropertyField("ID", "0", map.skin, map.propertyMenu, null, false);
         LabelFieldPropertyValuePropertyField rotationProperty = new LabelFieldPropertyValuePropertyField("Rotation", "0", map.skin, map.propertyMenu, null, false);
         LabelFieldPropertyValuePropertyField scaleProperty = new LabelFieldPropertyValuePropertyField("Scale", "1", map.skin, map.propertyMenu, null, false);
         LabelFieldPropertyValuePropertyField zProperty = new LabelFieldPropertyValuePropertyField("Z", "0", map.skin, map.propertyMenu, null, false);
@@ -96,26 +110,6 @@ public class MapSprite extends LayerChild
         this.lockedProperties.add(scaleProperty);
         this.lockedProperties.add(zProperty);
         this.lockedProperties.add(colorProperty);
-
-        idProperty.value.setTextFieldFilter(valueFilter);
-        idProperty.value.getListeners().clear();
-        TextField.TextFieldClickListener idListener = idProperty.value.new TextFieldClickListener(){
-            @Override
-            public boolean keyDown (InputEvent event, int keycode)
-            {
-                try
-                {
-                    if (keycode == Input.Keys.ENTER)
-                    {
-                        for(int i = 0; i < map.selectedSprites.size; i ++)
-                            map.selectedSprites.get(i).setID(Integer.parseInt(idProperty.value.getText()));
-                    }
-                }
-                catch (NumberFormatException e) { }
-                return true;
-            }
-        };
-        idProperty.value.addListener(idListener);
 
         rotationProperty.value.setTextFieldFilter(valueFilter);
         rotationProperty.value.getListeners().clear();
@@ -198,6 +192,25 @@ public class MapSprite extends LayerChild
         this.updatePerspective();
     }
 
+    public void setID(int id)
+    {
+        for(int i = 0; i < lockedProperties.size; i ++)
+        {
+            PropertyField propertyField = lockedProperties.get(i);
+            if(propertyField instanceof LabelLabelPropertyValuePropertyField)
+            {
+                LabelLabelPropertyValuePropertyField labelLabelProperty = (LabelLabelPropertyValuePropertyField) propertyField;
+                if(labelLabelProperty.getProperty().equals("ID"))
+                {
+                    labelLabelProperty.value.setText(Integer.toString(id));
+                    break;
+                }
+            }
+        }
+        this.id = id;
+    }
+
+
     @Override
     public float getX()
     {
@@ -213,17 +226,17 @@ public class MapSprite extends LayerChild
     public float getLowestY()
     {
         float[] vertices = sprite.getVertices();
-        float lowestY = vertices[SpriteBatch.Y4];
+        float lowestY = vertices[SpriteBatch.Y4] - y3Offset;
         float secondLowestY = lowestY + 1;
 
-        yVerts[0] = vertices[SpriteBatch.Y2];
-        yVerts[1] = vertices[SpriteBatch.Y3];
-        yVerts[2] = vertices[SpriteBatch.Y4];
-        yVerts[3] = vertices[SpriteBatch.Y1];
+        offsetVerts[0] = vertices[SpriteBatch.Y2] - y1Offset;
+        offsetVerts[1] = vertices[SpriteBatch.Y3] - y2Offset;
+        offsetVerts[2] = vertices[SpriteBatch.Y4] - y3Offset;
+        offsetVerts[3] = vertices[SpriteBatch.Y1] - y4Offset;
         int index = 0;
-        for(int i = 0; i < yVerts.length; i ++)
+        for(int i = 0; i < offsetVerts.length; i ++)
         {
-            float y = yVerts[i];
+            float y = offsetVerts[i];
             if(y <= lowestY)
             {
                 lowestY = y;
@@ -231,13 +244,53 @@ public class MapSprite extends LayerChild
             }
 
         }
-        for(int i = 0; i < yVerts.length; i ++)
+        for(int i = 0; i < offsetVerts.length; i ++)
         {
-            float y = yVerts[i];
+            float y = offsetVerts[i];
             if(y < secondLowestY && i != index)
                 secondLowestY = y;
         }
         return (lowestY + secondLowestY) / 2f;
+    }
+
+    public float getLowestX()
+    {
+        float lowestX = 0;
+        float[] vertices = sprite.getVertices();
+        lowestX = vertices[SpriteBatch.X4];
+
+        offsetVerts[0] = vertices[SpriteBatch.X2] - x1Offset;
+        offsetVerts[1] = vertices[SpriteBatch.X3] - x2Offset;
+        offsetVerts[2] = vertices[SpriteBatch.X4] - x3Offset;
+        offsetVerts[3] = vertices[SpriteBatch.X1] - x4Offset;
+        for (int i = 0; i < offsetVerts.length; i++)
+        {
+            float x = offsetVerts[i];
+            if (x <= lowestX)
+                lowestX = x;
+
+        }
+        return lowestX;
+    }
+
+    public float getHighestX()
+    {
+        float highestX = 0;
+        float[] vertices = sprite.getVertices();
+        highestX = vertices[SpriteBatch.X4];
+
+        offsetVerts[0] = vertices[SpriteBatch.X2] - x1Offset;
+        offsetVerts[1] = vertices[SpriteBatch.X3] - x2Offset;
+        offsetVerts[2] = vertices[SpriteBatch.X4] - x3Offset;
+        offsetVerts[3] = vertices[SpriteBatch.X1] - x4Offset;
+        for (int i = 0; i < offsetVerts.length; i++)
+        {
+            float x = offsetVerts[i];
+            if (x >= highestX)
+                highestX = x;
+
+        }
+        return highestX;
     }
 
     private static Vector2 skewProject = new Vector2();
@@ -264,7 +317,7 @@ public class MapSprite extends LayerChild
         return skewProject;
     }
 
-    public static float[] yVerts = new float[4];
+    public static float[] offsetVerts = new float[4];
     @Override
     public void draw()
     {
@@ -290,28 +343,28 @@ public class MapSprite extends LayerChild
         {
 
             Vector2 offset;
-            offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y2] - lowestY));
-            verts[0] = vertices[SpriteBatch.X2] + offset.x;
-            verts[1] = vertices[SpriteBatch.Y2] + offset.y;
+            offset = skewOffset(getX() + (width / 2f), getY(), ((vertices[SpriteBatch.Y2] + y1Offset) - lowestY));
+            verts[0] = vertices[SpriteBatch.X2] + x1Offset + offset.x;
+            verts[1] = vertices[SpriteBatch.Y2] + y1Offset + offset.y;
             verts[2] = colorFloatBits;
             verts[3] = u;
             verts[4] = v;
-            offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y3] - lowestY));
-            verts[5] = vertices[SpriteBatch.X3] + offset.x;
-            verts[6] = vertices[SpriteBatch.Y3] + offset.y;
+            offset = skewOffset(getX() + (width / 2f), getY(), ((vertices[SpriteBatch.Y3] + y2Offset) - lowestY));
+            verts[5] = vertices[SpriteBatch.X3] + x2Offset + offset.x;
+            verts[6] = vertices[SpriteBatch.Y3] + y2Offset + offset.y;
             verts[7] = colorFloatBits;
             verts[8] = u2;
             verts[9] = v;
 
-            offset = skewOffset(getX() + (width / 2f), getY(), ((vertices[SpriteBatch.Y4] - lowestY)));
-            verts[10] = vertices[SpriteBatch.X4] + offset.x;
-            verts[11] = vertices[SpriteBatch.Y4] + offset.y;
+            offset = skewOffset(getX() + (width / 2f), getY(), ((vertices[SpriteBatch.Y4] + y3Offset) - lowestY));
+            verts[10] = vertices[SpriteBatch.X4] + x3Offset + offset.x;
+            verts[11] = vertices[SpriteBatch.Y4] + y3Offset + offset.y;
             verts[12] = colorFloatBits;
             verts[13] = u2;
             verts[14] = v2;
-            offset = skewOffset(getX() + (width / 2f), getY(), ((vertices[SpriteBatch.Y1] - lowestY)));
-            verts[15] = vertices[SpriteBatch.X1] + offset.x;
-            verts[16] = vertices[SpriteBatch.Y1] + offset.y;
+            offset = skewOffset(getX() + (width / 2f), getY(), ((vertices[SpriteBatch.Y4] + y4Offset) - lowestY));
+            verts[15] = vertices[SpriteBatch.X1] + x4Offset + offset.x;
+            verts[16] = vertices[SpriteBatch.Y1] + y4Offset + offset.y;
             verts[17] = colorFloatBits;
             verts[18] = u;
             verts[19] = v2;
@@ -319,32 +372,63 @@ public class MapSprite extends LayerChild
         else
         {
             lowestY = parentSprite.getLowestY();
-            float width = parentSprite.width;
-            Vector2 offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), vertices[SpriteBatch.Y2] - lowestY);
-
-            verts[0] = vertices[SpriteBatch.X2] + offset.x;
-            verts[1] = vertices[SpriteBatch.Y2] + offset.y;
+            Vector2 offset;
+            offset = parentSprite.skewOffset(parentSprite.getX() + (parentSprite.width / 2f), parentSprite.getLowestY(), (vertices[SpriteBatch.Y2] + y1Offset) - lowestY);
+            verts[0] = vertices[SpriteBatch.X2] + x1Offset + offset.x;
+            verts[1] = vertices[SpriteBatch.Y2] + y1Offset + offset.y;
             verts[2] = colorFloatBits;
             verts[3] = u;
             verts[4] = v;
-            offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), vertices[SpriteBatch.Y3] - lowestY);
-            verts[5] = vertices[SpriteBatch.X3] + offset.x;
-            verts[6] = vertices[SpriteBatch.Y3] + offset.y;
+            MapSprite parent = parentSprite;
+            if(parentSprite.toEdgeSprite != null)
+            {
+                parent = parentSprite.toEdgeSprite;
+                lowestY = parent.getLowestY();
+            }
+            offset = parent.skewOffset(parent.getX() + (parent.width / 2f), parent.getLowestY(), (vertices[SpriteBatch.Y3] + y2Offset) - lowestY);
+            verts[5] = vertices[SpriteBatch.X3] + x2Offset + offset.x;
+            verts[6] = vertices[SpriteBatch.Y3] + y2Offset + offset.y;
             verts[7] = colorFloatBits;
             verts[8] = u2;
             verts[9] = v;
-            offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), vertices[SpriteBatch.Y4] - lowestY);
-            verts[10] = vertices[SpriteBatch.X4] + offset.x;
-            verts[11] = vertices[SpriteBatch.Y4] + offset.y;
+            offset = parent.skewOffset(parent.getX() + (parent.width / 2f), parent.getLowestY(), (vertices[SpriteBatch.Y4] + y3Offset) - lowestY);
+            verts[10] = vertices[SpriteBatch.X4] + x3Offset + offset.x;
+            verts[11] = vertices[SpriteBatch.Y4] + y3Offset + offset.y;
             verts[12] = colorFloatBits;
             verts[13] = u2;
             verts[14] = v2;
-            offset = parentSprite.skewOffset(parentSprite.getX() + (width / 2f), parentSprite.getY(), vertices[SpriteBatch.Y1] - lowestY);
-            verts[15] = vertices[SpriteBatch.X1] + offset.x;
-            verts[16] = vertices[SpriteBatch.Y1] + offset.y;
+            parent = parentSprite;
+            lowestY = parent.getLowestY();
+            offset = parentSprite.skewOffset(parent.getX() + (parent.width / 2f), parentSprite.getLowestY(), (vertices[SpriteBatch.Y1] + y4Offset) - lowestY);
+            verts[15] = vertices[SpriteBatch.X1] + x4Offset + offset.x;
+            verts[16] = vertices[SpriteBatch.Y1] + y4Offset + offset.y;
             verts[17] = colorFloatBits;
             verts[18] = u;
             verts[19] = v2;
+//            offset = parentSprite.skewOffset(lowestX, parentSprite.getLowestY(), (vertices[SpriteBatch.Y2] + y1Offset) - lowestY);
+//            verts[0] = vertices[SpriteBatch.X2] + x1Offset + offset.x;
+//            verts[1] = vertices[SpriteBatch.Y2] + y1Offset + offset.y;
+//            verts[2] = colorFloatBits;
+//            verts[3] = u;
+//            verts[4] = v;
+//            offset = parentSprite.skewOffset(highestX, parentSprite.getLowestY(), (vertices[SpriteBatch.Y3] + y2Offset) - lowestY);
+//            verts[5] = vertices[SpriteBatch.X3] + x2Offset + offset.x;
+//            verts[6] = vertices[SpriteBatch.Y3] + y2Offset + offset.y;
+//            verts[7] = colorFloatBits;
+//            verts[8] = u2;
+//            verts[9] = v;
+//            offset = parentSprite.skewOffset(highestX, parentSprite.getLowestY(), (vertices[SpriteBatch.Y4] + y3Offset) - lowestY);
+//            verts[10] = vertices[SpriteBatch.X4] + x3Offset + offset.x;
+//            verts[11] = vertices[SpriteBatch.Y4] + y3Offset + offset.y;
+//            verts[12] = colorFloatBits;
+//            verts[13] = u2;
+//            verts[14] = v2;
+//            offset = parentSprite.skewOffset(lowestX, parentSprite.getLowestY(), (vertices[SpriteBatch.Y1] + y4Offset) - lowestY);
+//            verts[15] = vertices[SpriteBatch.X1] + x4Offset + offset.x;
+//            verts[16] = vertices[SpriteBatch.Y1] + y4Offset + offset.y;
+//            verts[17] = colorFloatBits;
+//            verts[18] = u;
+//            verts[19] = v2;
         }
 
         map.editor.batch.draw(sprite.getTexture(), verts, 0, verts.length);
@@ -377,7 +461,7 @@ public class MapSprite extends LayerChild
 //                    float width = topsprite.getRegionWidth() / 64f;
                     float height = topsprite.getRegionHeight() / 64f;
 
-                    Vector2 offset = skewOffset(getX() + width / 2f, getY(), topsprite.getAtlasRegion().offsetY + height);
+                    Vector2 offset;
                     offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y2] - lowestY));
                     verts[0] = vertices[SpriteBatch.X2] + offset.x;
                     verts[1] = vertices[SpriteBatch.Y2] + offset.y;
@@ -391,7 +475,6 @@ public class MapSprite extends LayerChild
                     verts[8] = u2;
                     verts[9] = v;
 
-                    offset = skewOffset(getX() + width / 2f, getY(), topsprite.getAtlasRegion().offsetY);
                     offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y4] - lowestY));
                     verts[10] = vertices[SpriteBatch.X4] + offset.x;
                     verts[11] = vertices[SpriteBatch.Y4] + offset.y;
@@ -452,6 +535,18 @@ public class MapSprite extends LayerChild
         {
             moveBox.setScale(map.zoom);
             moveBox.sprite.draw(map.editor.batch);
+
+            if(map.selectedSprites.size == 1)
+            {
+                offsetMovebox1.setScale(map.zoom);
+                offsetMovebox2.setScale(map.zoom);
+                offsetMovebox3.setScale(map.zoom);
+                offsetMovebox4.setScale(map.zoom);
+                offsetMovebox1.sprite.draw(map.editor.batch);
+                offsetMovebox2.sprite.draw(map.editor.batch);
+                offsetMovebox3.sprite.draw(map.editor.batch);
+                offsetMovebox4.sprite.draw(map.editor.batch);
+            }
         }
     }
     public void drawScaleBox()
@@ -461,24 +556,6 @@ public class MapSprite extends LayerChild
             scaleBox.setScale(map.zoom);
             scaleBox.sprite.draw(map.editor.batch);
         }
-    }
-
-    public void setID(int id)
-    {
-        for(int i = 0; i < lockedProperties.size; i ++)
-        {
-            PropertyField propertyField = lockedProperties.get(i);
-            if(propertyField instanceof LabelFieldPropertyValuePropertyField)
-            {
-                LabelFieldPropertyValuePropertyField labelFieldProperty = (LabelFieldPropertyValuePropertyField) propertyField;
-                if(labelFieldProperty.getProperty().equals("ID"))
-                {
-                    labelFieldProperty.value.setText(Integer.toString(id));
-                    break;
-                }
-            }
-        }
-        this.id = id;
     }
 
     public void setZ(float z)
@@ -642,6 +719,12 @@ public class MapSprite extends LayerChild
         this.rotationBox.setPosition(x, y);
         this.moveBox.setPosition(x, y);
         this.scaleBox.setPosition(x, y);
+
+        float[] spriteVertices = this.sprite.getVertices();
+        offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + x1Offset - offsetMovebox1.width / 2f * offsetMovebox1.scale, spriteVertices[SpriteBatch.Y2] + y1Offset - offsetMovebox1.height / 2f * offsetMovebox1.scale);
+        offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + x2Offset - offsetMovebox2.width / 2f * offsetMovebox2.scale, spriteVertices[SpriteBatch.Y3] + y2Offset - offsetMovebox2.height / 2f * offsetMovebox2.scale);
+        offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + x3Offset - offsetMovebox3.width / 2f * offsetMovebox3.scale, spriteVertices[SpriteBatch.Y4] + y3Offset - offsetMovebox3.height / 2f * offsetMovebox3.scale);
+        offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + x4Offset - offsetMovebox4.width / 2f * offsetMovebox4.scale, spriteVertices[SpriteBatch.Y1] + y4Offset - offsetMovebox4.height / 2f * offsetMovebox4.scale);
 
         if(this.tool.hasAttachedMapObjects())
         {
@@ -807,5 +890,15 @@ public class MapSprite extends LayerChild
 
         float[] vertices = {lowestX, lowestY, highestX, lowestY, highestX, highestY, lowestX, highestY};
         this.polygon.setVertices(vertices);
+    }
+
+    public static int getAndIncrementId()
+    {
+        return idCounter ++;
+    }
+
+    public static void resetIdCounter()
+    {
+        idCounter = 1;
     }
 }
