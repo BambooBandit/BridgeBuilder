@@ -1,5 +1,6 @@
 package com.bamboo.bridgebuilder.data;
 
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 
@@ -62,6 +63,12 @@ public class MapData
                 this.layers.add(new SpriteLayerData((SpriteLayer) layer));
             else if(layer instanceof ObjectLayer)
                 this.layers.add(new ObjectLayerData((ObjectLayer) layer));
+        }
+        FieldFieldPropertyValuePropertyField sky = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "sky");
+        if(sky != null)
+        {
+            if(!map.spriteMenu.hasSpriteSheet(sky.value.getText()))
+                map.spriteMenu.createSpriteSheet(sky.value.getText());
         }
         for(int i = 0; i < map.spriteMenu.spriteSheets.size; i ++)
             this.sheets.add(new SpriteSheetData(map, map.spriteMenu.spriteSheets.get(i)));

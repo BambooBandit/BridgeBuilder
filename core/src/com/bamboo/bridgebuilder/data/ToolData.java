@@ -55,6 +55,8 @@ public class ToolData
             for (int i = 0; i < spriteTool.attachedMapObjectManagers.size; i++)
             {
                 AttachedMapObjectManager attachedMapObjectManager = spriteTool.attachedMapObjectManagers.get(i);
+                if(attachedMapObjectManager.attachedMapObjects.size == 0)
+                    continue;
                 MapObject mapObject = attachedMapObjectManager.attachedMapObjects.first();
                 MapObjectData mapObjectData;
                 if (mapObject instanceof MapPoint)

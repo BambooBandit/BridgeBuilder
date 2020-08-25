@@ -938,60 +938,63 @@ public class Map implements Screen
                 sheetName = spriteSheetData.name;
             spriteMenu.createSpriteSheet(sheetName);
             // sprite tool properties
-            int toolSize = spriteSheetData.tools.size();
-            for(int k = 0; k < toolSize; k ++)
+            if(spriteSheetData.tools != null)
             {
-                ToolData toolData = spriteSheetData.tools.get(k);
-                SpriteTool spriteTool = spriteMenu.getSpriteTool(toolData.n, sheetName);
-                if(spriteTool == null)
-                    continue;
-                spriteTool.properties.clear();
+                int toolSize = spriteSheetData.tools.size();
+                for (int k = 0; k < toolSize; k++)
+                {
+                    ToolData toolData = spriteSheetData.tools.get(k);
+                    SpriteTool spriteTool = spriteMenu.getSpriteTool(toolData.n, sheetName);
+                    if (spriteTool == null)
+                        continue;
+                    spriteTool.properties.clear();
 
-                // properties
-                int propSize = toolData.props.size();
-                for(int s = 0; s < propSize; s++)
-                {
-                    PropertyData propertyData = toolData.props.get(s);
-                    propertyMenu.newProperty(propertyData, spriteTool.properties);
-                }
-                // locked properties
-                propSize = toolData.lProps.size();
-                for(int s = 0; s < propSize; s++)
-                {
-                    PropertyData propertyData = toolData.lProps.get(s);
-                    propertyMenu.changeLockedPropertyValue(propertyData, spriteTool.lockedProperties);
-                }
-
-                // attached map objects
-                if(toolData.objs != null)
-                {
-                    int objSize = toolData.objs.size();
-                    for (int s = 0; s < objSize; s++)
+                    // properties
+                    int propSize = toolData.props.size();
+                    for (int s = 0; s < propSize; s++)
                     {
-                        MapObjectData mapObjectData = toolData.objs.get(s);
-                        MapObject mapObject;
-                        if (mapObjectData instanceof MapPolygonData)
+                        PropertyData propertyData = toolData.props.get(s);
+                        propertyMenu.newProperty(propertyData, spriteTool.properties);
+                    }
+                    // locked properties
+                    propSize = toolData.lProps.size();
+                    for (int s = 0; s < propSize; s++)
+                    {
+                        PropertyData propertyData = toolData.lProps.get(s);
+                        propertyMenu.changeLockedPropertyValue(propertyData, spriteTool.lockedProperties);
+                    }
+
+                    // attached map objects
+                    if (toolData.objs != null)
+                    {
+                        int objSize = toolData.objs.size();
+                        for (int s = 0; s < objSize; s++)
                         {
-                            MapPolygonData mapPolygonData = (MapPolygonData) mapObjectData;
-                            MapPolygon mapPolygon = new MapPolygon(this, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
-                            mapObject = mapPolygon;
-                        } else
-                        {
-                            MapPointData mapPointData = (MapPointData) mapObjectData;
-                            MapPoint mapPoint = new MapPoint(this, mapPointData.x, mapPointData.y);
-                            mapObject = mapPoint;
-                        }
-                        // attached manager
-                        spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.offsetX, mapObjectData.offsetY);
-                        if(setDefaultsOnly)
-                            mapObject.attachedMapObjectManager.addCopyOfMapObjectToAllMapSpritesOfThisSpriteTool(mapObject);
-                        // object properties
-                        propSize = mapObjectData.props.size();
-                        mapObject.properties.clear();
-                        for (int p = 0; p < propSize; p++)
-                        {
-                            PropertyData propertyData = mapObjectData.props.get(p);
-                            propertyMenu.newProperty(propertyData, mapObject.properties);
+                            MapObjectData mapObjectData = toolData.objs.get(s);
+                            MapObject mapObject;
+                            if (mapObjectData instanceof MapPolygonData)
+                            {
+                                MapPolygonData mapPolygonData = (MapPolygonData) mapObjectData;
+                                MapPolygon mapPolygon = new MapPolygon(this, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
+                                mapObject = mapPolygon;
+                            } else
+                            {
+                                MapPointData mapPointData = (MapPointData) mapObjectData;
+                                MapPoint mapPoint = new MapPoint(this, mapPointData.x, mapPointData.y);
+                                mapObject = mapPoint;
+                            }
+                            // attached manager
+                            spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.offsetX, mapObjectData.offsetY);
+                            if (setDefaultsOnly)
+                                mapObject.attachedMapObjectManager.addCopyOfMapObjectToAllMapSpritesOfThisSpriteTool(mapObject);
+                            // object properties
+                            propSize = mapObjectData.props.size();
+                            mapObject.properties.clear();
+                            for (int p = 0; p < propSize; p++)
+                            {
+                                PropertyData propertyData = mapObjectData.props.get(p);
+                                propertyMenu.newProperty(propertyData, mapObject.properties);
+                            }
                         }
                     }
                 }

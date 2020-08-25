@@ -22,7 +22,6 @@ public class SpriteSheetData
         }
         else
             this.name = spriteSheet.name;
-        this.tools = new ArrayList<>();
 
         for(int i = 0; i < map.spriteMenu.spriteTable.getChildren().size; i ++)
         {
@@ -30,7 +29,11 @@ public class SpriteSheetData
             {
                 SpriteTool spriteTool = ((Table) map.spriteMenu.spriteTable.getChildren().get(i)).findActor("spriteTool");
                 if(spriteTool.sheet.name == spriteSheet.name)
+                {
+                    if(this.tools == null)
+                        this.tools = new ArrayList<>();
                     this.tools.add(new ToolData(spriteTool));
+                }
             }
         }
     }
