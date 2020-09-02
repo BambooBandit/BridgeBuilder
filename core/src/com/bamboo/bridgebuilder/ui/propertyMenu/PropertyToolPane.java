@@ -223,6 +223,9 @@ public class PropertyToolPane extends Group
 
     public static void updatePerspective(Map map)
     {
+        // Disable perspective for now
+        if(1 == 1)
+            return;
         for(int i = 0; i < map.layers.size; i++)
         {
             Layer layer = map.layers.get(i);
