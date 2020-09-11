@@ -316,6 +316,23 @@ public class FileMenu extends Group
             @Override
             public void yes()
             {
+                try
+                {
+                    File file = new File("defaultBBM.bbm");
+                    String content = null;
+                    content = new Scanner(file).useDelimiter("\\Z").next();
+                    Json json = createJson();
+                    MapData mapData = json.fromJson(MapData.class, content);
+                    mapData.layers.clear();
+                    Map newMap = new Map(editor, mapData);
+                    newMap.file = file;
+                    editor.addToMaps(newMap);
+                    mapTabPane.lookAtMap(newMap);
+                }
+                catch (FileNotFoundException e)
+                {
+                    e.printStackTrace();
+                }
             }
 
             @Override
