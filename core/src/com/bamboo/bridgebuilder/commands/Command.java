@@ -1,9 +1,12 @@
 package com.bamboo.bridgebuilder.commands;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.map.MapPolygon;
 import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 /** Command pattern used for undo/redo. TODO pool them. */
 public interface Command
@@ -58,6 +61,20 @@ public interface Command
         else if(command == DrawMapSprite.class)
         {
             return !(map.editAttachedMapSprite != null && (map.selectedSprites.size != 1 || (map.selectedSprites.first().attachedSprites == null || !map.selectedSprites.first().attachedSprites.equals(map.selectedLayer))));
+        }
+        else if(command == DrawFence.class)
+        {
+            boolean selectedFencePost = false;
+            SpriteTool spriteTool = map.getSpriteToolFromSelectedTools();
+            if (spriteTool.hasAttachedMapObjects())
+            {
+                for(int i = 0; i < spriteTool.attachedMapObjectManagers.size; i ++)
+                {
+                    if(Utils.getPropertyField(spriteTool.attachedMapObjectManagers.get(i).properties, "fenceStart") != null)
+                        selectedFencePost = true;
+                }
+            }
+            return map.editor.fileMenu.toolPane.fence.selected && !(map.editAttachedMapSprite != null && (map.selectedSprites.size != 1 || (map.selectedSprites.first().attachedSprites == null || !map.selectedSprites.first().attachedSprites.equals(map.selectedLayer)))) && selectedFencePost;
         }
         return true;
     }

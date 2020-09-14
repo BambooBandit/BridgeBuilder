@@ -488,7 +488,35 @@ public class MapInput implements InputProcessor
         if(this.map.spriteMenu.selectedSpriteTools.size == 0)
             return false;
 
-        if(Command.shouldExecute(map, DrawMapSprite.class))
+        if(Command.shouldExecute(map, DrawFence.class))
+        {
+            if(!editor.fileMenu.toolPane.splat.selected)
+            {
+                DrawFence drawFence = new DrawFence(this.map, (SpriteLayer) this.map.selectedLayer, x, y);
+                this.map.executeCommand(drawFence);
+                return true;
+            }
+            else
+            {
+                int randomSpawnAmount = Utils.randomInt(editor.fileMenu.toolPane.splatDialog.getMinSpawn(), editor.fileMenu.toolPane.splatDialog.getMaxSpawn());
+                DrawFence drawFence = null;
+                for(int i = 0; i < randomSpawnAmount; i ++)
+                {
+                    float randomX = Utils.randomFloat(x - editor.fileMenu.toolPane.splatDialog.getMaxXDisplacement(), x + editor.fileMenu.toolPane.splatDialog.getMaxXDisplacement());
+                    float randomY = Utils.randomFloat(y - editor.fileMenu.toolPane.splatDialog.getMaxYDisplacement(), y + editor.fileMenu.toolPane.splatDialog.getMaxYDisplacement());
+                    if(i == 0)
+                        drawFence = new DrawFence(this.map, (SpriteLayer) this.map.selectedLayer, randomX, randomY);
+                    else
+                        drawFence.addCommandToChain(new DrawFence(this.map, (SpriteLayer) this.map.selectedLayer, randomX, randomY));
+                }
+                if(randomSpawnAmount > 0)
+                {
+                    this.map.executeCommand(drawFence);
+                    return true;
+                }
+            }
+        }
+        else if(Command.shouldExecute(map, DrawMapSprite.class))
         {
             if(!editor.fileMenu.toolPane.splat.selected)
             {

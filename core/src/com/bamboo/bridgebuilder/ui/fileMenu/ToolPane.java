@@ -216,6 +216,8 @@ public class ToolPane extends Group
                     this.editor.activeMap.editAttachedMapSprite.disableEditAttachedSpritesMode();
                 else if(selectedTool == this.fence)
                     this.editor.activeMap.lastFencePlaced = null;
+                if(selectedTool == this.random && this.fence.selected)
+                    return;
                 selectedTool.unselect();
             }
             else
@@ -224,6 +226,8 @@ public class ToolPane extends Group
                     this.editor.activeMap.colorizeDepth();
                 else if(selectedTool == this.spriteGridColors && this.editor.activeMap != null)
                     this.editor.activeMap.updateLayerSpriteGrids();
+                else if(selectedTool == this.fence)
+                    this.random.select();
                 if((selectedTool == this.spriteGridColors || selectedTool == this.blocked) && this.perspective.selected)
                     this.perspective.unselect();
                 else if(selectedTool == this.perspective && (this.spriteGridColors.selected || this.blocked.selected))
