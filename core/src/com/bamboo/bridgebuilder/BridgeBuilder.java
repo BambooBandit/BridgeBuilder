@@ -149,7 +149,7 @@ public class BridgeBuilder extends Game
 				else if(keycode == Input.Keys.R)
 				{
 					if(activeMap != null)
-						activeMap.shuffleRandomSpriteTool();
+						activeMap.shuffleRandomSpriteTool(false);
 				}
 				else if(keycode == Input.Keys.X)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.b2drender);

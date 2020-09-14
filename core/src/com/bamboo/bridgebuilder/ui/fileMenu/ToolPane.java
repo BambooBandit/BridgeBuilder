@@ -45,6 +45,7 @@ public class ToolPane extends Group
     public Tool b2drender;
     public Tool attachedSprites;
     public Tool splat;
+    public Tool fence;
     public Tool selectedTool;
     private TextButton bringUp;
     private TextButton bringDown;
@@ -93,6 +94,7 @@ public class ToolPane extends Group
         this.b2drender = new Tool(editor, this, true, Tools.B2DR);
         this.attachedSprites = new Tool(editor, this, true, Tools.ATTACHEDSPRITES);
         this.splat = new Tool(editor, this, true, Tools.SPLAT);
+        this.fence = new Tool(editor, this, true, Tools.FENCE);
         this.bringUp = new TextButton("^", skin);
         this.bringDown = new TextButton("v", skin);
         this.bringTop = new TextButton("^^", skin);
@@ -133,7 +135,8 @@ public class ToolPane extends Group
         this.toolTable.add(this.lines).padRight(1);
         this.toolTable.add(this.b2drender).padRight(1);
         this.toolTable.add(this.attachedSprites).padRight(1);
-        this.toolTable.add(this.splat).padRight(5);
+        this.toolTable.add(this.splat).padRight(1);
+        this.toolTable.add(this.fence).padRight(5);
         this.toolTable.add(this.bringUp).padRight(1);
         this.toolTable.add(this.bringDown).padRight(1);
         this.toolTable.add(this.bringTop).padRight(1);
@@ -182,6 +185,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.b2drender).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.attachedSprites).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.splat).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.fence).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringUp).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringDown).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringTop).size(toolHeight, toolHeight);
@@ -210,6 +214,8 @@ public class ToolPane extends Group
                     PropertyToolPane.apply(editor.activeMap);
                 else if(selectedTool == this.attachedSprites)
                     this.editor.activeMap.editAttachedMapSprite.disableEditAttachedSpritesMode();
+                else if(selectedTool == this.fence)
+                    this.editor.activeMap.lastFencePlaced = null;
                 selectedTool.unselect();
             }
             else

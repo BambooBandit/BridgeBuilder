@@ -37,7 +37,6 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldProperty
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
-import com.sun.xml.internal.ws.util.StringUtils;
 
 import java.io.File;
 import java.util.Stack;
@@ -87,6 +86,8 @@ public class Map implements Screen
     public Skin skin;
 
     public File file = null;
+
+    public MapSprite lastFencePlaced;
 
     // For undo/redo
     private int undoRedoPointer = -1;
@@ -687,13 +688,13 @@ public class Map implements Screen
         if(this.spriteMenu.selectedSpriteTools.size == 0)
             return null;
         if(this.spriteMenu.selectedSpriteTools.first().tool != SpriteMenuTools.SPRITE)
-            return  null;
+            return null;
         if(this.editor.fileMenu.toolPane.random.selected && this.randomSpriteIndex < this.spriteMenu.selectedSpriteTools.size)
             return this.spriteMenu.selectedSpriteTools.get(this.randomSpriteIndex);
         return this.spriteMenu.selectedSpriteTools.first();
     }
 
-    public void shuffleRandomSpriteTool()
+    public void shuffleRandomSpriteTool(boolean ignoreFencePost)
     {
         if(getSpriteToolFromSelectedTools() == null)
             return;
@@ -788,6 +789,37 @@ public class Map implements Screen
                     previewSprite.setColor(randomR, randomG, randomB, randomA);
                     previewSprite.setPosition(coords.x - previewSprite.getWidth() / 2, coords.y - previewSprite.getHeight() / 2);
                 }
+            }
+        }
+
+        if(!ignoreFencePost && editor.fileMenu.toolPane.fence.selected) {
+            SpriteTool spriteTool = getSpriteToolFromSelectedTools();
+            if (!spriteTool.hasAttachedMapObjects()) {
+                shuffleRandomSpriteTool(false);
+                return;
+            }
+            boolean hasFencePost = false;
+            for (int k = 0; k < getAllSelectedSpriteTools().size; k++) {
+                SpriteTool spriteTool1 = getAllSelectedSpriteTools().get(k);
+                if (!spriteTool1.hasAttachedMapObjects())
+                    continue;
+                for (int i = 0; i < spriteTool1.attachedMapObjectManagers.size; i++) {
+                    AttachedMapObjectManager attachedMapObjectManager = spriteTool1.attachedMapObjectManagers.get(i);
+                    if (Utils.getPropertyField(attachedMapObjectManager.properties, "fenceStart") != null)
+                        hasFencePost = true;
+                }
+            }
+            if (!hasFencePost)
+                return;
+            hasFencePost = false;
+            for (int i = 0; i < spriteTool.attachedMapObjectManagers.size; i++) {
+                AttachedMapObjectManager attachedMapObjectManager = spriteTool.attachedMapObjectManagers.get(i);
+                if (Utils.getPropertyField(attachedMapObjectManager.properties, "fenceStart") != null)
+                    hasFencePost = true;
+            }
+            if (!hasFencePost) {
+                shuffleRandomSpriteTool(false);
+                return;
             }
         }
     }
@@ -932,8 +964,8 @@ public class Map implements Screen
         {
             SpriteSheetData spriteSheetData = mapData.sheets.get(i);
             String sheetName;
-            if(Utils.canSpriteSheetBeCreated(this, "editor" + StringUtils.capitalize(spriteSheetData.name)))
-                sheetName = "editor" + StringUtils.capitalize(spriteSheetData.name);
+            if(Utils.canSpriteSheetBeCreated(this, "editor" + Utils.capitalize(spriteSheetData.name)))
+                sheetName = "editor" + Utils.capitalize(spriteSheetData.name);
             else
                 sheetName = spriteSheetData.name;
             spriteMenu.createSpriteSheet(sheetName);
@@ -1175,8 +1207,8 @@ public class Map implements Screen
     private MapSprite loadMapSpriteData(MapSpriteData mapSpriteData, Layer layer)
     {
         String sheetName;
-        if (Utils.isSpriteSheetInFolder("editor" + StringUtils.capitalize(mapSpriteData.sN)))
-            sheetName = "editor" + StringUtils.capitalize(mapSpriteData.sN);
+        if (Utils.isSpriteSheetInFolder("editor" + Utils.capitalize(mapSpriteData.sN)))
+            sheetName = "editor" + Utils.capitalize(mapSpriteData.sN);
         else
             sheetName = mapSpriteData.sN;
         SpriteTool spriteTool = spriteMenu.getSpriteTool(mapSpriteData.n, sheetName);
