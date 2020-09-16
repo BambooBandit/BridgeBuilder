@@ -13,6 +13,8 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
+import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
+
 public class PropertyMenu extends Group
 {
     private BridgeBuilder editor;
@@ -27,8 +29,6 @@ public class PropertyMenu extends Group
     public Label propertyTypeLabel;
     private PropertyPanel propertyPanel; // Custom properties
     public PropertyToolPane toolPane;
-
-    public static int toolHeight = 35;
 
     private Stack stack;
     public Table propertyTable; // Holds all the properties

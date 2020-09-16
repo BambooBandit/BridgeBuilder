@@ -14,7 +14,7 @@ import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LightPropertyField;
 
-import static com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu.toolHeight;
+import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
 
 public class PropertyPresetDialog extends Window
 {

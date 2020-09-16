@@ -44,4 +44,11 @@ public class LayerTool extends Group
             }
         });
     }
+
+    @Override
+    public void setSize(float width, float height) {
+        super.setSize(width, height);
+        this.image.setSize(width, height);
+        this.background.setSize(width, height);
+    }
 }

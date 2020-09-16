@@ -82,6 +82,7 @@ public class PropertyToolPane extends Group
         this.background.setBounds(0, 0, width, height);
 
         // Resize all buttons in the pane
+        this.newProperty.setSize(toolHeight, toolHeight);
         this.toolTable.getCell(this.newProperty).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.more).size(toolHeight * 2, toolHeight);
         this.toolTable.getCell(this.apply).size(toolHeight * 2, toolHeight);

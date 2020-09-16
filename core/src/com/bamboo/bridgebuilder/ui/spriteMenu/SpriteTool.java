@@ -18,7 +18,7 @@ import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
-import static com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu.toolHeight;
+import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
 
 /** The sprite buttons in the SpriteMenu. Holds data that belongs with the sprite, such as locked properties.*/
 public class SpriteTool extends SpriteMenuTool

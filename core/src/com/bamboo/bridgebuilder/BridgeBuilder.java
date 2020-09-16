@@ -19,9 +19,9 @@ import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 
 public class BridgeBuilder extends Game
 {
-	public static final int buttonHeight = 35;
-	public static final int tabHeight = 25;
-	public static final int toolHeight = 35;
+	public static int buttonHeight = 35;
+	public static int tabHeight = 25;
+	public static int toolHeight = 35;
 
 	public Array<Map> maps; // All maps open in the program.
 	public Map activeMap; // Map currently being viewed
@@ -296,6 +296,11 @@ public class BridgeBuilder extends Game
 	{
 		if(width == 0 || height == 0) // undo's the weird lwjgl3 change (minimize window calls this with 0, 0)
 			return;
+		int multiplier = height / 720;
+		buttonHeight = 35 * multiplier;
+		tabHeight = 25 * multiplier;
+		toolHeight = 35 * multiplier;
+
 		this.stage.getViewport().update(width, height, true);
 		this.fileMenu.setSize(Gdx.graphics.getWidth(), buttonHeight, tabHeight, toolHeight);
 		this.fileMenu.setPosition(0, Gdx.graphics.getHeight() - this.fileMenu.getHeight());

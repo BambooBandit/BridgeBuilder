@@ -68,6 +68,14 @@ public class Tool extends Group
         });
     }
 
+    @Override
+    public void setSize(float width, float height)
+    {
+        super.setSize(width, height);
+        this.image.setSize(width, height);
+        this.background.setSize(width, height);
+    }
+
     public void select()
     {
         this.background.setColor(Color.GREEN);

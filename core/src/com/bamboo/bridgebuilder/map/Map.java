@@ -792,7 +792,7 @@ public class Map implements Screen
             }
         }
 
-        if(!ignoreFencePost && editor.fileMenu.toolPane.fence.selected) {
+        if(!ignoreFencePost && editor.fileMenu.toolPane.fence.selected){
             SpriteTool spriteTool = getSpriteToolFromSelectedTools();
             if (!spriteTool.hasAttachedMapObjects()) {
                 shuffleRandomSpriteTool(false);

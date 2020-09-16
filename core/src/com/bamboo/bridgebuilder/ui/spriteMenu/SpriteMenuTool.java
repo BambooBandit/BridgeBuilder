@@ -93,4 +93,12 @@ public class SpriteMenuTool extends Group
         if(this.tool == SpriteMenuTools.SPRITESELECT)
             spriteMenuToolPane.menu.spriteScrollPane.setVisible(false);
     }
+
+    @Override
+    public void setSize(float width, float height) {
+        super.setSize(width, height);
+        image.setSize(width, height);
+        if(background != null)
+            background.setSize(width, height);
+    }
 }

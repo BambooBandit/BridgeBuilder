@@ -76,6 +76,12 @@ public class SpriteMenuToolPane extends Group
         this.background.setBounds(0, 0, width, height);
 
         // Resize all buttons in the pane
+        this.sprites.setSize(toolHeight, toolHeight);
+        this.lines.setSize(toolHeight, toolHeight);
+        this.darkMode.setSize(toolHeight, toolHeight);
+        this.newSpritesheet.setSize(toolHeight, toolHeight);
+        this.removeSpriteSheet.setSize(toolHeight, toolHeight);
+
         this.toolTable.getCell(this.sprites).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.lines).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.darkMode).size(toolHeight, toolHeight);

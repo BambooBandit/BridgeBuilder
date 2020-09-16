@@ -52,6 +52,8 @@ public class LayerToolPane extends Group
         this.background.setBounds(0, 0, width, height);
 
         // Resize all buttons in the pane
+        this.newSpriteLayer.setSize(toolHeight, toolHeight);
+        this.newObjectLayer.setSize(toolHeight, toolHeight);
         this.toolTable.getCell(this.newSpriteLayer).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.newObjectLayer).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();

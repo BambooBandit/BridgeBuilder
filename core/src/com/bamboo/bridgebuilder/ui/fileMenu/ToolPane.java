@@ -165,6 +165,28 @@ public class ToolPane extends Group
         this.background.setBounds(0, 0, width, height);
 
         // Resize all buttons in the pane
+        this.brush.setSize(toolHeight, toolHeight);
+        this.drawPoint.setSize(toolHeight, toolHeight);
+        this.drawRectangle.setSize(toolHeight, toolHeight);
+        this.drawObject.setSize(toolHeight, toolHeight);
+        this.objectVerticeSelect.setSize(toolHeight, toolHeight);
+        this.boxSelect.setSize(toolHeight, toolHeight);
+        this.select.setSize(toolHeight, toolHeight);
+        this.grab.setSize(toolHeight, toolHeight);
+        this.gradient.setSize(toolHeight, toolHeight);
+        this.random.setSize(toolHeight, toolHeight);
+        this.blocked.setSize(toolHeight, toolHeight);
+        this.spriteGridColors.setSize(toolHeight, toolHeight);
+        this.parallax.setSize(toolHeight, toolHeight);
+        this.perspective.setSize(toolHeight, toolHeight);
+        this.top.setSize(toolHeight, toolHeight);
+        this.depth.setSize(toolHeight, toolHeight);
+        this.lines.setSize(toolHeight, toolHeight);
+        this.b2drender.setSize(toolHeight, toolHeight);
+        this.attachedSprites.setSize(toolHeight, toolHeight);
+        this.splat.setSize(toolHeight, toolHeight);
+        this.fence.setSize(toolHeight, toolHeight);
+
         this.toolTable.getCell(this.brush).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.drawPoint).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.drawRectangle).size(toolHeight, toolHeight);

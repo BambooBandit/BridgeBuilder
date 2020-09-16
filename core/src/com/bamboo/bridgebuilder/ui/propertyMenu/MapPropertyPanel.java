@@ -15,10 +15,10 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldProperty
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.OpaqueColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
+import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
+
 public class MapPropertyPanel extends Group
 {
-    public static int textFieldHeight = 32;
-
     private BridgeBuilder editor;
     private PropertyMenu menu;
 
@@ -89,11 +89,11 @@ public class MapPropertyPanel extends Group
     {
         for(int i = 0; i < this.table.getChildren().size; i ++)
         {
-            this.table.getChildren().get(i).setSize(width, textFieldHeight);
-            this.table.getCell(this.table.getChildren().get(i)).size(width, textFieldHeight);
+            this.table.getChildren().get(i).setSize(width, toolHeight);
+            this.table.getCell(this.table.getChildren().get(i)).size(width, toolHeight);
         }
 
-        float newHeight = textFieldHeight * 4;
+        float newHeight = toolHeight * 4;
 
         this.background.setBounds(0, 0, width, newHeight);
         this.stack.setSize(width, newHeight);

@@ -51,8 +51,10 @@ public class MapTabPane extends Group
         while(mapIterator.hasNext)
         {
             button = mapIterator.next().value;
+            button.findActor("X").setSize(25, height);
             this.buttonTable.getCell(button).size(150, height);
         }
+
         this.buttonTable.invalidateHierarchy();
 
         this.pane.invalidateHierarchy();
@@ -78,8 +80,9 @@ public class MapTabPane extends Group
 
         // For closing out of the map in the pane
         TextButton closeButton = new TextButton("X", skin);
+        closeButton.setName("X");
         closeButton.setColor(Color.FIREBRICK);
-        closeButton.setSize(25, getHeight());
+        closeButton.setSize(getHeight() / 2f, getHeight());
         closeButton.addListener(new ClickListener()
         {
             @Override
