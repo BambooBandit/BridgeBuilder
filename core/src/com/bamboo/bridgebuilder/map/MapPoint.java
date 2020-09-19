@@ -181,7 +181,7 @@ public class MapPoint extends MapObject
         float pointY = this.point.getTransformedY();
 
         double distance = Math.sqrt(Math.pow((x - pointX), 2) + Math.pow((y - pointY), 2));
-        return distance <= .6f;
+        return distance <= .3f;
     }
 
     @Override

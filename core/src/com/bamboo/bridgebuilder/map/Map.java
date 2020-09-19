@@ -1150,7 +1150,6 @@ public class Map implements Screen
                 for (int s = 0; s < layer.children.size; s++)
                 {
                     MapSprite mapSprite = (MapSprite) layer.children.get(s);
-                    mapSprite.setID(MapSprite.getAndIncrementId());
                     if (mapSprite.attachedSprites != null)
                     {
                         for (int k = 0; k < mapSprite.attachedSprites.children.size; k++)
@@ -1158,6 +1157,10 @@ public class Map implements Screen
                             MapSprite attached = mapSprite.attachedSprites.children.get(k);
                             attached.setID(attached.getAndIncrementId());
                         }
+                    }
+                    else
+                    {
+                        mapSprite.setID(MapSprite.getAndIncrementId());
                     }
                 }
                 // Edge
