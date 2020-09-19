@@ -16,7 +16,20 @@ public class SpriteLayerData extends LayerData
         for(int i = 0; i < layer.children.size; i ++)
         {
             MapSprite mapSprite = layer.children.get(i);
-            mapSprite.setID(MapSprite.getAndIncrementId());
+            if(mapSprite.attachedSprites != null && mapSprite.attachedSprites.children.size > 0)
+            {
+                for(int k = 0; k < mapSprite.attachedSprites.children.size; k ++)
+                {
+                    MapSprite child = mapSprite.attachedSprites.children.get(k);
+                    child.setID(MapSprite.getAndIncrementId());
+                }
+            }
+            else
+                mapSprite.setID(MapSprite.getAndIncrementId());
+        }
+        for(int i = 0; i < layer.children.size; i ++)
+        {
+            MapSprite mapSprite = layer.children.get(i);
             if(mapSprite.attachedSprites != null && mapSprite.attachedSprites.children.size > 0)
                 this.children.add(new AttachedMapSpriteData(mapSprite));
             else

@@ -388,6 +388,8 @@ public class ToolPane extends Group
                         if(layer instanceof SpriteLayer)
                         {
                             SpriteLayer spriteLayer = (SpriteLayer) layer;
+                            if(spriteLayer.children.size == 0)
+                                continue;
                             MapSprite mapSprite = spriteLayer.children.peek();
                             if(mapSprite.layerOverride != null)
                                 continue;
@@ -453,6 +455,8 @@ public class ToolPane extends Group
                         if(layer instanceof SpriteLayer)
                         {
                             SpriteLayer spriteLayer = (SpriteLayer) layer;
+                            if(spriteLayer.children.size == 0)
+                                continue;
                             MapSprite mapSprite = spriteLayer.children.peek();
                             if(mapSprite.layerOverride != null)
                                 continue;
