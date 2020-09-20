@@ -9,15 +9,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.commands.CreateLayer;
 import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTool;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
 
 public class LayerTool extends Group
 {
-    private Image background;
-    protected Image image;
+    public Image background;
+    public Image image;
+    public Image imageTop;
 
     protected LayerToolPane layerToolPane;
+
+    public boolean isSelected = false;
 
     public LayerTools tool;
 
@@ -28,21 +32,38 @@ public class LayerTool extends Group
         this.background = new Image(EditorAssets.getUIAtlas().createPatch("textfield"));
         this.image = new Image(new Texture("ui/" + tool.name + ".png")); // TODO pack it in atlas
 
+
         this.background.setSize(toolHeight, toolHeight);
         this.image.setSize(toolHeight, toolHeight);
 
         addActor(background);
         addActor(image);
-
-        addListener(new ClickListener()
+        if(tool.nameTop != null)
         {
-            @Override
-            public void clicked(InputEvent event, float x, float y)
-            {
-                CreateLayer createLayer = new CreateLayer(map, tool.type);
-                map.executeCommand(createLayer);
-            }
-        });
+            this.imageTop = new Image(new Texture("ui/" + tool.nameTop + ".png")); // TODO pack it in atlas
+            this.imageTop.setSize(toolHeight, toolHeight);
+            addActor(imageTop);
+        }
+
+        if(tool.type != null) {
+            addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    CreateLayer createLayer = new CreateLayer(map, tool.type);
+                    map.executeCommand(createLayer);
+                }
+            });
+        }
+        else
+        {
+            final LayerTool selectedTool = this;
+            addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    layerToolPane.selectTool(selectedTool);
+                }
+            });
+        }
     }
 
     @Override
@@ -50,5 +71,7 @@ public class LayerTool extends Group
         super.setSize(width, height);
         this.image.setSize(width, height);
         this.background.setSize(width, height);
+        if(this.imageTop != null)
+            this.imageTop.setSize(width, height);
     }
 }

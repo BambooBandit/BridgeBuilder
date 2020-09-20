@@ -23,7 +23,7 @@ public class LayerMenu extends Group
 
     public Skin skin;
     private Image background;
-    private LayerToolPane toolPane;
+    public LayerToolPane toolPane;
     private ScrollPane scrollPane;
     private Stack stack;
     public Table table;

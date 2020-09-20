@@ -264,6 +264,8 @@ public class Map implements Screen
 
     private void drawAttachedObjects()
     {
+        if(!layerMenu.toolPane.objectVisibility.isSelected)
+            return;
         for(int i = 0; i < this.layers.size; i ++)
         {
             Layer layer = this.layers.get(i);
@@ -524,6 +526,8 @@ public class Map implements Screen
 
     private void drawObjectLayers()
     {
+        if(!layerMenu.toolPane.objectVisibility.isSelected)
+            return;
         for(int i = 0; i < this.layers.size; i ++)
         {
             if(this.layers.get(i) instanceof ObjectLayer)
