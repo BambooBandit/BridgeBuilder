@@ -5,9 +5,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class ScaleBox extends ManipulatorBox
 {
+    public static Texture scaleTexture = null;
     public ScaleBox()
     {
-        this.sprite = new Sprite(new Texture("ui/scale.png")); // TODO pack this
+        if(scaleTexture == null)
+            scaleTexture = new Texture("ui/scale.png");
+        this.sprite = new Sprite(scaleTexture); // TODO pack this
         this.sprite.setSize(width, height);
         hover(false);
     }
