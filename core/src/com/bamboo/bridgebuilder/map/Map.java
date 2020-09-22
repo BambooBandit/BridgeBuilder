@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -36,6 +37,7 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
+import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteSheet;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 import java.io.File;
@@ -961,6 +963,27 @@ public class Map implements Screen
                 propertyMenu.changeLockedPropertyValue(propertyData, propertyMenu.mapPropertyPanel.lockedProperties);
             }
         }
+        else
+        {
+            // delete all properties and things
+            for(int i = 0; i < spriteMenu.spriteSheets.size; i ++)
+            {
+                SpriteSheet spriteSheet = spriteMenu.spriteSheets.get(i);
+                for(int k = 0; k < spriteSheet.children.size; k ++)
+                {
+                    Table child = spriteSheet.children.get(k);
+                    SpriteTool spriteTool = child.findActor("spriteTool");
+                    if(spriteTool.hasAttachedMapObjects())
+                    {
+                        for (int s = 0; s < spriteTool.attachedMapObjectManagers.size; s++)
+                        {
+                            spriteTool.removeAttachedMapObject(spriteTool.attachedMapObjectManagers.get(s).attachedMapObjects.first());
+                            s --;
+                        }
+                    }
+                }
+            }
+        }
 
         // create sprite sheets
         int size = mapData.sheets.size();
@@ -968,7 +991,7 @@ public class Map implements Screen
         {
             SpriteSheetData spriteSheetData = mapData.sheets.get(i);
             String sheetName;
-            if(Utils.canSpriteSheetBeCreated(this, "editor" + Utils.capitalize(spriteSheetData.name)))
+            if(Utils.isSpriteSheetInFolder("editor" + Utils.capitalize(spriteSheetData.name)))
                 sheetName = "editor" + Utils.capitalize(spriteSheetData.name);
             else
                 sheetName = spriteSheetData.name;
