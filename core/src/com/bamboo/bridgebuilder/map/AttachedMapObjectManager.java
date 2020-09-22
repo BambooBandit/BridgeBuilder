@@ -98,6 +98,8 @@ public class AttachedMapObjectManager
         else if(mapObject instanceof MapPolygon)
             ((MapPolygon) mapObject).destroyBody();
         boolean removed = this.attachedMapObjects.removeValue(mapObject, true);
+        if(mapObject.selected)
+            mapObject.unselect();
         return removed;
     }
 
