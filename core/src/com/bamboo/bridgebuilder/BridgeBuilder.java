@@ -2,6 +2,7 @@ package com.bamboo.bridgebuilder;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -14,6 +15,7 @@ import com.bamboo.bridgebuilder.commands.SelectLayer;
 import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.fileMenu.FileMenu;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
+import com.bamboo.bridgebuilder.ui.fileMenu.Tooltip;
 import com.bamboo.bridgebuilder.ui.fileMenu.YesNoDialog;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 
@@ -31,6 +33,8 @@ public class BridgeBuilder extends Game
 	public ShapeRenderer shapeRenderer;
 	public InputMultiplexer inputMultiplexer;
 	public static Preferences prefs;
+
+	public static Tooltip mouseCoordTooltip;
 
 	public FileMenu fileMenu;
 
@@ -54,6 +58,9 @@ public class BridgeBuilder extends Game
 		this.batch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
 		this.stage = new Stage(new ScreenViewport());
+
+		this.mouseCoordTooltip = new Tooltip(this, "(0, 0) ", " (0, 0)", EditorAssets.getUISkin(), false);
+		this.stage.addActor(this.mouseCoordTooltip);
 
 		// fileMenu
 		this.fileMenu = new FileMenu(EditorAssets.getUISkin(), this);
