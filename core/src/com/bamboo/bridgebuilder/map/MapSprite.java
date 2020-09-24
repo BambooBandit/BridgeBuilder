@@ -60,11 +60,11 @@ public class MapSprite extends LayerChild
         this.lockedProperties = new Array<>();
         this.sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) tool.textureRegion);
         this.sprite.setSize(sprite.getAtlasRegion().originalWidth / 64f, sprite.getAtlasRegion().originalHeight / 64f);
-        this.sprite.setOriginCenter();
-        x -= this.sprite.getWidth() / 2;
-        y -= this.sprite.getHeight() / 2;
         this.width = this.sprite.getWidth();
         this.height = this.sprite.getHeight();
+        this.sprite.setOrigin(width / 2, height / 2);
+        x -= this.sprite.getWidth() / 2;
+        y -= this.sprite.getHeight() / 2;
         this.tool = tool;
         float[] vertices = {0, 0, this.width, 0, this.width, this.height, 0, this.height};
         this.polygon = new EditorPolygon(vertices);
@@ -417,7 +417,7 @@ public class MapSprite extends LayerChild
 //            verts[7] = colorFloatBits;
 //            verts[8] = u2;
 //            verts[9] = v;
-//            offset = parentSprite.skewOffset(highestX, parentSprite.getLowestY(), (vertices[SpriteBatch.Y4] + y3Offset) - lowestY);
+//            offset = parentSprsite.skewOffset(highestX, parentSprite.getLowestY(), (vertices[SpriteBatch.Y4] + y3Offset) - lowestY);
 //            verts[10] = vertices[SpriteBatch.X4] + x3Offset + offset.x;
 //            verts[11] = vertices[SpriteBatch.Y4] + y3Offset + offset.y;
 //            verts[12] = colorFloatBits;
