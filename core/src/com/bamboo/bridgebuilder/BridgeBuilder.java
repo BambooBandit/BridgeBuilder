@@ -2,7 +2,6 @@ package com.bamboo.bridgebuilder;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -35,6 +34,7 @@ public class BridgeBuilder extends Game
 	public static Preferences prefs;
 
 	public static Tooltip mouseCoordTooltip;
+	public static Tooltip selectedCountTooltip;
 
 	public FileMenu fileMenu;
 
@@ -59,8 +59,10 @@ public class BridgeBuilder extends Game
 		this.shapeRenderer = new ShapeRenderer();
 		this.stage = new Stage(new ScreenViewport());
 
-		this.mouseCoordTooltip = new Tooltip(this, "(0, 0) ", " (0, 0)", EditorAssets.getUISkin(), false);
+		this.mouseCoordTooltip = new Tooltip(this, "(0, 0) ", " (0, 0)", EditorAssets.getUISkin(), false, true);
+		this.selectedCountTooltip = new Tooltip(this, "0 selected", "", EditorAssets.getUISkin(), false, false);
 		this.stage.addActor(this.mouseCoordTooltip);
+		this.stage.addActor(this.selectedCountTooltip);
 
 		// fileMenu
 		this.fileMenu = new FileMenu(EditorAssets.getUISkin(), this);

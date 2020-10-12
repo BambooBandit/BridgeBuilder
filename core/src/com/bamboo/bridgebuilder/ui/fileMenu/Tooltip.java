@@ -14,10 +14,12 @@ public class Tooltip extends Stack
     public BridgeBuilder editor;
     public Label label;
     private boolean left;
+    private boolean down;
 
-    public Tooltip(BridgeBuilder editor, String tooltip, String shortcut, Skin skin, boolean left)
+    public Tooltip(BridgeBuilder editor, String tooltip, String shortcut, Skin skin, boolean left, boolean down)
     {
         this.left = left;
+        this.down = down;
         this.editor = editor;
         this.label = new Label(tooltip + " " + shortcut, skin);
         if(!left)
@@ -29,19 +31,39 @@ public class Tooltip extends Stack
     {
         if(left)
         {
-            if (editor.activeMap != null)
-                this.label.setPosition(editor.activeMap.propertyMenu.getWidth() + 10, 10);
+            if(down)
+            {
+                if (editor.activeMap != null)
+                    this.label.setPosition(editor.activeMap.propertyMenu.getWidth() + 10, 10);
+                else
+                    this.label.setPosition(10, 10);
+            }
             else
-                this.label.setPosition(10, 10);
+            {
+                if (editor.activeMap != null)
+                    this.label.setPosition(editor.activeMap.propertyMenu.getWidth() + 10, 30);
+                else
+                    this.label.setPosition(10, 30);
+            }
         }
         else // right
         {
             EditorAssets.getGlyph().setText(EditorAssets.getFont(), label.getText());
-            float width = EditorAssets.getGlyph().width / 2f;
-            if (editor.activeMap != null)
-                this.label.setPosition(Gdx.graphics.getWidth() - editor.activeMap.spriteMenu.getWidth() - 10 - width, 10);
+            float width = EditorAssets.getGlyph().width;
+            if(down)
+            {
+                if (editor.activeMap != null)
+                    this.label.setPosition(Gdx.graphics.getWidth() - editor.activeMap.spriteMenu.getWidth() - 10 - width, 10);
+                else
+                    this.label.setPosition(Gdx.graphics.getWidth() - 10 - width, 10);
+            }
             else
-                this.label.setPosition(Gdx.graphics.getWidth() - 10 - width, 10);
+            {
+                if (editor.activeMap != null)
+                    this.label.setPosition(Gdx.graphics.getWidth() - editor.activeMap.spriteMenu.getWidth() - 10 - width, 30);
+                else
+                    this.label.setPosition(Gdx.graphics.getWidth() - 10 - width, 30);
+            }
         }
         this.label.draw(batch, parentAlpha);
     }

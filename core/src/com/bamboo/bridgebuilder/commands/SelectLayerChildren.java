@@ -94,6 +94,8 @@ public class SelectLayerChildren implements Command
 
         if(map.editor.fileMenu.toolPane.depth.selected)
             map.colorizeDepth();
+
+        this.map.editor.selectedCountTooltip.label.setText((map.selectedObjects.size + map.selectedSprites.size) + " selected");
     }
 
     @Override
@@ -117,5 +119,7 @@ public class SelectLayerChildren implements Command
 
         if(map.editor.fileMenu.toolPane.depth.selected)
             map.colorizeDepth();
+
+        this.map.editor.selectedCountTooltip.label.setText((map.selectedObjects.size + map.selectedSprites.size) + " selected");
     }
 }
