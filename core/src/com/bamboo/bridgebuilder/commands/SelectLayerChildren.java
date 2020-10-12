@@ -28,9 +28,9 @@ public class SelectLayerChildren implements Command
         Utils.boxSelectCommandVertices[2] = dragStartX;
         Utils.boxSelectCommandVertices[3] = dragCurrentY;
         Utils.boxSelectCommandVertices[4] = dragCurrentX;
-        Utils.boxSelectCommandVertices[5] = dragStartY;
+        Utils.boxSelectCommandVertices[5] = dragCurrentY;
         Utils.boxSelectCommandVertices[6] = dragCurrentX;
-        Utils.boxSelectCommandVertices[7] = dragCurrentY;
+        Utils.boxSelectCommandVertices[7] = dragStartY;
 
         this.hoveredChildren = new Array<>();
 
