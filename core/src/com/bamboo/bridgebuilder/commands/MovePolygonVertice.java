@@ -34,7 +34,10 @@ public class MovePolygonVertice implements Command
     {
         float offsetDifferenceX = this.newX - this.mapPolygon.getVerticeX();
         float offsetDifferenceY = this.newY - this.mapPolygon.getVerticeY();
-        this.mapPolygon.attachedMapObjectManager.moveVerticeBy(mapPolygon.indexOfSelectedVertice, offsetDifferenceX, offsetDifferenceY);
+        if(this.mapPolygon.attachedSprite != null)
+            this.mapPolygon.attachedMapObjectManager.moveVerticeBy(mapPolygon.indexOfSelectedVertice, offsetDifferenceX, offsetDifferenceY);
+        else
+            this.mapPolygon.moveVertice(newX, newY);
     }
 
     @Override
@@ -42,6 +45,9 @@ public class MovePolygonVertice implements Command
     {
         float offsetDifferenceX = this.oldX - this.mapPolygon.getVerticeX();
         float offsetDifferenceY = this.oldY - this.mapPolygon.getVerticeY();
-        this.mapPolygon.attachedMapObjectManager.moveVerticeBy(mapPolygon.indexOfSelectedVertice, offsetDifferenceX, offsetDifferenceY);
+        if(this.mapPolygon.attachedSprite != null)
+            this.mapPolygon.attachedMapObjectManager.moveVerticeBy(mapPolygon.indexOfSelectedVertice, offsetDifferenceX, offsetDifferenceY);
+        else
+            this.mapPolygon.moveVertice(oldX, oldY);
     }
 }
