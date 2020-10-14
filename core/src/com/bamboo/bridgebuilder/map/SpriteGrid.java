@@ -37,7 +37,8 @@ public class SpriteGrid
             this.grid.removeRange(newSize, this.grid.size - 1);
         for(int i = this.grid.size; i < newSize; i ++)
             this.grid.add(new SpriteCell());
-        this.fbo = new FrameBuffer(Pixmap.Format.RGBA8888, this.objectLayer.width * 1, this.objectLayer.height * 1, false);
+
+        this.fbo = new FrameBuffer(Pixmap.Format.RGBA8888, this.objectLayer.width, this.objectLayer.height, false);
     }
 
     public void drawBlocked()
@@ -89,8 +90,6 @@ public class SpriteGrid
 
     public void update()
     {
-//        updateColorGrid();
-
         // reset
         for(int i = 0; i < this.grid.size; i ++)
         {
@@ -103,6 +102,8 @@ public class SpriteGrid
             cell.b = 0;
             cell.a = 1;
         }
+
+        updateColorGrid();
 
         for(int i = 0; i < this.objectLayer.children.size; i ++)
         {
@@ -169,6 +170,7 @@ public class SpriteGrid
         }
     }
 
+    private static float[] rectangle = new float[8];
     public void checkAllCellsInPolygonBox(MapPolygon mapPolygon, int index)
     {
         Rectangle polygonRectangle = mapPolygon.polygon.getBoundingRectangle();
@@ -277,7 +279,7 @@ public class SpriteGrid
         }
         this.objectLayer.map.editor.batch.end();
 
-        Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, this.objectLayer.width * 64, this.objectLayer.height * 64);
+        Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, this.objectLayer.width, this.objectLayer.height);
 
         this.fbo.end();
         FrameBuffer.unbind();
@@ -291,38 +293,20 @@ public class SpriteGrid
         this.objectLayer.map.editor.batch.setBlendFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl20.glBlendFuncSeparate(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA,GL20.GL_ONE, GL20.GL_DST_ALPHA);
 
-
         // After rendering to fbo and retrieving pixmap, find average color of every cell.
         for(int i = 0; i < this.grid.size; i ++)
         {
             int x = (int) Math.floor(i % this.objectLayer.width);
             int y = (int) Math.floor(i / this.objectLayer.width);
-            float r = 0, g = 0, b = 0, a = 0;
-            for(int px = 0; px < 64; px ++)
-            {
-                for(int py = 0; py < 64; py ++)
-                {
-                    int rgba8888 = pixmap.getPixel((x * 64) + px, (y * 64) + py);
-                    Color.rgba8888ToColor(rgba8888ToColor, rgba8888);
-                    r += rgba8888ToColor.r;
-                    g += rgba8888ToColor.g;
-                    b += rgba8888ToColor.b;
-                    a += rgba8888ToColor.a;
-                }
-            }
-            r /= (64 * 64);
-            g /= (64 * 64);
-            b /= (64 * 64);
-            a /= (64 * 64);
+            int rgba8888 = pixmap.getPixel((x), (y));
+            Color.rgba8888ToColor(rgba8888ToColor, rgba8888);
             SpriteCell cell = this.grid.get(i);
-            cell.r = r;
-            cell.g = g;
-            cell.b = b;
-            cell.a = a;
+            cell.r = rgba8888ToColor.r;
+            cell.g = rgba8888ToColor.g;
+            cell.b = rgba8888ToColor.b;
+            cell.a = rgba8888ToColor.a;
         }
     }
-
-    private static float[] rectangle = new float[8];
 
     public SpriteCell getCell(int x, int y)
     {
@@ -348,7 +332,8 @@ public class SpriteGrid
         for(int i = this.grid.size; i < newSize; i ++)
             this.grid.add(new SpriteCell());
 
-//        this.fbo = new FrameBuffer(Pixmap.Format.RGBA8888, this.objectLayer.width * 64, this.objectLayer.height * 64, false);
+        this.fbo = new FrameBuffer(Pixmap.Format.RGBA8888, this.objectLayer.width, this.objectLayer.height, false);
+
         update();
     }
 
