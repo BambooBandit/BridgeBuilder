@@ -710,12 +710,14 @@ public class Map implements Screen
         float partialSum = 0;
         for(int i = 0; i < getAllSelectedSpriteTools().size; i ++)
         {
-            totalSum += Float.parseFloat(Utils.getLockedPropertyField(getAllSelectedSpriteTools().get(i).lockedProperties, "Probability").value.getText());
+            float probability = Float.parseFloat(Utils.getLockedPropertyField(getAllSelectedSpriteTools().get(i).lockedProperties, "Probability").value.getText());
+            totalSum += probability;
         }
         float random = Utils.randomFloat(0, totalSum);
         for(int i = 0; i < getAllSelectedSpriteTools().size; i ++)
         {
-            partialSum += Float.parseFloat(Utils.getLockedPropertyField(getAllSelectedSpriteTools().get(i).lockedProperties, "Probability").value.getText());
+            float probability = Float.parseFloat(Utils.getLockedPropertyField(getAllSelectedSpriteTools().get(i).lockedProperties, "Probability").value.getText());
+            partialSum += probability;
             if(partialSum >= random)
             {
                 this.randomSpriteIndex = i;
