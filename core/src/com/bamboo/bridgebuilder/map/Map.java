@@ -35,6 +35,7 @@ import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteSheet;
@@ -1248,6 +1249,13 @@ public class Map implements Screen
             return null;
         MapSprite mapSprite = new MapSprite(this, layer, spriteTool, mapSpriteData.x, mapSpriteData.y);
         mapSprite.edgeId = mapSpriteData.eId;
+        LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(mapSprite.lockedProperties, "Fence");
+        if(mapSpriteData.fence)
+            fenceProperty.value.setText("true");
+        else
+            fenceProperty.value.setText("false");
+
+
         mapSprite.setZ(mapSpriteData.z);
         mapSprite.setScale(mapSpriteData.scl + MapSpriteData.defaultScaleValue);
         mapSprite.setColor(mapSpriteData.r + MapSpriteData.defaultColorValue, mapSpriteData.g + MapSpriteData.defaultColorValue, mapSpriteData.b + MapSpriteData.defaultColorValue, mapSpriteData.a + MapSpriteData.defaultColorValue);

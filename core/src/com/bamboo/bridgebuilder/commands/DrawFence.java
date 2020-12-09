@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
@@ -184,6 +185,8 @@ public class DrawFence implements Command
                 }
 
                 MapSprite connector = new MapSprite(this.map, fromFence.attachedSprites, spriteTool, fromX, fromY);
+                LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(connector.lockedProperties, "Fence");
+                fenceProperty.value.setText("true");
                 (fromFence.attachedSprites).addMapSprite(connector);
                 connector.setPosition(fromX, fromY - connector.height / 2f);
                 connector.x2Offset = toX - (connector.x + connector.width);

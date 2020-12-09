@@ -103,12 +103,14 @@ public class MapSprite extends LayerChild
         LabelFieldPropertyValuePropertyField rotationProperty = new LabelFieldPropertyValuePropertyField("Rotation", "0", map.skin, map.propertyMenu, null, false);
         LabelFieldPropertyValuePropertyField scaleProperty = new LabelFieldPropertyValuePropertyField("Scale", "1", map.skin, map.propertyMenu, null, false);
         LabelFieldPropertyValuePropertyField zProperty = new LabelFieldPropertyValuePropertyField("Z", "0", map.skin, map.propertyMenu, null, false);
+        LabelFieldPropertyValuePropertyField fenceProperty = new LabelFieldPropertyValuePropertyField("Fence", "false", map.skin, map.propertyMenu, null, false);
         ColorPropertyField colorProperty = new ColorPropertyField(map.skin, map.propertyMenu, null, false, 1, 1, 1, 1);
 
         this.lockedProperties.add(idProperty);
         this.lockedProperties.add(rotationProperty);
         this.lockedProperties.add(scaleProperty);
         this.lockedProperties.add(zProperty);
+        this.lockedProperties.add(fenceProperty);
         this.lockedProperties.add(colorProperty);
 
         rotationProperty.value.setTextFieldFilter(valueFilter);

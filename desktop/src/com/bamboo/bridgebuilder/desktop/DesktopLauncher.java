@@ -1,8 +1,5 @@
 package com.bamboo.bridgebuilder.desktop;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.bamboo.bridgebuilder.BridgeBuilder;
@@ -13,7 +10,7 @@ public class DesktopLauncher
 	{
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("BridgeBuilder");
-		config.setWindowedMode(1920, 1080);
+		config.setWindowedMode(1280, 720);
 		config.useVsync(true); // Setting to false disables vertical sync
 		config.setIdleFPS(0); // Setting to 0 disables background fps throttling
 		new Lwjgl3Application(new BridgeBuilder(), config);

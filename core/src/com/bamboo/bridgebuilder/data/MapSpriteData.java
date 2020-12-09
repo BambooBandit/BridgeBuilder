@@ -1,6 +1,8 @@
 package com.bamboo.bridgebuilder.data;
 
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
 
 public class MapSpriteData extends LayerChildData
 {
@@ -16,6 +18,7 @@ public class MapSpriteData extends LayerChildData
     public boolean parent;
     public float x1, y1, x2, y2, x3, y3, x4, y4;
     public int eId; // to edge mapSprite id
+    public boolean fence; // Used to tell which parts of the attached sprites are fences
 
     public MapSpriteData() {}
     public MapSpriteData(MapSprite mapSprite)
@@ -60,5 +63,8 @@ public class MapSpriteData extends LayerChildData
 
         if(mapSprite.toEdgeSprite != null)
             this.eId = mapSprite.toEdgeSprite.id;
+
+        LabelFieldPropertyValuePropertyField fenceProperty = (LabelFieldPropertyValuePropertyField) Utils.getPropertyField(mapSprite.lockedProperties, "Fence");
+        this.fence = fenceProperty.value.getText().equals("true");
     }
 }
