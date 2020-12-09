@@ -10,7 +10,7 @@ public class DesktopLauncher
 	{
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("BridgeBuilder");
-		config.setWindowedMode(1280, 720);
+		config.setWindowedMode(1920, 1080);
 		config.useVsync(true); // Setting to false disables vertical sync
 		config.setIdleFPS(0); // Setting to 0 disables background fps throttling
 		new Lwjgl3Application(new BridgeBuilder(), config);
