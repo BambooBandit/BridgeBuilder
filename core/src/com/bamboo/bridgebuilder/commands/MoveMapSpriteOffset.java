@@ -1,5 +1,6 @@
 package com.bamboo.bridgebuilder.commands;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.bamboo.bridgebuilder.map.MapSprite;
 
@@ -55,6 +56,13 @@ public class MoveMapSpriteOffset implements Command
             selectedMapSprite.x4Offset = (originalOffsetPosition.x + this.resultingOffsetX);
             selectedMapSprite.y4Offset = (originalOffsetPosition.y + this.resultingOffsetY);
         }
+
+        float[] spriteVertices = selectedMapSprite.sprite.getVertices();
+        selectedMapSprite.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + selectedMapSprite.x1Offset - selectedMapSprite.offsetMovebox1.width / 2f * selectedMapSprite.offsetMovebox1.scale, spriteVertices[SpriteBatch.Y2] + selectedMapSprite.y1Offset - selectedMapSprite.offsetMovebox1.height / 2f * selectedMapSprite.offsetMovebox1.scale);
+        selectedMapSprite.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + selectedMapSprite.x2Offset - selectedMapSprite.offsetMovebox2.width / 2f * selectedMapSprite.offsetMovebox2.scale, spriteVertices[SpriteBatch.Y3] + selectedMapSprite.y2Offset - selectedMapSprite.offsetMovebox2.height / 2f * selectedMapSprite.offsetMovebox2.scale);
+        selectedMapSprite.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + selectedMapSprite.x3Offset - selectedMapSprite.offsetMovebox3.width / 2f * selectedMapSprite.offsetMovebox3.scale, spriteVertices[SpriteBatch.Y4] + selectedMapSprite.y3Offset - selectedMapSprite.offsetMovebox3.height / 2f * selectedMapSprite.offsetMovebox3.scale);
+        selectedMapSprite.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + selectedMapSprite.x4Offset - selectedMapSprite.offsetMovebox4.width / 2f * selectedMapSprite.offsetMovebox4.scale, spriteVertices[SpriteBatch.Y1] + selectedMapSprite.y4Offset - selectedMapSprite.offsetMovebox4.height / 2f * selectedMapSprite.offsetMovebox4.scale);
+        selectedMapSprite.polygon.setOffset(selectedMapSprite.x1Offset, selectedMapSprite.x2Offset, selectedMapSprite.x3Offset, selectedMapSprite.x4Offset, selectedMapSprite.y1Offset, selectedMapSprite.y2Offset, selectedMapSprite.y3Offset, selectedMapSprite.y4Offset);
     }
 
     @Override
@@ -80,6 +88,13 @@ public class MoveMapSpriteOffset implements Command
             selectedMapSprite.x4Offset = (originalOffsetPosition.x + this.resultingOffsetX);
             selectedMapSprite.y4Offset = (originalOffsetPosition.y + this.resultingOffsetY);
         }
+
+        float[] spriteVertices = selectedMapSprite.sprite.getVertices();
+        selectedMapSprite.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + selectedMapSprite.x1Offset - selectedMapSprite.offsetMovebox1.width / 2f * selectedMapSprite.offsetMovebox1.scale, spriteVertices[SpriteBatch.Y2] + selectedMapSprite.y1Offset - selectedMapSprite.offsetMovebox1.height / 2f * selectedMapSprite.offsetMovebox1.scale);
+        selectedMapSprite.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + selectedMapSprite.x2Offset - selectedMapSprite.offsetMovebox2.width / 2f * selectedMapSprite.offsetMovebox2.scale, spriteVertices[SpriteBatch.Y3] + selectedMapSprite.y2Offset - selectedMapSprite.offsetMovebox2.height / 2f * selectedMapSprite.offsetMovebox2.scale);
+        selectedMapSprite.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + selectedMapSprite.x3Offset - selectedMapSprite.offsetMovebox3.width / 2f * selectedMapSprite.offsetMovebox3.scale, spriteVertices[SpriteBatch.Y4] + selectedMapSprite.y3Offset - selectedMapSprite.offsetMovebox3.height / 2f * selectedMapSprite.offsetMovebox3.scale);
+        selectedMapSprite.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + selectedMapSprite.x4Offset - selectedMapSprite.offsetMovebox4.width / 2f * selectedMapSprite.offsetMovebox4.scale, spriteVertices[SpriteBatch.Y1] + selectedMapSprite.y4Offset - selectedMapSprite.offsetMovebox4.height / 2f * selectedMapSprite.offsetMovebox4.scale);
+        selectedMapSprite.polygon.setOffset(selectedMapSprite.x1Offset, selectedMapSprite.x2Offset, selectedMapSprite.x3Offset, selectedMapSprite.x4Offset, selectedMapSprite.y1Offset, selectedMapSprite.y2Offset, selectedMapSprite.y3Offset, selectedMapSprite.y4Offset);
     }
 
     @Override
@@ -105,5 +120,12 @@ public class MoveMapSpriteOffset implements Command
             selectedMapSprite.x4Offset = (originalOffsetPosition.x);
             selectedMapSprite.y4Offset = (originalOffsetPosition.y);
         }
+
+        float[] spriteVertices = selectedMapSprite.sprite.getVertices();
+        selectedMapSprite.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + selectedMapSprite.x1Offset - selectedMapSprite.offsetMovebox1.width / 2f * selectedMapSprite.offsetMovebox1.scale, spriteVertices[SpriteBatch.Y2] + selectedMapSprite.y1Offset - selectedMapSprite.offsetMovebox1.height / 2f * selectedMapSprite.offsetMovebox1.scale);
+        selectedMapSprite.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + selectedMapSprite.x2Offset - selectedMapSprite.offsetMovebox2.width / 2f * selectedMapSprite.offsetMovebox2.scale, spriteVertices[SpriteBatch.Y3] + selectedMapSprite.y2Offset - selectedMapSprite.offsetMovebox2.height / 2f * selectedMapSprite.offsetMovebox2.scale);
+        selectedMapSprite.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + selectedMapSprite.x3Offset - selectedMapSprite.offsetMovebox3.width / 2f * selectedMapSprite.offsetMovebox3.scale, spriteVertices[SpriteBatch.Y4] + selectedMapSprite.y3Offset - selectedMapSprite.offsetMovebox3.height / 2f * selectedMapSprite.offsetMovebox3.scale);
+        selectedMapSprite.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + selectedMapSprite.x4Offset - selectedMapSprite.offsetMovebox4.width / 2f * selectedMapSprite.offsetMovebox4.scale, spriteVertices[SpriteBatch.Y1] + selectedMapSprite.y4Offset - selectedMapSprite.offsetMovebox4.height / 2f * selectedMapSprite.offsetMovebox4.scale);
+        selectedMapSprite.polygon.setOffset(selectedMapSprite.x1Offset, selectedMapSprite.x2Offset, selectedMapSprite.x3Offset, selectedMapSprite.x4Offset, selectedMapSprite.y1Offset, selectedMapSprite.y2Offset, selectedMapSprite.y3Offset, selectedMapSprite.y4Offset);
     }
 }

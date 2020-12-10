@@ -117,7 +117,7 @@ public abstract class Layer<T extends LayerChild>
     {
         if(editor.fileMenu.toolPane.parallax.selected)
         {
-            this.map.camera.zoom = this.map.zoom - z;
+            this.map.camera.zoom = this.map.zoom;
             this.map.camera.update();
             this.editor.batch.setProjectionMatrix(map.camera.combined);
             this.editor.shapeRenderer.setProjectionMatrix(map.camera.combined);
@@ -139,7 +139,7 @@ public abstract class Layer<T extends LayerChild>
             return;
         if(editor.fileMenu.toolPane.parallax.selected)
         {
-            this.map.camera.zoom = this.map.zoom - this.map.selectedLayer.z;
+            this.map.camera.zoom = this.map.zoom;
             this.map.camera.update();
             this.editor.batch.setProjectionMatrix(map.camera.combined);
             this.editor.shapeRenderer.setProjectionMatrix(map.camera.combined);

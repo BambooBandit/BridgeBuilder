@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -272,8 +273,6 @@ public class Map implements Screen
         for(int i = 0; i < this.layers.size; i ++)
         {
             Layer layer = this.layers.get(i);
-            if(this.zoom < layer.z)
-                continue;
             if(layer instanceof SpriteLayer)
             {
                 if (!layer.layerField.attachedVisibleImg.isVisible())
@@ -296,7 +295,7 @@ public class Map implements Screen
             return;
         if(editor.fileMenu.toolPane.parallax.selected)
         {
-            this.camera.zoom = this.zoom - this.selectedLayer.z;
+            this.camera.zoom = this.zoom;
             this.camera.update();
             this.editor.batch.setProjectionMatrix(this.camera.combined);
             this.editor.shapeRenderer.setProjectionMatrix(this.camera.combined);
@@ -446,7 +445,7 @@ public class Map implements Screen
         {
             if(editor.fileMenu.toolPane.parallax.selected && this.layers.size > 0)
             {
-                this.camera.zoom = this.zoom - this.layers.peek().z;
+                this.camera.zoom = this.zoom;
                 this.camera.update();
                 this.editor.batch.setProjectionMatrix(this.camera.combined);
                 this.editor.shapeRenderer.setProjectionMatrix(this.camera.combined);
@@ -1271,6 +1270,12 @@ public class Map implements Screen
         mapSprite.y3Offset = mapSpriteData.y3;
         mapSprite.x4Offset = mapSpriteData.x4;
         mapSprite.y4Offset = mapSpriteData.y4;
+        float[] spriteVertices = mapSprite.sprite.getVertices();
+        mapSprite.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + mapSprite.x1Offset - mapSprite.offsetMovebox1.width / 2f * mapSprite.offsetMovebox1.scale, spriteVertices[SpriteBatch.Y2] + mapSprite.y1Offset - mapSprite.offsetMovebox1.height / 2f * mapSprite.offsetMovebox1.scale);
+        mapSprite.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + mapSprite.x2Offset - mapSprite.offsetMovebox2.width / 2f * mapSprite.offsetMovebox2.scale, spriteVertices[SpriteBatch.Y3] + mapSprite.y2Offset - mapSprite.offsetMovebox2.height / 2f * mapSprite.offsetMovebox2.scale);
+        mapSprite.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + mapSprite.x3Offset - mapSprite.offsetMovebox3.width / 2f * mapSprite.offsetMovebox3.scale, spriteVertices[SpriteBatch.Y4] + mapSprite.y3Offset - mapSprite.offsetMovebox3.height / 2f * mapSprite.offsetMovebox3.scale);
+        mapSprite.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + mapSprite.x4Offset - mapSprite.offsetMovebox4.width / 2f * mapSprite.offsetMovebox4.scale, spriteVertices[SpriteBatch.Y1] + mapSprite.y4Offset - mapSprite.offsetMovebox4.height / 2f * mapSprite.offsetMovebox4.scale);
+        mapSprite.polygon.setOffset(mapSprite.x1Offset, mapSprite.x2Offset, mapSprite.x3Offset, mapSprite.x4Offset, mapSprite.y1Offset, mapSprite.y2Offset, mapSprite.y3Offset, mapSprite.y4Offset);
         return mapSprite;
     }
 }

@@ -15,6 +15,8 @@ public class EditorPolygon implements Shape2D
     private boolean dirty = true;
     private Rectangle bounds;
 
+    private float x1Offset = 0, y1Offset = 0, x2Offset = 0, y2Offset = 0, x3Offset = 0, y3Offset = 0, x4Offset = 0, y4Offset = 0;
+
     /** Constructs a new polygon with no vertices. */
     public EditorPolygon() {
         this.localVertices = new float[0];
@@ -79,6 +81,17 @@ public class EditorPolygon implements Shape2D
             worldVertices[i] = positionX + x + originX;
             worldVertices[i + 1] = positionY + y + originY;
         }
+        if( worldVertices.length > 7)
+        {
+            worldVertices[0] += x1Offset;
+            worldVertices[1] += y1Offset;
+            worldVertices[2] += x2Offset;
+            worldVertices[3] += y2Offset;
+            worldVertices[4] += x3Offset;
+            worldVertices[5] += y3Offset;
+            worldVertices[6] += x4Offset;
+            worldVertices[7] += y4Offset;
+        }
         return worldVertices;
     }
 
@@ -117,6 +130,18 @@ public class EditorPolygon implements Shape2D
     public void setOrigin (float originX, float originY) {
         this.originX = originX;
         this.originY = originY;
+        dirty = true;
+    }
+
+    public void setOffset (float x1Offset, float x2Offset, float x3Offset, float x4Offset, float y1Offset, float y2Offset, float y3Offset, float y4Offset) {
+        this.x1Offset = x1Offset;
+        this.x2Offset = x2Offset;
+        this.x3Offset = x3Offset;
+        this.x4Offset = x4Offset;
+        this.y1Offset = y1Offset;
+        this.y2Offset = y2Offset;
+        this.y3Offset = y3Offset;
+        this.y4Offset = y4Offset;
         dirty = true;
     }
 
