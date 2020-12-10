@@ -83,14 +83,14 @@ public class EditorPolygon implements Shape2D
         }
         if( worldVertices.length > 7)
         {
-            worldVertices[0] += x1Offset;
-            worldVertices[1] += y1Offset;
-            worldVertices[2] += x2Offset;
-            worldVertices[3] += y2Offset;
-            worldVertices[4] += x3Offset;
-            worldVertices[5] += y3Offset;
-            worldVertices[6] += x4Offset;
-            worldVertices[7] += y4Offset;
+            worldVertices[0] += x4Offset;
+            worldVertices[1] += y4Offset;
+            worldVertices[2] += x3Offset;
+            worldVertices[3] += y3Offset;
+            worldVertices[4] += x2Offset;
+            worldVertices[5] += y2Offset;
+            worldVertices[6] += x1Offset;
+            worldVertices[7] += y1Offset;
         }
         return worldVertices;
     }
