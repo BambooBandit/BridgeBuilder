@@ -1254,6 +1254,11 @@ public class Map implements Screen
         else
             fenceProperty.value.setText("false");
 
+        LabelFieldPropertyValuePropertyField ignoreProperty = Utils.getLockedPropertyField(mapSprite.lockedProperties, "IgnoreProps");
+        if(mapSpriteData.ignoreProps)
+            ignoreProperty.value.setText("true");
+        else
+            ignoreProperty.value.setText("false");
 
         mapSprite.setZ(mapSpriteData.z);
         mapSprite.setScale(mapSpriteData.scl + MapSpriteData.defaultScaleValue);
