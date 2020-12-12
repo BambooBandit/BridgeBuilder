@@ -54,7 +54,7 @@ public class CreateStairs implements Command
                 stairAmount = 1;
             float thickness = map.editor.fileMenu.toolPane.stairsDialog.getThickness();
             float progress = (1f / (stairAmount - 1f)) * thickness;
-            float height = ((finalHeight - initialHeight) * progress) + initialHeight;
+            float height = ((finalHeight - initialHeight) * progress);
             float fromXStepSize = ((x1 - stairX) * (1f - progress)) + ((x2 - stairX) * progress);
             float fromYStepSize = ((y1 - stairY) * (1f - progress)) + (((y2 + height) - stairY) * progress);
             float toXStepSize = ((x4 - stairX - (x4 - stairX)) * (1f - progress)) + ((x3 - stairX - (x4 - stairX)) * progress);

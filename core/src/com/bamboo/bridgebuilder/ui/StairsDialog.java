@@ -48,7 +48,7 @@ public class StairsDialog extends Window
         this.snapCheckBox = new CheckBox("", skin);
         this.snapCheckBox.setChecked(true);
         this.transparentParentCheckBox = new CheckBox("", skin);
-        this.transparentParentCheckBox.setChecked(true);
+        this.transparentParentCheckBox.setChecked(false);
 
         this.close = new TextButton("Close", skin);
         this.close.setColor(Color.FIREBRICK);
