@@ -54,10 +54,11 @@ public class CreateStairs implements Command
                 stairAmount = 1;
             float thickness = map.editor.fileMenu.toolPane.stairsDialog.getThickness();
             float progress = (1f / (stairAmount - 1f)) * thickness;
+            float height = ((finalHeight - initialHeight) * progress) + initialHeight;
             float fromXStepSize = ((x1 - stairX) * (1f - progress)) + ((x2 - stairX) * progress);
-            float fromYStepSize = ((y1 - stairY) * (1f - progress)) + ((y2 - stairY) * progress);
+            float fromYStepSize = ((y1 - stairY) * (1f - progress)) + (((y2 + height) - stairY) * progress);
             float toXStepSize = ((x4 - stairX - (x4 - stairX)) * (1f - progress)) + ((x3 - stairX - (x4 - stairX)) * progress);
-            float toYStepSize = ((y4 - stairY - (y4 - stairY)) * (1f - progress)) + ((y3 - stairY - (y4 - stairY)) * progress);
+            float toYStepSize = (((y4 + height) - stairY - (y4 - stairY)) * (1f - progress)) + ((y3 - stairY - (y4 - stairY)) * progress);
             for (int i = 0; i < stairAmount; i++)
             {
                 progress = ((float) i) / (stairAmount - 1f);
@@ -65,7 +66,7 @@ public class CreateStairs implements Command
                 float fromY = (y1 * (1f - progress)) + (y2 * progress);
                 float toX = (x4 * (1f - progress)) + (x3 * progress);
                 float toY = (y4 * (1f - progress)) + (y3 * progress);
-                float height = ((finalHeight - initialHeight) * progress) + initialHeight;
+                height = ((finalHeight - initialHeight) * progress) + initialHeight;
                 this.map.editor.activeMap.lastFencePlaced = null;
                 DrawFence drawFromFence = new DrawFence(this.map, selectedSpriteLayer, fromX, fromY);
                 drawFromFence.execute();
