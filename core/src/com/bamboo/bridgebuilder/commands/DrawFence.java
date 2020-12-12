@@ -21,6 +21,8 @@ public class DrawFence implements Command
 
     private Array<DrawFence> chainedCommands; // Used for adding multiple mapsprites in one execution
 
+    private boolean stairs = false;
+
     public DrawFence(Map map, SpriteLayer layer, float x, float y)
     {
         this.map = map;
@@ -29,6 +31,9 @@ public class DrawFence implements Command
         this.y = y;
         this.connectors = new Array<>();
         this.lastFencePlacedOld = map.lastFencePlaced;
+
+        if(map.editor.fileMenu.toolPane.stairs.selected)
+            stairs = true;
     }
 
     @Override
@@ -39,6 +44,8 @@ public class DrawFence implements Command
             SpriteLayer layer = (SpriteLayer) this.map.selectedLayer;
             SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
             this.mapSprite = new MapSprite(this.map, layer, spriteTool, this.x, this.y);
+            if(stairs)
+                this.mapSprite.setPosition(this.mapSprite.x, this.mapSprite.y + (this.mapSprite.height / 2f));
             this.map.shuffleRandomSpriteTool(false);
         }
         if(this.map.lastFencePlaced != null)
