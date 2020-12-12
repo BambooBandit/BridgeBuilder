@@ -47,13 +47,19 @@ public class CreateStairs implements Command
             float y3 = vertices.get(5) + stairY;
             float x4 = vertices.get(6) + stairX;
             float y4 = vertices.get(7) + stairY;
-            float distance = (Utils.getDistance(x1, x2, y1, y2) + Utils.getDistance(x4, x3, y4, y3)) / 2f;
+            float distance = (Utils.getDistance(x1, x2, y1 + initialHeight, y2 + finalHeight) + Utils.getDistance(x4, x3, y4 + initialHeight, y3 + finalHeight)) / 2f;
             int stairAmount = (int) (stairAmountPerMeter * distance);
             if(stairAmount == 0)
                 stairAmount = 1;
+            float thickness = map.editor.fileMenu.toolPane.stairsDialog.getThickness();
+            float progress = (1f / (stairAmount - 1f)) * thickness;
+            float fromXStepSize = ((x1 - stairX) * (1f - progress)) + ((x2 - stairX) * progress);
+            float fromYStepSize = ((y1 - stairY) * (1f - progress)) + ((y2 - stairY) * progress);
+            float toXStepSize = ((x4 - stairX - (x4 - stairX)) * (1f - progress)) + ((x3 - stairX - (x4 - stairX)) * progress);
+            float toYStepSize = ((y4 - stairY - (y4 - stairY)) * (1f - progress)) + ((y3 - stairY - (y4 - stairY)) * progress);
             for (int i = 0; i < stairAmount; i++)
             {
-                float progress = ((float) i) / (stairAmount - 1f);
+                progress = ((float) i) / (stairAmount - 1f);
                 float fromX = (x1 * (1f - progress)) + (x2 * progress);
                 float fromY = (y1 * (1f - progress)) + (y2 * progress);
                 float toX = (x4 * (1f - progress)) + (x3 * progress);
@@ -71,6 +77,18 @@ public class CreateStairs implements Command
                     connector.y2Offset += height;
                     connector.y3Offset += height;
                     connector.y4Offset += height;
+
+                    if(map.editor.fileMenu.toolPane.stairsDialog.shouldSnap())
+                    {
+                        connector.x1Offset += fromXStepSize / 2f;
+                        connector.y1Offset += fromYStepSize / 2f;
+                        connector.x2Offset += toXStepSize / 2f;
+                        connector.y2Offset += toYStepSize / 2f;
+                        connector.x3Offset -= toXStepSize / 2f;
+                        connector.y3Offset -= toYStepSize / 2f;
+                        connector.x4Offset -= fromXStepSize / 2f;
+                        connector.y4Offset -= fromYStepSize / 2f;
+                    }
 
                     float[] spriteVertices = connector.sprite.getVertices();
                     connector.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + connector.x1Offset - connector.offsetMovebox1.width / 2f * connector.offsetMovebox1.scale, spriteVertices[SpriteBatch.Y2] + connector.y1Offset - connector.offsetMovebox1.height / 2f * connector.offsetMovebox1.scale);
