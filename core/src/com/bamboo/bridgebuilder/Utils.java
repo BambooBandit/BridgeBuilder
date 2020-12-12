@@ -10,12 +10,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.map.AttachedMapObjectManager;
 import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteSheet;
+import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 import java.io.File;
 
@@ -239,6 +241,33 @@ public class Utils
     public static float getDistance(float x1, float x2, float y1, float y2)
     {
         return (float) Math.hypot(x1-x2, y1-y2);
+    }
+
+    public static boolean canBuildFenceFromSelectedSpriteTools(Map map)
+    {
+        boolean hasFencePost = false;
+        boolean hasConnector = false;
+        for (int k = 0; k < map.getAllSelectedSpriteTools().size; k++)
+        {
+            SpriteTool spriteTool1 = map.getAllSelectedSpriteTools().get(k);
+            if (!spriteTool1.hasAttachedMapObjects())
+                hasConnector = true;
+            else {
+                boolean postTest = false;
+                for (int i = 0; i < spriteTool1.attachedMapObjectManagers.size; i++) {
+                    AttachedMapObjectManager attachedMapObjectManager = spriteTool1.attachedMapObjectManagers.get(i);
+                    if (Utils.getPropertyField(attachedMapObjectManager.properties, "fenceStart") != null && Utils.getPropertyField(attachedMapObjectManager.properties, "fenceEnd") != null)
+                        hasFencePost = true;
+                    else
+                        postTest = true;
+                }
+                if(postTest)
+                    hasConnector = true;
+            }
+        }
+        if (!hasFencePost || !hasConnector)
+            return false;
+        return true;
     }
 
     public LightPropertyField getLockedLightField(Array<PropertyField> lockedProperties)

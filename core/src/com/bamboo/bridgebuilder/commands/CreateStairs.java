@@ -36,32 +36,6 @@ public class CreateStairs implements Command
     @Override
     public void execute()
     {
-//        if(this.selectedObjectLayer != null)
-//        {
-//            if (this.mapPolygon == null)
-//                this.mapPolygon = new MapPolygon(this.map, this.selectedObjectLayer, vertices.toArray(), this.objectX, this.objectY);
-//            this.selectedObjectLayer.addMapObject(mapPolygon);
-//        }
-//        else
-//        {
-//            if (this.mapPolygon == null)
-//            {
-//                EditorPolygon editorPolygon = new EditorPolygon(vertices.toArray());
-//                float xOffset = this.objectX - this.selectedMapSprite.getX();
-//                float yOffset = this.objectY - this.selectedMapSprite.getY();
-//                float width = this.selectedMapSprite.sprite.getWidth();
-//                float height = this.selectedMapSprite.sprite.getHeight();
-//                editorPolygon.setOrigin((-xOffset) + width / 2, (-yOffset) + height / 2);
-//                editorPolygon.setRotation(Utils.degreeAngleFix(-this.selectedMapSprite.rotation));
-//                editorPolygon.setScale(1 / this.selectedMapSprite.scale, 1 / this.selectedMapSprite.scale);
-//                this.mapPolygon = new MapPolygon(this.map, this.selectedMapSprite, editorPolygon.getTransformedVertices(), this.objectX, this.objectY);
-//            }
-//            this.mapPolygon.setRotation(this.selectedMapSprite.rotation);
-//            this.mapPolygon.setScale(this.selectedMapSprite.scale);
-//            this.selectedMapSprite.createAttachedMapObject(this.map, this.mapPolygon);
-//        }
-
-
         if(chainedCommands == null || chainedCommands.size == 0)
         {
             float x1 = vertices.get(0) + stairX;
@@ -87,7 +61,6 @@ public class CreateStairs implements Command
                 this.map.editor.activeMap.lastFencePlaced = null;
                 DrawFence drawFromFence = new DrawFence(this.map, selectedSpriteLayer, fromX, fromY);
                 drawFromFence.execute();
-//                drawFromFence.mapSprite.setPosition(drawFromFence.mapSprite.x, drawFromFence.mapSprite.y + height);
                 DrawFence drawToFence = new DrawFence(this.map, selectedSpriteLayer, toX, toY);
                 drawToFence.execute();
                 for(int k = 0; k < drawToFence.connectors.size; k ++)
@@ -98,7 +71,6 @@ public class CreateStairs implements Command
                     connector.y3Offset += height;
                     connector.y4Offset += height;
                 }
-
 
                 addCommandToChain(drawFromFence);
                 addCommandToChain(drawToFence);
@@ -124,15 +96,6 @@ public class CreateStairs implements Command
     @Override
     public void undo()
     {
-//        if(this.selectedObjectLayer != null)
-//            this.selectedObjectLayer.children.removeValue(mapPolygon, true);
-//        else
-//            this.selectedMapSprite.removeAttachedMapObject(this.mapPolygon);
-
-
-
-
-
         this.map.input.stairVerticePosition.set(this.stairX, this.stairY);
 
         if (this.chainedCommands != null)

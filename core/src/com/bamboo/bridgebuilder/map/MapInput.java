@@ -759,6 +759,10 @@ public class MapInput implements InputProcessor
                 clearStairVertices(button);
             return false;
         }
+        if(!Command.shouldExecute(map, CreateStairs.class))
+        {
+            return false;
+        }
         if(this.map.input.stairVertices.size < 8)
         {
             clearStairVertices(button);

@@ -413,13 +413,9 @@ public class Map implements Screen
                 }
                 this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y + fromHeight, this.input.stairVertices.get(i) + this.input.stairVerticePosition.x, this.input.stairVertices.get(i + 1) + this.input.stairVerticePosition.y + toHeight);
                 if(i >= 2)
-                {
                     this.editor.shapeRenderer.line(this.input.stairVertices.get(2) + this.input.stairVerticePosition.x, this.input.stairVertices.get(3) + this.input.stairVerticePosition.y + initialheight, this.input.stairVertices.get(2) + this.input.stairVerticePosition.x, this.input.stairVertices.get(3) + this.input.stairVerticePosition.y + finalheight);
-                }
                 if(i >= 4)
-                {
                     this.editor.shapeRenderer.line(this.input.stairVertices.get(4) + this.input.stairVerticePosition.x, this.input.stairVertices.get(5) + this.input.stairVerticePosition.y + initialheight, this.input.stairVertices.get(4) + this.input.stairVerticePosition.x, this.input.stairVertices.get(5) + this.input.stairVerticePosition.y + finalheight);
-                }
                 oldIndex += 2;
             }
             if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
@@ -863,24 +859,13 @@ public class Map implements Screen
 
         if(!ignoreFencePost && editor.fileMenu.toolPane.fence.selected){
             SpriteTool spriteTool = getSpriteToolFromSelectedTools();
+            if(!Utils.canBuildFenceFromSelectedSpriteTools(this))
+                return;
             if (!spriteTool.hasAttachedMapObjects()) {
                 shuffleRandomSpriteTool(false);
                 return;
             }
             boolean hasFencePost = false;
-            for (int k = 0; k < getAllSelectedSpriteTools().size; k++) {
-                SpriteTool spriteTool1 = getAllSelectedSpriteTools().get(k);
-                if (!spriteTool1.hasAttachedMapObjects())
-                    continue;
-                for (int i = 0; i < spriteTool1.attachedMapObjectManagers.size; i++) {
-                    AttachedMapObjectManager attachedMapObjectManager = spriteTool1.attachedMapObjectManagers.get(i);
-                    if (Utils.getPropertyField(attachedMapObjectManager.properties, "fenceStart") != null)
-                        hasFencePost = true;
-                }
-            }
-            if (!hasFencePost)
-                return;
-            hasFencePost = false;
             for (int i = 0; i < spriteTool.attachedMapObjectManagers.size; i++) {
                 AttachedMapObjectManager attachedMapObjectManager = spriteTool.attachedMapObjectManagers.get(i);
                 if (Utils.getPropertyField(attachedMapObjectManager.properties, "fenceStart") != null)

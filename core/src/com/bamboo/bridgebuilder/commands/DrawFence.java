@@ -145,24 +145,7 @@ public class DrawFence implements Command
         while (1 == 1)
         {
             SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
-            boolean doesntHaveFencePost = false;
-            for (int k = 0; k < this.map.getAllSelectedSpriteTools().size; k++)
-            {
-                SpriteTool spriteTool1 = this.map.getAllSelectedSpriteTools().get(k);
-                boolean hasFencePost = false;
-                if (!spriteTool1.hasAttachedMapObjects())
-                    doesntHaveFencePost = true;
-                else {
-                    for (int i = 0; i < spriteTool1.attachedMapObjectManagers.size; i++) {
-                        AttachedMapObjectManager attachedMapObjectManager = spriteTool1.attachedMapObjectManagers.get(i);
-                        if (Utils.getPropertyField(attachedMapObjectManager.properties, "fenceStart") != null && Utils.getPropertyField(attachedMapObjectManager.properties, "fenceEnd") != null)
-                            hasFencePost = true;
-                    }
-                }
-                if(!hasFencePost)
-                    doesntHaveFencePost = true;
-            }
-            if (!doesntHaveFencePost)
+            if(!Utils.canBuildFenceFromSelectedSpriteTools(this.map))
                 return;
             boolean hasFencePost = false;
             if(spriteTool.attachedMapObjectManagers != null) {

@@ -1,6 +1,5 @@
 package com.bamboo.bridgebuilder.commands;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapObject;
@@ -40,6 +39,10 @@ public interface Command
         else if(command == SelectLayer.class)
         {
             return map.editAttachedMapSprite == null;
+        }
+        else if(command == DrawFence.class || command == CreateStairs.class)
+        {
+            return Utils.canBuildFenceFromSelectedSpriteTools(map);
         }
         else if(command == DeleteSelectedMapSprites.class)
         {
