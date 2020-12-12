@@ -218,6 +218,7 @@ public class Map implements Screen
         drawHoveredOutline();
         drawSelectedOutlines();
         drawUnfinishedMapPolygon();
+        drawUnfinishedStairs();
         drawGradientLine();
         drawVerticeSelect();
         drawBoxSelect();
@@ -363,6 +364,66 @@ public class Map implements Screen
             }
             if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
                 this.editor.shapeRenderer.line(this.input.mapPolygonVertices.get(oldIndex) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(oldIndex + 1) + this.input.objectVerticePosition.y, this.input.mapPolygonVertices.get(0) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(1) + this.input.objectVerticePosition.y);
+        }
+    }
+
+    private void drawUnfinishedStairs()
+    {
+        if(!Utils.isFileToolThisType(this.editor, Tools.STAIRS) )
+            return;
+        this.editor.shapeRenderer.setColor(Color.GRAY);
+        int oldIndex = 0;
+        if (this.input.stairVertices.size >= 2)
+        {
+            this.editor.shapeRenderer.circle(this.input.stairVertices.get(0) + this.input.stairVerticePosition.x, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y, .1f, 7);
+            for (int i = 2; i < this.input.stairVertices.size; i += 2)
+            {
+                this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y, this.input.stairVertices.get(i) + this.input.stairVerticePosition.x, this.input.stairVertices.get(i + 1) + this.input.stairVerticePosition.y);
+                oldIndex += 2;
+            }
+            if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
+                this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y, this.input.stairVertices.get(0) + this.input.stairVerticePosition.x, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y);
+        }
+
+        this.editor.shapeRenderer.setColor(Color.WHITE);
+        oldIndex = 0;
+        if (this.input.stairVertices.size >= 2)
+        {
+            this.editor.shapeRenderer.circle(this.input.stairVertices.get(0) + this.input.stairVerticePosition.x, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y, .1f, 7);
+            float fromHeight = 0;
+            float toHeight = 0;
+            float finalheight = editor.fileMenu.toolPane.stairsDialog.getFinalHeight();
+            float initialheight = editor.fileMenu.toolPane.stairsDialog.getInitialHeight();
+            for (int i = 2; i < this.input.stairVertices.size; i += 2)
+            {
+                if(i == 2)
+                {
+                    fromHeight = initialheight;
+                    toHeight = finalheight;
+                }
+                else if(i == 4)
+                {
+                    fromHeight = finalheight;
+                    toHeight = finalheight;
+                }
+                else
+                {
+                    fromHeight = finalheight;
+                    toHeight = initialheight;
+                }
+                this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y + fromHeight, this.input.stairVertices.get(i) + this.input.stairVerticePosition.x, this.input.stairVertices.get(i + 1) + this.input.stairVerticePosition.y + toHeight);
+                if(i >= 2)
+                {
+                    this.editor.shapeRenderer.line(this.input.stairVertices.get(2) + this.input.stairVerticePosition.x, this.input.stairVertices.get(3) + this.input.stairVerticePosition.y + initialheight, this.input.stairVertices.get(2) + this.input.stairVerticePosition.x, this.input.stairVertices.get(3) + this.input.stairVerticePosition.y + finalheight);
+                }
+                if(i >= 4)
+                {
+                    this.editor.shapeRenderer.line(this.input.stairVertices.get(4) + this.input.stairVerticePosition.x, this.input.stairVertices.get(5) + this.input.stairVerticePosition.y + initialheight, this.input.stairVertices.get(4) + this.input.stairVerticePosition.x, this.input.stairVertices.get(5) + this.input.stairVerticePosition.y + finalheight);
+                }
+                oldIndex += 2;
+            }
+            if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
+                this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y, this.input.stairVertices.get(0) + this.input.stairVerticePosition.x, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.bamboo.bridgebuilder.commands;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.*;
@@ -12,8 +13,8 @@ public class DrawFence implements Command
 {
     private Map map;
     private SpriteLayer layer;
-    private MapSprite mapSprite = null;
-    private Array<MapSprite> connectors;
+    public MapSprite mapSprite = null;
+    public Array<MapSprite> connectors;
     private float x;
     private float y;
     private MapSprite lastFencePlacedOld;
@@ -193,6 +194,12 @@ public class DrawFence implements Command
                 connector.y2Offset = toY - (connector.y + connector.height / 2f);
                 connector.x3Offset = connector.x2Offset;
                 connector.y3Offset = toY - (connector.y + connector.height / 2f);
+                float[] spriteVertices = connector.sprite.getVertices();
+                connector.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + connector.x1Offset - connector.offsetMovebox1.width / 2f * connector.offsetMovebox1.scale, spriteVertices[SpriteBatch.Y2] + connector.y1Offset - connector.offsetMovebox1.height / 2f * connector.offsetMovebox1.scale);
+                connector.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + connector.x2Offset - connector.offsetMovebox2.width / 2f * connector.offsetMovebox2.scale, spriteVertices[SpriteBatch.Y3] + connector.y2Offset - connector.offsetMovebox2.height / 2f * connector.offsetMovebox2.scale);
+                connector.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + connector.x3Offset - connector.offsetMovebox3.width / 2f * connector.offsetMovebox3.scale, spriteVertices[SpriteBatch.Y4] + connector.y3Offset - connector.offsetMovebox3.height / 2f * connector.offsetMovebox3.scale);
+                connector.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + connector.x4Offset - connector.offsetMovebox4.width / 2f * connector.offsetMovebox4.scale, spriteVertices[SpriteBatch.Y1] + connector.y4Offset - connector.offsetMovebox4.height / 2f * connector.offsetMovebox4.scale);
+                connector.polygon.setOffset(connector.x1Offset, connector.x2Offset, connector.x3Offset, connector.x4Offset, connector.y1Offset, connector.y2Offset, connector.y3Offset, connector.y4Offset);
                 connectors.add(connector);
                 fromFence.toEdgeSprite = toFence;
                 {

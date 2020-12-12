@@ -28,7 +28,9 @@ public class MapInput implements InputProcessor
     public Vector2 currentPos;
 
     public FloatArray mapPolygonVertices; // allows for seeing where you are clicking when constructing a new MapObject polygon
+    public FloatArray stairVertices; // allows for seeing where you are clicking when constructing a new set of stairs
     public Vector2 objectVerticePosition;
+    public Vector2 stairVerticePosition;
 
     // Null if not currently drag/moving any layer child
     public MoveMapSpriteOffset moveMapSpriteOffset;
@@ -56,6 +58,9 @@ public class MapInput implements InputProcessor
 
         this.mapPolygonVertices = new FloatArray();
         this.objectVerticePosition = new Vector2();
+
+        this.stairVertices = new FloatArray();
+        this.stairVerticePosition = new Vector2();
 
         this.boxSelect = new BoxSelect(map);
     }
@@ -120,9 +125,13 @@ public class MapInput implements InputProcessor
                 return false;
             if(handleMapPolygonVerticeCreation(coords.x, coords.y, button))
                 return false;
+            if(handleStairVerticeCreation(coords.x, coords.y, button))
+                return false;
             if(handleMapPolygonRectangleCreation(button))
                 return false;
             if(handleMapPolygonCreation(button))
+                return false;
+            if(handleStairsCreation(button))
                 return false;
             if(handlePolygonVertexSelection(button))
                 return false;
@@ -699,6 +708,20 @@ public class MapInput implements InputProcessor
         return true;
     }
 
+    private boolean handleStairVerticeCreation(float x, float y, int button)
+    {
+        if(!Utils.isFileToolThisType(this.editor, Tools.STAIRS) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
+            return false;
+        if(!(this.map.selectedLayer instanceof SpriteLayer))
+            return false;
+        if(this.map.input.stairVertices.size >= 8)
+            return false;
+
+        DrawStairVertice drawStairVertice = new DrawStairVertice(this.map, x, y, this.stairVerticePosition.x, this.stairVerticePosition.y);
+        this.map.executeCommand(drawStairVertice);
+        return true;
+    }
+
     private boolean handleMapPolygonCreation(int button)
     {
         if(!Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) || this.map.selectedLayer == null || button != Input.Buttons.RIGHT)
@@ -725,6 +748,32 @@ public class MapInput implements InputProcessor
             drawMapPolygon = new DrawMapPolygon(this.map, this.map.selectedSprites.first(), this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
         clearMapPolygonVertices(button);
         this.map.executeCommand(drawMapPolygon);
+        return true;
+    }
+
+    private boolean handleStairsCreation(int button)
+    {
+        if(!Utils.isFileToolThisType(this.editor, Tools.STAIRS) || this.map.selectedLayer == null || button != Input.Buttons.RIGHT)
+        {
+            if(button == Input.Buttons.RIGHT && this.map.input.mapPolygonVertices.size < 8)
+                clearStairVertices(button);
+            return false;
+        }
+        if(this.map.input.stairVertices.size < 8)
+        {
+            clearStairVertices(button);
+            return true;
+        }
+        if(!(this.map.selectedLayer instanceof SpriteLayer))
+        {
+            clearStairVertices(button);
+            return true;
+        }
+
+        CreateStairs createStairs;
+        createStairs = new CreateStairs(this.map, (SpriteLayer) this.map.selectedLayer, this.map.input.stairVertices, this.stairVerticePosition.x, this.stairVerticePosition.y);
+        clearStairVertices(button);
+        this.map.executeCommand(createStairs);
         return true;
     }
 
@@ -770,6 +819,16 @@ public class MapInput implements InputProcessor
         {
             ClearMapPolygonVertices clearMapPolygonVertices = new ClearMapPolygonVertices(this.map, this.map.input.mapPolygonVertices);
             this.map.executeCommand(clearMapPolygonVertices);
+        }
+        return false;
+    }
+
+    private boolean clearStairVertices(int button)
+    {
+        if(Utils.isFileToolThisType(this.editor, Tools.STAIRS) && button == Input.Buttons.RIGHT)
+        {
+            ClearStairVertices clearStairVertices = new ClearStairVertices(this.map, this.map.input.stairVertices);
+            this.map.executeCommand(clearStairVertices);
         }
         return false;
     }

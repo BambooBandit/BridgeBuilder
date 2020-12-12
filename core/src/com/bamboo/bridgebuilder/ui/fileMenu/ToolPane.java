@@ -14,6 +14,7 @@ import com.bamboo.bridgebuilder.map.SpriteLayer;
 import com.bamboo.bridgebuilder.ui.GradientDialog;
 import com.bamboo.bridgebuilder.ui.MinMaxDialog;
 import com.bamboo.bridgebuilder.ui.SplatDialog;
+import com.bamboo.bridgebuilder.ui.StairsDialog;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
@@ -46,6 +47,7 @@ public class ToolPane extends Group
     public Tool attachedSprites;
     public Tool splat;
     public Tool fence;
+    public Tool stairs;
     public Tool selectedTool;
     private TextButton bringUp;
     private TextButton bringDown;
@@ -64,6 +66,9 @@ public class ToolPane extends Group
     public MinMaxDialog minMaxDialog;
     private TextButton minMaxButton;
 
+    public StairsDialog stairsDialog;
+    private TextButton stairsButton;
+
     private BridgeBuilder editor;
 
     public Label fps;
@@ -81,6 +86,7 @@ public class ToolPane extends Group
         this.select = new Tool(editor, this, false, Tools.SELECT);
         this.grab = new Tool(editor, this, false, Tools.GRAB);
         this.gradient = new Tool(editor, this, false, Tools.GRADIENT);
+        this.stairs = new Tool(editor, this, false, Tools.STAIRS);
         this.random = new Tool(editor, this, true, Tools.RANDOM);
         this.blocked = new Tool(editor, this, true, Tools.BLOCKED);
         this.spriteGridColors = new Tool(editor, this, true, Tools.SPRITEGRIDCOLORS);
@@ -110,7 +116,10 @@ public class ToolPane extends Group
         this.splatButton = new TextButton("Splat", skin);
 
         this.minMaxDialog = new MinMaxDialog(editor.stage, skin);
-        this.minMaxButton = new TextButton("Min Max Settings", skin);
+        this.minMaxButton = new TextButton("Min Max", skin);
+
+        this.stairsDialog = new StairsDialog(editor.stage, skin);
+        this.stairsButton = new TextButton("Stairs", skin);
 
         this.fps = new Label("0", skin);
 
@@ -125,6 +134,7 @@ public class ToolPane extends Group
         this.toolTable.add(this.select).padRight(1);
         this.toolTable.add(this.grab).padRight(1);
         this.toolTable.add(this.gradient).padRight(1);
+        this.toolTable.add(this.stairs).padRight(1);
         this.toolTable.add(this.random).padRight(1);
         this.toolTable.add(this.blocked).padRight(1);
         this.toolTable.add(this.spriteGridColors).padRight(1);
@@ -137,16 +147,17 @@ public class ToolPane extends Group
         this.toolTable.add(this.attachedSprites).padRight(1);
         this.toolTable.add(this.splat).padRight(1);
         this.toolTable.add(this.fence).padRight(5);
-        this.toolTable.add(this.bringUp).padRight(1);
-        this.toolTable.add(this.bringDown).padRight(1);
-        this.toolTable.add(this.bringTop).padRight(1);
+        this.toolTable.add(this.bringUp);
+        this.toolTable.add(this.bringDown);
+        this.toolTable.add(this.bringTop);
         this.toolTable.add(this.bringBottom).padRight(5);
-        this.toolTable.add(this.layerDownOverride).padRight(1);
-        this.toolTable.add(this.layerUpOverride).padRight(1);
+        this.toolTable.add(this.layerDownOverride);
+        this.toolTable.add(this.layerUpOverride);
         this.toolTable.add(this.layerOverrideReset).padRight(5);
         this.toolTable.add(this.gradientButton).padRight(5);
         this.toolTable.add(this.splatButton).padRight(5);
         this.toolTable.add(this.minMaxButton).padRight(5);
+        this.toolTable.add(this.stairsButton).padRight(5);
         this.toolTable.add(this.fps).padRight(1);
 
         this.pane = new Stack();
@@ -174,6 +185,7 @@ public class ToolPane extends Group
         this.select.setSize(toolHeight, toolHeight);
         this.grab.setSize(toolHeight, toolHeight);
         this.gradient.setSize(toolHeight, toolHeight);
+        this.stairs.setSize(toolHeight, toolHeight);
         this.random.setSize(toolHeight, toolHeight);
         this.blocked.setSize(toolHeight, toolHeight);
         this.spriteGridColors.setSize(toolHeight, toolHeight);
@@ -196,6 +208,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.select).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.grab).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.gradient).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.stairs).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.random).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.blocked).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.spriteGridColors).size(toolHeight, toolHeight);
@@ -215,9 +228,10 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.layerDownOverride).size(toolHeight * 4.75f, toolHeight);
         this.toolTable.getCell(this.layerUpOverride).size(toolHeight * 4.75f, toolHeight);
         this.toolTable.getCell(this.layerOverrideReset).size(toolHeight * 4.75f, toolHeight);
-        this.toolTable.getCell(this.gradientButton).size(toolHeight * 2.75f, toolHeight);
-        this.toolTable.getCell(this.splatButton).size(toolHeight * 2.75f, toolHeight);
-        this.toolTable.getCell(this.minMaxButton).size(toolHeight * 4.75f, toolHeight);
+        this.toolTable.getCell(this.gradientButton).size(toolHeight * 2.5f, toolHeight);
+        this.toolTable.getCell(this.splatButton).size(toolHeight * 2.45f, toolHeight);
+        this.toolTable.getCell(this.minMaxButton).size(toolHeight * 2.45f, toolHeight);
+        this.toolTable.getCell(this.stairsButton).size(toolHeight * 2.45f, toolHeight);
         this.toolTable.getCell(this.fps).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();
 
@@ -240,6 +254,8 @@ public class ToolPane extends Group
                     this.editor.activeMap.lastFencePlaced = null;
                 if(selectedTool == this.random && this.fence.selected)
                     return;
+                if(selectedTool == this.fence && this.stairs.selected)
+                    return;
                 selectedTool.unselect();
             }
             else
@@ -258,6 +274,8 @@ public class ToolPane extends Group
                     this.blocked.unselect();
                 }
                 selectedTool.select();
+                if(selectedTool == this.fence || selectedTool == this.stairs)
+                    editor.activeMap.shuffleRandomSpriteTool(false);
 
                 if(selectedTool == this.attachedSprites)
                 {
@@ -280,7 +298,15 @@ public class ToolPane extends Group
                     continue;
                 Tool tool = (Tool) this.toolTable.getChildren().get(i);
                 if (tool == selectedTool)
+                {
+                    if(tool == this.stairs)
+                    {
+                        this.fence.select();
+                        this.random.select();
+                        editor.activeMap.shuffleRandomSpriteTool(false);
+                    }
                     tool.select();
+                }
                 else if(!tool.isToggleable)
                     tool.unselect();
             }
@@ -526,6 +552,15 @@ public class ToolPane extends Group
             public void clicked(InputEvent event, float x, float y)
             {
                 minMaxDialog.setVisible(true);
+            }
+        });
+
+        this.stairsButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                stairsDialog.setVisible(true);
             }
         });
     }

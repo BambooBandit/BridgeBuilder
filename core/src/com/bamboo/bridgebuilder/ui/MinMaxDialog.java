@@ -65,7 +65,7 @@ public class MinMaxDialog extends Window
 
     public MinMaxDialog(Stage stage, Skin skin)
     {
-        super("Min Max Settings", skin);
+        super("Min Max", skin);
 
         this.minMaxTable = new Table();
 
