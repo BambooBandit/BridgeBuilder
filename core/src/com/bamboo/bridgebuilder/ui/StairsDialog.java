@@ -20,11 +20,13 @@ public class StairsDialog extends Window
     private Label stairAmountLabel;
     private Label thicknessLabel;
     private Label snapLabel;
+    private Label transparentParentLabel;
     private TextField initialHeightField;
     private TextField finalHeightField;
     private TextField stairAmountField;
     private TextField thicknessField;
     private CheckBox snapCheckBox;
+    private CheckBox transparentParentCheckBox;
 
     public StairsDialog(Stage stage, Skin skin)
     {
@@ -38,12 +40,15 @@ public class StairsDialog extends Window
         this.stairAmountLabel = new Label("Stair amount per meter: ", skin);
         this.thicknessLabel = new Label("Thickness: ", skin);
         this.snapLabel = new Label("Should snap: ", skin);
+        this.transparentParentLabel = new Label("Should parent be transparent: ", skin);
         this.initialHeightField = new TextField("0", skin);
         this.finalHeightField = new TextField("5", skin);
         this.stairAmountField = new TextField("1", skin);
         this.thicknessField = new TextField("1", skin);
         this.snapCheckBox = new CheckBox("", skin);
         this.snapCheckBox.setChecked(true);
+        this.transparentParentCheckBox = new CheckBox("", skin);
+        this.transparentParentCheckBox.setChecked(true);
 
         this.close = new TextButton("Close", skin);
         this.close.setColor(Color.FIREBRICK);
@@ -66,6 +71,8 @@ public class StairsDialog extends Window
         this.table.add(this.thicknessField).padBottom(15).row();
         this.table.add(this.snapLabel).padBottom(15);
         this.table.add(this.snapCheckBox).padBottom(15).row();
+        this.table.add(this.transparentParentLabel).padBottom(15);
+        this.table.add(this.transparentParentCheckBox).padBottom(15).row();
         this.table.add(this.close);
 
         this.add(this.table);
@@ -117,5 +124,10 @@ public class StairsDialog extends Window
     public boolean shouldSnap()
     {
         return snapCheckBox.isChecked();
+    }
+
+    public boolean shouldParentBeTransparent()
+    {
+        return transparentParentCheckBox.isChecked();
     }
 }
