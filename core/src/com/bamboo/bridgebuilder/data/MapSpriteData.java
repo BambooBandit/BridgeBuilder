@@ -69,6 +69,6 @@ public class MapSpriteData extends LayerChildData
         this.fence = fenceProperty.value.getText().equals("true");
 
         LabelFieldPropertyValuePropertyField ignoreProperty = (LabelFieldPropertyValuePropertyField) Utils.getPropertyField(mapSprite.lockedProperties, "IgnoreProps");
-        this.ignoreProps = fenceProperty.value.getText().equals("true");
+        this.ignoreProps = ignoreProperty.value.getText().equals("true");
     }
 }

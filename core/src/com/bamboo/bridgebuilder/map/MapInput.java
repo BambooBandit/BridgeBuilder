@@ -74,14 +74,14 @@ public class MapInput implements InputProcessor
 
     private void handleEdgeSnapKeyDown(int keycode)
     {
-        if(!(keycode == Input.Keys.CONTROL_LEFT && map.selectedSprites.size == 1 && map.editor.fileMenu.toolPane.select.selected))
+        if(!(keycode == Input.Keys.ALT_LEFT && map.selectedSprites.size == 1 && map.editor.fileMenu.toolPane.select.selected))
             return;
         snapEdgeFromThisSprite = map.selectedSprites.first();
     }
 
     private void handleEdgeSnapKeyUp(int keycode)
     {
-        if(keycode != Input.Keys.CONTROL_LEFT)
+        if(keycode != Input.Keys.ALT_LEFT)
             return;
         snapEdgeFromThisSprite = null;
     }
@@ -212,7 +212,7 @@ public class MapInput implements InputProcessor
 
     private boolean handleManipulatorBoxMoveLayerChildTouchDown(float x, float y, int button)
     {
-        if(button != Input.Buttons.LEFT || !Utils.isFileToolThisType(this.editor, Tools.SELECT))
+        if((button != Input.Buttons.LEFT || !Utils.isFileToolThisType(this.editor, Tools.SELECT)) || map.selectedSprites.size != 1)
             return false;
 
         for(int i = 0; i < this.map.selectedSprites.size; i++)

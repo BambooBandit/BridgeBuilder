@@ -40,7 +40,7 @@ public interface Command
         {
             return map.editAttachedMapSprite == null;
         }
-        else if(command == DrawFence.class || command == CreateStairs.class)
+        else if(command == CreateStairs.class)
         {
             return Utils.canBuildFenceFromSelectedSpriteTools(map);
         }
@@ -77,7 +77,7 @@ public interface Command
                         selectedFencePost = true;
                 }
             }
-            return map.editor.fileMenu.toolPane.fence.selected && !(map.editAttachedMapSprite != null && (map.selectedSprites.size != 1 || (map.selectedSprites.first().attachedSprites == null || !map.selectedSprites.first().attachedSprites.equals(map.selectedLayer)))) && selectedFencePost;
+            return map.editor.fileMenu.toolPane.fence.selected && Utils.canBuildFenceFromSelectedSpriteTools(map) && !(map.editAttachedMapSprite != null && (map.selectedSprites.size != 1 || (map.selectedSprites.first().attachedSprites == null || !map.selectedSprites.first().attachedSprites.equals(map.selectedLayer)))) && selectedFencePost;
         }
         return true;
     }
