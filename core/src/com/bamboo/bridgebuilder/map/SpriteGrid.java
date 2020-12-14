@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 
 import static com.badlogic.gdx.graphics.GL20.*;
@@ -237,6 +238,20 @@ public class SpriteGrid
     private static Color rgba8888ToColor = new Color();
     private void updateColorGrid()
     {
+        for(int i = 0; i < objectLayer.map.groupPolygons.children.size; i ++)
+        {
+            MapPolygon mapPolygon = (MapPolygon) objectLayer.map.groupPolygons.children.get(i);
+            if(mapPolygon.mapSprites != null)
+            {
+                for(int k = 0; k < mapPolygon.mapSprites.size; k ++)
+                {
+                    MapSprite mapSprite = mapPolygon.mapSprites.get(k);
+                    ColorPropertyField colorProperty = Utils.getLockedColorField(mapSprite.lockedProperties);
+                    mapSprite.setColor(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
+                }
+            }
+        }
+
         // Render all sprite layers of the same floor to an fbo
         int currentFloor = Integer.parseInt(this.objectLayer.layerField.layerName.getText().substring(6));
         int iterationFloor = -1;
@@ -306,6 +321,8 @@ public class SpriteGrid
             cell.b = rgba8888ToColor.b;
             cell.a = rgba8888ToColor.a;
         }
+
+        objectLayer.map.colorizeGroup();
     }
 
     public SpriteCell getCell(int x, int y)

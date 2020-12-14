@@ -212,7 +212,7 @@ public class MapInput implements InputProcessor
 
     private boolean handleManipulatorBoxMoveLayerChildTouchDown(float x, float y, int button)
     {
-        if((button != Input.Buttons.LEFT || !Utils.isFileToolThisType(this.editor, Tools.SELECT)) || map.selectedSprites.size != 1)
+        if((button != Input.Buttons.LEFT || !Utils.isFileToolThisType(this.editor, Tools.SELECT)))
             return false;
 
         for(int i = 0; i < this.map.selectedSprites.size; i++)
@@ -236,29 +236,32 @@ public class MapInput implements InputProcessor
                 this.map.pushCommand(this.scaleMapSprites);
                 return true;
             }
-            else if(selectedSprite.offsetMovebox1.contains(x, y))
+            else if(map.selectedSprites.size == 1)
             {
-                this.moveMapSpriteOffset = new MoveMapSpriteOffset(this.map.selectedSprites.first(), MoveMapSpriteOffset.Location.ONE);
-                this.map.pushCommand(this.moveMapSpriteOffset);
-                return true;
-            }
-            else if(selectedSprite.offsetMovebox2.contains(x, y))
-            {
-                this.moveMapSpriteOffset = new MoveMapSpriteOffset(this.map.selectedSprites.first(), MoveMapSpriteOffset.Location.TWO);
-                this.map.pushCommand(this.moveMapSpriteOffset);
-                return true;
-            }
-            else if(selectedSprite.offsetMovebox3.contains(x, y))
-            {
-                this.moveMapSpriteOffset = new MoveMapSpriteOffset(this.map.selectedSprites.first(), MoveMapSpriteOffset.Location.THREE);
-                this.map.pushCommand(this.moveMapSpriteOffset);
-                return true;
-            }
-            else if(selectedSprite.offsetMovebox4.contains(x, y))
-            {
-                this.moveMapSpriteOffset = new MoveMapSpriteOffset(this.map.selectedSprites.first(), MoveMapSpriteOffset.Location.FOUR);
-                this.map.pushCommand(this.moveMapSpriteOffset);
-                return true;
+                if(selectedSprite.offsetMovebox1.contains(x, y))
+                {
+                    this.moveMapSpriteOffset = new MoveMapSpriteOffset(this.map.selectedSprites.first(), MoveMapSpriteOffset.Location.ONE);
+                    this.map.pushCommand(this.moveMapSpriteOffset);
+                    return true;
+                }
+                else if(selectedSprite.offsetMovebox2.contains(x, y))
+                {
+                    this.moveMapSpriteOffset = new MoveMapSpriteOffset(this.map.selectedSprites.first(), MoveMapSpriteOffset.Location.TWO);
+                    this.map.pushCommand(this.moveMapSpriteOffset);
+                    return true;
+                }
+                else if(selectedSprite.offsetMovebox3.contains(x, y))
+                {
+                    this.moveMapSpriteOffset = new MoveMapSpriteOffset(this.map.selectedSprites.first(), MoveMapSpriteOffset.Location.THREE);
+                    this.map.pushCommand(this.moveMapSpriteOffset);
+                    return true;
+                }
+                else if(selectedSprite.offsetMovebox4.contains(x, y))
+                {
+                    this.moveMapSpriteOffset = new MoveMapSpriteOffset(this.map.selectedSprites.first(), MoveMapSpriteOffset.Location.FOUR);
+                    this.map.pushCommand(this.moveMapSpriteOffset);
+                    return true;
+                }
             }
         }
 

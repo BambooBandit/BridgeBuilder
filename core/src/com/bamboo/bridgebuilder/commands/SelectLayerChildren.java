@@ -2,10 +2,7 @@ package com.bamboo.bridgebuilder.commands;
 
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.Utils;
-import com.bamboo.bridgebuilder.map.LayerChild;
-import com.bamboo.bridgebuilder.map.Map;
-import com.bamboo.bridgebuilder.map.MapObject;
-import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.map.*;
 
 public class SelectLayerChildren implements Command
 {
@@ -43,6 +40,28 @@ public class SelectLayerChildren implements Command
                 this.hoveredChildren.add(layerChild);
                 if(!layerChild.selected)
                     this.areAllHoveredAreSelected = false;
+            }
+        }
+
+        if(map.editor.fileMenu.toolPane.selectAttachedSprites.selected && map.selectedLayer instanceof SpriteLayer)
+        {
+            for(int i = 0; i < map.selectedLayer.children.size; i ++)
+            {
+                MapSprite mapSprite = (MapSprite) map.selectedLayer.children.get(i);
+
+                if(mapSprite.attachedSprites != null)
+                {
+                    for (int k = mapSprite.attachedSprites.children.size - 1; k >= 0; k--)
+                    {
+                        MapSprite attachedSprite = mapSprite.attachedSprites.children.get(k);
+                        if(attachedSprite.isHoveredOver(Utils.boxSelectCommandVertices))
+                        {
+                            this.hoveredChildren.add(attachedSprite);
+                            if(!attachedSprite.selected)
+                                this.areAllHoveredAreSelected = false;
+                        }
+                    }
+                }
             }
         }
     }

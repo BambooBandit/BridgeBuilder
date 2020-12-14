@@ -59,7 +59,8 @@ public class GroupDialog extends Window
                         if(editor.activeMap.groupPolygons != null && editor.activeMap.selectedLayer != editor.activeMap.groupPolygons)
                         {
                             editor.activeMap.selectedLayerPriorToGroupMode = editor.activeMap.selectedLayer;
-                            editor.activeMap.selectedLayer.layerField.unselect();
+                            if(editor.activeMap.selectedLayer != null)
+                                editor.activeMap.selectedLayer.layerField.unselect();
                             editor.activeMap.selectedLayer = editor.activeMap.groupPolygons;
                         }
                     }
@@ -76,7 +77,8 @@ public class GroupDialog extends Window
                         if(editor.activeMap.selectedLayer != editor.activeMap.groupPolygons)
                         {
                             editor.activeMap.selectedLayerPriorToGroupMode = editor.activeMap.selectedLayer;
-                            editor.activeMap.selectedLayer.layerField.unselect();
+                            if(editor.activeMap.selectedLayer != null)
+                                editor.activeMap.selectedLayer.layerField.unselect();
                             editor.activeMap.selectedLayer = editor.activeMap.groupPolygons;
                         }
                     }
@@ -86,7 +88,8 @@ public class GroupDialog extends Window
                         if(editor.activeMap.groupPolygons != null && editor.activeMap.selectedLayer != editor.activeMap.groupPolygons)
                         {
                             editor.activeMap.selectedLayerPriorToGroupMode = editor.activeMap.selectedLayer;
-                            editor.activeMap.selectedLayer.layerField.unselect();
+                            if(editor.activeMap.selectedLayer != null)
+                                editor.activeMap.selectedLayer.layerField.unselect();
                             editor.activeMap.selectedLayer = editor.activeMap.groupPolygons;
                         }
                     }

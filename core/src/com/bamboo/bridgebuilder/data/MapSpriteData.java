@@ -2,6 +2,7 @@ package com.bamboo.bridgebuilder.data;
 
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
 
 public class MapSpriteData extends LayerChildData
@@ -44,10 +45,11 @@ public class MapSpriteData extends LayerChildData
         this.scl = mapSprite.sprite.getScaleX() - defaultScaleValue;
         this.w = mapSprite.sprite.getWidth();
         this.h = mapSprite.sprite.getHeight();
-        this.r = mapSprite.sprite.getColor().r - defaultColorValue;
-        this.g = mapSprite.sprite.getColor().g - defaultColorValue;
-        this.b = mapSprite.sprite.getColor().b - defaultColorValue;
-        this.a = mapSprite.sprite.getColor().a - defaultColorValue;
+        ColorPropertyField colorProperty = Utils.getLockedColorField(mapSprite.lockedProperties);
+        this.r = colorProperty.getR() - defaultColorValue;
+        this.g = colorProperty.getG() - defaultColorValue;
+        this.b = colorProperty.getB() - defaultColorValue;
+        this.a = colorProperty.getA() - defaultColorValue;
         if(mapSprite.layerOverride != null)
             this.loi = mapSprite.layer.map.layers.indexOf(mapSprite.layerOverride, true) + 1;
         else

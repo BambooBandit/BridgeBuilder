@@ -476,6 +476,28 @@ public class Map implements Screen
                     layerChild.drawHoverOutline();
             }
         }
+        if(editor.fileMenu.toolPane.selectAttachedSprites.selected && this.selectedLayer instanceof SpriteLayer)
+        {
+            for(int i = 0; i < this.selectedLayer.children.size; i ++)
+            {
+                MapSprite mapSprite = (MapSprite) this.selectedLayer.children.get(i);
+
+                if(mapSprite.attachedSprites != null)
+                {
+                    for (int k = mapSprite.attachedSprites.children.size - 1; k >= 0; k--)
+                    {
+                        MapSprite attachedSprite = mapSprite.attachedSprites.children.get(k);
+                        if (attachedSprite.isHoveredOver(this.input.boxSelect.getVertices()))
+                        {
+                            if(attachedSprite.selected)
+                                attachedSprite.drawSelectedHoveredOutline();
+                            else
+                                attachedSprite.drawHoverOutline();
+                        }
+                    }
+                }
+            }
+        }
 
         this.editor.shapeRenderer.setColor(Color.CYAN);
         this.editor.shapeRenderer.rect(this.input.boxSelect.rectangle.x, this.input.boxSelect.rectangle.y, this.input.boxSelect.rectangle.width, this.input.boxSelect.rectangle.height);
