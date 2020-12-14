@@ -547,6 +547,7 @@ public class FileMenu extends Group
         json.addClassTag("point", MapPointData.class);
         json.addClassTag("poly", MapPolygonData.class);
         json.addClassTag("cell", CellData.class);
+        json.addClassTag("group", GroupMapPolygonData.class);
         return json;
     }
 }
