@@ -591,8 +591,17 @@ public class MapInput implements InputProcessor
         if(this.map.hoveredChild == null)
             return false;
 
-        SelectLayerChild selectLayerChild = new SelectLayerChild(this.map, this.map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT));
-        this.map.executeCommand(selectLayerChild);
+        if(map.hoveredChild instanceof MapPolygon && editor.fileMenu.toolPane.groupDialog.shouldAdd())
+        {
+            AddMapSpritesToGroup addMapSpritesToGroup = new AddMapSpritesToGroup(map, (MapPolygon) map.hoveredChild);
+            this.map.executeCommand(addMapSpritesToGroup);
+        }
+        else
+        {
+            SelectLayerChild selectLayerChild = new SelectLayerChild(this.map, this.map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT));
+            this.map.executeCommand(selectLayerChild);
+        }
+
         return true;
     }
 
@@ -757,13 +766,25 @@ public class MapInput implements InputProcessor
             return true;
         }
 
-        DrawMapPolygon drawMapPolygon;
         if(this.map.selectedLayer instanceof ObjectLayer)
-            drawMapPolygon = new DrawMapPolygon(this.map, (ObjectLayer) this.map.selectedLayer, this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
+        {
+            DrawMapPolygon drawMapPolygon = new DrawMapPolygon(this.map, (ObjectLayer) this.map.selectedLayer, this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
+            clearMapPolygonVertices(button);
+            drawMapPolygon.execute();
+            if(editor.fileMenu.toolPane.groupDialog.shouldCreate())
+            {
+                AddMapSpritesToGroup addMapSpritesToGroup = new AddMapSpritesToGroup(map, drawMapPolygon.mapPolygon);
+                this.map.executeCommand(addMapSpritesToGroup);
+            }
+            this.map.pushCommand(drawMapPolygon);
+        }
         else
-            drawMapPolygon = new DrawMapPolygon(this.map, this.map.selectedSprites.first(), this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
-        clearMapPolygonVertices(button);
-        this.map.executeCommand(drawMapPolygon);
+        {
+            DrawMapPolygon drawMapPolygon = new DrawMapPolygon(this.map, this.map.selectedSprites.first(), this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
+            clearMapPolygonVertices(button);
+            this.map.executeCommand(drawMapPolygon);
+        }
+
         return true;
     }
 

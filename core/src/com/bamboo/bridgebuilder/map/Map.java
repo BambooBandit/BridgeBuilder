@@ -35,6 +35,7 @@ import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
@@ -78,6 +79,7 @@ public class Map implements Screen
     public Array<Layer> layers;
     public Layer selectedLayer;
     public Layer selectedLayerPriorToAttachedSpriteEditMode;
+    public Layer selectedLayerPriorToGroupMode;
     public MapSprite editAttachedMapSprite = null;
     public LayerChild hoveredChild; // Whatever the mouse is hovering when SELECT tool is selected
     public Array<MapSprite> selectedSprites;
@@ -92,6 +94,8 @@ public class Map implements Screen
     public File file = null;
 
     public MapSprite lastFencePlaced;
+
+    public ObjectLayer groupPolygons; // Each group of map sprites has a polygon associated with it in this layer. Used for making multiple sprites do something when entering a polygon
 
     // For undo/redo
     private int undoRedoPointer = -1;
@@ -605,6 +609,8 @@ public class Map implements Screen
                     this.layers.get(i).draw();
             }
         }
+        if(this.groupPolygons != null)
+            this.groupPolygons.draw();
     }
 
     private void printDustTypes()
@@ -999,6 +1005,39 @@ public class Map implements Screen
         }
     }
 
+    public void colorizeGroup()
+    {
+        if(this.selectedLayer == null)
+            return;
+
+        if(this.groupPolygons == null)
+            return;
+
+        for(int i = 0; i < groupPolygons.children.size; i ++)
+        {
+            MapPolygon mapPolygon = (MapPolygon) groupPolygons.children.get(i);
+            if(mapPolygon.mapSprites != null)
+            {
+                for(int k = 0; k < mapPolygon.mapSprites.size; k ++)
+                {
+                    MapSprite mapSprite = mapPolygon.mapSprites.get(k);
+                    ColorPropertyField colorProperty = Utils.getLockedColorField(mapSprite.lockedProperties);
+                    mapSprite.setColor(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
+                }
+            }
+        }
+
+        for(int i = 0; i < groupPolygons.children.size; i ++)
+        {
+            MapPolygon mapPolygon = (MapPolygon) groupPolygons.children.get(i);
+            if(mapPolygon.selected && mapPolygon.mapSprites != null)
+            {
+                for(int k = 0; k < mapPolygon.mapSprites.size; k ++)
+                    mapPolygon.mapSprites.get(k).sprite.setColor(0, 1, 0, 1);
+            }
+        }
+    }
+
     public void loadMap(MapData mapData, boolean setDefaultsOnly)
     {
         MapSprite.resetIdCounter();
@@ -1287,6 +1326,45 @@ public class Map implements Screen
                     }
                 }
             }
+
+
+
+            // groups
+            if(mapData.groups != null)
+            {
+                groupPolygons = new ObjectLayer(editor, this, null);
+                for(int i = 0; i < mapData.groups.size(); i++)
+                {
+                    GroupMapPolygonData mapPolygonData = mapData.groups.get(i);
+                    MapPolygon mapPolygon = new MapPolygon(this, groupPolygons, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
+                    (groupPolygons).addMapObject(mapPolygon);
+                }
+
+                for(int i = 0; i < layers.size; i ++)
+                {
+                    Layer layer = layers.get(i);
+                    if(!(layer instanceof SpriteLayer))
+                        continue;
+                    // ID
+                    for (int s = 0; s < layer.children.size; s++)
+                    {
+                        MapSprite mapSprite = (MapSprite) layer.children.get(s);
+                        for(int k = 0; k < mapData.groups.size(); k ++)
+                        {
+                            if(mapData.groups.get(k).mapSpriteIDs.contains(mapSprite.id))
+                            {
+                                MapPolygon mapPolygon = (MapPolygon) groupPolygons.children.get(k);
+                                if(mapPolygon.mapSprites == null)
+                                    mapPolygon.mapSprites = new Array<>();
+                                mapPolygon.mapSprites.add(mapSprite);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+
         }
         PropertyToolPane.apply(this);
         propertyMenu.mapPropertyPanel.apply();

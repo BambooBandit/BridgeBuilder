@@ -32,6 +32,7 @@ public class SelectLayer implements Command
 
         if(map.editor.fileMenu.toolPane.depth.selected)
             map.colorizeDepth();
+        map.colorizeGroup();
     }
 
     @Override
@@ -53,5 +54,6 @@ public class SelectLayer implements Command
 
         if(map.editor.fileMenu.toolPane.depth.selected)
             map.colorizeDepth();
+        map.colorizeGroup();
     }
 }

@@ -2,11 +2,17 @@ package com.bamboo.bridgebuilder.ui.spriteMenu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.bamboo.bridgebuilder.BridgeBuilder;
+import com.bamboo.bridgebuilder.commands.CloseGroupDialog;
+import com.bamboo.bridgebuilder.map.LayerChild;
+import com.bamboo.bridgebuilder.map.ObjectLayer;
 
 public class GroupDialog extends Window
 {
@@ -15,40 +21,94 @@ public class GroupDialog extends Window
     private Skin skin;
 
     private Table table;
-    private Label initialHeightLabel;
-    private Label finalHeightLabel;
-    private Label stairAmountLabel;
-    private Label thicknessLabel;
-    private Label snapLabel;
-    private Label transparentParentLabel;
-    private TextField initialHeightField;
-    private TextField finalHeightField;
-    private TextField stairAmountField;
-    private TextField thicknessField;
-    private CheckBox snapCheckBox;
-    private CheckBox transparentParentCheckBox;
+    private Label addLabel;
+    private Label createLabel;
+    private Label selectLabel;
+    public CheckBox addCheckBox;
+    public CheckBox createCheckBox;
+    public CheckBox selectCheckBox;
 
-    public GroupDialog(Stage stage, Skin skin)
+    private ButtonGroup<CheckBox> checkBoxGroup;
+
+    private BridgeBuilder editor;
+
+    public GroupDialog(Stage stage, Skin skin, BridgeBuilder editor)
     {
         super("Stairs", skin);
+        this.editor = editor;
         this.skin = skin;
 
         this.table = new Table();
 
-        this.initialHeightLabel = new Label("Initial height: ", skin);
-        this.finalHeightLabel = new Label("Final height: ", skin);
-        this.stairAmountLabel = new Label("Stair amount per meter: ", skin);
-        this.thicknessLabel = new Label("Thickness: ", skin);
-        this.snapLabel = new Label("Should snap: ", skin);
-        this.transparentParentLabel = new Label("Should parent be transparent: ", skin);
-        this.initialHeightField = new TextField("0", skin);
-        this.finalHeightField = new TextField("5", skin);
-        this.stairAmountField = new TextField("1", skin);
-        this.thicknessField = new TextField("1", skin);
-        this.snapCheckBox = new CheckBox("", skin);
-        this.snapCheckBox.setChecked(true);
-        this.transparentParentCheckBox = new CheckBox("", skin);
-        this.transparentParentCheckBox.setChecked(false);
+        ChangeListener changeListener = new ChangeListener()
+        {
+            @Override
+            public void changed(ChangeEvent event, Actor actor)
+            {
+                CheckBox checkBox = (CheckBox) actor;
+                if(checkBox.isChecked())
+                {
+                    if(checkBox == addCheckBox)
+                    {
+                        if(editor.activeMap.selectedSprites.size == 0)
+                        {
+                            checkBox.setChecked(false);
+                            return;
+                        }
+                        editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.select);
+                        if(editor.activeMap.groupPolygons != null && editor.activeMap.selectedLayer != editor.activeMap.groupPolygons)
+                        {
+                            editor.activeMap.selectedLayerPriorToGroupMode = editor.activeMap.selectedLayer;
+                            editor.activeMap.selectedLayer.layerField.unselect();
+                            editor.activeMap.selectedLayer = editor.activeMap.groupPolygons;
+                        }
+                    }
+                    else if(checkBox == createCheckBox)
+                    {
+                        if(editor.activeMap.selectedSprites.size == 0)
+                        {
+                            checkBox.setChecked(false);
+                            return;
+                        }
+                        editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.drawObject);
+                        if(editor.activeMap.groupPolygons == null)
+                            editor.activeMap.groupPolygons = new ObjectLayer(editor, editor.activeMap, null);
+                        if(editor.activeMap.selectedLayer != editor.activeMap.groupPolygons)
+                        {
+                            editor.activeMap.selectedLayerPriorToGroupMode = editor.activeMap.selectedLayer;
+                            editor.activeMap.selectedLayer.layerField.unselect();
+                            editor.activeMap.selectedLayer = editor.activeMap.groupPolygons;
+                        }
+                    }
+                    else if(checkBox == selectCheckBox)
+                    {
+                        editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.select);
+                        if(editor.activeMap.groupPolygons != null && editor.activeMap.selectedLayer != editor.activeMap.groupPolygons)
+                        {
+                            editor.activeMap.selectedLayerPriorToGroupMode = editor.activeMap.selectedLayer;
+                            editor.activeMap.selectedLayer.layerField.unselect();
+                            editor.activeMap.selectedLayer = editor.activeMap.groupPolygons;
+                        }
+                    }
+                }
+            }
+        };
+        this.addLabel = new Label("Add to existing group: ", skin);
+        this.createLabel = new Label("Add to new group: ", skin);
+        this.selectLabel = new Label("Select group: ", skin);
+        this.addCheckBox = new CheckBox("", skin);
+        this.createCheckBox = new CheckBox("", skin);
+        this.selectCheckBox = new CheckBox("", skin);
+
+        this.checkBoxGroup = new ButtonGroup<>();
+        this.checkBoxGroup.setMinCheckCount(0);
+        this.checkBoxGroup.add(addCheckBox);
+        this.checkBoxGroup.add(createCheckBox);
+        this.checkBoxGroup.add(selectCheckBox);
+
+        this.addCheckBox.addListener(changeListener);
+        this.createCheckBox.addListener(changeListener);
+        this.selectCheckBox.addListener(changeListener);
 
         this.close = new TextButton("Close", skin);
         this.close.setColor(Color.FIREBRICK);
@@ -57,22 +117,16 @@ public class GroupDialog extends Window
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                close();
+                closeCommand();
             }
         });
 
-        this.table.add(this.initialHeightLabel).padBottom(15);
-        this.table.add(this.initialHeightField).padBottom(15).row();
-        this.table.add(this.finalHeightLabel).padBottom(15);
-        this.table.add(this.finalHeightField).padBottom(15).row();
-        this.table.add(this.stairAmountLabel).padBottom(15);
-        this.table.add(this.stairAmountField).padBottom(15).row();
-        this.table.add(this.thicknessLabel).padBottom(15);
-        this.table.add(this.thicknessField).padBottom(15).row();
-        this.table.add(this.snapLabel).padBottom(15);
-        this.table.add(this.snapCheckBox).padBottom(15).row();
-        this.table.add(this.transparentParentLabel).padBottom(15);
-        this.table.add(this.transparentParentCheckBox).padBottom(15).row();
+        this.table.add(this.addLabel).padBottom(15);
+        this.table.add(this.addCheckBox).padBottom(15).row();
+        this.table.add(this.createLabel).padBottom(15);
+        this.table.add(this.createCheckBox).padBottom(15).row();
+        this.table.add(this.selectLabel).padBottom(15);
+        this.table.add(this.selectCheckBox).padBottom(15).row();
         this.table.add(this.close);
 
         this.add(this.table);
@@ -83,51 +137,55 @@ public class GroupDialog extends Window
         setVisible(false);
     }
 
-    public void close()
-    {
-        this.setVisible(false);
-    }
-
     public void open()
     {
+        editor.activeMap.selectedLayerPriorToGroupMode = editor.activeMap.selectedLayer;
         this.setVisible(true);
     }
 
-    public int getInitialHeight()
+    public void close()
     {
-        int num = 0;
-        try { num = Integer.parseInt(this.initialHeightField.getText()); } catch (NumberFormatException e){}
-        return num;
+        addCheckBox.setChecked(false);
+        createCheckBox.setChecked(false);
+        selectCheckBox.setChecked(false);
+
+        editor.activeMap.selectedLayer = editor.activeMap.selectedLayerPriorToGroupMode;
+        editor.activeMap.selectedLayer.layerField.select();
+        for(int i = 0; i < editor.activeMap.groupPolygons.children.size; i ++)
+        {
+            LayerChild layerChild = editor.activeMap.groupPolygons.children.get(i);
+            layerChild.unselect();
+        }
+        this.setVisible(false);
     }
 
-    public int getFinalHeight()
+    public void closeCommand()
     {
-        int num = 5;
-        try { num = Integer.parseInt(this.finalHeightField.getText()); } catch (NumberFormatException e){}
-        return num;
+        CloseGroupDialog closeGroupDialog = new CloseGroupDialog(this.editor.activeMap);
+        editor.activeMap.executeCommand(closeGroupDialog);
     }
 
-    public float getStairAmount()
+    public boolean shouldAdd()
     {
-        float num = 1;
-        try { num = Float.parseFloat(this.stairAmountField.getText()); } catch (NumberFormatException e){}
-        return num;
+        if(!this.isVisible())
+            return false;
+
+        return addCheckBox.isChecked();
     }
 
-    public float getThickness()
+    public boolean shouldCreate()
     {
-        float num = 1;
-        try { num = Float.parseFloat(this.thicknessField.getText()); } catch (NumberFormatException e){}
-        return num;
+        if(!this.isVisible())
+            return false;
+
+        return createCheckBox.isChecked();
     }
 
-    public boolean shouldSnap()
+    public boolean shouldSelect()
     {
-        return snapCheckBox.isChecked();
-    }
+        if(!this.isVisible())
+            return false;
 
-    public boolean shouldParentBeTransparent()
-    {
-        return transparentParentCheckBox.isChecked();
+        return selectCheckBox.isChecked();
     }
 }

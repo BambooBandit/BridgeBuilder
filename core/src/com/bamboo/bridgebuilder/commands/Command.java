@@ -38,7 +38,7 @@ public interface Command
         }
         else if(command == SelectLayer.class)
         {
-            return map.editAttachedMapSprite == null;
+            return map.editAttachedMapSprite == null && (map.groupPolygons == null || map.selectedLayer != map.groupPolygons);
         }
         else if(command == CreateStairs.class)
         {

@@ -93,6 +93,7 @@ public class SelectLayerChild implements Command
             }
         }
         this.map.propertyMenu.rebuild();
+        map.colorizeGroup();
 
         this.map.editor.selectedCountTooltip.label.setText((map.selectedObjects.size + map.selectedSprites.size) + " selected");
     }
@@ -134,6 +135,7 @@ public class SelectLayerChild implements Command
                 this.oldSelectedObjects.get(i).select();
         }
         this.map.propertyMenu.rebuild();
+        map.colorizeGroup();
 
         this.map.editor.selectedCountTooltip.label.setText((map.selectedObjects.size + map.selectedSprites.size) + " selected");
     }

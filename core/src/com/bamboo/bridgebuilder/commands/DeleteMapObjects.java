@@ -48,9 +48,13 @@ public class DeleteMapObjects implements Command
                 if(mapObject instanceof MapPoint)
                     ((MapPoint) mapObject).destroyLight();
                 else if(mapObject instanceof MapPolygon)
-                    ((MapPolygon) mapObject).destroyBody();
+                {
+                    MapPolygon mapPolygon = (MapPolygon) mapObject;
+                    mapPolygon.destroyBody();
+                }
                 mapObject.unselect();
             }
+            this.selectedLayer.map.colorizeGroup();
             this.selectedLayer.children.removeAll(this.selectedObjects, true);
             this.selectedLayer.map.propertyMenu.rebuild();
             this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
@@ -87,5 +91,6 @@ public class DeleteMapObjects implements Command
         }
         this.selectedLayer.map.propertyMenu.rebuild();
         this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
+        this.selectedLayer.map.colorizeGroup();
     }
 }

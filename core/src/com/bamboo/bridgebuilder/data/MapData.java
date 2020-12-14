@@ -13,6 +13,7 @@ public class MapData
     public ArrayList<LayerData> layers;
     public ArrayList<PropertyData> lProps;
     public ArrayList<PropertyData> props;
+    public ArrayList<GroupMapPolygonData> groups;
 
     public MapData(){}
     public MapData(Map map, boolean settingBBMDefaults)
@@ -73,11 +74,22 @@ public class MapData
         for(int i = 0; i < map.spriteMenu.spriteSheets.size; i ++)
             this.sheets.add(new SpriteSheetData(map, map.spriteMenu.spriteSheets.get(i)));
 
+        if(map.groupPolygons != null && map.groupPolygons.children.size > 0)
+        {
+            this.groups = new ArrayList<>();
+            for (int i = 0; i < map.groupPolygons.children.size; i ++)
+            {
+                this.groups.add(new GroupMapPolygonData(((MapPolygon)map.groupPolygons.children.get(i)), 0, 0));
+            }
+        }
+
         // Remove all the map data such as layers since they are not default information
         if(settingBBMDefaults)
         {
             this.name = "defaultBBM.bbm";
             this.layers.clear();
+            if(this.groups != null)
+                this.groups.clear();
         }
 
         if(perspective)

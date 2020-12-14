@@ -127,7 +127,7 @@ public class ToolPane extends Group
         this.stairsDialog = new StairsDialog(editor.stage, skin);
         this.stairsButton = new TextButton("Stairs", skin);
 
-        this.groupDialog = new GroupDialog(editor.stage, skin);
+        this.groupDialog = new GroupDialog(editor.stage, skin, editor);
         this.groupButton = new TextButton("Group", skin);
 
         this.fps = new Label("0", skin);
@@ -583,7 +583,8 @@ public class ToolPane extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                groupDialog.setVisible(true);
+                if(editor.activeMap != null)
+                    groupDialog.open();
             }
         });
     }

@@ -16,7 +16,7 @@ public class DrawMapPolygon implements Command
     private FloatArray vertices;
     private float objectX;
     private float objectY;
-    private MapPolygon mapPolygon;
+    public MapPolygon mapPolygon;
 
     public DrawMapPolygon(Map map, ObjectLayer selectedObjectLayer, FloatArray vertices, float objectX, float objectY)
     {

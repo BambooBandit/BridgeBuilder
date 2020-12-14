@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.PhysicsBits;
 import com.bamboo.bridgebuilder.Utils;
@@ -20,6 +21,7 @@ public class MapPolygon extends MapObject
     public int indexOfHoveredVertice = -1; // x index. y is + 1
     float centroidX, centroidY;
     public Body body;
+    public Array<MapSprite> mapSprites; // Used only for Groups
 
     public MapPolygon(Map map, Layer layer, float[] vertices, float x, float y)
     {
@@ -54,7 +56,20 @@ public class MapPolygon extends MapObject
     public void draw()
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
-        map.editor.shapeRenderer.setColor(Color.CYAN);
+        if(mapSprites == null)
+            map.editor.shapeRenderer.setColor(Color.CYAN);
+        else
+        {
+            map.editor.shapeRenderer.setColor(.8f, 0, .8f, .9f);
+            for(int i = 0; i < mapSprites.size; i ++)
+            {
+                if(mapSprites.get(i).selected)
+                {
+                    map.editor.shapeRenderer.setColor(Color.MAGENTA);
+                    break;
+                }
+            }
+        }
         map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
 
         PropertyField propertyField = Utils.getPropertyField(properties, "angle");
