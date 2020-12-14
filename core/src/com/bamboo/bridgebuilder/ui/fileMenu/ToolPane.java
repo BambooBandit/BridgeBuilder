@@ -16,6 +16,7 @@ import com.bamboo.bridgebuilder.ui.MinMaxDialog;
 import com.bamboo.bridgebuilder.ui.SplatDialog;
 import com.bamboo.bridgebuilder.ui.StairsDialog;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
+import com.bamboo.bridgebuilder.ui.spriteMenu.GroupDialog;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
 
@@ -45,6 +46,7 @@ public class ToolPane extends Group
     public Tool lines;
     public Tool b2drender;
     public Tool attachedSprites;
+    public Tool selectAttachedSprites;
     public Tool splat;
     public Tool fence;
     public Tool stairs;
@@ -68,6 +70,9 @@ public class ToolPane extends Group
 
     public StairsDialog stairsDialog;
     private TextButton stairsButton;
+
+    public GroupDialog groupDialog;
+    private TextButton groupButton;
 
     private BridgeBuilder editor;
 
@@ -99,6 +104,7 @@ public class ToolPane extends Group
         this.lines = new Tool(editor, this, true, Tools.LINES);
         this.b2drender = new Tool(editor, this, true, Tools.B2DR);
         this.attachedSprites = new Tool(editor, this, true, Tools.ATTACHEDSPRITES);
+        this.selectAttachedSprites = new Tool(editor, this, true, Tools.SELECTATTACHEDSPRITES);
         this.splat = new Tool(editor, this, true, Tools.SPLAT);
         this.fence = new Tool(editor, this, true, Tools.FENCE);
         this.bringUp = new TextButton("^", skin);
@@ -120,6 +126,9 @@ public class ToolPane extends Group
 
         this.stairsDialog = new StairsDialog(editor.stage, skin);
         this.stairsButton = new TextButton("Stairs", skin);
+
+        this.groupDialog = new GroupDialog(editor.stage, skin);
+        this.groupButton = new TextButton("Group", skin);
 
         this.fps = new Label("0", skin);
 
@@ -145,19 +154,21 @@ public class ToolPane extends Group
         this.toolTable.add(this.lines).padRight(1);
         this.toolTable.add(this.b2drender).padRight(1);
         this.toolTable.add(this.attachedSprites).padRight(1);
+        this.toolTable.add(this.selectAttachedSprites).padRight(1);
         this.toolTable.add(this.splat).padRight(1);
-        this.toolTable.add(this.fence).padRight(5);
+        this.toolTable.add(this.fence).padRight(4);
         this.toolTable.add(this.bringUp);
         this.toolTable.add(this.bringDown);
         this.toolTable.add(this.bringTop);
-        this.toolTable.add(this.bringBottom).padRight(5);
+        this.toolTable.add(this.bringBottom).padRight(4);
         this.toolTable.add(this.layerDownOverride);
         this.toolTable.add(this.layerUpOverride);
-        this.toolTable.add(this.layerOverrideReset).padRight(5);
-        this.toolTable.add(this.gradientButton).padRight(5);
-        this.toolTable.add(this.splatButton).padRight(5);
-        this.toolTable.add(this.minMaxButton).padRight(5);
-        this.toolTable.add(this.stairsButton).padRight(5);
+        this.toolTable.add(this.layerOverrideReset).padRight(4);
+        this.toolTable.add(this.gradientButton).padRight(4);
+        this.toolTable.add(this.splatButton).padRight(4);
+        this.toolTable.add(this.minMaxButton).padRight(4);
+        this.toolTable.add(this.stairsButton).padRight(4);
+        this.toolTable.add(this.groupButton).padRight(4);
         this.toolTable.add(this.fps).padRight(1);
 
         this.pane = new Stack();
@@ -196,6 +207,7 @@ public class ToolPane extends Group
         this.lines.setSize(toolHeight, toolHeight);
         this.b2drender.setSize(toolHeight, toolHeight);
         this.attachedSprites.setSize(toolHeight, toolHeight);
+        this.selectAttachedSprites.setSize(toolHeight, toolHeight);
         this.splat.setSize(toolHeight, toolHeight);
         this.fence.setSize(toolHeight, toolHeight);
 
@@ -219,6 +231,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.lines).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.b2drender).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.attachedSprites).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.selectAttachedSprites).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.splat).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.fence).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringUp).size(toolHeight, toolHeight);
@@ -228,10 +241,11 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.layerDownOverride).size(toolHeight * 4.75f, toolHeight);
         this.toolTable.getCell(this.layerUpOverride).size(toolHeight * 4.75f, toolHeight);
         this.toolTable.getCell(this.layerOverrideReset).size(toolHeight * 4.75f, toolHeight);
-        this.toolTable.getCell(this.gradientButton).size(toolHeight * 2.5f, toolHeight);
-        this.toolTable.getCell(this.splatButton).size(toolHeight * 2.45f, toolHeight);
-        this.toolTable.getCell(this.minMaxButton).size(toolHeight * 2.45f, toolHeight);
-        this.toolTable.getCell(this.stairsButton).size(toolHeight * 2.45f, toolHeight);
+        this.toolTable.getCell(this.gradientButton).size(toolHeight * 2.3f, toolHeight);
+        this.toolTable.getCell(this.splatButton).size(toolHeight * 2.3f, toolHeight);
+        this.toolTable.getCell(this.minMaxButton).size(toolHeight * 2.3f, toolHeight);
+        this.toolTable.getCell(this.stairsButton).size(toolHeight * 2.3f, toolHeight);
+        this.toolTable.getCell(this.groupButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.fps).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();
 
@@ -561,6 +575,15 @@ public class ToolPane extends Group
             public void clicked(InputEvent event, float x, float y)
             {
                 stairsDialog.setVisible(true);
+            }
+        });
+
+        this.groupButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                groupDialog.setVisible(true);
             }
         });
     }

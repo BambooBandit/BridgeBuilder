@@ -433,6 +433,22 @@ public class MapInput implements InputProcessor
                     this.map.hoveredChild = layerChild;
                     return false;
                 }
+                if(map.editor.fileMenu.toolPane.selectAttachedSprites.selected && layerChild instanceof MapSprite)
+                {
+                    MapSprite mapSprite = (MapSprite) layerChild;
+                    if(mapSprite.attachedSprites != null)
+                    {
+                        for (int k = mapSprite.attachedSprites.children.size - 1; k >= 0; k--)
+                        {
+                            MapSprite attachedSprite = mapSprite.attachedSprites.children.get(k);
+                            if (attachedSprite.isHoveredOver(x, y))
+                            {
+                                this.map.hoveredChild = attachedSprite;
+                                return false;
+                            }
+                        }
+                    }
+                }
             }
         }
         this.map.hoveredChild = null;
