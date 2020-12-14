@@ -1360,6 +1360,13 @@ public class Map implements Screen
                     GroupMapPolygonData mapPolygonData = mapData.groups.get(i);
                     MapPolygon mapPolygon = new MapPolygon(this, groupPolygons, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
                     (groupPolygons).addMapObject(mapPolygon);
+                    // object properties
+                    int propSize = mapPolygonData.props.size();
+                    for (int s = 0; s < propSize; s++)
+                    {
+                        PropertyData propertyData = mapPolygonData.props.get(s);
+                        propertyMenu.newProperty(propertyData, mapPolygon.properties);
+                    }
                 }
 
                 for(int i = 0; i < layers.size; i ++)
@@ -1371,14 +1378,34 @@ public class Map implements Screen
                     for (int s = 0; s < layer.children.size; s++)
                     {
                         MapSprite mapSprite = (MapSprite) layer.children.get(s);
-                        for(int k = 0; k < mapData.groups.size(); k ++)
+                        if(mapSprite.attachedSprites != null)
                         {
-                            if(mapData.groups.get(k).mapSpriteIDs.contains(mapSprite.id))
+                            for (int m = 0; m < mapSprite.attachedSprites.children.size; m++)
                             {
-                                MapPolygon mapPolygon = (MapPolygon) groupPolygons.children.get(k);
-                                if(mapPolygon.mapSprites == null)
-                                    mapPolygon.mapSprites = new Array<>();
-                                mapPolygon.mapSprites.add(mapSprite);
+                                MapSprite attachedMapSprite = mapSprite.attachedSprites.children.get(m);
+                                for (int k = 0; k < mapData.groups.size(); k++)
+                                {
+                                    if (mapData.groups.get(k).mapSpriteIDs.contains(attachedMapSprite.id))
+                                    {
+                                        MapPolygon mapPolygon = (MapPolygon) groupPolygons.children.get(k);
+                                        if (mapPolygon.mapSprites == null)
+                                            mapPolygon.mapSprites = new Array<>();
+                                        mapPolygon.mapSprites.add(attachedMapSprite);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int k = 0; k < mapData.groups.size(); k++)
+                            {
+                                if (mapData.groups.get(k).mapSpriteIDs.contains(mapSprite.id))
+                                {
+                                    MapPolygon mapPolygon = (MapPolygon) groupPolygons.children.get(k);
+                                    if (mapPolygon.mapSprites == null)
+                                        mapPolygon.mapSprites = new Array<>();
+                                    mapPolygon.mapSprites.add(mapSprite);
+                                }
                             }
                         }
                     }
