@@ -325,7 +325,7 @@ public class MapSprite extends LayerChild
     @Override
     public void draw()
     {
-        if(layerOverride != null)
+        if(layerOverride != null && layerOverride.layerField.visibleImg.isVisible())
             layerOverride.draw();
 
         if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
