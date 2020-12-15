@@ -238,16 +238,19 @@ public class SpriteGrid
     private static Color rgba8888ToColor = new Color();
     private void updateColorGrid()
     {
-        for(int i = 0; i < objectLayer.map.groupPolygons.children.size; i ++)
+        if(objectLayer.map.groupPolygons != null)
         {
-            MapPolygon mapPolygon = (MapPolygon) objectLayer.map.groupPolygons.children.get(i);
-            if(mapPolygon.mapSprites != null)
+            for (int i = 0; i < objectLayer.map.groupPolygons.children.size; i++)
             {
-                for(int k = 0; k < mapPolygon.mapSprites.size; k ++)
+                MapPolygon mapPolygon = (MapPolygon) objectLayer.map.groupPolygons.children.get(i);
+                if (mapPolygon.mapSprites != null)
                 {
-                    MapSprite mapSprite = mapPolygon.mapSprites.get(k);
-                    ColorPropertyField colorProperty = Utils.getLockedColorField(mapSprite.lockedProperties);
-                    mapSprite.setColor(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
+                    for (int k = 0; k < mapPolygon.mapSprites.size; k++)
+                    {
+                        MapSprite mapSprite = mapPolygon.mapSprites.get(k);
+                        ColorPropertyField colorProperty = Utils.getLockedColorField(mapSprite.lockedProperties);
+                        mapSprite.setColor(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
+                    }
                 }
             }
         }
