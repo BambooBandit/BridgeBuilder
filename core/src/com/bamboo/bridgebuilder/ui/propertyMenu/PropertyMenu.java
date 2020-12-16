@@ -125,7 +125,7 @@ public class PropertyMenu extends Group
         else if(propertyData instanceof ColorPropertyFieldData)
         {
             ColorPropertyFieldData data = (ColorPropertyFieldData) propertyData;
-            properties.add(new ColorPropertyField(this.skin, this, properties, true, data.r, data.g, data.b, data.a));
+            properties.add(new ColorPropertyField(this.skin, this, properties, true, data.prop, data.r, data.g, data.b, data.a));
         }
         else if(propertyData instanceof LightPropertyFieldData)
         {
@@ -156,14 +156,14 @@ public class PropertyMenu extends Group
                     continue;
                 property.value.setText(data.val);
             }
-            else if(propertyData instanceof ColorPropertyFieldData && propertyField instanceof ColorPropertyField)
+            else if(propertyData instanceof ColorPropertyFieldData && propertyField instanceof ColorPropertyField && ((ColorPropertyField) propertyField).property.getText().toString().equals(((ColorPropertyFieldData) propertyData).prop))
             {
                 ColorPropertyField property = (ColorPropertyField) propertyField;
                 ColorPropertyFieldData data = (ColorPropertyFieldData) propertyData;
                 property.setRGBA(data.r, data.g, data.b, data.a + ColorPropertyFieldData.defaultAlphaValue);
 
             }
-            else if(propertyData instanceof OpaqueColorPropertyFieldData && propertyField instanceof OpaqueColorPropertyField)
+            else if(propertyData instanceof OpaqueColorPropertyFieldData && propertyField instanceof OpaqueColorPropertyField && ((OpaqueColorPropertyField) propertyField).property.getText().toString().equals(((OpaqueColorPropertyFieldData) propertyData).prop))
             {
                 OpaqueColorPropertyField property = (OpaqueColorPropertyField) propertyField;
                 OpaqueColorPropertyFieldData data = (OpaqueColorPropertyFieldData) propertyData;

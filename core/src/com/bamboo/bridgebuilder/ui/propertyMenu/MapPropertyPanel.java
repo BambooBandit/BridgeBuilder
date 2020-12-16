@@ -42,8 +42,10 @@ public class MapPropertyPanel extends Group
         this.table = new Table();
         this.table.left().top();
 
-        OpaqueColorPropertyField mapBackgroundColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, map.r, map.g, map.b);
-        ColorPropertyField mapAmbientColorProperty = new ColorPropertyField(skin, menu, this.properties, false, 0, 0, 0, 1);
+        OpaqueColorPropertyField mapBackgroundColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, "Background", map.r, map.g, map.b);
+        ColorPropertyField mapAmbientColorProperty = new ColorPropertyField(skin, menu, this.properties, false, "Ambient", 0, 0, 0, 1);
+        OpaqueColorPropertyField shadowColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, "Shadows", .2f, .2f, .2f);
+
         LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = new LabelFieldPropertyValuePropertyField("Virtual Height", "20", skin, menu, properties, false);
 
         TextField.TextFieldFilter valueFilter = new TextField.TextFieldFilter()
@@ -60,6 +62,7 @@ public class MapPropertyPanel extends Group
         this.lockedProperties = new Array<>();
         this.lockedProperties.add(mapBackgroundColorProperty);
         this.lockedProperties.add(mapAmbientColorProperty);
+        this.lockedProperties.add(shadowColorProperty);
         this.lockedProperties.add(mapVirtualHeightProperty);
         this.properties = new Array<>();
 
@@ -75,6 +78,7 @@ public class MapPropertyPanel extends Group
 
         this.table.add(mapBackgroundColorProperty).padBottom(1).row();
         this.table.add(mapAmbientColorProperty).padBottom(1).row();
+        this.table.add(shadowColorProperty).padBottom(1).row();
         this.table.add(mapVirtualHeightProperty).padBottom(1).row();
         this.table.add(this.apply).padBottom(1).row();
 
@@ -93,7 +97,7 @@ public class MapPropertyPanel extends Group
             this.table.getCell(this.table.getChildren().get(i)).size(width, toolHeight);
         }
 
-        float newHeight = toolHeight * 4;
+        float newHeight = toolHeight * 5;
 
         this.background.setBounds(0, 0, width, newHeight);
         this.stack.setSize(width, newHeight);
@@ -107,8 +111,9 @@ public class MapPropertyPanel extends Group
 
     public void apply()
     {
-        OpaqueColorPropertyField mapBackgroundColorProperty = Utils.getLockedOpaqueColorField(lockedProperties);
-        ColorPropertyField mapAmbientColorProperty = Utils.getLockedColorField(lockedProperties);
+        OpaqueColorPropertyField mapBackgroundColorProperty = Utils.getLockedOpaqueColorField("Background", lockedProperties);
+        ColorPropertyField mapAmbientColorProperty = Utils.getLockedColorField("Ambient", lockedProperties);
+
         menu.map.rayHandler.setAmbientLight(Float.parseFloat(mapAmbientColorProperty.rValue.getText()), Float.parseFloat(mapAmbientColorProperty.gValue.getText()), Float.parseFloat(mapAmbientColorProperty.bValue.getText()), Float.parseFloat(mapAmbientColorProperty.aValue.getText()));
         menu.map.r = mapBackgroundColorProperty.getR();
         menu.map.g = mapBackgroundColorProperty.getG();

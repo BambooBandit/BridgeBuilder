@@ -1043,7 +1043,7 @@ public class Map implements Screen
                 for(int k = 0; k < mapPolygon.mapSprites.size; k ++)
                 {
                     MapSprite mapSprite = mapPolygon.mapSprites.get(k);
-                    ColorPropertyField colorProperty = Utils.getLockedColorField(mapSprite.lockedProperties);
+                    ColorPropertyField colorProperty = Utils.getLockedColorField("Tint", mapSprite.lockedProperties);
                     mapSprite.setColor(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
                 }
             }

@@ -281,24 +281,32 @@ public class Utils
         return null;
     }
 
-    public static ColorPropertyField getLockedColorField(Array<PropertyField> lockedProperties)
+    public static ColorPropertyField getLockedColorField(String property, Array<PropertyField> lockedProperties)
     {
         for(int i = 0; i < lockedProperties.size; i ++)
         {
             PropertyField propertyField = lockedProperties.get(i);
             if (propertyField instanceof ColorPropertyField)
-                return (ColorPropertyField) propertyField;
+            {
+                ColorPropertyField colorPropertyField = (ColorPropertyField) propertyField;
+                if(colorPropertyField.property.getText().toString().equals(property))
+                    return colorPropertyField;
+            }
         }
         return null;
     }
 
-    public static OpaqueColorPropertyField getLockedOpaqueColorField(Array<PropertyField> lockedProperties)
+    public static OpaqueColorPropertyField getLockedOpaqueColorField(String property, Array<PropertyField> lockedProperties)
     {
         for(int i = 0; i < lockedProperties.size; i ++)
         {
             PropertyField propertyField = lockedProperties.get(i);
             if (propertyField instanceof OpaqueColorPropertyField && !(propertyField instanceof ColorPropertyField))
-                return (OpaqueColorPropertyField) propertyField;
+            {
+                OpaqueColorPropertyField opaqueColorPropertyField = (OpaqueColorPropertyField) propertyField;
+                if(opaqueColorPropertyField.property.getText().toString().equals(property))
+                    return opaqueColorPropertyField;
+            }
         }
         return null;
     }

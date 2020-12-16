@@ -2,10 +2,7 @@ package com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.Utils;
@@ -17,7 +14,7 @@ public class ColorPropertyField extends OpaqueColorPropertyField
 {
     public TextField aValue;
 
-    public ColorPropertyField(Skin skin, final PropertyMenu menu, Array<PropertyField> properties, boolean removeable, float r, float g, float b, float a)
+    public ColorPropertyField(Skin skin, final PropertyMenu menu, Array<PropertyField> properties, boolean removeable, String property, float r, float g, float b, float a)
     {
         super(menu, properties, removeable);
 
@@ -30,6 +27,7 @@ public class ColorPropertyField extends OpaqueColorPropertyField
             }
         };
 
+        this.property = new Label(property, skin);
         this.rValue = new TextField(Float.toString(r), skin);
         this.gValue = new TextField(Float.toString(g), skin);
         this.bValue = new TextField(Float.toString(b), skin);
@@ -44,6 +42,7 @@ public class ColorPropertyField extends OpaqueColorPropertyField
 
         this.table = new Table();
         this.table.bottom().left();
+        this.table.add(this.property);
         this.table.add(this.rValue);
         this.table.add(this.gValue);
         this.table.add(this.bValue);
@@ -515,7 +514,7 @@ public class ColorPropertyField extends OpaqueColorPropertyField
         float removeable = 0;
         if(this.removeable)
             removeable = height;
-        float valueWidth = ((width - removeable) / 4);
+        float valueWidth = ((width - removeable) / 5);
         this.table.getCell(this.rValue).size(valueWidth, height);
         this.table.getCell(this.gValue).size(valueWidth, height);
         this.table.getCell(this.bValue).size(valueWidth, height);
@@ -541,7 +540,8 @@ public class ColorPropertyField extends OpaqueColorPropertyField
         if(propertyField instanceof ColorPropertyField)
         {
             ColorPropertyField toCompare = (ColorPropertyField) propertyField;
-            return this.rValue.getText().equals(toCompare.rValue.getText()) &&
+            return this.property.getText().toString().equals(toCompare.property.getText().toString()) &&
+                    this.rValue.getText().equals(toCompare.rValue.getText()) &&
                     this.gValue.getText().equals(toCompare.gValue.getText()) &&
                     this.bValue.getText().equals(toCompare.bValue.getText()) &&
                     this.aValue.getText().equals(toCompare.aValue.getText());

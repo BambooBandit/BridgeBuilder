@@ -45,7 +45,7 @@ public class MapSpriteData extends LayerChildData
         this.scl = mapSprite.sprite.getScaleX() - defaultScaleValue;
         this.w = mapSprite.sprite.getWidth();
         this.h = mapSprite.sprite.getHeight();
-        ColorPropertyField colorProperty = Utils.getLockedColorField(mapSprite.lockedProperties);
+        ColorPropertyField colorProperty = Utils.getLockedColorField("Tint", mapSprite.lockedProperties);
         this.r = colorProperty.getR() - defaultColorValue;
         this.g = colorProperty.getG() - defaultColorValue;
         this.b = colorProperty.getB() - defaultColorValue;

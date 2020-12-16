@@ -138,7 +138,7 @@ public class PropertyToolPane extends Group
                 {
                     MapSprite mapSprite = spriteLayer.children.get(k);
                     // Set sprite color
-                    ColorPropertyField colorProperty = Utils.getLockedColorField(mapSprite.lockedProperties);
+                    ColorPropertyField colorProperty = Utils.getLockedColorField("Tint", mapSprite.lockedProperties);
                     mapSprite.setColor(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
 
                     // Attached map sprites
@@ -148,7 +148,7 @@ public class PropertyToolPane extends Group
                         {
                             MapSprite attachedMapSprite = mapSprite.attachedSprites.children.get(s);
                             // Set sprite color
-                            colorProperty = Utils.getLockedColorField(attachedMapSprite.lockedProperties);
+                            colorProperty = Utils.getLockedColorField("Tint", attachedMapSprite.lockedProperties);
                             attachedMapSprite.setColor(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
                         }
                     }

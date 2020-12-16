@@ -105,7 +105,7 @@ public class MapSprite extends LayerChild
         LabelFieldPropertyValuePropertyField zProperty = new LabelFieldPropertyValuePropertyField("Z", "0", map.skin, map.propertyMenu, null, false);
         LabelFieldPropertyValuePropertyField fenceProperty = new LabelFieldPropertyValuePropertyField("Fence", "false", map.skin, map.propertyMenu, null, false);
         LabelFieldPropertyValuePropertyField ignoreProperty = new LabelFieldPropertyValuePropertyField("IgnoreProps", "false", map.skin, map.propertyMenu, null, false);
-        ColorPropertyField colorProperty = new ColorPropertyField(map.skin, map.propertyMenu, null, false, 1, 1, 1, 1);
+        ColorPropertyField colorProperty = new ColorPropertyField(map.skin, map.propertyMenu, null, false, "Tint", 1, 1, 1, 1);
 
         this.lockedProperties.add(idProperty);
         this.lockedProperties.add(rotationProperty);
@@ -583,7 +583,7 @@ public class MapSprite extends LayerChild
     public void setColor(float r, float g, float b, float a)
     {
         this.sprite.setColor(r, g, b, a);
-        ColorPropertyField colorProperty = Utils.getLockedColorField(this.lockedProperties);
+        ColorPropertyField colorProperty = Utils.getLockedColorField("Tint", this.lockedProperties);
         colorProperty.rValue.setText(Float.toString(r));
         colorProperty.gValue.setText(Float.toString(g));
         colorProperty.bValue.setText(Float.toString(b));
