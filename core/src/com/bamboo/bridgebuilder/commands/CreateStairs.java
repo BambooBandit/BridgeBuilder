@@ -1,6 +1,5 @@
 package com.bamboo.bridgebuilder.commands;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
@@ -98,15 +97,6 @@ public class CreateStairs implements Command
                     connector.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + connector.x3Offset - connector.offsetMovebox3.width / 2f * connector.offsetMovebox3.scale, spriteVertices[SpriteBatch.Y4] + connector.y3Offset - connector.offsetMovebox3.height / 2f * connector.offsetMovebox3.scale);
                     connector.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + connector.x4Offset - connector.offsetMovebox4.width / 2f * connector.offsetMovebox4.scale, spriteVertices[SpriteBatch.Y1] + connector.y4Offset - connector.offsetMovebox4.height / 2f * connector.offsetMovebox4.scale);
                     connector.polygon.setOffset(connector.x1Offset, connector.x2Offset, connector.x3Offset, connector.x4Offset, connector.y1Offset, connector.y2Offset, connector.y3Offset, connector.y4Offset);
-                }
-
-                if(map.editor.fileMenu.toolPane.stairsDialog.shouldParentBeTransparent())
-                {
-                    Color fromColor = drawFromFence.mapSprite.sprite.getColor();
-                    drawFromFence.mapSprite.setColor(fromColor.r, fromColor.g, fromColor.b, 0);
-
-                    Color toColor = drawToFence.mapSprite.sprite.getColor();
-                    drawToFence.mapSprite.setColor(toColor.r, toColor.g, toColor.b, 0);
                 }
 
                 addCommandToChain(drawFromFence);

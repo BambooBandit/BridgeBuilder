@@ -1,5 +1,6 @@
 package com.bamboo.bridgebuilder.commands;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.Utils;
@@ -44,8 +45,13 @@ public class DrawFence implements Command
             SpriteLayer layer = (SpriteLayer) this.map.selectedLayer;
             SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
             this.mapSprite = new MapSprite(this.map, layer, spriteTool, this.x, this.y);
-            if(stairs)
+            if(map.editor.fileMenu.toolPane.stairsDialog.shouldParentHeightBeCentered())
                 this.mapSprite.setPosition(this.mapSprite.x, this.mapSprite.y + (this.mapSprite.height / 2f));
+            if(map.editor.fileMenu.toolPane.stairsDialog.shouldParentBeTransparent())
+            {
+                Color color = mapSprite.sprite.getColor();
+                mapSprite.setColor(color.r, color.g, color.b, 0);
+            }
             this.map.shuffleRandomSpriteTool(false);
         }
         if(this.map.lastFencePlaced != null)
@@ -179,11 +185,20 @@ public class DrawFence implements Command
                 LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(connector.lockedProperties, "Fence");
                 fenceProperty.value.setText("true");
                 (fromFence.attachedSprites).addMapSprite(connector);
-                connector.setPosition(fromX, fromY - connector.height / 2f);
+                if(map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
+                    connector.setPosition(fromX, fromY - connector.height / 2f);
+                else
+                    connector.setPosition(fromX, fromY);
                 connector.x2Offset = toX - (connector.x + connector.width);
-                connector.y2Offset = toY - (connector.y + connector.height / 2f);
+                if(map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
+                    connector.y2Offset = toY - (connector.y + connector.height / 2f);
+                else
+                    connector.y2Offset = toY - connector.y;
                 connector.x3Offset = connector.x2Offset;
-                connector.y3Offset = toY - (connector.y + connector.height / 2f);
+                if(map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
+                    connector.y3Offset = toY - (connector.y + connector.height / 2f);
+                else
+                    connector.y3Offset = toY - connector.y;
                 float[] spriteVertices = connector.sprite.getVertices();
                 connector.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + connector.x1Offset - connector.offsetMovebox1.width / 2f * connector.offsetMovebox1.scale, spriteVertices[SpriteBatch.Y2] + connector.y1Offset - connector.offsetMovebox1.height / 2f * connector.offsetMovebox1.scale);
                 connector.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + connector.x2Offset - connector.offsetMovebox2.width / 2f * connector.offsetMovebox2.scale, spriteVertices[SpriteBatch.Y3] + connector.y2Offset - connector.offsetMovebox2.height / 2f * connector.offsetMovebox2.scale);
