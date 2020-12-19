@@ -107,12 +107,6 @@ public class Map implements Screen
         this.editor = editor;
         this.name = name;
         init();
-        // sprite sheets TODO remove when default BBM is added
-        this.spriteMenu.createSpriteSheet("editorMap");
-        this.spriteMenu.createSpriteSheet("flatMap");
-        this.spriteMenu.createSpriteSheet("canyonMap");
-        this.spriteMenu.createSpriteSheet("canyonBackdrop");
-        this.spriteMenu.createSpriteSheet("mesaMap");
         this.clearUndoRedo();
     }
 
