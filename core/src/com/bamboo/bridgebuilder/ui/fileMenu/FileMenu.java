@@ -146,19 +146,8 @@ public class FileMenu extends Group
                 if(editor.getScreen() != null)
                 {
                     Map map = (Map) editor.getScreen();
-                    new YesNoDialog("Override and set BBM properties to default for this map?", editor.stage, "", EditorAssets.getUISkin(), false)
-                    {
-                        @Override
-                        public void yes()
-                        {
-                            editor.fileMenu.setBBMDefaults(map);
-                        }
+                    new ConfirmApplyBBMDefaultsDialog(map, editor.stage, EditorAssets.getUISkin());
 
-                        @Override
-                        public void no()
-                        {
-                        }
-                    };
                 }
             }
         });
@@ -487,6 +476,23 @@ public class FileMenu extends Group
             Json json = createJson();
             MapData mapData = json.fromJson(MapData.class, content);
             map.loadMap(mapData, true);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void setBBMDefaults(Map map, String defaultSheet, String currentSheet)
+    {
+        try
+        {
+            File file = new File("defaultBBM.bbm");
+            String content = null;
+            content = new Scanner(file).useDelimiter("\\Z").next();
+            Json json = createJson();
+            MapData mapData = json.fromJson(MapData.class, content);
+            map.loadMap(mapData, defaultSheet, currentSheet);
         }
         catch (FileNotFoundException e)
         {
