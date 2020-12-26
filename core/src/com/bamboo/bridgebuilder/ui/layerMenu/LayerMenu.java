@@ -132,7 +132,8 @@ public class LayerMenu extends Group
     public void moveLayer(int toIndex, LayerField layer)
     {
         int index = this.layers.indexOf(layer, false);
-        this.layers.swap(index, toIndex);
+        this.layers.removeIndex(index);
+        this.layers.insert(toIndex, layer);
         rearrangeLayers();
         rebuild();
     }
