@@ -81,7 +81,7 @@ public class EditorPolygon implements Shape2D
             worldVertices[i] = positionX + x + originX;
             worldVertices[i + 1] = positionY + y + originY;
         }
-        if( worldVertices.length > 7)
+        if(worldVertices.length > 7)
         {
             worldVertices[0] += x4Offset;
             worldVertices[1] += y4Offset;
