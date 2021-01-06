@@ -459,6 +459,7 @@ public class MapSprite extends LayerChild
                     v = topsprite.getV();
                     u2 = topsprite.getU2();
                     v2 = topsprite.getV2();
+                    if(parentSprite == null)
                     vertices = topsprite.getVertices();
                     float colorToFloatBits = sprite.getColor().toFloatBits();
 
@@ -467,27 +468,27 @@ public class MapSprite extends LayerChild
 
                     Vector2 offset;
                     offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y2] - lowestY));
-                    verts[0] = vertices[SpriteBatch.X2] + offset.x;
-                    verts[1] = vertices[SpriteBatch.Y2] + offset.y;
+                    verts[0] = vertices[SpriteBatch.X2] + x1Offset + offset.x;
+                    verts[1] = vertices[SpriteBatch.Y2] + y1Offset + offset.y;
                     verts[2] = colorToFloatBits;
                     verts[3] = u;
                     verts[4] = v;
                     offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y3] - lowestY));
-                    verts[5] = vertices[SpriteBatch.X3] + offset.x;
-                    verts[6] = vertices[SpriteBatch.Y3] + offset.y;
+                    verts[5] = vertices[SpriteBatch.X3] + x2Offset + offset.x;
+                    verts[6] = vertices[SpriteBatch.Y3] + y2Offset + offset.y;
                     verts[7] = colorToFloatBits;
                     verts[8] = u2;
                     verts[9] = v;
 
                     offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y4] - lowestY));
-                    verts[10] = vertices[SpriteBatch.X4] + offset.x;
-                    verts[11] = vertices[SpriteBatch.Y4] + offset.y;
+                    verts[10] = vertices[SpriteBatch.X4] + x3Offset + offset.x;
+                    verts[11] = vertices[SpriteBatch.Y4] + y3Offset + offset.y;
                     verts[12] = colorToFloatBits;
                     verts[13] = u2;
                     verts[14] = v2;
                     offset = skewOffset(getX() + (width / 2f), getY(), (vertices[SpriteBatch.Y1] - lowestY));
-                    verts[15] = vertices[SpriteBatch.X1] + offset.x;
-                    verts[16] = vertices[SpriteBatch.Y1] + offset.y;
+                    verts[15] = vertices[SpriteBatch.X1] + x4Offset + offset.x;
+                    verts[16] = vertices[SpriteBatch.Y1] + y4Offset + offset.y;
                     verts[17] = colorToFloatBits;
                     verts[18] = u;
                     verts[19] = v2;
