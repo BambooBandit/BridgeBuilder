@@ -24,10 +24,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
-import com.bamboo.bridgebuilder.commands.Command;
-import com.bamboo.bridgebuilder.commands.DeleteMapObjects;
-import com.bamboo.bridgebuilder.commands.DeleteSelectedMapSprites;
-import com.bamboo.bridgebuilder.commands.SnapMapSpriteEdge;
+import com.bamboo.bridgebuilder.commands.*;
 import com.bamboo.bridgebuilder.data.*;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerField;
@@ -205,7 +202,8 @@ public class Map implements Screen
         drawGrid();
         drawAttachedObjects();
         drawObjectLayers();
-        drawSnapEdge();
+        drawSnapPreview();
+        drawSnap();
         if(this.editor.fileMenu.toolPane.b2drender.selected)
         {
             this.editor.shapeRenderer.end();
@@ -243,25 +241,67 @@ public class Map implements Screen
         this.stage.draw();
     }
 
-    private void drawSnapEdge()
+    private void drawSnapPreview()
     {
-        if(this.input.snapEdgeFromThisSprite == null)
+        if(this.input.snapFromThisSprite == null)
             return;
-        editor.shapeRenderer.setColor(Color.YELLOW);
-        if(this.hoveredChild != null && this.hoveredChild instanceof MapSprite && this.input.snapEdgeFromThisSprite != this.hoveredChild)
+        editor.shapeRenderer.setColor(Color.GOLD);
+        if(this.hoveredChild != null && this.hoveredChild instanceof MapSprite && this.input.snapFromThisSprite != this.hoveredChild)
         {
             MapSprite hoveredSprite = (MapSprite) this.hoveredChild;
-            editor.shapeRenderer.line(this.input.snapEdgeFromThisSprite.x + (this.input.snapEdgeFromThisSprite.width / 2f),
-                    this.input.snapEdgeFromThisSprite.y + (this.input.snapEdgeFromThisSprite.height / 2f),
+            editor.shapeRenderer.line(this.input.snapFromThisSprite.x + (this.input.snapFromThisSprite.width / 2f),
+                    this.input.snapFromThisSprite.y + (this.input.snapFromThisSprite.height / 2f),
                     hoveredSprite.x + (hoveredSprite.width / 2f),
                     hoveredSprite.y + (hoveredSprite.height / 2f));
         }
         else
         {
-            editor.shapeRenderer.line(this.input.snapEdgeFromThisSprite.x + (this.input.snapEdgeFromThisSprite.width / 2f),
-                    this.input.snapEdgeFromThisSprite.y + (this.input.snapEdgeFromThisSprite.height / 2f),
+            editor.shapeRenderer.line(this.input.snapFromThisSprite.x + (this.input.snapFromThisSprite.width / 2f),
+                    this.input.snapFromThisSprite.y + (this.input.snapFromThisSprite.height / 2f),
                     input.currentPos.x,
                     input.currentPos.y);
+        }
+    }
+
+    private void drawSnap()
+    {
+        for(int i = 0; i < layers.size; i ++)
+        {
+            Layer layer = layers.get(i);
+            if(layer instanceof SpriteLayer)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                for(int k = 0; k < spriteLayer.children.size; k ++)
+                {
+                    MapSprite from = spriteLayer.children.get(k);
+                    if(!from.selected && (from.toFlickerSprite == null || !from.toFlickerSprite.selected) && (from.toEdgeSprite == null || !from.toEdgeSprite.selected))
+                        continue;
+                    // flicker
+                    if(from.toFlickerSprite != null)
+                    {
+                        editor.shapeRenderer.setColor(Color.ORANGE);
+                        MapSprite to = from.toFlickerSprite;
+                        editor.shapeRenderer.line(from.x + (from.width / 2f),
+                                from.y + (from.height / 2f),
+                                to.x + (to.width / 2f),
+                                to.y + (to.height / 2f));
+                        editor.shapeRenderer.circle(to.x + (to.width / 2f),
+                                to.y + (to.height / 2f), .2f, 5);
+                    }
+                    // edge
+                    if(from.toEdgeSprite != null)
+                    {
+                        editor.shapeRenderer.setColor(Color.YELLOW);
+                        MapSprite to = from.toEdgeSprite;
+                        editor.shapeRenderer.line(from.x + (from.width / 2f),
+                                from.y + (from.height / 2f),
+                                to.x + (to.width / 2f),
+                                to.y + (to.height / 2f));
+                        editor.shapeRenderer.circle(to.x + (to.width / 2f),
+                                to.y + (to.height / 2f), .2f, 5);
+                    }
+                }
+            }
         }
     }
 
@@ -1323,6 +1363,27 @@ public class Map implements Screen
                         }
                     }
                 }
+
+                // Flicker
+                flicker:
+                for (int s = 0; s < layer.children.size; s++)
+                {
+                    MapSprite mapSprite = (MapSprite) layer.children.get(s);
+                    long flickerId = mapSprite.flickerId;
+                    if (flickerId <= 0)
+                        continue flicker;
+                    for (int k = 0; k < layer.children.size; k++)
+                    {
+                        MapSprite flicker = (MapSprite) layer.children.get(k);
+                        int id = flicker.id;
+                        if (flickerId == id)
+                        {
+                            SnapMapSpriteFlicker snapMapSpriteFlicker = new SnapMapSpriteFlicker(mapSprite, flicker);
+                            executeCommand(snapMapSpriteFlicker);
+                            continue flicker;
+                        }
+                    }
+                }
             }
 
             // re-override the layers
@@ -1535,6 +1596,7 @@ public class Map implements Screen
             return null;
         MapSprite mapSprite = new MapSprite(this, layer, spriteTool, mapSpriteData.x, mapSpriteData.y);
         mapSprite.edgeId = mapSpriteData.eId;
+        mapSprite.flickerId = mapSpriteData.fId;
         LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(mapSprite.lockedProperties, "Fence");
         if(mapSpriteData.fence)
             fenceProperty.value.setText("true");

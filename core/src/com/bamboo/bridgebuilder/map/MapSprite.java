@@ -47,9 +47,14 @@ public class MapSprite extends LayerChild
 
     public SpriteLayer attachedSprites; // For when this map sprite has other map sprites attached to it. They all will act as one whole map sprite.
     public MapSprite parentSprite; // For the above
-    public MapSprite toEdgeSprite;
+
+    // sprite connections
     public int edgeId;
+    public MapSprite toEdgeSprite;
     public Array<MapSprite> fromEdgeSprites;
+    public int flickerId;
+    public MapSprite toFlickerSprite;
+    public Array<MapSprite> fromFlickerSprites;
 
     public float x1Offset = 0, y1Offset = 0, x2Offset = 0, y2Offset = 0, x3Offset = 0, y3Offset = 0, x4Offset = 0, y4Offset = 0;
     public MoveBox offsetMovebox1, offsetMovebox2, offsetMovebox3, offsetMovebox4;

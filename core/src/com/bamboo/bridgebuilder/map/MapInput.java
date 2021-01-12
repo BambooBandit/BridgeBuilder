@@ -12,6 +12,7 @@ import com.bamboo.bridgebuilder.BoxSelect;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.*;
+import com.bamboo.bridgebuilder.ui.SnapSpriteDialog;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
@@ -43,7 +44,7 @@ public class MapInput implements InputProcessor
     public float gradientX, gradientY; // Used for gradient placement
     public boolean draggingGradient = false;
 
-    public MapSprite snapEdgeFromThisSprite = null; // Hold control while having one sprite selecting, you can snap to another mapsprite
+    public MapSprite snapFromThisSprite = null; // Hold control while having one sprite selecting, you can snap to another mapsprite
 
     public BoxSelect boxSelect;
 
@@ -76,14 +77,14 @@ public class MapInput implements InputProcessor
     {
         if(!(keycode == Input.Keys.ALT_LEFT && map.selectedSprites.size == 1 && map.editor.fileMenu.toolPane.select.selected))
             return;
-        snapEdgeFromThisSprite = map.selectedSprites.first();
+        snapFromThisSprite = map.selectedSprites.first();
     }
 
     private void handleEdgeSnapKeyUp(int keycode)
     {
         if(keycode != Input.Keys.ALT_LEFT)
             return;
-        snapEdgeFromThisSprite = null;
+        snapFromThisSprite = null;
     }
 
     @Override
@@ -583,11 +584,9 @@ public class MapInput implements InputProcessor
         if(!Utils.isFileToolThisType(this.editor, Tools.SELECT) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
             return false;
 
-        if(this.snapEdgeFromThisSprite != null && this.map.hoveredChild != this.snapEdgeFromThisSprite && !(this.map.hoveredChild instanceof MapObject))
+        if(this.snapFromThisSprite != null && this.map.hoveredChild != this.snapFromThisSprite && !(this.map.hoveredChild instanceof MapObject))
         {
-            SnapMapSpriteEdge snapMapSpriteEdge = new SnapMapSpriteEdge(this.snapEdgeFromThisSprite, (MapSprite) this.map.hoveredChild);
-            this.snapEdgeFromThisSprite = null;
-            this.map.executeCommand(snapMapSpriteEdge);
+            SnapSpriteDialog snapSpriteDialog = new SnapSpriteDialog(editor.stage, map.skin, map, this.snapFromThisSprite, (MapSprite) this.map.hoveredChild);
             return true;
         }
 

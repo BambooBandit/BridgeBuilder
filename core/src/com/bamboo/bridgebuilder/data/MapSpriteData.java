@@ -19,6 +19,7 @@ public class MapSpriteData extends LayerChildData
     public boolean parent;
     public float x1, y1, x2, y2, x3, y3, x4, y4;
     public int eId; // to edge mapSprite id
+    public int fId; // to flicker mapSprite id
     public boolean fence; // Used to tell which parts of the attached sprites are fences
     public boolean ignoreProps; // Used to tell whether or not to ignore properties for this sprite
 
@@ -66,6 +67,9 @@ public class MapSpriteData extends LayerChildData
 
         if(mapSprite.toEdgeSprite != null)
             this.eId = mapSprite.toEdgeSprite.id;
+
+        if(mapSprite.toFlickerSprite != null)
+            this.fId = mapSprite.toFlickerSprite.id;
 
         LabelFieldPropertyValuePropertyField fenceProperty = (LabelFieldPropertyValuePropertyField) Utils.getPropertyField(mapSprite.lockedProperties, "Fence");
         this.fence = fenceProperty.value.getText().equals("true");
