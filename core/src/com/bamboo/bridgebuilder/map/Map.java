@@ -1233,7 +1233,7 @@ public class Map implements Screen
                                     parentMapSprite.attachedSprites.addMapSprite(parentMapSprite);
                                     continue;
                                 }
-                                MapSprite childMapSprite = loadMapSpriteData(attachedData, layer);
+                                MapSprite childMapSprite = loadMapSpriteData(attachedData, parentMapSprite.attachedSprites);
                                 if(childMapSprite == null)
                                     continue child;
                                 parentMapSprite.attachedSprites.addMapSprite(childMapSprite);

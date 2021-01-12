@@ -460,7 +460,7 @@ public class MapSprite extends LayerChild
                     u2 = topsprite.getU2();
                     v2 = topsprite.getV2();
                     if(parentSprite == null)
-                    vertices = topsprite.getVertices();
+                        vertices = topsprite.getVertices();
                     float colorToFloatBits = sprite.getColor().toFloatBits();
 
 //                    float width = topsprite.getRegionWidth() / 64f;
