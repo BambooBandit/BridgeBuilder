@@ -411,17 +411,17 @@ public class MapInput implements InputProcessor
 
     private boolean handleHoveredLayerChildUpdate(float x, float y)
     {
-        if(this.map.selectedLayer != null && Utils.isFileToolThisType(this.editor, Tools.SELECT))
+        if(Utils.isFileToolThisType(this.editor, Tools.SELECT))
         {
-            for(int i = 0; i < map.selectedSprites.size; i ++)
+            for (int i = 0; i < map.selectedSprites.size; i++)
             {
                 MapSprite mapSprite = map.selectedSprites.get(i);
-                if(mapSprite.tool.hasAttachedMapObjects())
+                if (mapSprite.tool.hasAttachedMapObjects())
                 {
-                    for(int k = 0; k < mapSprite.attachedMapObjects.size; k ++)
+                    for (int k = 0; k < mapSprite.attachedMapObjects.size; k++)
                     {
                         MapObject mapObject = mapSprite.attachedMapObjects.get(k);
-                        if(mapObject.isHoveredOver(x, y))
+                        if (mapObject.isHoveredOver(x, y))
                         {
                             this.map.hoveredChild = mapObject;
                             return false;
@@ -429,26 +429,57 @@ public class MapInput implements InputProcessor
                     }
                 }
             }
-            for (int i = this.map.selectedLayer.children.size - 1; i >= 0; i--)
+            if (this.map.selectedLayer != null)
             {
-                LayerChild layerChild = (LayerChild) this.map.selectedLayer.children.get(i);
-                if (layerChild.isHoveredOver(x, y))
+                for (int i = this.map.selectedLayer.children.size - 1; i >= 0; i--)
                 {
-                    this.map.hoveredChild = layerChild;
-                    return false;
-                }
-                if(map.editor.fileMenu.toolPane.selectAttachedSprites.selected && layerChild instanceof MapSprite)
-                {
-                    MapSprite mapSprite = (MapSprite) layerChild;
-                    if(mapSprite.attachedSprites != null)
+                    LayerChild layerChild = (LayerChild) this.map.selectedLayer.children.get(i);
+                    if (layerChild.isHoveredOver(x, y))
                     {
-                        for (int k = mapSprite.attachedSprites.children.size - 1; k >= 0; k--)
+                        this.map.hoveredChild = layerChild;
+                        return false;
+                    }
+                    if (map.editor.fileMenu.toolPane.selectAttachedSprites.selected && layerChild instanceof MapSprite)
+                    {
+                        MapSprite mapSprite = (MapSprite) layerChild;
+                        if (mapSprite.attachedSprites != null)
                         {
-                            MapSprite attachedSprite = mapSprite.attachedSprites.children.get(k);
-                            if (attachedSprite.isHoveredOver(x, y))
+                            for (int k = mapSprite.attachedSprites.children.size - 1; k >= 0; k--)
                             {
-                                this.map.hoveredChild = attachedSprite;
-                                return false;
+                                MapSprite attachedSprite = mapSprite.attachedSprites.children.get(k);
+                                if (attachedSprite.isHoveredOver(x, y))
+                                {
+                                    this.map.hoveredChild = attachedSprite;
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (this.map.secondarySelectedLayer != null)
+            {
+                for (int i = this.map.secondarySelectedLayer.children.size - 1; i >= 0; i--)
+                {
+                    LayerChild layerChild = (LayerChild) this.map.secondarySelectedLayer.children.get(i);
+                    if (layerChild.isHoveredOver(x, y))
+                    {
+                        this.map.hoveredChild = layerChild;
+                        return false;
+                    }
+                    if (map.editor.fileMenu.toolPane.selectAttachedSprites.selected && layerChild instanceof MapSprite)
+                    {
+                        MapSprite mapSprite = (MapSprite) layerChild;
+                        if (mapSprite.attachedSprites != null)
+                        {
+                            for (int k = mapSprite.attachedSprites.children.size - 1; k >= 0; k--)
+                            {
+                                MapSprite attachedSprite = mapSprite.attachedSprites.children.get(k);
+                                if (attachedSprite.isHoveredOver(x, y))
+                                {
+                                    this.map.hoveredChild = attachedSprite;
+                                    return false;
+                                }
                             }
                         }
                     }

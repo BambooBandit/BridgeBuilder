@@ -244,7 +244,7 @@ public class LayerField extends Group
     {
         if(isSelected)
             return;
-
+        mapLayer.map.secondarySelectedLayer = null;
         this.layerName.setColor(Color.WHITE);
         this.up.setColor(Color.WHITE);
         this.down.setColor(Color.WHITE);

@@ -101,6 +101,7 @@ public class LayerMenu extends Group
                 }
                 else if(Command.shouldExecute(map, SelectSecondaryLayer.class))
                 {
+                    map.input.snapFromThisSprite = null;
                     SelectSecondaryLayer selectLayer = new SelectSecondaryLayer(selectedMap, selectedMap.selectedLayer, layer.mapLayer, Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT));
                     selectedMap.executeCommand(selectLayer);
                 }
