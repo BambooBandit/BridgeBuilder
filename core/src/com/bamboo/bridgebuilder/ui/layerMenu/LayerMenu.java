@@ -11,6 +11,7 @@ import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.commands.Command;
 import com.bamboo.bridgebuilder.commands.SelectLayer;
+import com.bamboo.bridgebuilder.commands.SelectSecondaryLayer;
 import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 
@@ -98,6 +99,11 @@ public class LayerMenu extends Group
                     SelectLayer selectLayer = new SelectLayer(selectedMap, selectedMap.selectedLayer, layer.mapLayer, Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT));
                     selectedMap.executeCommand(selectLayer);
                 }
+                else if(Command.shouldExecute(map, SelectSecondaryLayer.class))
+                {
+                    SelectSecondaryLayer selectLayer = new SelectSecondaryLayer(selectedMap, selectedMap.selectedLayer, layer.mapLayer, Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT));
+                    selectedMap.executeCommand(selectLayer);
+                }
             }
         };
         layer.layerName.addListener(listener);
@@ -145,6 +151,8 @@ public class LayerMenu extends Group
         this.map.layers.removeValue(layerField.mapLayer, false);
         if(this.map.selectedLayer == layerField.mapLayer)
             this.map.selectedLayer = null;
+        if(this.map.secondarySelectedLayer == layerField.mapLayer)
+            this.map.secondarySelectedLayer = null;
 
         rearrangeLayers();
         rebuild();
@@ -188,5 +196,11 @@ public class LayerMenu extends Group
             this.layers.get(i).unselect();
         this.map.selectedLayer = null;
         this.map.propertyMenu.rebuild();
+    }
+
+    public void secondaryUnselect()
+    {
+        for(int i = 0; i < this.layers.size; i ++)
+            this.layers.get(i).secondaryUnselect();
     }
 }

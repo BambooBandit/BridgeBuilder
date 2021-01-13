@@ -40,6 +40,7 @@ public class LayerField extends Group
     private LayerMenu menu;
 
     public boolean isSelected = false;
+    public boolean isSecondarySelected = false;
 
     public LayerField(String name, LayerTypes type, BridgeBuilder editor, Map map, Skin skin, final LayerMenu menu)
     {
@@ -208,18 +209,46 @@ public class LayerField extends Group
 
     public void select()
     {
+        if(isSecondarySelected)
+            secondaryUnselect();
+
         this.layerName.setColor(Color.GREEN);
         this.up.setColor(Color.GREEN);
         this.down.setColor(Color.GREEN);
         this.isSelected = true;
     }
 
+    public void secondarySelect()
+    {
+        if(isSelected)
+            return;
+
+        this.layerName.setColor(.75f, 1, .75f, 1);
+        this.up.setColor(.75f, 1, .75f, 1);
+        this.down.setColor(.75f, 1, .75f, 1);
+        this.isSecondarySelected = true;
+    }
+
     public void unselect()
     {
+        if(!isSelected)
+            return;
+
         this.layerName.setColor(Color.WHITE);
         this.up.setColor(Color.WHITE);
         this.down.setColor(Color.WHITE);
         this.isSelected = false;
+    }
+
+    public void secondaryUnselect()
+    {
+        if(isSelected)
+            return;
+
+        this.layerName.setColor(Color.WHITE);
+        this.up.setColor(Color.WHITE);
+        this.down.setColor(Color.WHITE);
+        this.isSecondarySelected = false;
     }
 
     public static void createOrRemoveGrid(Layer mapLayer, TextField layerName)

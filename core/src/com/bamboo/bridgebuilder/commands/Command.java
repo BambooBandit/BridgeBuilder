@@ -1,5 +1,7 @@
 package com.bamboo.bridgebuilder.commands;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapObject;
@@ -38,7 +40,11 @@ public interface Command
         }
         else if(command == SelectLayer.class)
         {
-            return map.editAttachedMapSprite == null && (map.groupPolygons == null || map.selectedLayer != map.groupPolygons);
+            return map.editAttachedMapSprite == null && (map.groupPolygons == null || map.selectedLayer != map.groupPolygons) && !Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT);
+        }
+        else if(command == SelectSecondaryLayer.class)
+        {
+            return map.editAttachedMapSprite == null && (map.groupPolygons == null || map.selectedLayer != map.groupPolygons) && Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT);
         }
         else if(command == CreateStairs.class)
         {

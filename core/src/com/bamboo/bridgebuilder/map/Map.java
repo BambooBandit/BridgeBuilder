@@ -75,6 +75,7 @@ public class Map implements Screen
 
     public Array<Layer> layers;
     public Layer selectedLayer;
+    public Layer secondarySelectedLayer;
     public Layer selectedLayerPriorToAttachedSpriteEditMode;
     public Layer selectedLayerPriorToGroupMode;
     public MapSprite editAttachedMapSprite = null;

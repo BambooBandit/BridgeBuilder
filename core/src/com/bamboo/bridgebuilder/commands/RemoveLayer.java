@@ -9,12 +9,14 @@ public class RemoveLayer implements Command
     private Layer layer;
     private int layerIndex;
     private boolean selected;
+    private boolean secondarySelected;
 
     public RemoveLayer(Map map, Layer layer)
     {
         this.map = map;
         this.layer = layer;
         this.selected = layer.layerField.isSelected;
+        this.secondarySelected = layer.layerField.isSecondarySelected;
 
         for(int i = 0; i < this.map.layerMenu.layers.size; i ++)
         {
@@ -34,6 +36,11 @@ public class RemoveLayer implements Command
             this.layer.layerField.unselect();
             this.map.selectedLayer = null;
         }
+        if(this.secondarySelected)
+        {
+            this.layer.layerField.secondaryUnselect();
+            this.map.secondarySelectedLayer = null;
+        }
         this.map.layerMenu.removeLayer(this.layer.layerField);
         this.map.propertyMenu.rebuild();
     }
@@ -46,6 +53,11 @@ public class RemoveLayer implements Command
         {
             this.layer.layerField.select();
             this.map.selectedLayer = this.layer;
+        }
+        if(this.secondarySelected)
+        {
+            this.layer.layerField.secondarySelect();
+            this.map.secondarySelectedLayer = this.layer;
         }
         this.map.propertyMenu.rebuild();
     }
