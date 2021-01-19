@@ -44,7 +44,7 @@ public class MapInput implements InputProcessor
     public float gradientX, gradientY; // Used for gradient placement
     public boolean draggingGradient = false;
 
-    public MapSprite snapFromThisSprite = null; // Hold control while having one sprite selecting, you can snap to another mapsprite
+    public LayerChild snapFromThisObject = null; // Hold control while having one object selected, you can snap to another object
 
     public BoxSelect boxSelect;
 
@@ -75,16 +75,21 @@ public class MapInput implements InputProcessor
 
     private void handleEdgeSnapKeyDown(int keycode)
     {
-        if(!(keycode == Input.Keys.ALT_LEFT && map.selectedSprites.size == 1 && map.editor.fileMenu.toolPane.select.selected))
+        if(map.selectedObjects.size > 0 && map.selectedSprites.size > 0)
             return;
-        snapFromThisSprite = map.selectedSprites.first();
+        if(!(keycode == Input.Keys.ALT_LEFT && (map.selectedSprites.size == 1 || map.selectedObjects.size == 1) && map.editor.fileMenu.toolPane.select.selected))
+            return;
+        if(this.map.selectedSprites.size == 1)
+            snapFromThisObject = map.selectedSprites.first();
+        else
+            snapFromThisObject = map.selectedObjects.first();
     }
 
     private void handleEdgeSnapKeyUp(int keycode)
     {
         if(keycode != Input.Keys.ALT_LEFT)
             return;
-        snapFromThisSprite = null;
+        snapFromThisObject = null;
     }
 
     @Override
@@ -615,9 +620,9 @@ public class MapInput implements InputProcessor
         if(!Utils.isFileToolThisType(this.editor, Tools.SELECT) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
             return false;
 
-        if(this.snapFromThisSprite != null && this.map.hoveredChild != this.snapFromThisSprite && !(this.map.hoveredChild instanceof MapObject))
+        if(this.snapFromThisObject != null && this.map.hoveredChild != this.snapFromThisObject && !(this.map.hoveredChild instanceof MapObject))
         {
-            SnapSpriteDialog snapSpriteDialog = new SnapSpriteDialog(editor.stage, map.skin, map, this.snapFromThisSprite, (MapSprite) this.map.hoveredChild);
+            SnapSpriteDialog snapSpriteDialog = new SnapSpriteDialog(editor.stage, map.skin, map, this.snapFromThisObject, (MapSprite) this.map.hoveredChild);
             return true;
         }
 

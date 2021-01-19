@@ -52,9 +52,7 @@ public class MapSprite extends LayerChild
     public int edgeId;
     public MapSprite toEdgeSprite;
     public Array<MapSprite> fromEdgeSprites;
-    public int flickerId;
-    public MapSprite toFlickerSprite;
-    public Array<MapSprite> fromFlickerSprites;
+    public Array<LayerChild> fromFlickers;
 
     public float x1Offset = 0, y1Offset = 0, x2Offset = 0, y2Offset = 0, x3Offset = 0, y3Offset = 0, x4Offset = 0, y4Offset = 0;
     public MoveBox offsetMovebox1, offsetMovebox2, offsetMovebox3, offsetMovebox4;
@@ -464,8 +462,9 @@ public class MapSprite extends LayerChild
                     v = topsprite.getV();
                     u2 = topsprite.getU2();
                     v2 = topsprite.getV2();
-                    if(parentSprite == null)
-                        vertices = topsprite.getVertices();
+//                    if(parentSprite == null)
+                    vertices = topsprite.getVertices();
+
                     float colorToFloatBits = sprite.getColor().toFloatBits();
 
 //                    float width = topsprite.getRegionWidth() / 64f;

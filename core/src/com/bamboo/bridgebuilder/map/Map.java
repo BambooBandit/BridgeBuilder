@@ -244,24 +244,58 @@ public class Map implements Screen
 
     private void drawSnapPreview()
     {
-        if(this.input.snapFromThisSprite == null)
+        if(this.input.snapFromThisObject == null)
             return;
         editor.shapeRenderer.setColor(Color.GOLD);
-        if(this.hoveredChild != null && this.hoveredChild instanceof MapSprite && this.input.snapFromThisSprite != this.hoveredChild)
+        float fromX;
+        float fromY;
+        float toX;
+        float toY;
+        if(this.input.snapFromThisObject instanceof MapSprite)
         {
-            MapSprite hoveredSprite = (MapSprite) this.hoveredChild;
-            editor.shapeRenderer.line(this.input.snapFromThisSprite.x + (this.input.snapFromThisSprite.width / 2f),
-                    this.input.snapFromThisSprite.y + (this.input.snapFromThisSprite.height / 2f),
-                    hoveredSprite.x + (hoveredSprite.width / 2f),
-                    hoveredSprite.y + (hoveredSprite.height / 2f));
+            MapSprite fromSprite = (MapSprite) this.input.snapFromThisObject;
+            fromX = fromSprite.x + (fromSprite.width / 2f);
+            fromY = fromSprite.y + (fromSprite.height / 2f);
+        }
+        else if(this.input.snapFromThisObject instanceof MapPolygon)
+        {
+            MapPolygon mapPolygon = (MapPolygon) this.input.snapFromThisObject;
+            fromX = mapPolygon.centroidX;
+            fromY = mapPolygon.centroidY;
         }
         else
         {
-            editor.shapeRenderer.line(this.input.snapFromThisSprite.x + (this.input.snapFromThisSprite.width / 2f),
-                    this.input.snapFromThisSprite.y + (this.input.snapFromThisSprite.height / 2f),
-                    input.currentPos.x,
-                    input.currentPos.y);
+            MapPoint mapPoint = (MapPoint) this.input.snapFromThisObject;
+            fromX = mapPoint.x;
+            fromY = mapPoint.y;
         }
+        if(this.hoveredChild != null && this.input.snapFromThisObject != this.hoveredChild)
+        {
+            if(this.hoveredChild instanceof MapSprite)
+            {
+                MapSprite hoveredSprite = (MapSprite) this.hoveredChild;
+                toX = hoveredSprite.x + (hoveredSprite.width / 2f);
+                toY = hoveredSprite.y + (hoveredSprite.height / 2f);
+            }
+            else if(this.hoveredChild instanceof MapPolygon)
+            {
+                MapPolygon hoveredPolygon = (MapPolygon) this.hoveredChild;
+                toX = hoveredPolygon.centroidX;
+                toY = hoveredPolygon.centroidY;
+            }
+            else
+            {
+                MapPoint hoveredPoint = (MapPoint) this.hoveredChild;
+                toX = hoveredPoint.x;
+                toY = hoveredPoint.y;
+            }
+        }
+        else
+        {
+            toX = input.currentPos.x;
+            toY = input.currentPos.y;
+        }
+        editor.shapeRenderer.line(fromX, fromY, toX, toY);
     }
 
     private void drawSnap()
@@ -275,34 +309,76 @@ public class Map implements Screen
                 for(int k = 0; k < spriteLayer.children.size; k ++)
                 {
                     MapSprite from = spriteLayer.children.get(k);
-                    if(!from.selected && (from.toFlickerSprite == null || !from.toFlickerSprite.selected) && (from.toEdgeSprite == null || !from.toEdgeSprite.selected))
-                        continue;
-                    // flicker
-                    if(from.toFlickerSprite != null)
-                    {
-                        editor.shapeRenderer.setColor(Color.ORANGE);
-                        MapSprite to = from.toFlickerSprite;
-                        editor.shapeRenderer.line(from.x + (from.width / 2f),
-                                from.y + (from.height / 2f),
-                                to.x + (to.width / 2f),
-                                to.y + (to.height / 2f));
-                        editor.shapeRenderer.circle(to.x + (to.width / 2f),
-                                to.y + (to.height / 2f), .2f, 5);
-                    }
-                    // edge
-                    if(from.toEdgeSprite != null)
-                    {
-                        editor.shapeRenderer.setColor(Color.YELLOW);
-                        MapSprite to = from.toEdgeSprite;
-                        editor.shapeRenderer.line(from.x + (from.width / 2f),
-                                from.y + (from.height / 2f),
-                                to.x + (to.width / 2f),
-                                to.y + (to.height / 2f));
-                        editor.shapeRenderer.circle(to.x + (to.width / 2f),
-                                to.y + (to.height / 2f), .2f, 5);
-                    }
+                    drawSnapEdge(from);
+                    drawSnapFlicker(from);
                 }
             }
+            else if(layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                for(int k = 0; k < objectLayer.children.size; k ++)
+                {
+                    MapObject from = objectLayer.children.get(k);
+                    drawSnapFlicker(from);
+                }
+            }
+        }
+    }
+
+    private void drawSnapFlicker(LayerChild layerChild)
+    {
+        LayerChild from = layerChild;
+        if(!from.selected && (from.toFlicker == null || !from.toFlicker.selected))
+            return;
+
+        // flicker
+        if(from.toFlicker != null)
+        {
+            editor.shapeRenderer.setColor(Color.ORANGE);
+            MapSprite to = from.toFlicker;
+            float fromX;
+            float fromY;
+            if(from instanceof MapSprite)
+            {
+                MapSprite mapSprite = (MapSprite) from;
+                fromX = mapSprite.x + mapSprite.width / 2f;
+                fromY = mapSprite.y + mapSprite.height / 2f;
+            }
+            else if(from instanceof MapPolygon)
+            {
+                MapPolygon mapPolygon = (MapPolygon) from;
+                fromX = mapPolygon.centroidX;
+                fromY = mapPolygon.centroidY;
+            }
+            else
+            {
+                fromX = from.x;
+                fromY = from.y;
+            }
+            float toX = to.x + (to.width / 2f);
+            float toY = to.y + (to.height / 2f);
+            editor.shapeRenderer.line(fromX, fromY, toX, toY);
+            editor.shapeRenderer.circle(toX, toY, .2f, 5);
+        }
+    }
+
+    private void drawSnapEdge(MapSprite mapSprite)
+    {
+        MapSprite from = mapSprite;
+        if(!from.selected && (from.toEdgeSprite == null || !from.toEdgeSprite.selected))
+            return;
+
+        // edge
+        if(from.toEdgeSprite != null)
+        {
+            editor.shapeRenderer.setColor(Color.YELLOW);
+            MapSprite to = from.toEdgeSprite;
+            editor.shapeRenderer.line(from.x + (from.width / 2f),
+                    from.y + (from.height / 2f),
+                    to.x + (to.width / 2f),
+                    to.y + (to.height / 2f));
+            editor.shapeRenderer.circle(to.x + (to.width / 2f),
+                    to.y + (to.height / 2f), .2f, 5);
         }
     }
 
@@ -1196,6 +1272,7 @@ public class Map implements Screen
                                 MapPoint mapPoint = new MapPoint(this, mapPointData.x, mapPointData.y);
                                 mapObject = mapPoint;
                             }
+                            mapObject.flickerId = mapObjectData.fId;
                             // attached manager
                             spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.offsetX, mapObjectData.offsetY);
                             if (setDefaultsOnly)
@@ -1309,6 +1386,7 @@ public class Map implements Screen
                             mapObject = mapPoint;
                             ((ObjectLayer) layer).addMapObject(mapPoint);
                         }
+                        mapObject.flickerId = mapObjectData.fId;
                         // object properties
                         propSize = mapObjectData.props.size();
                         for (int s = 0; s < propSize; s++)
@@ -1325,66 +1403,118 @@ public class Map implements Screen
             for(int i = 0; i < layers.size; i ++)
             {
                 Layer layer = layers.get(i);
-                if(!(layer instanceof SpriteLayer))
-                    continue;
-                // ID
-                for (int s = 0; s < layer.children.size; s++)
+                if (layer instanceof SpriteLayer)
                 {
-                    MapSprite mapSprite = (MapSprite) layer.children.get(s);
-                    if (mapSprite.attachedSprites != null)
+                    // ID
+                    for (int s = 0; s < layer.children.size; s++)
                     {
-                        for (int k = 0; k < mapSprite.attachedSprites.children.size; k++)
+                        MapSprite mapSprite = (MapSprite) layer.children.get(s);
+                        if (mapSprite.attachedSprites != null)
                         {
-                            MapSprite attached = mapSprite.attachedSprites.children.get(k);
-                            attached.setID(attached.getAndIncrementId());
+                            for (int k = 0; k < mapSprite.attachedSprites.children.size; k++)
+                            {
+                                MapSprite attached = mapSprite.attachedSprites.children.get(k);
+                                attached.setID(attached.getAndIncrementId());
+                            }
+                        } else
+                        {
+                            mapSprite.setID(MapSprite.getAndIncrementId());
                         }
                     }
-                    else
+                }
+            }
+            for(int i = 0; i < layers.size; i ++)
+            {
+                Layer layer = layers.get(i);
+                if(layer instanceof SpriteLayer)
+                {
+                    // Edge
+                    edge:
+                    for (int s = 0; s < layer.children.size; s++)
                     {
-                        mapSprite.setID(MapSprite.getAndIncrementId());
+                        MapSprite mapSprite = (MapSprite) layer.children.get(s);
+                        long edgeId = mapSprite.edgeId;
+                        if (edgeId <= 0)
+                            continue edge;
+                        for(int m = 0; m < layers.size; m ++)
+                        {
+                            Layer toLayer = layers.get(m);
+                            if(toLayer instanceof SpriteLayer)
+                            {
+                                for (int k = 0; k < toLayer.children.size; k++)
+                                {
+                                    MapSprite edge = (MapSprite) toLayer.children.get(k);
+                                    int id = edge.id;
+                                    if (edgeId == id)
+                                    {
+                                        SnapMapSpriteEdge snapMapSpriteEdge = new SnapMapSpriteEdge(mapSprite, edge);
+                                        executeCommand(snapMapSpriteEdge);
+                                        continue edge;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Flicker
+                    flicker:
+                    for (int s = 0; s < layer.children.size; s++)
+                    {
+                        MapSprite mapSprite = (MapSprite) layer.children.get(s);
+                        long flickerId = mapSprite.flickerId;
+                        if (flickerId <= 0)
+                            continue flicker;
+                        for(int m = 0; m < layers.size; m ++)
+                        {
+                            Layer toLayer = layers.get(m);
+                            if (toLayer instanceof SpriteLayer)
+                            {
+                                for (int k = 0; k < toLayer.children.size; k++)
+                                {
+                                    MapSprite flicker = (MapSprite) toLayer.children.get(k);
+                                    int id = flicker.id;
+                                    if (flickerId == id)
+                                    {
+                                        SnapMapSpriteFlicker snapMapSpriteFlicker = new SnapMapSpriteFlicker(mapSprite, flicker);
+                                        executeCommand(snapMapSpriteFlicker);
+                                        continue flicker;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-                // Edge
-                edge:
-                for (int s = 0; s < layer.children.size; s++)
+                else if(layer instanceof ObjectLayer)
                 {
-                    MapSprite mapSprite = (MapSprite) layer.children.get(s);
-                    long edgeId = mapSprite.edgeId;
-                    if (edgeId <= 0)
-                        continue edge;
-                    for (int k = 0; k < layer.children.size; k++)
+                    // Flicker
+                    flicker:
+                    for (int s = 0; s < layer.children.size; s++)
                     {
-                        MapSprite edge = (MapSprite) layer.children.get(k);
-                        int id = edge.id;
-                        if (edgeId == id)
+                        MapObject mapObject = (MapObject) layer.children.get(s);
+                        long flickerId = mapObject.flickerId;
+                        if (flickerId <= 0)
+                            continue flicker;
+                        for(int m = 0; m < layers.size; m++)
                         {
-                            SnapMapSpriteEdge snapMapSpriteEdge = new SnapMapSpriteEdge(mapSprite, edge);
-                            executeCommand(snapMapSpriteEdge);
-                            continue edge;
+                            Layer toLayer = layers.get(m);
+                            if(toLayer instanceof SpriteLayer)
+                            {
+                                for (int k = 0; k < toLayer.children.size; k++)
+                                {
+                                    MapSprite flicker = (MapSprite) toLayer.children.get(k);
+                                    int id = flicker.id;
+                                    if (flickerId == id)
+                                    {
+                                        SnapMapSpriteFlicker snapMapSpriteFlicker = new SnapMapSpriteFlicker(mapObject, flicker);
+                                        executeCommand(snapMapSpriteFlicker);
+                                        continue flicker;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
 
-                // Flicker
-                flicker:
-                for (int s = 0; s < layer.children.size; s++)
-                {
-                    MapSprite mapSprite = (MapSprite) layer.children.get(s);
-                    long flickerId = mapSprite.flickerId;
-                    if (flickerId <= 0)
-                        continue flicker;
-                    for (int k = 0; k < layer.children.size; k++)
-                    {
-                        MapSprite flicker = (MapSprite) layer.children.get(k);
-                        int id = flicker.id;
-                        if (flickerId == id)
-                        {
-                            SnapMapSpriteFlicker snapMapSpriteFlicker = new SnapMapSpriteFlicker(mapSprite, flicker);
-                            executeCommand(snapMapSpriteFlicker);
-                            continue flicker;
-                        }
-                    }
-                }
             }
 
             // re-override the layers
@@ -1565,6 +1695,7 @@ public class Map implements Screen
                             MapPoint mapPoint = new MapPoint(this, mapPointData.x, mapPointData.y);
                             mapObject = mapPoint;
                         }
+                        mapObject.flickerId = mapObjectData.fId;
                         // attached manager
                         spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.offsetX, mapObjectData.offsetY);
                         mapObject.attachedMapObjectManager.addCopyOfMapObjectToAllMapSpritesOfThisSpriteTool(mapObject);

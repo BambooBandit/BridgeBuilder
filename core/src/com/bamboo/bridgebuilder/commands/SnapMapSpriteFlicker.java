@@ -1,31 +1,32 @@
 package com.bamboo.bridgebuilder.commands;
 
 import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.map.LayerChild;
 import com.bamboo.bridgebuilder.map.MapSprite;
 
 public class SnapMapSpriteFlicker implements Command
 {
-    private MapSprite fromSprite;
-    private MapSprite oldToSprite;
-    private MapSprite toSprite;
+    private LayerChild from;
+    private MapSprite oldTo;
+    private MapSprite to;
 
-    public SnapMapSpriteFlicker(MapSprite fromSprite, MapSprite toSprite)
+    public SnapMapSpriteFlicker(LayerChild from, MapSprite to)
     {
-        this.fromSprite = fromSprite;
-        this.oldToSprite = fromSprite.toFlickerSprite;
-        this.toSprite = toSprite;
+        this.from = from;
+        this.oldTo = from.toFlicker;
+        this.to = to;
     }
 
     @Override
     public void execute()
     {
-        this.fromSprite.toFlickerSprite = this.toSprite;
+        this.from.toFlicker = this.to;
         {
-            if(this.toSprite != null)
+            if(this.to != null)
             {
-                if (this.toSprite.fromFlickerSprites == null)
-                    this.toSprite.fromFlickerSprites = new Array<>();
-                this.toSprite.fromFlickerSprites.add(this.fromSprite);
+                if (this.to.fromFlickers == null)
+                    this.to.fromFlickers = new Array<>();
+                this.to.fromFlickers.add(this.from);
             }
         }
     }
@@ -33,8 +34,8 @@ public class SnapMapSpriteFlicker implements Command
     @Override
     public void undo()
     {
-        this.fromSprite.toFlickerSprite = this.oldToSprite;
-        if(this.toSprite != null)
-            this.toSprite.fromFlickerSprites.removeValue(this.fromSprite, true);
+        this.from.toFlicker = this.oldTo;
+        if(this.to != null)
+            this.to.fromFlickers.removeValue(this.from, true);
     }
 }

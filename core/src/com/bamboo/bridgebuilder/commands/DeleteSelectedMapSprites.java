@@ -37,10 +37,10 @@ public class DeleteSelectedMapSprites implements Command
                     for (int k = 0; k < mapSprite.fromEdgeSprites.size; k++)
                         mapSprite.fromEdgeSprites.get(k).toEdgeSprite = null;
                 }
-                if(mapSprite.fromFlickerSprites != null)
+                if(mapSprite.fromFlickers != null)
                 {
-                    for (int k = 0; k < mapSprite.fromFlickerSprites.size; k++)
-                        mapSprite.fromFlickerSprites.get(k).toFlickerSprite = null;
+                    for (int k = 0; k < mapSprite.fromFlickers.size; k++)
+                        mapSprite.fromFlickers.get(k).toFlicker = null;
                 }
                 if(mapSprite.attachedMapObjects != null)
                 {
@@ -83,10 +83,10 @@ public class DeleteSelectedMapSprites implements Command
                     for (int k = 0; k < entry.value.fromEdgeSprites.size; k++)
                         entry.value.fromEdgeSprites.get(k).toEdgeSprite = entry.value;
                 }
-                if(entry.value.fromFlickerSprites != null)
+                if(entry.value.fromFlickers != null)
                 {
-                    for (int k = 0; k < entry.value.fromFlickerSprites.size; k++)
-                        entry.value.fromFlickerSprites.get(k).toFlickerSprite = entry.value;
+                    for (int k = 0; k < entry.value.fromFlickers.size; k++)
+                        entry.value.fromFlickers.get(k).toFlicker = entry.value;
                 }
                 this.deletedSprites.remove(entry.key);
                 entry.value.select();

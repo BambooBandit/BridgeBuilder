@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.bamboo.bridgebuilder.commands.SnapMapSpriteEdge;
 import com.bamboo.bridgebuilder.commands.SnapMapSpriteFlicker;
+import com.bamboo.bridgebuilder.map.LayerChild;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
 
@@ -28,10 +29,10 @@ public class SnapSpriteDialog extends Window
 
     private Map map;
 
-    private MapSprite from;
-    private MapSprite to;
+    private LayerChild from;
+    private LayerChild to;
 
-    public SnapSpriteDialog(Stage stage, Skin skin, Map map, MapSprite from, MapSprite to)
+    public SnapSpriteDialog(Stage stage, Skin skin, Map map, LayerChild from, LayerChild to)
     {
         super("Splat", skin);
         this.skin = skin;
@@ -50,8 +51,11 @@ public class SnapSpriteDialog extends Window
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                edge();
-                close();
+                if(from instanceof MapSprite && to instanceof MapSprite)
+                {
+                    edge();
+                    close();
+                }
             }
         });
 
@@ -59,8 +63,11 @@ public class SnapSpriteDialog extends Window
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                flicker();
-                close();
+                if(to instanceof MapSprite)
+                {
+                    flicker();
+                    close();
+                }
             }
         });
 
@@ -90,15 +97,15 @@ public class SnapSpriteDialog extends Window
 
     private void edge()
     {
-        SnapMapSpriteEdge snapMapSpriteEdge = new SnapMapSpriteEdge(this.from, this.to);
-        this.map.input.snapFromThisSprite = null;
+        SnapMapSpriteEdge snapMapSpriteEdge = new SnapMapSpriteEdge((MapSprite)this.from, (MapSprite)this.to);
+        this.map.input.snapFromThisObject = null;
         this.map.executeCommand(snapMapSpriteEdge);
     }
 
     private void flicker()
     {
-        SnapMapSpriteFlicker snapMapSpriteFlicker = new SnapMapSpriteFlicker(this.from, this.to);
-        this.map.input.snapFromThisSprite = null;
+        SnapMapSpriteFlicker snapMapSpriteFlicker = new SnapMapSpriteFlicker(this.from, (MapSprite)this.to);
+        this.map.input.snapFromThisObject = null;
         this.map.executeCommand(snapMapSpriteFlicker);
     }
 

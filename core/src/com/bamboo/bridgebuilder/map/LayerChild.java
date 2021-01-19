@@ -7,6 +7,8 @@ public abstract class LayerChild
     public Layer layer;
     public boolean selected;
     public float perspectiveScale = 1;
+    public int flickerId;
+    public MapSprite toFlicker;
 
     public LayerChild(Map map, Layer layer, float x, float y)
     {
