@@ -723,8 +723,11 @@ public class Map implements Screen
             this.camera.frustum.update(this.camera.invProjectionView);
         }
 
-        this.rayHandler.setCombinedMatrix(this.camera.combined, this.camera.position.x, this.camera.position.y, this.camera.viewportWidth * this.camera.zoom * 2f, this.camera.viewportHeight * this.camera.zoom * 2f);
-        this.rayHandler.updateAndRender();
+        if(layer == null || layer.layerField.visibleImg.isVisible())
+        {
+            this.rayHandler.setCombinedMatrix(this.camera.combined, this.camera.position.x, this.camera.position.y, this.camera.viewportWidth * this.camera.zoom * 2f, this.camera.viewportHeight * this.camera.zoom * 2f);
+            this.rayHandler.updateAndRender();
+        }
 
         if(this.editor.fileMenu.toolPane.perspective.selected)
             this.camera.update();
