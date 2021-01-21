@@ -51,7 +51,7 @@ public class SnapSpriteDialog extends Window
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                if(from instanceof MapSprite && to instanceof MapSprite)
+                if(from instanceof MapSprite && (to instanceof MapSprite || to == null))
                 {
                     edge();
                     close();
@@ -63,7 +63,7 @@ public class SnapSpriteDialog extends Window
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                if(to instanceof MapSprite)
+                if(to instanceof MapSprite || to == null)
                 {
                     flicker();
                     close();
