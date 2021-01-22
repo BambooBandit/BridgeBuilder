@@ -1587,11 +1587,6 @@ public class Map implements Screen
                         {
                             for (int k = 0; k < mapData.groups.size(); k++)
                             {
-                                System.out.println(mapSprite);
-                                System.out.println(mapData);
-                                System.out.println(mapData.groups);
-                                System.out.println(mapData.groups.get(k));
-                                System.out.println(mapData.groups.get(k).mapSpriteIDs);
                                 if (mapData.groups.get(k).mapSpriteIDs != null && mapData.groups.get(k).mapSpriteIDs.contains(mapSprite.id))
                                 {
                                     MapPolygon mapPolygon = (MapPolygon) groupPolygons.children.get(k);
