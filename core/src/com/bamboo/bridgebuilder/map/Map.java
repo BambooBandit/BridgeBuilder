@@ -1549,6 +1549,7 @@ public class Map implements Screen
                     GroupMapPolygonData mapPolygonData = mapData.groups.get(i);
                     MapPolygon mapPolygon = new MapPolygon(this, groupPolygons, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
                     (groupPolygons).addMapObject(mapPolygon);
+                    mapPolygon.mapSprites = new Array<>();
                     // object properties
                     int propSize = mapPolygonData.props.size();
                     for (int s = 0; s < propSize; s++)
@@ -1576,8 +1577,6 @@ public class Map implements Screen
                                     if (mapData.groups.get(k).mapSpriteIDs != null && mapData.groups.get(k).mapSpriteIDs.contains(attachedMapSprite.id))
                                     {
                                         MapPolygon mapPolygon = (MapPolygon) groupPolygons.children.get(k);
-                                        if (mapPolygon.mapSprites == null)
-                                            mapPolygon.mapSprites = new Array<>();
                                         mapPolygon.mapSprites.add(attachedMapSprite);
                                     }
                                 }
@@ -1590,8 +1589,6 @@ public class Map implements Screen
                                 if (mapData.groups.get(k).mapSpriteIDs != null && mapData.groups.get(k).mapSpriteIDs.contains(mapSprite.id))
                                 {
                                     MapPolygon mapPolygon = (MapPolygon) groupPolygons.children.get(k);
-                                    if (mapPolygon.mapSprites == null)
-                                        mapPolygon.mapSprites = new Array<>();
                                     mapPolygon.mapSprites.add(mapSprite);
                                 }
                             }
