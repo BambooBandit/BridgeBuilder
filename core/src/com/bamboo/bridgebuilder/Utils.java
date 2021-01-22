@@ -265,7 +265,7 @@ public class Utils
                     hasConnector = true;
             }
         }
-        if (!hasFencePost || !hasConnector)
+        if (!hasFencePost)
             return false;
         return true;
     }

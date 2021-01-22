@@ -155,70 +155,99 @@ public class DrawFence implements Command
 
     private void createConnectorForFence(MapSprite fromFence, MapSprite toFence, float fromX, float fromY, float toX, float toY)
     {
-        while (1 == 1)
+        boolean allSelectedArePosts = true;
+        for(int i = 0; i < map.spriteMenu.selectedSpriteTools.size; i ++)
         {
-            SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
-            if(!Utils.canBuildFenceFromSelectedSpriteTools(this.map))
-                return;
+            SpriteTool spriteTool = this.map.spriteMenu.selectedSpriteTools.get(i);
             boolean hasFencePost = false;
-            if(spriteTool.attachedMapObjectManagers != null) {
-                for (int i = 0; i < spriteTool.attachedMapObjectManagers.size; i++) {
-                    AttachedMapObjectManager attachedMapObjectManager = spriteTool.attachedMapObjectManagers.get(i);
+            if (spriteTool.attachedMapObjectManagers != null)
+            {
+                for (int k = 0; k < spriteTool.attachedMapObjectManagers.size; k++)
+                {
+                    AttachedMapObjectManager attachedMapObjectManager = spriteTool.attachedMapObjectManagers.get(k);
                     if (Utils.getPropertyField(attachedMapObjectManager.properties, "fenceStart") != null)
                         hasFencePost = true;
                 }
             }
-            if (hasFencePost)
+            if (!hasFencePost)
             {
-                this.map.shuffleRandomSpriteTool(true);
-                continue;
-            }
-            else
-            {
-                if(fromFence.attachedSprites == null)
-                {
-                    fromFence.attachedSprites = new SpriteLayer(map.editor, map, null);
-                    fromFence.attachedSprites.addMapSprite(fromFence);
-                }
-
-                MapSprite connector = new MapSprite(this.map, fromFence.attachedSprites, spriteTool, fromX, fromY);
-                LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(connector.lockedProperties, "Fence");
-                fenceProperty.value.setText("true");
-                (fromFence.attachedSprites).addMapSprite(connector);
-                if(map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
-                    connector.setPosition(fromX, fromY - connector.height / 2f);
-                else
-                    connector.setPosition(fromX, fromY);
-                connector.x2Offset = toX - (connector.x + connector.width);
-                if(map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
-                    connector.y2Offset = toY - (connector.y + connector.height / 2f);
-                else
-                    connector.y2Offset = toY - connector.y;
-                connector.x3Offset = connector.x2Offset;
-                if(map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
-                    connector.y3Offset = toY - (connector.y + connector.height / 2f);
-                else
-                    connector.y3Offset = toY - connector.y;
-                float[] spriteVertices = connector.sprite.getVertices();
-                connector.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + connector.x1Offset - connector.offsetMovebox1.width / 2f * connector.offsetMovebox1.scale, spriteVertices[SpriteBatch.Y2] + connector.y1Offset - connector.offsetMovebox1.height / 2f * connector.offsetMovebox1.scale);
-                connector.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + connector.x2Offset - connector.offsetMovebox2.width / 2f * connector.offsetMovebox2.scale, spriteVertices[SpriteBatch.Y3] + connector.y2Offset - connector.offsetMovebox2.height / 2f * connector.offsetMovebox2.scale);
-                connector.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + connector.x3Offset - connector.offsetMovebox3.width / 2f * connector.offsetMovebox3.scale, spriteVertices[SpriteBatch.Y4] + connector.y3Offset - connector.offsetMovebox3.height / 2f * connector.offsetMovebox3.scale);
-                connector.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + connector.x4Offset - connector.offsetMovebox4.width / 2f * connector.offsetMovebox4.scale, spriteVertices[SpriteBatch.Y1] + connector.y4Offset - connector.offsetMovebox4.height / 2f * connector.offsetMovebox4.scale);
-                connector.polygon.setOffset(connector.x1Offset, connector.x2Offset, connector.x3Offset, connector.x4Offset, connector.y1Offset, connector.y2Offset, connector.y3Offset, connector.y4Offset);
-                connectors.add(connector);
-                connector.parentSprite = fromFence;
-                fromFence.toEdgeSprite = toFence;
-                {
-                    if(toFence != null)
-                    {
-                        if (toFence.fromEdgeSprites == null)
-                            toFence.fromEdgeSprites = new Array<>();
-                        toFence.fromEdgeSprites.add(fromFence);
-                    }
-                }
-                this.map.shuffleRandomSpriteTool(false);
+                allSelectedArePosts = false;
                 break;
             }
         }
+        if(!allSelectedArePosts)
+        {
+            while (1 == 1)
+            {
+                SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
+                if (!Utils.canBuildFenceFromSelectedSpriteTools(this.map))
+                    return;
+                boolean hasFencePost = false;
+                if (spriteTool.attachedMapObjectManagers != null)
+                {
+                    for (int i = 0; i < spriteTool.attachedMapObjectManagers.size; i++)
+                    {
+                        AttachedMapObjectManager attachedMapObjectManager = spriteTool.attachedMapObjectManagers.get(i);
+                        if (Utils.getPropertyField(attachedMapObjectManager.properties, "fenceStart") != null)
+                            hasFencePost = true;
+                    }
+                }
+                if (hasFencePost)
+                {
+                    this.map.shuffleRandomSpriteTool(true);
+                    continue;
+                }
+                else
+                    break;
+            }
+        }
+        else
+        {
+            this.map.shuffleRandomSpriteTool(false);
+        }
+
+        if (fromFence.attachedSprites == null)
+        {
+            fromFence.attachedSprites = new SpriteLayer(map.editor, map, null);
+            fromFence.attachedSprites.addMapSprite(fromFence);
+        }
+        SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
+
+        MapSprite connector = new MapSprite(this.map, fromFence.attachedSprites, spriteTool, fromX, fromY);
+        LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(connector.lockedProperties, "Fence");
+        fenceProperty.value.setText("true");
+        (fromFence.attachedSprites).addMapSprite(connector);
+        if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
+            connector.setPosition(fromX, fromY - connector.height / 2f);
+        else
+            connector.setPosition(fromX, fromY);
+        connector.x2Offset = toX - (connector.x + connector.width);
+        if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
+            connector.y2Offset = toY - (connector.y + connector.height / 2f);
+        else
+            connector.y2Offset = toY - connector.y;
+        connector.x3Offset = connector.x2Offset;
+        if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
+            connector.y3Offset = toY - (connector.y + connector.height / 2f);
+        else
+            connector.y3Offset = toY - connector.y;
+        float[] spriteVertices = connector.sprite.getVertices();
+        connector.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + connector.x1Offset - connector.offsetMovebox1.width / 2f * connector.offsetMovebox1.scale, spriteVertices[SpriteBatch.Y2] + connector.y1Offset - connector.offsetMovebox1.height / 2f * connector.offsetMovebox1.scale);
+        connector.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + connector.x2Offset - connector.offsetMovebox2.width / 2f * connector.offsetMovebox2.scale, spriteVertices[SpriteBatch.Y3] + connector.y2Offset - connector.offsetMovebox2.height / 2f * connector.offsetMovebox2.scale);
+        connector.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + connector.x3Offset - connector.offsetMovebox3.width / 2f * connector.offsetMovebox3.scale, spriteVertices[SpriteBatch.Y4] + connector.y3Offset - connector.offsetMovebox3.height / 2f * connector.offsetMovebox3.scale);
+        connector.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + connector.x4Offset - connector.offsetMovebox4.width / 2f * connector.offsetMovebox4.scale, spriteVertices[SpriteBatch.Y1] + connector.y4Offset - connector.offsetMovebox4.height / 2f * connector.offsetMovebox4.scale);
+        connector.polygon.setOffset(connector.x1Offset, connector.x2Offset, connector.x3Offset, connector.x4Offset, connector.y1Offset, connector.y2Offset, connector.y3Offset, connector.y4Offset);
+        connectors.add(connector);
+        connector.parentSprite = fromFence;
+        fromFence.toEdgeSprite = toFence;
+        {
+            if (toFence != null)
+            {
+                if (toFence.fromEdgeSprites == null)
+                    toFence.fromEdgeSprites = new Array<>();
+                toFence.fromEdgeSprites.add(fromFence);
+            }
+        }
+        this.map.shuffleRandomSpriteTool(false);
     }
 }

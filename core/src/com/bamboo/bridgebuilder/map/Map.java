@@ -1563,7 +1563,6 @@ public class Map implements Screen
                     Layer layer = layers.get(i);
                     if(!(layer instanceof SpriteLayer))
                         continue;
-                    // ID
                     for (int s = 0; s < layer.children.size; s++)
                     {
                         MapSprite mapSprite = (MapSprite) layer.children.get(s);
@@ -1574,7 +1573,7 @@ public class Map implements Screen
                                 MapSprite attachedMapSprite = mapSprite.attachedSprites.children.get(m);
                                 for (int k = 0; k < mapData.groups.size(); k++)
                                 {
-                                    if (mapData.groups.get(k).mapSpriteIDs.contains(attachedMapSprite.id))
+                                    if (mapData.groups.get(k).mapSpriteIDs != null && mapData.groups.get(k).mapSpriteIDs.contains(attachedMapSprite.id))
                                     {
                                         MapPolygon mapPolygon = (MapPolygon) groupPolygons.children.get(k);
                                         if (mapPolygon.mapSprites == null)
@@ -1588,7 +1587,12 @@ public class Map implements Screen
                         {
                             for (int k = 0; k < mapData.groups.size(); k++)
                             {
-                                if (mapData.groups.get(k).mapSpriteIDs.contains(mapSprite.id))
+                                System.out.println(mapSprite);
+                                System.out.println(mapData);
+                                System.out.println(mapData.groups);
+                                System.out.println(mapData.groups.get(k));
+                                System.out.println(mapData.groups.get(k).mapSpriteIDs);
+                                if (mapData.groups.get(k).mapSpriteIDs != null && mapData.groups.get(k).mapSpriteIDs.contains(mapSprite.id))
                                 {
                                     MapPolygon mapPolygon = (MapPolygon) groupPolygons.children.get(k);
                                     if (mapPolygon.mapSprites == null)
