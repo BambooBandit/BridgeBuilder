@@ -45,6 +45,7 @@ public class MapPropertyPanel extends Group
         OpaqueColorPropertyField mapBackgroundColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, "Background", map.r, map.g, map.b);
         ColorPropertyField mapAmbientColorProperty = new ColorPropertyField(skin, menu, this.properties, false, "Ambient", 0, 0, 0, 1);
         OpaqueColorPropertyField shadowColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, "Shadows", .2f, .2f, .2f);
+        OpaqueColorPropertyField fogColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, "Fog", .25f, .55f, .85f);
 
         LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = new LabelFieldPropertyValuePropertyField("Virtual Height", "20", skin, menu, properties, false);
 
@@ -63,6 +64,7 @@ public class MapPropertyPanel extends Group
         this.lockedProperties.add(mapBackgroundColorProperty);
         this.lockedProperties.add(mapAmbientColorProperty);
         this.lockedProperties.add(shadowColorProperty);
+        this.lockedProperties.add(fogColorProperty);
         this.lockedProperties.add(mapVirtualHeightProperty);
         this.properties = new Array<>();
 
@@ -79,6 +81,7 @@ public class MapPropertyPanel extends Group
         this.table.add(mapBackgroundColorProperty).padBottom(1).row();
         this.table.add(mapAmbientColorProperty).padBottom(1).row();
         this.table.add(shadowColorProperty).padBottom(1).row();
+        this.table.add(fogColorProperty).padBottom(1).row();
         this.table.add(mapVirtualHeightProperty).padBottom(1).row();
         this.table.add(this.apply).padBottom(1).row();
 
@@ -97,7 +100,7 @@ public class MapPropertyPanel extends Group
             this.table.getCell(this.table.getChildren().get(i)).size(width, toolHeight);
         }
 
-        float newHeight = toolHeight * 5;
+        float newHeight = toolHeight * 6;
 
         this.background.setBounds(0, 0, width, newHeight);
         this.stack.setSize(width, newHeight);
