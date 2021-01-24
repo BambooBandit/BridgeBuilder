@@ -45,7 +45,7 @@ public class MapPropertyPanel extends Group
         OpaqueColorPropertyField mapBackgroundColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, "Background", map.r, map.g, map.b);
         ColorPropertyField mapAmbientColorProperty = new ColorPropertyField(skin, menu, this.properties, false, "Ambient", 0, 0, 0, 1);
         OpaqueColorPropertyField shadowColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, "Shadows", .2f, .2f, .2f);
-        OpaqueColorPropertyField fogColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, "Fog", .25f, .55f, .85f);
+        OpaqueColorPropertyField fogColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, "Fog", .35f, .5f, .7f);
 
         LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = new LabelFieldPropertyValuePropertyField("Virtual Height", "20", skin, menu, properties, false);
 
