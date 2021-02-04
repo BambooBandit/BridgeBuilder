@@ -31,6 +31,7 @@ public class MapSprite extends LayerChild
     public MoveBox moveBox;
     public ScaleBox scaleBox;
     public Array<PropertyField> lockedProperties; // properties such as rotation. They belong to all sprites
+    public Array<PropertyField> instanceSpecificProperties; // properties for just the mapsprite, not the spritetool
     public float z;
     public static int idCounter = 1;
     public int id; // Used to be able to set any sprites id and specifically retrieve it in the game
@@ -61,6 +62,7 @@ public class MapSprite extends LayerChild
     {
         super(map, layer, x, y);
         this.lockedProperties = new Array<>();
+        this.instanceSpecificProperties = new Array<>();
         this.sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) tool.textureRegion);
         this.sprite.setSize(sprite.getAtlasRegion().originalWidth / 64f, sprite.getAtlasRegion().originalHeight / 64f);
         this.width = this.sprite.getWidth();

@@ -9,6 +9,7 @@ import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapObject;
+import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LightPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
@@ -69,7 +70,7 @@ public class PropertyPanel extends Group
         super.setSize(width, height);
     }
 
-    public void newProperty(boolean light, Layer selectedLayer, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
+    public void newProperty(boolean light, Layer selectedLayer, Array<MapSprite> selectedMapSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
     {
         if(selectedMapObjects.size > 0)
         {
@@ -80,6 +81,11 @@ public class PropertyPanel extends Group
         {
             for (int i = 0; i < selectedSpriteTools.size; i++)
                 addPropertyToList(light, selectedSpriteTools.get(i).properties);
+        }
+        else if(selectedMapSprites.size > 0)
+        {
+            for (int i = 0; i < selectedMapSprites.size; i++)
+                addPropertyToList(light, selectedMapSprites.get(i).instanceSpecificProperties);
         }
         else if(selectedLayer != null)
             addPropertyToList(light, selectedLayer.properties);
@@ -98,7 +104,7 @@ public class PropertyPanel extends Group
             properties.add(new FieldFieldPropertyValuePropertyField("Property", "Value", this.skin, menu, properties, true));
     }
 
-    public void newProperty(String property, String value, Layer layer, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
+    public void newProperty(String property, String value, Layer layer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
     {
         if(selectedMapObjects.size > 0)
         {
@@ -114,6 +120,14 @@ public class PropertyPanel extends Group
             {
                 SpriteTool spriteTool = selectedSpriteTools.get(i);
                 spriteTool.properties.add(new FieldFieldPropertyValuePropertyField(property, value, this.skin, menu, spriteTool.properties, true));
+            }
+        }
+        else if(selectedSprites.size > 0)
+        {
+            for (int i = 0; i < selectedSprites.size; i++)
+            {
+                MapSprite mapSprite = selectedSprites.get(i);
+                mapSprite.instanceSpecificProperties.add(new FieldFieldPropertyValuePropertyField(property, value, this.skin, menu, mapSprite.instanceSpecificProperties, true));
             }
         }
         else if(layer != null)
@@ -137,11 +151,26 @@ public class PropertyPanel extends Group
                 return removeProperty(propertyName);
             }
         }
+        for(int i = 0; i < map.selectedSprites.size; i ++)
+        {
+            Array<PropertyField> properties = map.selectedSprites.get(i).instanceSpecificProperties;
+            PropertyField propertyField = Utils.getPropertyField(properties, propertyName);
+            if (propertyField != null)
+            {
+                properties.removeValue(propertyField, false);
+                return removeProperty(propertyName);
+            }
+        }
         return false;
     }
 
     public void removeProperty(PropertyField propertyField)
     {
+        for(int i = 0; i < map.selectedSprites.size; i ++)
+        {
+            Array<PropertyField> properties = map.selectedSprites.get(i).instanceSpecificProperties;
+            properties.removeValue(propertyField, false);
+        }
         for(int i = 0; i < map.spriteMenu.selectedSpriteTools.size; i ++)
         {
             Array<PropertyField> properties = map.spriteMenu.selectedSpriteTools.get(i).properties;
@@ -221,6 +250,38 @@ public class PropertyPanel extends Group
                 }
                 if(commonProperty)
                     this.table.add(firstTool.properties.get(i)).padBottom(1).row();
+            }
+        }
+        // Selecting one map sprite
+        else if(map.selectedSprites.size == 1)
+        {
+            menu.propertyTypeLabel.setText("Map Sprite Custom Properties");
+            this.table.add(this.menu.propertyTypeLabel).row();
+            Array<PropertyField> properties = map.selectedSprites.first().instanceSpecificProperties;
+            for (int i = 0; i < properties.size; i++)
+                this.table.add(properties.get(i)).padBottom(1).row();
+        }
+        // Selecting more than one map sprite
+        else if(map.selectedSprites.size > 1) // Only add common properties and locked properties
+        {
+            menu.propertyTypeLabel.setText("Map Sprites Custom Properties");
+            MapSprite firstMapSprite = map.selectedSprites.first();
+            for(int i = 0; i < firstMapSprite.lockedProperties.size; i ++)
+                this.table.add(firstMapSprite.lockedProperties.get(i)).padBottom(1).row();
+            this.table.add(this.menu.propertyTypeLabel).row();
+            for(int i = 0; i < firstMapSprite.instanceSpecificProperties.size; i ++)
+            {
+                boolean commonProperty = true;
+                for(int k = 1; k < map.selectedSprites.size; k ++)
+                {
+                    if(!Utils.containsEquivalentPropertyField(map.selectedSprites.get(k).instanceSpecificProperties, firstMapSprite.instanceSpecificProperties.get(i)))
+                    {
+                        commonProperty = false;
+                        break;
+                    }
+                }
+                if(commonProperty)
+                    this.table.add(firstMapSprite.instanceSpecificProperties.get(i)).padBottom(1).row();
             }
         }
         // Selecting a layer

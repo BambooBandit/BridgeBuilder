@@ -9,6 +9,7 @@ import com.bamboo.bridgebuilder.data.*;
 import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapObject;
+import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
@@ -98,15 +99,15 @@ public class PropertyMenu extends Group
         super.setSize(width, height);
     }
 
-    public void newProperty(boolean light, Layer selectedLayer, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObject)
+    public void newProperty(boolean light, Layer selectedLayer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObject)
     {
-        this.propertyPanel.newProperty(light, selectedLayer, selectedSpriteTools, selectedMapObject);
+        this.propertyPanel.newProperty(light, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObject);
         rebuild();
     }
 
-    public void newProperty(String property, String value, Layer selectedLayer, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObject)
+    public void newProperty(String property, String value, Layer selectedLayer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObject)
     {
-        this.propertyPanel.newProperty(property, value, selectedLayer, selectedSpriteTools, selectedMapObject);
+        this.propertyPanel.newProperty(property, value, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObject);
         rebuild();
     }
 

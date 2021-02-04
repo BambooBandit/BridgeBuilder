@@ -2,8 +2,9 @@ package com.bamboo.bridgebuilder.data;
 
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.MapSprite;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
+
+import java.util.ArrayList;
 
 public class MapSpriteData extends LayerChildData
 {
@@ -21,6 +22,7 @@ public class MapSpriteData extends LayerChildData
     public int eId; // to edge mapSprite id
     public boolean fence; // Used to tell which parts of the attached sprites are fences
     public boolean ignoreProps; // Used to tell whether or not to ignore properties for this sprite
+    public ArrayList<PropertyData> props; // instance specific properties
 
     public MapSpriteData() {}
     public MapSpriteData(MapSprite mapSprite)
@@ -72,5 +74,20 @@ public class MapSpriteData extends LayerChildData
 
         LabelFieldPropertyValuePropertyField ignoreProperty = (LabelFieldPropertyValuePropertyField) Utils.getPropertyField(mapSprite.lockedProperties, "IgnoreProps");
         this.ignoreProps = ignoreProperty.value.getText().equals("true");
+
+        if(mapSprite.instanceSpecificProperties.size > 0)
+            this.props = new ArrayList<>();
+        for(int i = 0; i < mapSprite.instanceSpecificProperties.size; i ++)
+        {
+            PropertyField property = mapSprite.instanceSpecificProperties.get(i);
+            if(property instanceof ColorPropertyField)
+                this.props.add(new ColorPropertyFieldData((ColorPropertyField) property));
+            else if(property instanceof LightPropertyField)
+                this.props.add(new LightPropertyFieldData((LightPropertyField) property));
+            else if(property instanceof FieldFieldPropertyValuePropertyField)
+                this.props.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
+            else if(property instanceof LabelFieldPropertyValuePropertyField)
+                this.props.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
+        }
     }
 }

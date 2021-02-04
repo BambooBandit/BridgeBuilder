@@ -44,7 +44,7 @@ public class PropertyToolPane extends Group
             @Override
             public void clicked(InputEvent event, float x, float y)
             {
-                AddProperty addProperty = new AddProperty(map, newProperty.tool, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects);
+                AddProperty addProperty = new AddProperty(map, newProperty.tool, map.selectedLayer, map.selectedSprites, map.spriteMenu.selectedSpriteTools, map.selectedObjects);
                 map.executeCommand(addProperty);
             }
         });

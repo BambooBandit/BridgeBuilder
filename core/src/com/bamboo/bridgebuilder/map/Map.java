@@ -1761,6 +1761,12 @@ public class Map implements Screen
         mapSprite.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + mapSprite.x3Offset - mapSprite.offsetMovebox3.width / 2f * mapSprite.offsetMovebox3.scale, spriteVertices[SpriteBatch.Y4] + mapSprite.y3Offset - mapSprite.offsetMovebox3.height / 2f * mapSprite.offsetMovebox3.scale);
         mapSprite.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + mapSprite.x4Offset - mapSprite.offsetMovebox4.width / 2f * mapSprite.offsetMovebox4.scale, spriteVertices[SpriteBatch.Y1] + mapSprite.y4Offset - mapSprite.offsetMovebox4.height / 2f * mapSprite.offsetMovebox4.scale);
         mapSprite.polygon.setOffset(mapSprite.x1Offset, mapSprite.x2Offset, mapSprite.x3Offset, mapSprite.x4Offset, mapSprite.y1Offset, mapSprite.y2Offset, mapSprite.y3Offset, mapSprite.y4Offset);
+
+        if(mapSpriteData.props != null)
+        {
+            for (int i = 0; i < mapSpriteData.props.size(); i++)
+                propertyMenu.newProperty(mapSpriteData.props.get(i), mapSprite.instanceSpecificProperties);
+        }
         return mapSprite;
     }
 }

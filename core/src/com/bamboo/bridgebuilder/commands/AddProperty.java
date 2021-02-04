@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapObject;
+import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyTools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
@@ -14,6 +15,7 @@ public class AddProperty implements Command
     private PropertyTools tool;
 
     private Layer selectedLayer;
+    private Array<MapSprite> selectedSprites;
     private Array<SpriteTool> selectedSpriteTools;
     private Array<MapObject> selectedMapObjects;
 
@@ -23,11 +25,12 @@ public class AddProperty implements Command
 
     private Array<AddProperty> chainedAddPropertyCommands; // Used for adding multiple properties in one execution
 
-    public AddProperty(Map map, PropertyTools tool, Layer selectedLayer, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
+    public AddProperty(Map map, PropertyTools tool, Layer selectedLayer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
     {
         this.map = map;
         this.tool = tool;
         this.selectedLayer = selectedLayer;
+        this.selectedSprites = new Array(selectedSprites);
         this.selectedSpriteTools = new Array(selectedSpriteTools);
         this.selectedMapObjects = new Array(selectedMapObjects);
     }
@@ -52,12 +55,12 @@ public class AddProperty implements Command
             if (tool == PropertyTools.NEW)
             {
                 if(property == null)
-                    map.propertyMenu.newProperty(false, selectedLayer, selectedSpriteTools, selectedMapObjects);
+                    map.propertyMenu.newProperty(false, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObjects);
                 else
-                    map.propertyMenu.newProperty(property, value, selectedLayer, selectedSpriteTools, selectedMapObjects);
+                    map.propertyMenu.newProperty(property, value, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObjects);
             }
             else
-                map.propertyMenu.newProperty(true, selectedLayer, selectedSpriteTools, selectedMapObjects);
+                map.propertyMenu.newProperty(true, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObjects);
 
             // Track the property fields
             if(selectedMapObjects.size > 0)
@@ -69,6 +72,11 @@ public class AddProperty implements Command
             {
                 for(int i = 0; i < selectedSpriteTools.size; i ++)
                     propertyFields.add(selectedSpriteTools.get(i).properties.peek());
+            }
+            else if(selectedSprites.size > 0)
+            {
+                for(int i = 0; i < selectedSprites.size; i ++)
+                    propertyFields.add(selectedSprites.get(i).instanceSpecificProperties.peek());
             }
             else if(selectedLayer != null)
                 propertyFields.add((PropertyField) selectedLayer.properties.peek());
@@ -86,6 +94,11 @@ public class AddProperty implements Command
             {
                 for(int i = 0; i < selectedSpriteTools.size; i ++)
                     selectedSpriteTools.get(i).properties.add(propertyFields.get(i));
+            }
+            else if(selectedSprites.size > 0)
+            {
+                for(int i = 0; i < selectedSprites.size; i ++)
+                    selectedSprites.get(i).instanceSpecificProperties.add(propertyFields.get(i));
             }
             else if(selectedLayer != null)
                 selectedLayer.properties.add(propertyFields.first());
@@ -117,6 +130,14 @@ public class AddProperty implements Command
             {
                 SpriteTool spriteTool = selectedSpriteTools.get(i);
                 spriteTool.properties.removeIndex(spriteTool.properties.size - 1);
+            }
+        }
+        else if(selectedSprites.size > 0)
+        {
+            for(int i = 0; i < selectedSprites.size; i ++)
+            {
+                MapSprite mapSprite = selectedSprites.get(i);
+                mapSprite.instanceSpecificProperties.removeIndex(mapSprite.instanceSpecificProperties.size - 1);
             }
         }
         else if(selectedLayer != null)
