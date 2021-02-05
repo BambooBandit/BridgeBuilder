@@ -327,9 +327,11 @@ public class MapInput implements InputProcessor
         else if(this.moveMapObjects != null)
         {
             MapSprite parent = this.moveMapObjects.originalMapObjectPosition.iterator().next().key.attachedSprite;
-            float scale = parent.scale;
             if(parent != null)
+            {
+                float scale = parent.scale;
                 this.moveMapObjects.update(dragAmount.x / scale, dragAmount.y / scale);
+            }
             else
                 this.moveMapObjects.update(dragAmount.x, dragAmount.y);
         }
