@@ -176,18 +176,19 @@ public class SpriteTool extends SpriteMenuTool
         this.attachedMapObjectManagers.add(new AttachedMapObjectManager(map, this, mapObject, offsetX, offsetY));
     }
 
-    public void removeAttachedMapObject(MapObject mapObject)
+    public boolean removeAttachedMapObject(MapObject mapObject)
     {
         if(this.attachedMapObjectManagers == null)
-            return;
+            return false;
         for(int i = 0; i < this.attachedMapObjectManagers.size; i ++)
         {
             if (this.attachedMapObjectManagers.get(i).deleteAttachedMapObjectFromAll(mapObject))
             {
                 this.attachedMapObjectManagers.removeIndex(i);
-                i --;
+                return true;
             }
         }
+        return false;
     }
 
     public boolean hasAttachedMapObjects()

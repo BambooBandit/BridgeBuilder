@@ -12,6 +12,7 @@ import com.bamboo.bridgebuilder.BoxSelect;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.*;
+import com.bamboo.bridgebuilder.ui.InstanceOrSpriteToolDialog;
 import com.bamboo.bridgebuilder.ui.SnapSpriteDialog;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
@@ -749,10 +750,15 @@ public class MapInput implements InputProcessor
 
         DrawMapPoint drawMapPoint;
         if(this.map.selectedLayer instanceof ObjectLayer)
+        {
             drawMapPoint = new DrawMapPoint(this.map, (ObjectLayer) this.map.selectedLayer, x, y);
+            this.map.executeCommand(drawMapPoint);
+        }
         else
-            drawMapPoint = new DrawMapPoint(this.map, this.map.selectedSprites.first(), x, y);
-        this.map.executeCommand(drawMapPoint);
+        {
+            new InstanceOrSpriteToolDialog(editor.stage, map.skin, map, this.map.selectedSprites.first(), null, x, y);
+//            drawMapPoint = new DrawMapPoint(this.map, this.map.selectedSprites.first(), x, y);
+        }
         return true;
     }
 
@@ -813,14 +819,17 @@ public class MapInput implements InputProcessor
             {
                 AddMapSpritesToGroup addMapSpritesToGroup = new AddMapSpritesToGroup(map, drawMapPolygon.mapPolygon);
                 this.map.executeCommand(addMapSpritesToGroup);
+                clearMapPolygonVertices(button);
+
             }
             this.map.pushCommand(drawMapPolygon);
         }
         else
         {
-            DrawMapPolygon drawMapPolygon = new DrawMapPolygon(this.map, this.map.selectedSprites.first(), this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
-            clearMapPolygonVertices(button);
-            this.map.executeCommand(drawMapPolygon);
+            new InstanceOrSpriteToolDialog(editor.stage, map.skin, map, this.map.selectedSprites.first(), new FloatArray(this.map.input.mapPolygonVertices), this.objectVerticePosition.x, this.objectVerticePosition.y);
+//            DrawMapPolygon drawMapPolygon = new DrawMapPolygon(this.map, this.map.selectedSprites.first(), this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
+//            clearMapPolygonVertices(button);
+//            this.map.executeCommand(drawMapPolygon);
         }
 
         return true;
@@ -884,15 +893,22 @@ public class MapInput implements InputProcessor
 
         DrawMapPolygon drawMapPolygon;
         if(this.map.selectedLayer instanceof ObjectLayer)
+        {
             drawMapPolygon = new DrawMapPolygon(this.map, (ObjectLayer) this.map.selectedLayer, this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
+            this.map.executeCommand(drawMapPolygon);
+            clearMapPolygonVertices(button);
+        }
         else
-            drawMapPolygon = new DrawMapPolygon(this.map, this.map.selectedSprites.first(), this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
-        clearMapPolygonVertices(button);
-        this.map.executeCommand(drawMapPolygon);
+        {
+            new InstanceOrSpriteToolDialog(editor.stage, map.skin, map, this.map.selectedSprites.first(), new FloatArray(this.map.input.mapPolygonVertices), this.objectVerticePosition.x, this.objectVerticePosition.y);
+//            drawMapPolygon = new DrawMapPolygon(this.map, this.map.selectedSprites.first(), this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
+        }
+//        clearMapPolygonVertices(button);
+//        this.map.executeCommand(drawMapPolygon);
         return true;
     }
 
-    private boolean clearMapPolygonVertices(int button)
+    public boolean clearMapPolygonVertices(int button)
     {
         if(Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && button == Input.Buttons.RIGHT || Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE))
         {

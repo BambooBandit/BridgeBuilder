@@ -34,7 +34,7 @@ public class SnapSpriteDialog extends Window
 
     public SnapSpriteDialog(Stage stage, Skin skin, Map map, LayerChild from, LayerChild to)
     {
-        super("Splat", skin);
+        super("Snap Sprite", skin);
         this.skin = skin;
 
         this.map = map;

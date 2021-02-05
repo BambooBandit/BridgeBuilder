@@ -15,6 +15,7 @@ public class DrawMapPoint implements Command
     private MapPoint mapPoint = null;
     private float x;
     private float y;
+    private boolean spriteTool;
 
     public DrawMapPoint(Map map, ObjectLayer selectedObjectLayer, float x, float y)
     {
@@ -24,12 +25,13 @@ public class DrawMapPoint implements Command
         this.y = y;
     }
 
-    public DrawMapPoint(Map map, MapSprite selectedMapSprite, float x, float y)
+    public DrawMapPoint(Map map, MapSprite selectedMapSprite, float x, float y, boolean spriteTool)
     {
         this.map = map;
         this.selectedMapSprite = selectedMapSprite;
         this.x = x;
         this.y = y;
+        this.spriteTool = spriteTool;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class DrawMapPoint implements Command
             }
             this.mapPoint.setRotation(this.selectedMapSprite.rotation);
             this.mapPoint.setScale(this.selectedMapSprite.scale);
-            this.selectedMapSprite.createAttachedMapObject(this.map, this.mapPoint);
+            this.selectedMapSprite.createAttachedMapObject(this.map, this.mapPoint, spriteTool);
         }
     }
 

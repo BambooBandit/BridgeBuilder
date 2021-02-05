@@ -17,6 +17,7 @@ public class DrawMapPolygon implements Command
     private float objectX;
     private float objectY;
     public MapPolygon mapPolygon;
+    public boolean spriteTool;
 
     public DrawMapPolygon(Map map, ObjectLayer selectedObjectLayer, FloatArray vertices, float objectX, float objectY)
     {
@@ -27,13 +28,14 @@ public class DrawMapPolygon implements Command
         this.objectY = objectY;
     }
 
-    public DrawMapPolygon(Map map, MapSprite mapSprite, FloatArray vertices, float objectX, float objectY)
+    public DrawMapPolygon(Map map, MapSprite mapSprite, FloatArray vertices, float objectX, float objectY, boolean spriteTool)
     {
         this.map = map;
         this.selectedMapSprite = mapSprite;
         this.vertices = new FloatArray(vertices);
         this.objectX = objectX;
         this.objectY = objectY;
+        this.spriteTool = spriteTool;
     }
 
     @Override
@@ -61,7 +63,7 @@ public class DrawMapPolygon implements Command
             }
             this.mapPolygon.setRotation(this.selectedMapSprite.rotation);
             this.mapPolygon.setScale(this.selectedMapSprite.scale);
-            this.selectedMapSprite.createAttachedMapObject(this.map, this.mapPolygon);
+            this.selectedMapSprite.createAttachedMapObject(this.map, this.mapPolygon, spriteTool);
         }
     }
 

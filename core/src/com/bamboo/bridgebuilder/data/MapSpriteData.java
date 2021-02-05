@@ -1,7 +1,7 @@
 package com.bamboo.bridgebuilder.data;
 
 import com.bamboo.bridgebuilder.Utils;
-import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ public class MapSpriteData extends LayerChildData
     public boolean fence; // Used to tell which parts of the attached sprites are fences
     public boolean ignoreProps; // Used to tell whether or not to ignore properties for this sprite
     public ArrayList<PropertyData> props; // instance specific properties
+    public ArrayList<MapObjectData> objs; // this map sprite instance attached objects
 
     public MapSpriteData() {}
     public MapSpriteData(MapSprite mapSprite)
@@ -88,6 +89,25 @@ public class MapSpriteData extends LayerChildData
                 this.props.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
             else if(property instanceof LabelFieldPropertyValuePropertyField)
                 this.props.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
+        }
+
+        if(mapSprite.attachedMapObjectManagers != null)
+        {
+            if(mapSprite.attachedMapObjectManagers.size > 0)
+                this.objs = new ArrayList<>();
+            for (int i = 0; i < mapSprite.attachedMapObjectManagers.size; i++)
+            {
+                AttachedMapObjectManager attachedMapObjectManager = mapSprite.attachedMapObjectManagers.get(i);
+                if(attachedMapObjectManager.attachedMapObjects.size == 0)
+                    continue;
+                MapObject mapObject = attachedMapObjectManager.attachedMapObjects.first();
+                MapObjectData mapObjectData;
+                if (mapObject instanceof MapPoint)
+                    mapObjectData = new MapPointData((MapPoint) mapObject, attachedMapObjectManager.offsetX, attachedMapObjectManager.offsetY);
+                else
+                    mapObjectData = new MapPolygonData((MapPolygon) mapObject, attachedMapObjectManager.offsetX, attachedMapObjectManager.offsetY);
+                this.objs.add(mapObjectData);
+            }
         }
     }
 }

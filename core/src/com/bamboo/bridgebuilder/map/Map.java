@@ -1767,6 +1767,39 @@ public class Map implements Screen
             for (int i = 0; i < mapSpriteData.props.size(); i++)
                 propertyMenu.newProperty(mapSpriteData.props.get(i), mapSprite.instanceSpecificProperties);
         }
+
+        // attached map objects
+        if (mapSpriteData.objs != null)
+        {
+            int objSize = mapSpriteData.objs.size();
+            for (int s = 0; s < objSize; s++)
+            {
+                MapObjectData mapObjectData = mapSpriteData.objs.get(s);
+                MapObject mapObject;
+                if (mapObjectData instanceof MapPolygonData)
+                {
+                    MapPolygonData mapPolygonData = (MapPolygonData) mapObjectData;
+                    MapPolygon mapPolygon = new MapPolygon(this, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
+                    mapObject = mapPolygon;
+                } else
+                {
+                    MapPointData mapPointData = (MapPointData) mapObjectData;
+                    MapPoint mapPoint = new MapPoint(this, mapPointData.x, mapPointData.y);
+                    mapObject = mapPoint;
+                }
+                mapObject.flickerId = mapObjectData.fId;
+                // attached manager
+                mapSprite.createAttachedMapObject(this, mapObject, mapObjectData.offsetX, mapObjectData.offsetY, false);
+                // object properties
+                int propSize = mapObjectData.props.size();
+                mapObject.properties.clear();
+                for (int p = 0; p < propSize; p++)
+                {
+                    PropertyData propertyData = mapObjectData.props.get(p);
+                    propertyMenu.newProperty(propertyData, mapObject.properties);
+                }
+            }
+        }
         return mapSprite;
     }
 }

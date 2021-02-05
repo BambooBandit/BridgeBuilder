@@ -7,7 +7,7 @@ import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 public class AttachedMapObjectManager
 {
-    public SpriteTool spriteTool;
+    public SpriteTool spriteTool; // null if instance specific
     public Array<MapObject> attachedMapObjects;
     private Map map;
 
@@ -105,11 +105,17 @@ public class AttachedMapObjectManager
 
     public boolean deleteAttachedMapObjectFromAll(MapObject mapObject)
     {
+        boolean removed = this.attachedMapObjects.removeValue(mapObject, true);
+        if(!removed)
+            return false;
+
         if(mapObject instanceof MapPoint)
             ((MapPoint) mapObject).destroyLight();
         else if(mapObject instanceof MapPolygon)
             ((MapPolygon) mapObject).destroyBody();
-        boolean removed = this.attachedMapObjects.removeValue(mapObject, true);
+
+        if(this.spriteTool == null)
+            return removed;
 
         for(int i = 0; i < this.map.layers.size; i ++)
         {
@@ -134,6 +140,30 @@ public class AttachedMapObjectManager
                         }
                     }
                 }
+            }
+        }
+        return removed;
+    }
+
+    public boolean deleteAttachedMapObjectFromMapSprite(MapObject mapObject, MapSprite mapSprite)
+    {
+        boolean removed = this.attachedMapObjects.removeValue(mapObject, true);
+        if(!removed)
+            return false;
+
+        if(mapObject instanceof MapPoint)
+            ((MapPoint) mapObject).destroyLight();
+        else if(mapObject instanceof MapPolygon)
+            ((MapPolygon) mapObject).destroyBody();
+
+        for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
+        {
+            if(mapSprite.attachedMapObjects.get(s).id == mapObject.id)
+            {
+                MapObject attachedMapObject = mapSprite.attachedMapObjects.get(s);
+                removeAttachedMapObject(attachedMapObject);
+                mapSprite.attachedMapObjects.removeIndex(s);
+                s --;
             }
         }
         return removed;
@@ -182,6 +212,9 @@ public class AttachedMapObjectManager
     /** Intended for using when creating a new attached map object. Since it is already a part of the MapSprite, add it to all others of that SpriteTool*/
     public void addCopyOfMapObjectToAllOtherMapSpritesOfThisSpriteTool(MapObject mapObject, MapSprite mapSprite)
     {
+        if(this.spriteTool == null)
+            return;
+
         for(int i = 0; i < this.map.layers.size; i ++)
         {
             Layer layer = this.map.layers.get(i);
@@ -203,6 +236,9 @@ public class AttachedMapObjectManager
     /** Intended for using when creating a new attached map object.*/
     public void addCopyOfMapObjectToAllMapSpritesOfThisSpriteTool(MapObject mapObject)
     {
+        if(this.spriteTool == null)
+            return;
+
         for(int i = 0; i < this.map.layers.size; i ++)
         {
             Layer layer = this.map.layers.get(i);

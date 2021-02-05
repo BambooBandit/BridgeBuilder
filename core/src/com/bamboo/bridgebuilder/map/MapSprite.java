@@ -45,6 +45,7 @@ public class MapSprite extends LayerChild
     private float[] verts; // Used to pass to the sprite batch for skewable drawing
 
     public Array<MapObject> attachedMapObjects;
+    public Array<AttachedMapObjectManager> attachedMapObjectManagers; // instance specific
 
     public SpriteLayer attachedSprites; // For when this map sprite has other map sprites attached to it. They all will act as one whole map sprite.
     public MapSprite parentSprite; // For the above
@@ -824,14 +825,47 @@ public class MapSprite extends LayerChild
         this.attachedMapObjects.sort();
     }
 
-    public void createAttachedMapObject(Map map, MapObject mapObject)
+    public void createAttachedMapObject(Map map, MapObject mapObject, boolean spriteTool)
     {
-        this.tool.createAttachedMapObject(map, mapObject, this);
+        if(spriteTool)
+            this.tool.createAttachedMapObject(map, mapObject, this);
+        else
+        {
+            if(this.attachedMapObjectManagers == null)
+                this.attachedMapObjectManagers = new Array<>();
+            this.attachedMapObjectManagers.add(new AttachedMapObjectManager(map, null, mapObject, this));
+        }
+    }
+
+    public void createAttachedMapObject(Map map, MapObject mapObject, float offsetX, float offsetY, boolean spriteTool)
+    {
+        if(spriteTool)
+            this.tool.createAttachedMapObject(map, mapObject, offsetX, offsetY);
+        else
+        {
+            if (this.attachedMapObjectManagers == null)
+                this.attachedMapObjectManagers = new Array<>();
+            this.attachedMapObjectManagers.add(new AttachedMapObjectManager(map, null, mapObject, offsetX, offsetY));
+            mapObject.attachedSprite = this;
+            addAttachedMapObject(mapObject);
+        }
     }
 
     public void removeAttachedMapObject(MapObject mapObject)
     {
-        this.tool.removeAttachedMapObject(mapObject);
+        if(!this.tool.removeAttachedMapObject(mapObject))
+        {
+            if(this.attachedMapObjectManagers == null)
+                return;
+            for(int i = 0; i < this.attachedMapObjectManagers.size; i ++)
+            {
+                if (this.attachedMapObjectManagers.get(i).deleteAttachedMapObjectFromMapSprite(mapObject, this))
+                {
+                    this.attachedMapObjectManagers.removeIndex(i);
+                    return;
+                }
+            }
+        }
     }
 
     @Override
