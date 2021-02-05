@@ -7,7 +7,7 @@ import com.bamboo.bridgebuilder.map.MapObject;
 
 public class MoveMapObjects implements Command
 {
-    private ObjectMap<MapObject, Vector2> originalMapObjectPosition;
+    public ObjectMap<MapObject, Vector2> originalMapObjectPosition;
     private float resultingOffsetX;
     private float resultingOffsetY;
 

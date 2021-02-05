@@ -3,6 +3,7 @@ package com.bamboo.bridgebuilder.map;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -128,11 +129,16 @@ public class MapPolygon extends MapObject
         }
         computeCentroid();
 
+        setOriginBasedOnParentSprite();
+
         if (indexOfSelectedVertice != -1)
             this.moveBox.setPosition(polygon.getTransformedVertices()[indexOfSelectedVertice], polygon.getTransformedVertices()[indexOfSelectedVertice + 1]);
         else
-            this.moveBox.setPosition(x, y);
-        setOriginBasedOnParentSprite();
+        {
+            Rectangle boundingBox = polygon.getBoundingRectangle();
+            this.moveBox.setPosition(boundingBox.x - (this.moveBox.width) + (boundingBox.width / 2f),
+                    boundingBox.y - (this.moveBox.height) + (boundingBox.height / 2f));
+        }
 
         if(this.body != null)
             this.body.setTransform(this.polygon.getTransformedVertices()[0], this.polygon.getTransformedVertices()[1], (float) Math.toRadians(this.getRotation()));
