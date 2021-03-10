@@ -389,11 +389,11 @@ public class ColorPropertyField extends OpaqueColorPropertyField
                 {
                     for (int i = 0; i < map.selectedSprites.size; i++)
                     {
-                        if (map.selectedSprites.get(i).instanceSpecificProperties.contains(thisProperty, true))
+                        if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, true))
                             continue;
                         ColorPropertyField propertyField = null;
-                        if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).instanceSpecificProperties, thisProperty))
-                            propertyField = (ColorPropertyField) map.selectedSprites.get(i).instanceSpecificProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).instanceSpecificProperties, thisProperty));
+                        if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).lockedProperties, thisProperty))
+                            propertyField = (ColorPropertyField) map.selectedSprites.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).lockedProperties, thisProperty));
                         if (propertyField != null)
                         {
                             final ColorPropertyField finalPropertyField = propertyField;
@@ -455,11 +455,11 @@ public class ColorPropertyField extends OpaqueColorPropertyField
                 {
                     for (int i = 0; i < map.selectedSprites.size; i++)
                     {
-                        if (map.selectedSprites.get(i).instanceSpecificProperties.contains(thisProperty, true))
+                        if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, true))
                             continue;
                         ColorPropertyField propertyField = null;
-                        if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).instanceSpecificProperties, thisProperty))
-                            propertyField = (ColorPropertyField) map.selectedSprites.get(i).instanceSpecificProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).instanceSpecificProperties, thisProperty));
+                        if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).lockedProperties, thisProperty))
+                            propertyField = (ColorPropertyField) map.selectedSprites.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).lockedProperties, thisProperty));
                         if (propertyField != null)
                         {
                             final ColorPropertyField finalPropertyField = propertyField;
@@ -519,11 +519,11 @@ public class ColorPropertyField extends OpaqueColorPropertyField
                 {
                     for (int i = 0; i < map.selectedSprites.size; i++)
                     {
-                        if (map.selectedSprites.get(i).instanceSpecificProperties.contains(thisProperty, true))
+                        if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, true))
                             continue;
                         ColorPropertyField propertyField = null;
-                        if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).instanceSpecificProperties, thisProperty))
-                            propertyField = (ColorPropertyField) map.selectedSprites.get(i).instanceSpecificProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).instanceSpecificProperties, thisProperty));
+                        if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).lockedProperties, thisProperty))
+                            propertyField = (ColorPropertyField) map.selectedSprites.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).lockedProperties, thisProperty));
                         if (propertyField != null)
                         {
                             final ColorPropertyField finalPropertyField = propertyField;
@@ -585,11 +585,11 @@ public class ColorPropertyField extends OpaqueColorPropertyField
                 {
                     for (int i = 0; i < map.selectedSprites.size; i++)
                     {
-                        if (map.selectedSprites.get(i).instanceSpecificProperties.contains(thisProperty, true))
+                        if (map.selectedSprites.get(i).lockedProperties.contains(thisProperty, true))
                             continue;
                         ColorPropertyField propertyField = null;
-                        if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).instanceSpecificProperties, thisProperty))
-                            propertyField = (ColorPropertyField) map.selectedSprites.get(i).instanceSpecificProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).instanceSpecificProperties, thisProperty));
+                        if (Utils.containsEquivalentPropertyField(map.selectedSprites.get(i).lockedProperties, thisProperty))
+                            propertyField = (ColorPropertyField) map.selectedSprites.get(i).lockedProperties.get(Utils.indexOfEquivalentProperty(map.selectedSprites.get(i).lockedProperties, thisProperty));
                         if (propertyField != null)
                         {
                             final ColorPropertyField finalPropertyField = propertyField;

@@ -70,7 +70,7 @@ public class DrawFence implements Command
         }
         this.lastFencePlacedOld = this.map.lastFencePlaced;
         this.map.lastFencePlaced = this.mapSprite;
-        this.layer.addMapSprite(this.mapSprite);
+        this.layer.addMapSprite(this.mapSprite, -1);
 
         if(this.map.editor.fileMenu.toolPane.depth.selected)
             this.map.colorizeDepth();
@@ -209,14 +209,14 @@ public class DrawFence implements Command
         if (fromFence.attachedSprites == null)
         {
             fromFence.attachedSprites = new SpriteLayer(map.editor, map, null);
-            fromFence.attachedSprites.addMapSprite(fromFence);
+            fromFence.attachedSprites.addMapSprite(fromFence, 0);
         }
         SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
 
         MapSprite connector = new MapSprite(this.map, fromFence.attachedSprites, spriteTool, fromX, fromY);
         LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(connector.lockedProperties, "Fence");
         fenceProperty.value.setText("true");
-        (fromFence.attachedSprites).addMapSprite(connector);
+        (fromFence.attachedSprites).addMapSprite(connector, 0);
         if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
             connector.setPosition(fromX, fromY - connector.height / 2f);
         else

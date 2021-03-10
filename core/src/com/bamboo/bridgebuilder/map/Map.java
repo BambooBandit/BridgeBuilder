@@ -1340,7 +1340,7 @@ public class Map implements Screen
                                     parentMapSprite = loadMapSpriteData(attachedData, layer);
                                     if(parentMapSprite == null)
                                         continue parent;
-                                    ((SpriteLayer) layer).addMapSprite(parentMapSprite);
+                                    ((SpriteLayer) layer).addMapSprite(parentMapSprite, -1);
                                     break;
                                 }
                             }
@@ -1351,13 +1351,13 @@ public class Map implements Screen
                                 MapSpriteData attachedData = attachedMapSpriteData.sprites.get(s);
                                 if (attachedData.parent)
                                 {
-                                    parentMapSprite.attachedSprites.addMapSprite(parentMapSprite);
+                                    parentMapSprite.attachedSprites.addMapSprite(parentMapSprite, -1);
                                     continue;
                                 }
                                 MapSprite childMapSprite = loadMapSpriteData(attachedData, parentMapSprite.attachedSprites);
                                 if(childMapSprite == null)
                                     continue child;
-                                parentMapSprite.attachedSprites.addMapSprite(childMapSprite);
+                                parentMapSprite.attachedSprites.addMapSprite(childMapSprite, -1);
                                 childMapSprite.parentSprite = parentMapSprite;
                             }
                         }
@@ -1365,7 +1365,7 @@ public class Map implements Screen
                         {
                             MapSprite mapSprite = loadMapSpriteData((MapSpriteData) mapSpriteData, layer);
                             if(mapSprite != null)
-                                ((SpriteLayer) layer).addMapSprite(mapSprite);
+                                ((SpriteLayer) layer).addMapSprite(mapSprite, -1);
                         }
                     }
                 } else if (layerData instanceof ObjectLayerData)

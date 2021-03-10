@@ -1,10 +1,9 @@
 package com.bamboo.bridgebuilder.commands;
 
 import com.badlogic.gdx.utils.Array;
-import com.bamboo.bridgebuilder.Utils;
-import com.bamboo.bridgebuilder.map.*;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
+import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.map.SpriteLayer;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 public class DrawMapSprite implements Command {
@@ -31,7 +30,7 @@ public class DrawMapSprite implements Command {
             this.mapSprite = new MapSprite(this.map, layer, spriteTool, this.x, this.y);
             this.map.shuffleRandomSpriteTool(false);
         }
-        this.layer.addMapSprite(this.mapSprite);
+        this.layer.addMapSprite(this.mapSprite, -1);
 
         if (this.map.editor.fileMenu.toolPane.depth.selected)
             this.map.colorizeDepth();

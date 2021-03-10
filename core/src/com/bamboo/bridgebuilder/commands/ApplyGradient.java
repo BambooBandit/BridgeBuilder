@@ -59,7 +59,19 @@ public class ApplyGradient implements Command
             this.oldColors.put(mapSprite, new Color(mapSprite.sprite.getColor()));
             float projY = Utils.project(this.map.camera, mapSprite.getX(), mapSprite.getY()).y;
             float norm = MathUtils.norm(projectedFromY, projectedToY, projY);
-            mapSprite.setColor(MathUtils.lerp(this.fromR, this.toR, norm), MathUtils.lerp(this.fromG, this.toG, norm), MathUtils.lerp(this.fromB, this.toB, norm), MathUtils.lerp(this.fromA, this.toA, norm));
+            float newR = MathUtils.lerp(this.fromR, this.toR, norm);
+            float newG = MathUtils.lerp(this.fromG, this.toG, norm);
+            float newB = MathUtils.lerp(this.fromB, this.toB, norm);
+            float newA = MathUtils.lerp(this.fromA, this.toA, norm);
+            if(this.fromR < 0 || this.toR < 0)
+                newR = mapSprite.sprite.getColor().r;
+            if(this.fromG < 0 || this.toG < 0)
+                newG = mapSprite.sprite.getColor().g;
+            if(this.fromB < 0 || this.toB < 0)
+                newB = mapSprite.sprite.getColor().b;
+            if(this.fromA < 0 || this.toA < 0)
+                newA = mapSprite.sprite.getColor().a;
+            mapSprite.setColor(newR, newG, newB, newA);
         }
 
         this.map.camera.rotate(-angle);

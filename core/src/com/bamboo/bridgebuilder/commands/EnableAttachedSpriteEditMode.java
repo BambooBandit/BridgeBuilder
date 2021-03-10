@@ -21,7 +21,7 @@ public class EnableAttachedSpriteEditMode implements Command
         if(this.parentSprite.attachedSprites == null)
         {
             this.parentSprite.attachedSprites = new SpriteLayer(map.editor, map, null);
-            this.parentSprite.attachedSprites.addMapSprite(this.parentSprite);
+            this.parentSprite.attachedSprites.addMapSprite(this.parentSprite, -1);
         }
         map.selectedLayerPriorToAttachedSpriteEditMode = map.selectedLayer;
         map.selectedLayer.layerField.unselect();

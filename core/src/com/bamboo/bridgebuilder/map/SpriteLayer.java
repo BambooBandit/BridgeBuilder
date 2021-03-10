@@ -80,9 +80,12 @@ public class SpriteLayer extends Layer
         setCameraZoomToSelectedLayer();
     }
 
-    public void addMapSprite(MapSprite mapSprite)
+    public void addMapSprite(MapSprite mapSprite, int index)
     {
-        this.children.add(mapSprite);
+        if(index == -1)
+            this.children.add(mapSprite);
+        else
+            this.children.insert(index, mapSprite);
 
         if(map.editAttachedMapSprite != null)
         {

@@ -73,7 +73,7 @@ public class AddProperty implements Command
                 for(int i = 0; i < selectedSpriteTools.size; i ++)
                     propertyFields.add(selectedSpriteTools.get(i).properties.peek());
             }
-            else if(selectedSprites.size > 0)
+            else if(selectedSprites != null && selectedSprites.size > 0)
             {
                 for(int i = 0; i < selectedSprites.size; i ++)
                     propertyFields.add(selectedSprites.get(i).instanceSpecificProperties.peek());

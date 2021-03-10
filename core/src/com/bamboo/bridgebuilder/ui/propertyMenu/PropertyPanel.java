@@ -122,7 +122,7 @@ public class PropertyPanel extends Group
                 spriteTool.properties.add(new FieldFieldPropertyValuePropertyField(property, value, this.skin, menu, spriteTool.properties, true));
             }
         }
-        else if(selectedSprites.size > 0)
+        else if(selectedSprites != null && selectedSprites.size > 0)
         {
             for (int i = 0; i < selectedSprites.size; i++)
             {
