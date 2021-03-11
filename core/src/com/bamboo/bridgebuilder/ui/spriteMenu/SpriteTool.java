@@ -60,7 +60,7 @@ public class SpriteTool extends SpriteMenuTool
 
         this.toolNameLabel = new Label(name, skin);
         this.toolNameLabel.setHeight(toolHeight);
-        this.spriteNameLabel = new Label(name, skin);
+        this.spriteNameLabel = new Label(name + ", " + sheet.name, skin);
         this.spriteNameLabel.setHeight(toolHeight);
     }
 
