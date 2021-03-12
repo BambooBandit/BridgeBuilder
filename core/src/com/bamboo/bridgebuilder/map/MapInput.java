@@ -1008,7 +1008,7 @@ public class MapInput implements InputProcessor
                 previewSprite.setScale(perspectiveScale);
             }
             else
-                previewSprite.setPosition(x - previewSprite.getWidth() / 2, y - previewSprite.getHeight() / 2);
+                previewSprite.setPosition(x - map.cameraX - previewSprite.getWidth() / 2, y - map.cameraY - previewSprite.getHeight() / 2);
         }
         return false;
     }

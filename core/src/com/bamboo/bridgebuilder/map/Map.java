@@ -1009,7 +1009,7 @@ public class Map implements Screen
                     previewSprite.setScale(randomScale, randomScale);
                     previewSprite.setRotation(randomRotation);
                     previewSprite.setColor(randomR, randomG, randomB, randomA);
-                    previewSprite.setPosition(coords.x - previewSprite.getWidth() / 2, coords.y - previewSprite.getHeight() / 2);
+                    previewSprite.setPosition(coords.x - cameraX - previewSprite.getWidth() / 2, coords.y - cameraY - previewSprite.getHeight() / 2);
                 }
             }
         }
