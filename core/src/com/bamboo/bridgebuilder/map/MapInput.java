@@ -115,6 +115,8 @@ public class MapInput implements InputProcessor
             this.editor.stage.unfocusAll();
 
             Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
+            coords.x += map.cameraX;
+            coords.y += map.cameraY;
             this.currentPos.set(coords.x, coords.y);
             this.dragOriginPos.set(coords.x, coords.y);
 
@@ -171,14 +173,18 @@ public class MapInput implements InputProcessor
     {
         try
         {
+
             Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
+            coords.x += map.cameraX;
+            coords.y += map.cameraY;
             this.currentPos.set(coords.x, coords.y);
             this.dragDifferencePos.set(coords.x, coords.y);
             this.dragDifferencePos = this.dragDifferencePos.sub(this.dragOriginPos.x, this.dragOriginPos.y);
             handleManipulatorBoxDrag(this.dragDifferencePos, this.currentPos);
             handleBoxSelectDrag(coords.x, coords.y);
-
             handleCameraDrag();
+            this.dragOriginPos.set(coords.x - dragDifferencePos.x, coords.y - dragDifferencePos.y);
+
         } catch(Exception e){
             this.editor.crashRecovery(e);
         }
@@ -191,6 +197,8 @@ public class MapInput implements InputProcessor
         try
         {
             Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
+            coords.x += map.cameraX;
+            coords.y += map.cameraY;
             this.currentPos.set(coords.x, coords.y);
             String xCoord = String.format("%.2f", coords.x);
             String yCoord = String.format("%.2f", coords.y);
@@ -227,7 +235,7 @@ public class MapInput implements InputProcessor
             MapSprite selectedSprite = this.map.selectedSprites.get(i);
             if(selectedSprite.moveBox.contains(x, y))
             {
-                this.moveMapSprites = new MoveMapSprites(this.map.selectedSprites);
+                this.moveMapSprites = new MoveMapSprites(x, y, this.map.selectedSprites);
                 this.map.pushCommand(this.moveMapSprites);
                 return true;
             }
@@ -299,7 +307,7 @@ public class MapInput implements InputProcessor
                 MapPolygon mapPolygon = (MapPolygon) mapObject;
                 if (mapPolygon.moveBox.contains(x, y) && mapPolygon.indexOfSelectedVertice != -1)
                 {
-                    this.movePolygonVertice = new MovePolygonVertice(mapPolygon, mapPolygon.polygon.getTransformedVertices()[mapPolygon.indexOfSelectedVertice], mapPolygon.polygon.getTransformedVertices()[mapPolygon.indexOfSelectedVertice + 1]);
+                    this.movePolygonVertice = new MovePolygonVertice(mapPolygon, x, y, mapPolygon.polygon.getTransformedVertices()[mapPolygon.indexOfSelectedVertice] + map.cameraX, mapPolygon.polygon.getTransformedVertices()[mapPolygon.indexOfSelectedVertice + 1] + map.cameraY);
                     this.map.pushCommand(this.movePolygonVertice);
                     return true;
                 }
@@ -323,7 +331,7 @@ public class MapInput implements InputProcessor
     private boolean handleManipulatorBoxDrag(Vector2 dragAmount, Vector2 dragCurrentPos)
     {
         if(this.moveMapSprites != null)
-            this.moveMapSprites.update(dragAmount.x, dragAmount.y);
+            this.moveMapSprites.update(dragCurrentPos.x, dragCurrentPos.y);
         else if(this.moveMapObjects != null)
         {
             MapSprite parent = this.moveMapObjects.originalMapObjectPosition.iterator().next().key.attachedSprite;
@@ -534,6 +542,8 @@ public class MapInput implements InputProcessor
     {
         if(!Utils.isFileToolThisType(this.editor, Tools.OBJECTVERTICESELECT))
             return;
+        x -= map.cameraX;
+        y -= map.cameraY;
         boolean vertexFound = false;
         for(int i = 0; i < this.map.selectedObjects.size; i ++)
         {
@@ -1005,11 +1015,30 @@ public class MapInput implements InputProcessor
 
     private boolean handleCameraZoom(int amount)
     {
-        if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
-            amount *= 10;
-        this.map.zoom += amount / 3f;
-        if(this.map.zoom < .1f)
+//        if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+//            amount *= 10;
+//        this.map.zoom += amount / 3f;
+//        if(this.map.zoom < .1f)
+//            this.map.zoom = .1f;
+
+
+        if(!Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+        {
+            this.map.perspectiveZoom += amount / 500f;
+
+            if (this.map.perspectiveZoom > .0075f)
+                this.map.perspectiveZoom = .0075f;
+            else if(this.map.perspectiveZoom < 0)
+                this.map.perspectiveZoom = 0;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+            return false;
+
+        this.map.zoom += amount / 4f;
+
+        if (this.map.zoom < .1f)
             this.map.zoom = .1f;
+
         return false;
     }
 
@@ -1017,8 +1046,10 @@ public class MapInput implements InputProcessor
     {
         if(!Utils.isFileToolThisType(this.editor, Tools.GRAB))
             return false;
-        this.map.camera.position.x -= this.dragDifferencePos.x;
-        this.map.camera.position.y -= this.dragDifferencePos.y;
+        this.map.cameraX -= this.dragDifferencePos.x;
+        this.map.cameraY -= this.dragDifferencePos.y;
+//        this.map.camera.position.x -= this.dragDifferencePos.x;
+//        this.map.camera.position.y -= this.dragDifferencePos.y;
         this.map.camera.update();
         PropertyToolPane.updatePerspective(this.map);
         return false;

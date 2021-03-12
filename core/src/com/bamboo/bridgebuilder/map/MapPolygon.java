@@ -56,6 +56,7 @@ public class MapPolygon extends MapObject
     @Override
     public void draw()
     {
+        polygon.setPosition(x - map.cameraX, y - map.cameraY);
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         if(mapSprites == null)
             map.editor.shapeRenderer.setColor(Color.CYAN);
@@ -212,8 +213,8 @@ public class MapPolygon extends MapObject
 
     private void drawCentroidAndAngle(float angle)
     {
-        map.editor.shapeRenderer.circle(centroidX, centroidY, .075f, 8);
-        map.editor.shapeRenderer.line(centroidX, centroidY, (float) (centroidX + Math.cos(angle) * .4), (float) (centroidY + Math.sin(angle) * .4));
+        map.editor.shapeRenderer.circle(centroidX - map.cameraX, centroidY - map.cameraY, .075f, 8);
+        map.editor.shapeRenderer.line(centroidX - map.cameraX, centroidY - map.cameraY, (float) (centroidX - map.cameraX + Math.cos(angle) * .4), (float) (centroidY - map.cameraY + Math.sin(angle) * .4));
     }
 
     @Override
@@ -243,6 +244,8 @@ public class MapPolygon extends MapObject
     @Override
     public boolean isHoveredOver(float x, float y)
     {
+        x -= map.cameraX;
+        y -= map.cameraY;
         return this.polygon.contains(x, y);
     }
 
@@ -255,19 +258,19 @@ public class MapPolygon extends MapObject
     public void moveVertice(float x, float y)
     {
         float[] vertices = this.polygon.getVertices();
-        vertices[indexOfSelectedVertice] = x - this.polygon.getX();
-        vertices[indexOfSelectedVertice + 1] = y - this.polygon.getY();
+        vertices[indexOfSelectedVertice] = x - this.polygon.getX() - map.cameraX;
+        vertices[indexOfSelectedVertice + 1] = y - this.polygon.getY() - map.cameraY;
         this.polygon.setVertices(vertices);
-        setPosition(polygon.getX(), polygon.getY());
+        setPosition(this.x, this.y);
         remakeBody();
     }
 
     public void moveVertice(int index, float x, float y)
     {
         float[] vertices = this.polygon.getVertices();
-        vertices[index] = x - this.polygon.getX();
-        vertices[index + 1] = y - this.polygon.getY();
-        setPosition(polygon.getX(), polygon.getY());
+        vertices[index] = x - this.polygon.getX() - map.cameraX;
+        vertices[index + 1] = y - this.polygon.getY() - map.cameraY;
+        setPosition(x, y);
         remakeBody();
     }
 
@@ -277,6 +280,7 @@ public class MapPolygon extends MapObject
         if(this.selected && (this.map.editor.fileMenu.toolPane.select.selected || (this.map.editor.fileMenu.toolPane.objectVerticeSelect.selected && this.indexOfSelectedVertice != -1)))
         {
             this.moveBox.setScale(this.map.zoom);
+            this.moveBox.sprite.setPosition(this.moveBox.x - map.cameraX, this.moveBox.y - map.cameraY);
             this.moveBox.sprite.draw(this.map.editor.batch);
         }
     }
@@ -333,7 +337,7 @@ public class MapPolygon extends MapObject
         if (indexOfSelectedVertice == -1)
             return -1;
         float[] vertices = this.polygon.getVertices();
-        return vertices[indexOfSelectedVertice] + this.polygon.getX();
+        return vertices[indexOfSelectedVertice] + polygon.getX() + map.cameraX;
     }
 
     public float getVerticeY()
@@ -341,19 +345,19 @@ public class MapPolygon extends MapObject
         if (indexOfSelectedVertice == -1)
             return -1;
         float[] vertices = this.polygon.getVertices();
-        return vertices[indexOfSelectedVertice + 1] + this.polygon.getY();
+        return vertices[indexOfSelectedVertice + 1] + polygon.getY() + map.cameraY;
     }
 
     public float getVerticeX(int index)
     {
         float[] vertices = this.polygon.getVertices();
-        return vertices[index] + this.polygon.getX();
+        return vertices[index] + polygon.getX() + map.cameraX;
     }
 
     public float getVerticeY(int index)
     {
         float[] vertices = this.polygon.getVertices();
-        return vertices[index + 1] + this.polygon.getY();
+        return vertices[index + 1] + polygon.getY() + map.cameraY;
     }
 
     public void drawSelectedVertices()
@@ -361,7 +365,7 @@ public class MapPolygon extends MapObject
         if (indexOfSelectedVertice != -1)
         {
             map.editor.shapeRenderer.setColor(Color.GREEN);
-            map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfSelectedVertice], polygon.getTransformedVertices()[indexOfSelectedVertice + 1], .1f, 7);
+            map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfSelectedVertice] + map.cameraX, polygon.getTransformedVertices()[indexOfSelectedVertice + 1] + map.cameraY, .1f, 7);
         }
     }
 
@@ -370,7 +374,7 @@ public class MapPolygon extends MapObject
         if (indexOfHoveredVertice != -1)
         {
             map.editor.shapeRenderer.setColor(Color.ORANGE);
-            map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfHoveredVertice], polygon.getTransformedVertices()[indexOfHoveredVertice + 1], .1f, 7);
+            map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfHoveredVertice] + map.cameraX, polygon.getTransformedVertices()[indexOfHoveredVertice + 1] + map.cameraY, .1f, 7);
         }
     }
 

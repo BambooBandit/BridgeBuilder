@@ -50,6 +50,7 @@ public abstract class MapObject extends LayerChild implements Comparable<MapObje
         if(this.selected && this.map.editor.fileMenu.toolPane.select.selected)
         {
             this.moveBox.setScale(this.map.zoom);
+            this.moveBox.sprite.setPosition(this.moveBox.x - map.cameraX, this.moveBox.y - map.cameraY);
             this.moveBox.sprite.draw(this.map.editor.batch);
         }
     }

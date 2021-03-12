@@ -83,7 +83,12 @@ public class Map implements Screen
     public Array<MapSprite> selectedSprites;
     public Array<MapObject> selectedObjects;
     public int randomSpriteIndex;
+
+    // camera
     public float zoom = 1;
+    public float perspectiveZoom = 0;
+    public float cameraX;
+    public float cameraY;
 
     public MapInput input;
 
@@ -131,11 +136,11 @@ public class Map implements Screen
 
         this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.camera.setToOrtho(false, virtualHeight * Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight(), virtualHeight);
+        camera.position.set(0, 0, 0);
         this.camera.zoom = this.zoom;
-        this.camera.position.x = 2.5f;
-        this.camera.position.y = 2.5f;
+        this.cameraX = 2.5f;
+        this.cameraY = 2.5f;
         this.camera.update();
-
 
         this.stage = new Stage(new ScreenViewport(), this.editor.batch);
         this.skin = EditorAssets.getUISkin();
@@ -373,12 +378,12 @@ public class Map implements Screen
         {
             editor.shapeRenderer.setColor(Color.YELLOW);
             MapSprite to = from.toEdgeSprite;
-            editor.shapeRenderer.line(from.x + (from.width / 2f),
-                    from.y + (from.height / 2f),
-                    to.x + (to.width / 2f),
-                    to.y + (to.height / 2f));
-            editor.shapeRenderer.circle(to.x + (to.width / 2f),
-                    to.y + (to.height / 2f), .2f, 5);
+            editor.shapeRenderer.line(from.x - cameraX + (from.width / 2f),
+                    from.y - cameraY + (from.height / 2f),
+                    to.x - cameraX + (to.width / 2f),
+                    to.y - cameraY + (to.height / 2f));
+            editor.shapeRenderer.circle(to.x - cameraX + (to.width / 2f),
+                    to.y - cameraY + (to.height / 2f), .2f, 5);
         }
     }
 
@@ -471,14 +476,14 @@ public class Map implements Screen
         }
         if (this.input.mapPolygonVertices.size >= 2)
         {
-            this.editor.shapeRenderer.circle(this.input.mapPolygonVertices.get(0) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(1) + this.input.objectVerticePosition.y, .1f, 7);
+            this.editor.shapeRenderer.circle(this.input.mapPolygonVertices.get(0) + cameraX + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(1) + cameraY + this.input.objectVerticePosition.y, .1f, 7);
             for (int i = 2; i < this.input.mapPolygonVertices.size; i += 2)
             {
-                this.editor.shapeRenderer.line(this.input.mapPolygonVertices.get(oldIndex) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(oldIndex + 1) + this.input.objectVerticePosition.y, this.input.mapPolygonVertices.get(i) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(i + 1) + this.input.objectVerticePosition.y);
+                this.editor.shapeRenderer.line(this.input.mapPolygonVertices.get(oldIndex) - cameraX + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(oldIndex + 1) - cameraY + this.input.objectVerticePosition.y, this.input.mapPolygonVertices.get(i) - cameraX + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(i + 1) - cameraY + this.input.objectVerticePosition.y);
                 oldIndex += 2;
             }
             if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
-                this.editor.shapeRenderer.line(this.input.mapPolygonVertices.get(oldIndex) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(oldIndex + 1) + this.input.objectVerticePosition.y, this.input.mapPolygonVertices.get(0) + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(1) + this.input.objectVerticePosition.y);
+                this.editor.shapeRenderer.line(this.input.mapPolygonVertices.get(oldIndex) + cameraX + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(oldIndex + 1) + cameraY + this.input.objectVerticePosition.y, this.input.mapPolygonVertices.get(0) + cameraX + this.input.objectVerticePosition.x, this.input.mapPolygonVertices.get(1) + cameraY + this.input.objectVerticePosition.y);
         }
     }
 
@@ -800,9 +805,9 @@ public class Map implements Screen
             if (this.editor.fileMenu.toolPane.lines.selected)
             {
                 for (int y = 1; y < layerHeight; y++)
-                    this.editor.shapeRenderer.line(this.selectedLayer.x, this.selectedLayer.y + y, this.selectedLayer.x + layerWidth, this.selectedLayer.y + y);
+                    this.editor.shapeRenderer.line(this.selectedLayer.x - cameraX, this.selectedLayer.y - cameraY + y, this.selectedLayer.x - cameraX + layerWidth, this.selectedLayer.y - cameraY + y);
                 for (int x = 1; x < layerWidth; x++)
-                    this.editor.shapeRenderer.line(this.selectedLayer.x + x, this.selectedLayer.y, this.selectedLayer.x + x, this.selectedLayer.y + layerHeight);
+                    this.editor.shapeRenderer.line(this.selectedLayer.x + x - cameraX, this.selectedLayer.y - cameraY, this.selectedLayer.x - cameraX + x, this.selectedLayer.y - cameraY + layerHeight);
             }
         }
     }
@@ -815,10 +820,10 @@ public class Map implements Screen
             this.editor.shapeRenderer.setColor(Color.BLACK);
             int layerWidth = this.selectedLayer.width;
             int layerHeight = this.selectedLayer.height;
-            this.editor.shapeRenderer.line(this.selectedLayer.x, this.selectedLayer.y, this.selectedLayer.x, this.selectedLayer.y + layerHeight);
-            this.editor.shapeRenderer.line(this.selectedLayer.x, this.selectedLayer.y, this.selectedLayer.x + layerWidth, this.selectedLayer.y);
-            this.editor.shapeRenderer.line(this.selectedLayer.x, this.selectedLayer.y + layerHeight, this.selectedLayer.x + layerWidth, this.selectedLayer.y + layerHeight);
-            this.editor.shapeRenderer.line(this.selectedLayer.x + layerWidth, this.selectedLayer.y, this.selectedLayer.x + layerWidth, this.selectedLayer.y + layerHeight);
+            this.editor.shapeRenderer.line(this.selectedLayer.x - cameraX, this.selectedLayer.y - cameraY, this.selectedLayer.x - cameraX, this.selectedLayer.y - cameraY + layerHeight);
+            this.editor.shapeRenderer.line(this.selectedLayer.x - cameraX, this.selectedLayer.y - cameraY, this.selectedLayer.x - cameraX + layerWidth, this.selectedLayer.y - cameraY);
+            this.editor.shapeRenderer.line(this.selectedLayer.x - cameraX, this.selectedLayer.y - cameraY + layerHeight, this.selectedLayer.x - cameraX + layerWidth, this.selectedLayer.y - cameraY + layerHeight);
+            this.editor.shapeRenderer.line(this.selectedLayer.x - cameraX + layerWidth, this.selectedLayer.y - cameraY, this.selectedLayer.x - cameraX + layerWidth, this.selectedLayer.y - cameraY + layerHeight);
         }
     }
 
@@ -1788,10 +1793,10 @@ public class Map implements Screen
         mapSprite.x4Offset = mapSpriteData.x4;
         mapSprite.y4Offset = mapSpriteData.y4;
         float[] spriteVertices = mapSprite.sprite.getVertices();
-        mapSprite.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + mapSprite.x1Offset - mapSprite.offsetMovebox1.width / 2f * mapSprite.offsetMovebox1.scale, spriteVertices[SpriteBatch.Y2] + mapSprite.y1Offset - mapSprite.offsetMovebox1.height / 2f * mapSprite.offsetMovebox1.scale);
-        mapSprite.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + mapSprite.x2Offset - mapSprite.offsetMovebox2.width / 2f * mapSprite.offsetMovebox2.scale, spriteVertices[SpriteBatch.Y3] + mapSprite.y2Offset - mapSprite.offsetMovebox2.height / 2f * mapSprite.offsetMovebox2.scale);
-        mapSprite.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + mapSprite.x3Offset - mapSprite.offsetMovebox3.width / 2f * mapSprite.offsetMovebox3.scale, spriteVertices[SpriteBatch.Y4] + mapSprite.y3Offset - mapSprite.offsetMovebox3.height / 2f * mapSprite.offsetMovebox3.scale);
-        mapSprite.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + mapSprite.x4Offset - mapSprite.offsetMovebox4.width / 2f * mapSprite.offsetMovebox4.scale, spriteVertices[SpriteBatch.Y1] + mapSprite.y4Offset - mapSprite.offsetMovebox4.height / 2f * mapSprite.offsetMovebox4.scale);
+        mapSprite.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + mapSprite.map.cameraX + mapSprite.x1Offset - (mapSprite.offsetMovebox1.scale * mapSprite.offsetMovebox1.width / 2f), spriteVertices[SpriteBatch.Y2] + mapSprite.map.cameraY + mapSprite.y1Offset - (mapSprite.offsetMovebox1.scale * mapSprite.offsetMovebox1.height / 2f));
+        mapSprite.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + mapSprite.map.cameraX + mapSprite.x2Offset - (mapSprite.offsetMovebox2.scale * mapSprite.offsetMovebox2.width / 2f), spriteVertices[SpriteBatch.Y3] + mapSprite.map.cameraY + mapSprite.y2Offset - (mapSprite.offsetMovebox2.scale * mapSprite.offsetMovebox2.height / 2f));
+        mapSprite.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + mapSprite.map.cameraX + mapSprite.x3Offset - (mapSprite.offsetMovebox3.scale * mapSprite.offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + mapSprite.map.cameraY + mapSprite.y3Offset - (mapSprite.offsetMovebox3.scale * mapSprite.offsetMovebox3.height / 2f));
+        mapSprite.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + mapSprite.map.cameraX + mapSprite.x4Offset - (mapSprite.offsetMovebox4.scale * mapSprite.offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + mapSprite.map.cameraY + mapSprite.y4Offset - (mapSprite.offsetMovebox4.scale * mapSprite.offsetMovebox4.height / 2f));
         mapSprite.polygon.setOffset(mapSprite.x1Offset, mapSprite.x2Offset, mapSprite.x3Offset, mapSprite.x4Offset, mapSprite.y1Offset, mapSprite.y2Offset, mapSprite.y3Offset, mapSprite.y4Offset);
 
         if(mapSpriteData.props != null)

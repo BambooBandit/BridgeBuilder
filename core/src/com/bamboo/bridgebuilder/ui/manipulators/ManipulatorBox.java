@@ -9,7 +9,7 @@ public abstract class ManipulatorBox
 {
     public float x, y;
     public Sprite sprite;
-    protected Rectangle rectangle;
+    public Rectangle rectangle;
     public float width, height, scale = 1;
     public ManipulatorBox()
     {

@@ -52,7 +52,7 @@ public class SpriteGrid
             {
                 int x = (int) Math.floor(i % this.objectLayer.width);
                 int y = (int) Math.floor(i / this.objectLayer.width);
-                this.objectLayer.map.editor.shapeRenderer.rect(x, y, 1, 1);
+                this.objectLayer.map.editor.shapeRenderer.rect(x - objectLayer.map.cameraX, y - objectLayer.map.cameraY, 1, 1);
             }
         }
     }
@@ -66,7 +66,7 @@ public class SpriteGrid
             this.objectLayer.map.editor.shapeRenderer.setColor(cell.r, cell.g, cell.b, cell.a);
             int x = (int) Math.floor(i % this.objectLayer.width);
             int y = (int) Math.floor(i / this.objectLayer.width);
-            this.objectLayer.map.editor.shapeRenderer.rect(x, y, 1, 1);
+            this.objectLayer.map.editor.shapeRenderer.rect(x - objectLayer.map.cameraX, y - objectLayer.map.cameraY, 1, 1);
         }
     }
 
@@ -81,7 +81,7 @@ public class SpriteGrid
             SpriteCell spriteCell = this.grid.get(i);
             if(spriteCell.dustType != null)
             {
-                Vector3 project = Utils.project(objectLayer.map.camera, x + .5f, y + .5f);
+                Vector3 project = Utils.project(objectLayer.map.camera, x + .5f - objectLayer.map.cameraX, y + .5f - objectLayer.map.cameraY);
                 Utils.centerPrint(objectLayer.map.editor.batch, spriteCell.dustType, project.x, project.y);
             }
         }
@@ -174,6 +174,10 @@ public class SpriteGrid
     private static float[] rectangle = new float[8];
     public void checkAllCellsInPolygonBox(MapPolygon mapPolygon, int index)
     {
+        float oldPolygonX = mapPolygon.polygon.getX();
+        float oldPolygonY = mapPolygon.polygon.getY();
+        mapPolygon.polygon.setPosition(oldPolygonX + mapPolygon.map.cameraX, oldPolygonY + mapPolygon.map.cameraY);
+
         Rectangle polygonRectangle = mapPolygon.polygon.getBoundingRectangle();
 
         boolean bl = false;
@@ -233,6 +237,7 @@ public class SpriteGrid
                 }
             }
         }
+        mapPolygon.polygon.setPosition(oldPolygonX, oldPolygonY);
     }
 
     private static Color rgba8888ToColor = new Color();
@@ -266,11 +271,12 @@ public class SpriteGrid
         Gdx.gl20.glBlendFuncSeparate(Gdx.gl.GL_SRC_ALPHA,Gdx.gl.GL_ONE_MINUS_SRC_ALPHA, Gdx.gl.GL_ONE,Gdx.gl.GL_ONE);
 
         // Prepare camera to handle fbo
-        float oldCamX = this.objectLayer.map.camera.position.x;
-        float oldCamY = this.objectLayer.map.camera.position.y;
+        float oldCamX = this.objectLayer.map.cameraX;
+        float oldCamY = this.objectLayer.map.cameraY;
         this.objectLayer.map.camera.viewportWidth = this.objectLayer.width / this.objectLayer.map.camera.zoom;
         this.objectLayer.map.camera.viewportHeight = this.objectLayer.height / this.objectLayer.map.camera.zoom;
-        this.objectLayer.map.camera.position.set(this.objectLayer.map.camera.viewportWidth * this.objectLayer.map.camera.zoom / 2f, this.objectLayer.map.camera.viewportHeight * this.objectLayer.map.camera.zoom / 2f, 0);
+        this.objectLayer.map.cameraX = this.objectLayer.map.camera.viewportWidth * this.objectLayer.map.camera.zoom / 2f;
+        this.objectLayer.map.cameraY = this.objectLayer.map.camera.viewportHeight * this.objectLayer.map.camera.zoom / 2f;
         this.objectLayer.map.camera.update();
 
         Gdx.gl.glClearColor(this.objectLayer.map.r, this.objectLayer.map.g, this.objectLayer.map.b, 1);
@@ -305,7 +311,8 @@ public class SpriteGrid
         this.fbo.getColorBufferTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
         // Reset camera after drawing to fbo
-        this.objectLayer.map.camera.position.set(oldCamX, oldCamY, 0);
+        this.objectLayer.map.cameraX = oldCamX;
+        this.objectLayer.map.cameraY = oldCamY;
         this.objectLayer.map.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         this.objectLayer.map.editor.batch.setBlendFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -85,7 +85,7 @@ public class AttachedMapObjectManager
         for(int i = 0; i < this.attachedMapObjects.size; i ++)
         {
             mapPolygon = (MapPolygon) this.attachedMapObjects.get(i);
-            mapPolygon.setPosition(mapPolygon.polygon.getX(), mapPolygon.polygon.getY());
+            mapPolygon.setPosition(mapPolygon.x, mapPolygon.y);
         }
         this.offsetX = mapPolygon.getX() - mapPolygon.attachedSprite.getX();
         this.offsetY = mapPolygon.getY() - mapPolygon.attachedSprite.getY();

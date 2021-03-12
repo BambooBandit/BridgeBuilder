@@ -84,15 +84,15 @@ public class MapSprite extends LayerChild
         this.scaleBox = new ScaleBox();
         this.scaleBox.setPosition(x + this.width, y + this.height / 2);
 
-        float[] spriteVertices = sprite.getVertices();
         this.offsetMovebox1 = new MoveBox();
-        this.offsetMovebox1.setPosition(x + spriteVertices[SpriteBatch.X2], y + spriteVertices[SpriteBatch.Y2]);
         this.offsetMovebox2 = new MoveBox();
-        this.offsetMovebox2.setPosition(x + spriteVertices[SpriteBatch.X3], y + spriteVertices[SpriteBatch.Y3]);
         this.offsetMovebox3 = new MoveBox();
-        this.offsetMovebox3.setPosition(x + spriteVertices[SpriteBatch.X4], y + spriteVertices[SpriteBatch.Y4]);
         this.offsetMovebox4 = new MoveBox();
-        this.offsetMovebox4.setPosition(x + spriteVertices[SpriteBatch.X1], y + spriteVertices[SpriteBatch.Y1]);
+        float[] spriteVertices = this.sprite.getVertices();
+        offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + map.cameraX + x1Offset - (offsetMovebox1.scale * offsetMovebox1.width / 2f), spriteVertices[SpriteBatch.Y2] + map.cameraY + y1Offset - (offsetMovebox1.scale * offsetMovebox1.height / 2f));
+        offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + map.cameraX + x2Offset - (offsetMovebox2.scale * offsetMovebox2.width / 2f), spriteVertices[SpriteBatch.Y3] + map.cameraY + y2Offset - (offsetMovebox2.scale * offsetMovebox2.height / 2f));
+        offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + map.cameraX + x3Offset - (offsetMovebox3.scale * offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + map.cameraY + y3Offset - (offsetMovebox3.scale * offsetMovebox3.height / 2f));
+        offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + map.cameraX + x4Offset - (offsetMovebox4.scale * offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + map.cameraY + y4Offset - (offsetMovebox4.scale * offsetMovebox4.height / 2f));
 
         this.verts = new float[20];
         this.scale = 1;
@@ -337,6 +337,8 @@ public class MapSprite extends LayerChild
         if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
             sprite.setAlpha(sprite.getColor().a / 3.5f);
 
+        sprite.setPosition(x - map.cameraX, y - map.cameraY);
+
         float u = sprite.getU();
         float v = sprite.getV();
         float u2 = sprite.getU2();
@@ -453,7 +455,8 @@ public class MapSprite extends LayerChild
                 for (int i = 0; i < tool.topSprites.size; i++)
                 {
                     TextureAtlas.AtlasSprite topsprite = tool.topSprites.get(i);
-                    topsprite.setPosition(sprite.getX(), sprite.getY());
+                    topsprite.setPosition(x - map.cameraX, y - map.cameraY);
+//                    topsprite.setPosition(sprite.getX(), sprite.getY());
                     topsprite.setRotation(sprite.getRotation());
                     topsprite.setOrigin(sprite.getOriginX(), sprite.getOriginY());
                     topsprite.setScale( this.scale * perspectiveScale);
@@ -512,25 +515,31 @@ public class MapSprite extends LayerChild
     @Override
     public void drawHoverOutline()
     {
+        polygon.setPosition(x - map.cameraX, y - map.cameraY);
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.ORANGE);
         map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
+        polygon.setPosition(x, y);
     }
 
     @Override
     public void drawSelectedOutline()
     {
+        polygon.setPosition(x - map.cameraX, y - map.cameraY);
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.GREEN);
         map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
+        polygon.setPosition(x, y);
     }
 
     @Override
     public void drawSelectedHoveredOutline()
     {
+        polygon.setPosition(x - map.cameraX, y - map.cameraY);
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.YELLOW);
         map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
+        polygon.setPosition(x, y);
     }
 
     public void drawRotationBox()
@@ -538,6 +547,7 @@ public class MapSprite extends LayerChild
         if(selected && map.editor.fileMenu.toolPane.select.selected)
         {
             rotationBox.setScale(map.zoom);
+            rotationBox.sprite.setPosition(rotationBox.x + (rotationBox.width * rotationBox.scale) - map.cameraX, rotationBox.y - map.cameraY);
             rotationBox.sprite.draw(map.editor.batch);
         }
     }
@@ -546,6 +556,7 @@ public class MapSprite extends LayerChild
         if(selected && map.editor.fileMenu.toolPane.select.selected)
         {
             moveBox.setScale(map.zoom);
+            moveBox.sprite.setPosition(moveBox.x - map.cameraX, moveBox.y - map.cameraY);
             moveBox.sprite.draw(map.editor.batch);
 
             if(map.selectedSprites.size == 1)
@@ -554,6 +565,12 @@ public class MapSprite extends LayerChild
                 offsetMovebox2.setScale(map.zoom);
                 offsetMovebox3.setScale(map.zoom);
                 offsetMovebox4.setScale(map.zoom);
+
+                offsetMovebox1.sprite.setPosition(offsetMovebox1.x - map.cameraX, offsetMovebox1.y - map.cameraY);
+                offsetMovebox2.sprite.setPosition(offsetMovebox2.x - map.cameraX, offsetMovebox2.y - map.cameraY);
+                offsetMovebox3.sprite.setPosition(offsetMovebox3.x - map.cameraX, offsetMovebox3.y - map.cameraY);
+                offsetMovebox4.sprite.setPosition(offsetMovebox4.x - map.cameraX, offsetMovebox4.y - map.cameraY);
+
                 offsetMovebox1.sprite.draw(map.editor.batch);
                 offsetMovebox2.sprite.draw(map.editor.batch);
                 offsetMovebox3.sprite.draw(map.editor.batch);
@@ -566,6 +583,7 @@ public class MapSprite extends LayerChild
         if(selected && map.editor.fileMenu.toolPane.select.selected)
         {
             scaleBox.setScale(map.zoom);
+            scaleBox.sprite.setPosition(scaleBox.x + (2f * scaleBox.width * scaleBox.scale) - map.cameraX, scaleBox.y - map.cameraY);
             scaleBox.sprite.draw(map.editor.batch);
         }
     }
@@ -604,9 +622,9 @@ public class MapSprite extends LayerChild
         this.rotation = degree;
         Utils.spritePositionCopy.set(getX(), getY());
         Vector2 endPos = Utils.spritePositionCopy.sub(Utils.centerOrigin).rotate(rotateAmount).add(Utils.centerOrigin); // TODO don't assume this was set in case rotate is used somewhere else
-        setPosition(endPos.x, endPos.y);
         this.sprite.setRotation(degree);
         this.polygon.setRotation(degree);
+        setPosition(endPos.x, endPos.y);
         if(this.tool.topSprites != null)
         {
             for(int i = 0; i < this.tool.topSprites.size; i++)
@@ -723,7 +741,7 @@ public class MapSprite extends LayerChild
             this.perspectiveScale = 1;
 
         this.polygon.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
-        this.sprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
+//        this.sprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
         this.sprite.setScale(scale);
 
         x += this.width / 2;
@@ -732,11 +750,12 @@ public class MapSprite extends LayerChild
         this.moveBox.setPosition(x, y);
         this.scaleBox.setPosition(x, y);
 
+        sprite.setPosition(x - map.cameraX - width / 2f, y - map.cameraY - height / 2f);
         float[] spriteVertices = this.sprite.getVertices();
-        offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + x1Offset - offsetMovebox1.width / 2f * offsetMovebox1.scale, spriteVertices[SpriteBatch.Y2] + y1Offset - offsetMovebox1.height / 2f * offsetMovebox1.scale);
-        offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + x2Offset - offsetMovebox2.width / 2f * offsetMovebox2.scale, spriteVertices[SpriteBatch.Y3] + y2Offset - offsetMovebox2.height / 2f * offsetMovebox2.scale);
-        offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + x3Offset - offsetMovebox3.width / 2f * offsetMovebox3.scale, spriteVertices[SpriteBatch.Y4] + y3Offset - offsetMovebox3.height / 2f * offsetMovebox3.scale);
-        offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + x4Offset - offsetMovebox4.width / 2f * offsetMovebox4.scale, spriteVertices[SpriteBatch.Y1] + y4Offset - offsetMovebox4.height / 2f * offsetMovebox4.scale);
+        offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + map.cameraX + x1Offset - (offsetMovebox1.scale * offsetMovebox1.width / 2f), spriteVertices[SpriteBatch.Y2] + map.cameraY + y1Offset - (offsetMovebox1.scale * offsetMovebox1.height / 2f));
+        offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + map.cameraX + x2Offset - (offsetMovebox2.scale * offsetMovebox2.width / 2f), spriteVertices[SpriteBatch.Y3] + map.cameraY + y2Offset - (offsetMovebox2.scale * offsetMovebox2.height / 2f));
+        offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + map.cameraX + x3Offset - (offsetMovebox3.scale * offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + map.cameraY + y3Offset - (offsetMovebox3.scale * offsetMovebox3.height / 2f));
+        offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + map.cameraX + x4Offset - (offsetMovebox4.scale * offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + map.cameraY + y4Offset - (offsetMovebox4.scale * offsetMovebox4.height / 2f));
 
         if(this.tool.hasAttachedMapObjects())
         {
@@ -754,6 +773,7 @@ public class MapSprite extends LayerChild
         if(scale <= 0)
             return;
         this.scale = scale;
+        setPosition(x, y);
 
         if(map.editor.fileMenu.toolPane.perspective.selected && !Utils.isLayerGround(this.layer))
         {

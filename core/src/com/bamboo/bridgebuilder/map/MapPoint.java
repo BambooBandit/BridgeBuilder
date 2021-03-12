@@ -77,8 +77,8 @@ public class MapPoint extends MapObject
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.CYAN);
 
-        float x = this.point.getTransformedX();
-        float y = this.point.getTransformedY();
+        float x = this.point.getTransformedX() - map.cameraX;
+        float y = this.point.getTransformedY() - map.cameraY;
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -98,8 +98,8 @@ public class MapPoint extends MapObject
         setPosition(getX() + xOffset, getY() + yOffset);
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.CYAN);
-        float x = this.point.getTransformedX();
-        float y = this.point.getTransformedY();
+        float x = this.point.getTransformedX() - map.cameraX;
+        float y = this.point.getTransformedY() - map.cameraY;
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -119,8 +119,8 @@ public class MapPoint extends MapObject
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.ORANGE);
-        float x = this.point.getTransformedX();
-        float y = this.point.getTransformedY();
+        float x = this.point.getTransformedX() - map.cameraX;
+        float y = this.point.getTransformedY() - map.cameraY;
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -139,8 +139,8 @@ public class MapPoint extends MapObject
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.GREEN);
-        float x = this.point.getTransformedX();
-        float y = this.point.getTransformedY();
+        float x = this.point.getTransformedX() - map.cameraX;
+        float y = this.point.getTransformedY() - map.cameraY;
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -159,8 +159,8 @@ public class MapPoint extends MapObject
     {
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.YELLOW);
-        float x = this.point.getTransformedX();
-        float y = this.point.getTransformedY();
+        float x = this.point.getTransformedX() - map.cameraX;
+        float y = this.point.getTransformedY() - map.cameraY;
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
