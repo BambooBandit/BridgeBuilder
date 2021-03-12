@@ -19,6 +19,7 @@ public class StairsDialog extends Window
     private Label finalHeightLabel;
     private Label stairAmountLabel;
     private Label thicknessLabel;
+    private Label heightLabel;
     private Label parentCenterHeightLabel;
     private Label connectorCenterHeightLabel;
     private Label snapLabel;
@@ -27,6 +28,7 @@ public class StairsDialog extends Window
     private TextField finalHeightField;
     private TextField stairAmountField;
     private TextField thicknessField;
+    private TextField heightField;
     private CheckBox snapCheckBox;
     private CheckBox parentCenterHeightCheckBox;
     private CheckBox connectorCenterHeightCheckBox;
@@ -43,6 +45,7 @@ public class StairsDialog extends Window
         this.finalHeightLabel = new Label("Stair final height: ", skin);
         this.stairAmountLabel = new Label("Stair amount per meter: ", skin);
         this.thicknessLabel = new Label("Thickness: ", skin);
+        this.heightLabel = new Label("Height offset: ", skin);
         this.transparentParentLabel = new Label("Should parent be transparent: ", skin);
         this.snapLabel = new Label("Should snap: ", skin);
         this.parentCenterHeightLabel = new Label("Should parent height be centered: ", skin);
@@ -51,6 +54,7 @@ public class StairsDialog extends Window
         this.finalHeightField = new TextField("5", skin);
         this.stairAmountField = new TextField("1", skin);
         this.thicknessField = new TextField("1", skin);
+        this.heightField = new TextField("0", skin);
         this.parentCenterHeightCheckBox = new CheckBox("", skin);
         this.parentCenterHeightCheckBox.setChecked(false);
         this.connectorCenterHeightCheckBox = new CheckBox("", skin);
@@ -79,6 +83,8 @@ public class StairsDialog extends Window
         this.table.add(this.stairAmountField).padBottom(15).row();
         this.table.add(this.thicknessLabel).padBottom(15);
         this.table.add(this.thicknessField).padBottom(15).row();
+        this.table.add(this.heightLabel).padBottom(15);
+        this.table.add(this.heightField).padBottom(15).row();
         this.table.add(this.parentCenterHeightLabel).padBottom(15);
         this.table.add(this.parentCenterHeightCheckBox).padBottom(15).row();
         this.table.add(this.connectorCenterHeightLabel).padBottom(15);
@@ -132,6 +138,13 @@ public class StairsDialog extends Window
     {
         float num = 1;
         try { num = Float.parseFloat(this.thicknessField.getText()); } catch (NumberFormatException e){}
+        return num;
+    }
+
+    public float getHeightOffset()
+    {
+        float num = 0;
+        try { num = Float.parseFloat(this.heightField.getText()); } catch (NumberFormatException e){}
         return num;
     }
 

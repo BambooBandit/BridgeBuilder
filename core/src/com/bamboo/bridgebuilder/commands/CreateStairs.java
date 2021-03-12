@@ -54,13 +54,14 @@ public class CreateStairs implements Command
             float thickness = map.editor.fileMenu.toolPane.stairsDialog.getThickness();
             float progress = (1f / (stairAmount - 1f)) * thickness;
             float height = ((finalHeight - initialHeight) * progress);
+            float heightOffset = map.editor.fileMenu.toolPane.stairsDialog.getHeightOffset();
             float fromXStepSize = ((x1 - stairX) * (1f - progress)) + ((x2 - stairX) * progress);
             float fromYStepSize = ((y1 - stairY) * (1f - progress)) + (((y2 + height) - stairY) * progress);
             float toXStepSize = ((x4 - stairX - (x4 - stairX)) * (1f - progress)) + ((x3 - stairX - (x4 - stairX)) * progress);
             float toYStepSize = (((y4 + height) - stairY - (y4 - stairY)) * (1f - progress)) + ((y3 - stairY - (y4 - stairY)) * progress);
             for (int i = 0; i < stairAmount; i++)
             {
-                progress = ((float) i) / (stairAmount - 1f);
+                progress = (((float) i) / (stairAmount - 1f));
                 float fromX = (x1 * (1f - progress)) + (x2 * progress);
                 float fromY = (y1 * (1f - progress)) + (y2 * progress);
                 float toX = (x4 * (1f - progress)) + (x3 * progress);
@@ -74,8 +75,8 @@ public class CreateStairs implements Command
                 for(int k = 0; k < drawToFence.connectors.size; k ++)
                 {
                     MapSprite connector = drawToFence.connectors.get(k);
-                    connector.y1Offset += height;
-                    connector.y2Offset += height;
+                    connector.y1Offset += height + heightOffset;
+                    connector.y2Offset += height + heightOffset;
                     connector.y3Offset += height;
                     connector.y4Offset += height;
 
