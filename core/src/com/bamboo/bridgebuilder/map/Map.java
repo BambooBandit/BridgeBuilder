@@ -1350,6 +1350,7 @@ public class Map implements Screen
                                 }
                             }
                             parentMapSprite.attachedSprites = new SpriteLayer(editor, this, null);
+                            parentMapSprite.attachedSprites.perspective = ((SpriteLayer)parentMapSprite.layer).perspective;
                             child:
                             for(int s = 0; s < attachedMapSpriteData.sprites.size(); s++)
                             {
