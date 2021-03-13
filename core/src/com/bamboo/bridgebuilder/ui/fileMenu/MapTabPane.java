@@ -92,17 +92,29 @@ public class MapTabPane extends Group
                 {
                     new YesNoDialog("Save before closing " + map.name + "?", map.editor.stage, "", skin, true)
                     {
-//                        @Override
-//                        public void yes() { map.editor.fileMenu.save(map, true, false); }
                         @Override
-                        public void yes() { removeMap(map); }
+                        public void yes()
+                        {
+                            if(editor.fileMenu.toolPane.attachedSprites.selected)
+                                editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.attachedSprites);
+                            map.editor.fileMenu.save(map, true, false);
+                        }
 
                         @Override
-                        public void no() { removeMap(map); }
+                        public void no()
+                        {
+                            if(editor.fileMenu.toolPane.attachedSprites.selected)
+                                editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.attachedSprites);
+                            removeMap(map);
+                        }
                     };
                 }
                 else
+                {
+                    if(editor.fileMenu.toolPane.attachedSprites.selected)
+                        editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.attachedSprites);
                     removeMap(map);
+                }
             }
         });
         mapButton.addActor(closeButton);
