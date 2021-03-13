@@ -6,6 +6,8 @@ public abstract class LayerChild
     public Map map;
     public Layer layer;
     public boolean selected;
+    public float perspectiveOffsetX = 1;
+    public float perspectiveOffsetY = 1;
     public float perspectiveScale = 1;
     public int flickerId;
     public MapSprite toFlicker;

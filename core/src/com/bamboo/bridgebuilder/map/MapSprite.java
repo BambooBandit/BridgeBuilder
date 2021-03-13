@@ -307,6 +307,8 @@ public class MapSprite extends LayerChild
     /** Take a coordinate on the local sprite and return where it would be skewed. */
     public Vector2 skewOffset(float x, float y, float height)
     {
+        x -= map.cameraX;
+        y -= map.cameraY;
         if(!map.editor.fileMenu.toolPane.parallax.selected)
         {
             skewProject.set(0, 0);
@@ -337,7 +339,18 @@ public class MapSprite extends LayerChild
         if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
             sprite.setAlpha(sprite.getColor().a / 3.5f);
 
-        sprite.setPosition(x - map.cameraX, y - map.cameraY);
+        if(Utils.getPropertyField(layer.properties, "ground") == null)
+        {
+            updatePerspectiveTall();
+        }
+        else
+        {
+            this.perspectiveOffsetX = map.cameraX;
+            this.perspectiveOffsetY = map.cameraY;
+            this.perspectiveScale = 1;
+        }
+        sprite.setPosition(this.x - perspectiveOffsetX, this.y - perspectiveOffsetY);
+        sprite.setScale(this.scale * this.perspectiveScale);
 
         float u = sprite.getU();
         float v = sprite.getV();
@@ -965,5 +978,39 @@ public class MapSprite extends LayerChild
     public static void resetIdCounter()
     {
         idCounter = 1;
+    }
+    
+    private void updatePerspectiveTall()
+    {
+        SpriteLayer spriteLayer = (SpriteLayer) this.layer;
+        float trimX = this.x;
+        float trimY = this.y;
+        float trimHeight = (this.sprite.getAtlasRegion().getRegionHeight() / 64f);
+
+        if(this.parentSprite != null)
+        {
+            trimX = this.parentSprite.x;
+            trimY = this.parentSprite.y;
+        }
+
+        float yScaleDisplacement = 0;
+        float xScaleDisplacement = 0;
+
+        float x = trimX;
+        float y = trimY;
+
+        Vector3 p = spriteLayer.perspective.projectWorldToPerspective(x, y);
+        x = p.x;
+        y = p.y;
+
+        float scale = spriteLayer.perspective.getScaleFactor(trimY);
+        this.perspectiveScale = scale;
+        scale *= this.scale;
+
+        yScaleDisplacement += (((trimHeight * (scale)) - trimHeight)) / 2f;
+        xScaleDisplacement += (((this.width) * (scale)) - this.width) / 2f;
+
+        this.perspectiveOffsetX = this.x - (x + (xScaleDisplacement));
+        this.perspectiveOffsetY = this.y - (y + (yScaleDisplacement));
     }
 }

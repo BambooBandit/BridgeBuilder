@@ -13,17 +13,29 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldProperty
 public class SpriteLayer extends Layer
 {
     public Array<MapSprite> children;
+    public Perspective perspective;
 
     public SpriteLayer(BridgeBuilder editor, Map map, LayerField layerField)
     {
         super(editor, map, LayerTypes.SPRITE, layerField);
         this.children = super.children;
+        this.perspective = new Perspective(map, this, map.camera, this.z, true);
     }
 
     @Override
     public void draw()
     {
+        perspective.update();
         setCameraZoomToThisLayer();
+
+        if(Utils.getPropertyField(properties, "ground") == null)
+        {
+            this.editor.batch.setProjectionMatrix(perspective.camera.combined);
+        }
+        else
+        {
+            this.editor.batch.setProjectionMatrix(perspective.perspectiveCamera.combined);
+        }
 
         conditional:
         if(this.map.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this.map, this) && Utils.isLayerGround(this))
@@ -95,5 +107,12 @@ public class SpriteLayer extends Layer
 
         if(this.editor.fileMenu.toolPane.spriteGridColors.selected)
             this.map.updateLayerSpriteGrids();
+    }
+
+    @Override
+    public void setZ(float z)
+    {
+        super.setZ(z);
+        this.perspective.cameraHeight = z;
     }
 }

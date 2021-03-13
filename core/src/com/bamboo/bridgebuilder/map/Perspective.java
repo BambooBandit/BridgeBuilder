@@ -5,10 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.Utils;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public class Perspective
 {
@@ -23,12 +20,12 @@ public class Perspective
     public float cameraHeight;
     public boolean useSkewWithHeight;
     public Map map;
+    public SpriteLayer spriteLayer;
 
-    public Perspective(Map map, OrthographicCamera camera, Array<PropertyField> properties, float cameraHeight, boolean useSkewWithHeight)
+    public Perspective(Map map, SpriteLayer spriteLayer, OrthographicCamera camera, float cameraHeight, boolean useSkewWithHeight)
     {
         this.map = map;
-        FieldFieldPropertyValuePropertyField skewProperty = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(properties, "skew");
-        this.skew = Float.parseFloat(skewProperty.value.getText());
+        this.spriteLayer = spriteLayer;
 
         this.cameraHeight = cameraHeight;
         this.useSkewWithHeight = useSkewWithHeight;
@@ -67,6 +64,9 @@ public class Perspective
 
     public void update()
     {
+        matchOrthogonalCamera();
+        setZoom(map.zoom);
+
         if(Gdx.graphics.getWidth() != 0)
             this.screenWidth = Gdx.graphics.getWidth();
         if(Gdx.graphics.getHeight() != 0)
@@ -94,7 +94,7 @@ public class Perspective
         Matrix4.inv(perspectiveCamera.invProjectionView.val);
         perspectiveCamera.frustum.update(perspectiveCamera.invProjectionView);
 
-        projectWorldToPerspectiveSky(0, 99999);
+        projectWorldToPerspectiveSky(spriteLayer.width / 2f, 99999);
         this.vanishingPoint.set(projector.x, projector.y, 0);
         Vector3 coords = Utils.project(camera, this.vanishingPoint.x, this.vanishingPoint.y);
         this.vanishingPointInScreenCoords.set(coords.x, coords.y);
