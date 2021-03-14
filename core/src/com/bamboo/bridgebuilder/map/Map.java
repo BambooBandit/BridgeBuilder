@@ -186,6 +186,9 @@ public class Map implements Screen
         this.camera.zoom = this.zoom;
         this.camera.update();
 
+        for(int i = 0; i < layers.size; i ++)
+            layers.get(i).update();
+
         this.editor.batch.setProjectionMatrix(this.camera.combined);
         this.editor.batch.begin();
         //spritebatch begin

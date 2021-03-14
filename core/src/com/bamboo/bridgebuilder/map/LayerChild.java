@@ -23,6 +23,7 @@ public abstract class LayerChild
         this.map = map;
     }
 
+    public abstract void update();
     public abstract void draw();
     public abstract void drawHoverOutline();
     public abstract void drawSelectedOutline();

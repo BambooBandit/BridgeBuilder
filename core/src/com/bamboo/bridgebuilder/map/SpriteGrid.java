@@ -284,6 +284,8 @@ public class SpriteGrid
 
         this.objectLayer.map.editor.batch.begin();
         for(int i = 0; i < this.objectLayer.map.layers.size; i ++)
+            this.objectLayer.map.layers.get(i).update();
+        for(int i = 0; i < this.objectLayer.map.layers.size; i ++)
         {
             Layer layer = this.objectLayer.map.layers.get(i);
             if(layer instanceof ObjectLayer)

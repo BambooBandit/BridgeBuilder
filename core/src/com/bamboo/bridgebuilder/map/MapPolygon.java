@@ -53,6 +53,8 @@ public class MapPolygon extends MapObject
         this.setOriginBasedOnParentSprite();
     }
 
+    @Override public void update() { }
+
     @Override
     public void draw()
     {

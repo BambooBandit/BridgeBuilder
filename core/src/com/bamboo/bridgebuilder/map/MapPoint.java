@@ -40,6 +40,8 @@ public class MapPoint extends MapObject
         setOriginBasedOnParentSprite();
     }
 
+    @Override public void update() {}
+
     @Override
     public void setPosition(float x, float y)
     {

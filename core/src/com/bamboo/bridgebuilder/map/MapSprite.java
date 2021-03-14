@@ -329,16 +329,9 @@ public class MapSprite extends LayerChild
         return skewProject;
     }
 
-    public static float[] offsetVerts = new float[4];
     @Override
-    public void draw()
+    public void update()
     {
-        if(layerOverride != null && layerOverride.layerField.visibleImg.isVisible())
-            layerOverride.draw();
-
-        if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
-            sprite.setAlpha(sprite.getColor().a / 3.5f);
-
         if(Utils.getPropertyField(layer.properties, "ground") == null)
         {
             updatePerspectiveTall();
@@ -349,6 +342,28 @@ public class MapSprite extends LayerChild
             this.perspectiveOffsetY = map.cameraY;
             this.perspectiveScale = 1;
         }
+
+        if(attachedSprites != null)
+        {
+            for(int i = 0; i < attachedSprites.children.size; i ++)
+            {
+                MapSprite child = attachedSprites.children.get(i);
+                if(child == this)
+                    continue;
+                child.update();
+            }
+        }
+    }
+
+    public static float[] offsetVerts = new float[4];
+    @Override
+    public void draw()
+    {
+        if(layerOverride != null && layerOverride.layerField.visibleImg.isVisible())
+            layerOverride.draw();
+
+        if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
+            sprite.setAlpha(sprite.getColor().a / 3.5f);
 
         if(parentSprite == null)
         {
@@ -370,8 +385,8 @@ public class MapSprite extends LayerChild
                 spriteX = this.parentSprite.x;
                 spriteY = this.parentSprite.y;
             }
-            sprite.setPosition(spriteX - perspectiveOffsetX, spriteY - perspectiveOffsetY);
-            sprite.setOrigin(parentSprite.width / 2f, 0);
+            sprite.setPosition(spriteX - this.parentSprite.perspectiveOffsetX, spriteY - this.parentSprite.perspectiveOffsetY);
+            sprite.setOrigin(parentSprite.width / 2f, parentSprite.height / 2f);
         }
         sprite.setScale(this.scale * this.perspectiveScale);
 
@@ -418,8 +433,8 @@ public class MapSprite extends LayerChild
         }
         else
         {
-            float attachedOffsetX = ((this.x - this.parentSprite.x) * (this.parentSprite.perspectiveScale)) * 2;
-            float attachedOffsetY = ((this.y - this.parentSprite.y) * (this.parentSprite.perspectiveScale)) * 2;
+            float attachedOffsetX = ((this.x - this.parentSprite.x) * (this.parentSprite.perspectiveScale));
+            float attachedOffsetY = ((this.y - this.parentSprite.y) * (this.parentSprite.perspectiveScale));
             lowestY = parentSprite.getLowestY();
 
             LabelFieldPropertyValuePropertyField fenceProperty = (LabelFieldPropertyValuePropertyField) Utils.getPropertyField(lockedProperties, "Fence");
@@ -1076,6 +1091,13 @@ public class MapSprite extends LayerChild
     
     private void updatePerspectiveTall()
     {
+        if(this.parentSprite != null)
+        {
+            perspectiveOffsetX = map.cameraX;
+            perspectiveOffsetY = map.cameraY;
+            perspectiveScale = this.parentSprite.perspectiveScale;
+            return;
+        }
         SpriteLayer spriteLayer = (SpriteLayer) this.layer;
         float spriteX = this.x - ((this.width * this.scale) - this.width) / 2f;
         float spriteY = this.y - ((this.height * this.scale) - this.height) / 2f;

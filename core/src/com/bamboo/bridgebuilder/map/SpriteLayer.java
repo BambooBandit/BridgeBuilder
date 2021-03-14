@@ -23,9 +23,18 @@ public class SpriteLayer extends Layer
     }
 
     @Override
-    public void draw()
+    public void update()
     {
         perspective.update();
+
+        for(int i = 0; i < this.children.size; i ++)
+            this.children.get(i).update();
+    }
+
+
+    @Override
+    public void draw()
+    {
         setCameraZoomToThisLayer();
 
         if(Utils.getPropertyField(properties, "ground") == null)

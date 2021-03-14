@@ -60,6 +60,7 @@ public abstract class Layer<T extends LayerChild>
             moveBox.sprite.draw(map.editor.batch);
     }
 
+    public abstract void update();
     public abstract void draw();
 
     public void resize(int width, int height, boolean down, boolean right)
