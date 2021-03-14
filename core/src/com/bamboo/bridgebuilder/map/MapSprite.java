@@ -418,44 +418,102 @@ public class MapSprite extends LayerChild
         }
         else
         {
-            float attachedOffsetX = (this.x - this.parentSprite.x) * (this.parentSprite.perspectiveScale);
-            float attachedOffsetY = (this.y - this.parentSprite.y) * (this.parentSprite.perspectiveScale);
-            attachedOffsetX *= 2;
-            attachedOffsetY *= 2;
+            float attachedOffsetX = ((this.x - this.parentSprite.x) * (this.parentSprite.perspectiveScale)) * 2;
+            float attachedOffsetY = ((this.y - this.parentSprite.y) * (this.parentSprite.perspectiveScale)) * 2;
             lowestY = parentSprite.getLowestY();
-            Vector2 offset;
-            offset = parentSprite.skewOffset(parentSprite.getX() + (parentSprite.width / 2f), parentSprite.getLowestY(), (vertices[SpriteBatch.Y2] + y1Offset) - lowestY);
-            verts[0] = vertices[SpriteBatch.X2] + x1Offset + offset.x + attachedOffsetX;
-            verts[1] = vertices[SpriteBatch.Y2] + y1Offset + offset.y + attachedOffsetY;
-            verts[2] = colorFloatBits;
-            verts[3] = u;
-            verts[4] = v;
-            MapSprite parent = parentSprite;
-            if(parentSprite.toEdgeSprite != null)
+
+            LabelFieldPropertyValuePropertyField fenceProperty = (LabelFieldPropertyValuePropertyField) Utils.getPropertyField(lockedProperties, "Fence");
+            if(this.parentSprite.toEdgeSprite != null && fenceProperty.value.getText().equals("true"))
             {
-                parent = parentSprite.toEdgeSprite;
-                lowestY = parent.getLowestY();
+                float[] edgeVertices = this.parentSprite.toEdgeSprite.sprite.getVertices();
+                float x1 = vertices[SpriteBatch.X1] - (vertices[SpriteBatch.X2] + attachedOffsetX + this.x1Offset);
+                float y1 = vertices[SpriteBatch.Y1] - (vertices[SpriteBatch.Y2] + attachedOffsetY + this.y1Offset);
+                float x2 = edgeVertices[SpriteBatch.X1] - (vertices[SpriteBatch.X3] + attachedOffsetX + this.x2Offset);
+                float y2 = edgeVertices[SpriteBatch.Y1] - (vertices[SpriteBatch.Y3] + attachedOffsetY + this.y2Offset);
+                float x3 = edgeVertices[SpriteBatch.X1] - (vertices[SpriteBatch.X4] + attachedOffsetX + this.x3Offset);
+                float y3 = edgeVertices[SpriteBatch.Y1] - (vertices[SpriteBatch.Y4] + attachedOffsetY + this.y3Offset);
+                float x4 = vertices[SpriteBatch.X1] - (vertices[SpriteBatch.X1] + attachedOffsetX + this.x4Offset);
+                float y4 = vertices[SpriteBatch.Y1] - (vertices[SpriteBatch.Y1] + attachedOffsetY + this.y4Offset);
+
+                float x1Offset = x1 * perspectiveScale;
+                float y1Offset = y1 * perspectiveScale;
+                float x4Offset = x4 * perspectiveScale;
+                float y4Offset = y4 * perspectiveScale;
+//                Vector2 offset = Utils.skewOffset(parent.z, parent.x + (width * scale / 2f), parent.y, ((vertices[BBSpriteBatch.Y1] - y1Offset) - lowestY), perspectiveScale, map.camera);
+                Vector2 offset;
+                offset = parentSprite.skewOffset(parentSprite.getX() + (parentSprite.width / 2f), parentSprite.getLowestY(), (vertices[SpriteBatch.Y1] - y1Offset) - lowestY);
+                verts[0] = vertices[SpriteBatch.X1] - x1Offset + offset.x;
+                verts[1] = vertices[SpriteBatch.Y1] - y1Offset + offset.y;
+                verts[2] = colorFloatBits;
+                verts[3] = u;
+                verts[4] = v;
+//                offset = Utils.skewOffset(parent.z, parent.x + (width * scale / 2f), parent.y, ((vertices[BBSpriteBatch.Y1] - y4Offset) - lowestY), perspectiveScale, map.camera);
+                offset = parentSprite.skewOffset(parentSprite.getX() + (parentSprite.width / 2f), parentSprite.getLowestY(), (vertices[SpriteBatch.Y1] - y4Offset) - lowestY);
+                verts[15] = vertices[SpriteBatch.X1] - x4Offset + offset.x;
+                verts[16] = vertices[SpriteBatch.Y1] - y4Offset + offset.y;
+                verts[17] = colorFloatBits;
+                verts[18] = u;
+                verts[19] = v2;
+
+                MapSprite parentSprite = this.parentSprite.toEdgeSprite;
+                float blX = parentSprite.sprite.getVertices()[SpriteBatch.X1];
+                float blY = parentSprite.sprite.getVertices()[SpriteBatch.Y1];
+                lowestY = parentSprite.getLowestY();
+                float x2Offset = x2 * perspectiveScale;
+                float x3Offset = x3 * perspectiveScale;
+                float y2Offset = y2 * perspectiveScale;
+                float y3Offset = y3 * perspectiveScale;
+//                offset = Utils.skewOffset(parent.z, parent.x + (width * scale / 2f), parent.y, ((blY - y2Offset) - lowestY), parent.perspectiveScale, map.camera);
+                offset = parentSprite.skewOffset(parentSprite.getX() + (parentSprite.width / 2f), parentSprite.y, ((blY - y2Offset) - lowestY));
+                verts[5] = blX - x2Offset + offset.x;
+                verts[6] = blY - y2Offset + offset.y;
+                verts[7] = colorFloatBits;
+                verts[8] = u2;
+                verts[9] = v;
+//                offset = Utils.skewOffset(parent.z, parent.x + (width * scale / 2f), parent.y, ((blY - y3Offset) - lowestY), parent.perspectiveScale, map.camera);
+                offset = parentSprite.skewOffset(parentSprite.getX() + (parentSprite.width / 2f), parentSprite.y, ((blY - y3Offset) - lowestY));
+                verts[10] = blX - x3Offset + offset.x;
+                verts[11] = blY - y3Offset + offset.y;
+                verts[12] = colorFloatBits;
+                verts[13] = u2;
+                verts[14] = v2;
             }
-            offset = parent.skewOffset(parent.getX() + (parent.width / 2f), parent.getLowestY(), (vertices[SpriteBatch.Y3] + y2Offset) - lowestY);
-            verts[5] = vertices[SpriteBatch.X3] + x2Offset + offset.x + attachedOffsetX;
-            verts[6] = vertices[SpriteBatch.Y3] + y2Offset + offset.y + attachedOffsetY;
-            verts[7] = colorFloatBits;
-            verts[8] = u2;
-            verts[9] = v;
-            offset = parent.skewOffset(parent.getX() + (parent.width / 2f), parent.getLowestY(), (vertices[SpriteBatch.Y4] + y3Offset) - lowestY);
-            verts[10] = vertices[SpriteBatch.X4] + x3Offset + offset.x + attachedOffsetX;
-            verts[11] = vertices[SpriteBatch.Y4] + y3Offset + offset.y + attachedOffsetY;
-            verts[12] = colorFloatBits;
-            verts[13] = u2;
-            verts[14] = v2;
-            parent = parentSprite;
-            lowestY = parent.getLowestY();
-            offset = parentSprite.skewOffset(parent.getX() + (parent.width / 2f), parentSprite.getLowestY(), (vertices[SpriteBatch.Y1] + y4Offset) - lowestY);
-            verts[15] = vertices[SpriteBatch.X1] + x4Offset + offset.x + attachedOffsetX;
-            verts[16] = vertices[SpriteBatch.Y1] + y4Offset + offset.y + attachedOffsetY;
-            verts[17] = colorFloatBits;
-            verts[18] = u;
-            verts[19] = v2;
+            else
+            {
+                Vector2 offset;
+                offset = parentSprite.skewOffset(parentSprite.getX() + (parentSprite.width / 2f), parentSprite.getLowestY(), (vertices[SpriteBatch.Y2] + y1Offset) - lowestY);
+                verts[0] = vertices[SpriteBatch.X2] + x1Offset + offset.x + attachedOffsetX;
+                verts[1] = vertices[SpriteBatch.Y2] + y1Offset + offset.y + attachedOffsetY;
+                verts[2] = colorFloatBits;
+                verts[3] = u;
+                verts[4] = v;
+                MapSprite parent = parentSprite;
+                if (parentSprite.toEdgeSprite != null)
+                {
+                    parent = parentSprite.toEdgeSprite;
+                    lowestY = parent.getLowestY();
+                }
+                offset = parent.skewOffset(parent.getX() + (parent.width / 2f), parent.getLowestY(), (vertices[SpriteBatch.Y3] + y2Offset) - lowestY);
+                verts[5] = vertices[SpriteBatch.X3] + x2Offset + offset.x + attachedOffsetX;
+                verts[6] = vertices[SpriteBatch.Y3] + y2Offset + offset.y + attachedOffsetY;
+                verts[7] = colorFloatBits;
+                verts[8] = u2;
+                verts[9] = v;
+                offset = parent.skewOffset(parent.getX() + (parent.width / 2f), parent.getLowestY(), (vertices[SpriteBatch.Y4] + y3Offset) - lowestY);
+                verts[10] = vertices[SpriteBatch.X4] + x3Offset + offset.x + attachedOffsetX;
+                verts[11] = vertices[SpriteBatch.Y4] + y3Offset + offset.y + attachedOffsetY;
+                verts[12] = colorFloatBits;
+                verts[13] = u2;
+                verts[14] = v2;
+                parent = parentSprite;
+                lowestY = parent.getLowestY();
+                offset = parentSprite.skewOffset(parent.getX() + (parent.width / 2f), parentSprite.getLowestY(), (vertices[SpriteBatch.Y1] + y4Offset) - lowestY);
+                verts[15] = vertices[SpriteBatch.X1] + x4Offset + offset.x + attachedOffsetX;
+                verts[16] = vertices[SpriteBatch.Y1] + y4Offset + offset.y + attachedOffsetY;
+                verts[17] = colorFloatBits;
+                verts[18] = u;
+                verts[19] = v2;
+            }
 //            offset = parentSprite.skewOffset(lowestX, parentSprite.getLowestY(), (vertices[SpriteBatch.Y2] + y1Offset) - lowestY);
 //            verts[0] = vertices[SpriteBatch.X2] + x1Offset + offset.x;
 //            verts[1] = vertices[SpriteBatch.Y2] + y1Offset + offset.y;
