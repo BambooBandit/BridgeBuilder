@@ -300,7 +300,7 @@ public class Map implements Screen
             toX = input.currentPos.x;
             toY = input.currentPos.y;
         }
-        editor.shapeRenderer.line(fromX, fromY, toX, toY);
+        editor.shapeRenderer.line(fromX - cameraX, fromY - cameraY, toX - cameraX, toY - cameraY);
     }
 
     private void drawSnap()
