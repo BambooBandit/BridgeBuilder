@@ -616,7 +616,7 @@ public class Map implements Screen
         }
 
         this.editor.shapeRenderer.setColor(Color.CYAN);
-        this.editor.shapeRenderer.rect(this.input.boxSelect.rectangle.x, this.input.boxSelect.rectangle.y, this.input.boxSelect.rectangle.width, this.input.boxSelect.rectangle.height);
+        this.editor.shapeRenderer.rect(this.input.boxSelect.rectangle.x - cameraX, this.input.boxSelect.rectangle.y - cameraY, this.input.boxSelect.rectangle.width, this.input.boxSelect.rectangle.height);
     }
 
     private void drawHoveredOutline()
