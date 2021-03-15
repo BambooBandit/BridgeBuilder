@@ -1775,7 +1775,7 @@ public class Map implements Screen
         return mapSprite;
     }
 
-    /** Sorts the selected layer (or all layers if none are selected) based on c1's, c2's and y's. */
+    /** Sorts sprite layers based on c1's and c2's. */
     public void sort()
     {
         if(selectedLayer == null)
