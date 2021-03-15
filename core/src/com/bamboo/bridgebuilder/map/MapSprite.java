@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -20,7 +19,10 @@ import com.bamboo.bridgebuilder.commands.EnableAttachedSpriteEditMode;
 import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
 import com.bamboo.bridgebuilder.ui.manipulators.RotationBox;
 import com.bamboo.bridgebuilder.ui.manipulators.ScaleBox;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelLabelPropertyValuePropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 public class MapSprite extends LayerChild
@@ -830,60 +832,6 @@ public class MapSprite extends LayerChild
             }
         }
 
-        if(this.map.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this.map, this.layer) && !Utils.isLayerGround(this.layer))
-        {
-            if(Gdx.graphics.getHeight() == 0)
-                return;
-
-            float trimX = x + sprite.getAtlasRegion().offsetX / 64f;
-            float trimY = y + sprite.getAtlasRegion().offsetY / 64f;
-            float trimWidth = sprite.getAtlasRegion().getRegionWidth() / 64f;
-            float trimHeight = sprite.getAtlasRegion().getRegionHeight() / 64f;
-
-            map.camera.update();
-            float[] m = this.map.camera.combined.getValues();
-            float skew = 0;
-            float antiDepth = 0;
-            try
-            {
-                FieldFieldPropertyValuePropertyField property = Utils.getSkewPerspectiveProperty(this.map, this.layer);
-                skew = Float.parseFloat(property.value.getText());
-                property = Utils.getAntiDepthPerspectiveProperty(this.map, this.layer);
-                antiDepth = Float.parseFloat(property.value.getText());
-            }
-            catch (NumberFormatException e){} catch (NullPointerException e){}
-            if(antiDepth >= .1f)
-                skew /= antiDepth * 15;
-            m[Matrix4.M31] += skew;
-            m[Matrix4.M11] += this.map.camera.position.y / ((-10f * this.map.camera.zoom) / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
-            this.map.camera.invProjectionView.set(this.map.camera.combined);
-            Matrix4.inv(this.map.camera.invProjectionView.val);
-            this.map.camera.frustum.update(this.map.camera.invProjectionView);
-
-            x = trimX;
-            y = trimY;
-
-            Vector3 p = Utils.project(this.map.camera, x, y);
-            x = p.x;
-            y = Gdx.graphics.getHeight() - p.y;
-            this.map.camera.update();
-            p = Utils.unproject(this.map.camera, x, y);
-            x = p.x;
-            y = p.y;
-
-            try
-            {
-//                this.perspectiveScale = Utils.getPerspectiveScaleFactor(map, layer, map.camera, trimY);
-//                scale = this.scale * this.perspectiveScale;
-//
-//                yScaleDisplacement += ((trimHeight * scale) - trimHeight) / 2f;
-//                xScaleDisplacement += ((trimWidth * scale) - trimWidth) / 2f;
-            }
-            catch (NumberFormatException e){} catch (NullPointerException e){}
-        }
-        else
-            this.perspectiveScale = 1;
-
         this.polygon.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
 //        this.sprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
         this.sprite.setScale(scale);
@@ -919,7 +867,7 @@ public class MapSprite extends LayerChild
         this.scale = scale;
         setPosition(x, y);
 
-        if(map.editor.fileMenu.toolPane.perspective.selected && !Utils.isLayerGround(this.layer))
+        if(!Utils.isLayerGround(this.layer))
         {
             float perspectiveScale = this.scale * this.perspectiveScale;
             scale = perspectiveScale;

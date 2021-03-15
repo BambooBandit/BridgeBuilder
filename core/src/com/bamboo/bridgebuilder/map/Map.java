@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -33,7 +32,6 @@ import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
@@ -424,7 +422,6 @@ public class Map implements Screen
             this.editor.batch.setProjectionMatrix(this.camera.combined);
             this.editor.shapeRenderer.setProjectionMatrix(this.camera.combined);
         }
-        PropertyToolPane.updatePerspective(this);
     }
 
     private void drawSelectedOutlines()
@@ -662,7 +659,6 @@ public class Map implements Screen
                 this.editor.batch.setProjectionMatrix(this.camera.combined);
                 this.editor.shapeRenderer.setProjectionMatrix(this.camera.combined);
             }
-            PropertyToolPane.updatePerspective(this);
 
             this.editor.batch.end();
             renderlights(null);
@@ -707,38 +703,20 @@ public class Map implements Screen
 
     private void renderlights(Layer layer)
     {
-        if(this.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this, layer))
-        {
-            this.camera.update();
-            float[] m = this.camera.combined.getValues();
-            float skew = 0;
-            float antiDepth = 0;
-            try
-            {
-                FieldFieldPropertyValuePropertyField property = Utils.getSkewPerspectiveProperty(this, layer);
-                skew = Float.parseFloat(property.value.getText());
-                property = Utils.getAntiDepthPerspectiveProperty(this, layer);
-                antiDepth = Float.parseFloat(property.value.getText());
-            }
-            catch (NumberFormatException e){}
-            if(antiDepth >= .1f)
-                skew /= antiDepth * 15;
-            m[Matrix4.M31] += skew;
-            m[Matrix4.M11] += this.camera.position.y / ((-10f * this.camera.zoom) / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
-
-            this.camera.invProjectionView.set(this.camera.combined);
-            Matrix4.inv(this.camera.invProjectionView.val);
-            this.camera.frustum.update(this.camera.invProjectionView);
-        }
-
         if(layer == null || layer.layerField.visibleImg.isVisible())
         {
-            this.rayHandler.setCombinedMatrix(this.camera.combined, this.camera.position.x, this.camera.position.y, this.camera.viewportWidth * this.camera.zoom * 2f, this.camera.viewportHeight * this.camera.zoom * 2f);
+            if(layer instanceof SpriteLayer && ((SpriteLayer) layer).perspective != null)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                Perspective perspective = spriteLayer.perspective;
+                this.rayHandler.setCombinedMatrix(perspective.perspectiveCamera.combined, perspective.perspectiveCamera.position.x, perspective.perspectiveCamera.position.y, perspective.perspectiveCamera.viewportWidth * perspective.perspectiveCamera.zoom * 2f, perspective.perspectiveCamera.viewportHeight * perspective.perspectiveCamera.zoom * 2f);
+            }
+            else
+            {
+                this.rayHandler.setCombinedMatrix(this.camera.combined, this.camera.position.x, this.camera.position.y, this.camera.viewportWidth * this.camera.zoom * 2f, this.camera.viewportHeight * this.camera.zoom * 2f);
+            }
             this.rayHandler.updateAndRender();
         }
-
-        if(this.editor.fileMenu.toolPane.perspective.selected)
-            this.camera.update();
     }
 
     private void drawObjectLayers()
@@ -957,55 +935,12 @@ public class Map implements Screen
                 float randomB = this.editor.fileMenu.toolPane.minMaxDialog.randomBValue;
                 float randomA = this.editor.fileMenu.toolPane.minMaxDialog.randomAValue;
                 Sprite previewSprite = spriteTool.previewSprites.get(i);
-                if(this.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this, this.selectedLayer))
+                if(Utils.doesLayerHavePerspective(this, this.selectedLayer))
                 {
-                    x -= previewSprite.getWidth() / 2;
-                    y -= previewSprite.getHeight() / 2;
-                    camera.update();
-                    float[] m = this.camera.combined.getValues();
-                    float skew = 0;
-                    float antiDepth = 0;
-                    try
-                    {
-                        FieldFieldPropertyValuePropertyField property = Utils.getSkewPerspectiveProperty(this, this.selectedLayer);
-                        skew = Float.parseFloat(property.value.getText());
-                        property = Utils.getAntiDepthPerspectiveProperty(this, this.selectedLayer);
-                        antiDepth = Float.parseFloat(property.value.getText());
-                    }
-                    catch (NumberFormatException e){}
-                    if(antiDepth >= .1f)
-                        skew /= antiDepth * 15;
-                    m[Matrix4.M31] += skew;
-                    m[Matrix4.M11] += this.camera.position.y / ((-10f * this.camera.zoom) / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
-                    this.camera.invProjectionView.set(this.camera.combined);
-                    Matrix4.inv(this.camera.invProjectionView.val);
-                    this.camera.frustum.update(this.camera.invProjectionView);
-
-                    float yScaleDisplacement = 0;
-                    float xScaleDisplacement = 0;
-                    float spriteAtlasWidth = previewSprite.getRegionWidth() / 64;
-                    float spriteAtlasHeight = previewSprite.getRegionHeight() / 64;
-                    float whiteSpaceWidth = (previewSprite.getWidth() - spriteAtlasWidth);
-
-                    xScaleDisplacement = previewSprite.getWidth() / 2;
-
-                    Vector3 p = Utils.project(this.camera, x + xScaleDisplacement, y);
-                    x = p.x;
-                    y = Gdx.graphics.getHeight() - p.y;
-                    this.camera.update();
-                    p = Utils.unproject(this.camera, x, y);
-                    x = p.x;
-                    y = p.y;
-
-                    yScaleDisplacement = ((spriteAtlasHeight * previewSprite.getScaleY()) - spriteAtlasHeight) / 2f;
-                    xScaleDisplacement = -(spriteAtlasWidth / 2);
-                    xScaleDisplacement -= (whiteSpaceWidth * previewSprite.getScaleX() / 2);
-
-                    previewSprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
-
-                    float perspectiveScale = Utils.getPerspectiveScaleFactor(this, selectedLayer, this.camera, y);
-
-                    previewSprite.setScale(perspectiveScale);
+                    previewSprite.setScale(randomScale, randomScale);
+                    previewSprite.setRotation(randomRotation);
+                    previewSprite.setColor(randomR, randomG, randomB, randomA);
+                    previewSprite.setPosition(coords.x - cameraX - previewSprite.getWidth() / 2, coords.y - cameraY - previewSprite.getHeight() / 2);
                 }
                 else
                 {

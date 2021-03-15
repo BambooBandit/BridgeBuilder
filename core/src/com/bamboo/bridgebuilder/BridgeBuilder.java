@@ -178,8 +178,6 @@ public class BridgeBuilder extends Game
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.parallax);
 				else if(keycode == Input.Keys.N)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.lines);
-				else if(keycode == Input.Keys.C)
-					fileMenu.toolPane.selectTool(fileMenu.toolPane.perspective);
 				else if(keycode == Input.Keys.DEL || keycode == Input.Keys.FORWARD_DEL)
 				{
 					if(activeMap == null)

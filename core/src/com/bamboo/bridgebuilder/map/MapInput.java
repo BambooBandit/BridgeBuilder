@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.FloatArray;
@@ -15,8 +14,6 @@ import com.bamboo.bridgebuilder.commands.*;
 import com.bamboo.bridgebuilder.ui.InstanceOrSpriteToolDialog;
 import com.bamboo.bridgebuilder.ui.SnapSpriteDialog;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
-import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 
@@ -957,55 +954,9 @@ public class MapInput implements InputProcessor
         for(int i = 0; i < spriteTool.previewSprites.size; i ++)
         {
             Sprite previewSprite = spriteTool.previewSprites.get(i);
-            if(this.editor.fileMenu.toolPane.perspective.selected && Utils.doesLayerHavePerspective(this.map, this.map.selectedLayer))
+            if(Utils.doesLayerHavePerspective(this.map, this.map.selectedLayer))
             {
-                x -= previewSprite.getWidth() / 2;
-                y -= previewSprite.getHeight() / 2;
-                map.camera.update();
-                float[] m = this.map.camera.combined.getValues();
-                float skew = 0;
-                float antiDepth = 0;
-                try
-                {
-                    FieldFieldPropertyValuePropertyField property = Utils.getSkewPerspectiveProperty(this.map, this.map.selectedLayer);
-                    skew = Float.parseFloat(property.value.getText());
-                    property = Utils.getAntiDepthPerspectiveProperty(this.map, this.map.selectedLayer);
-                    antiDepth = Float.parseFloat(property.value.getText());
-                }
-                catch (NumberFormatException e){}
-                if(antiDepth >= .1f)
-                    skew /= antiDepth * 15;
-                m[Matrix4.M31] += skew;
-                m[Matrix4.M11] += this.map.camera.position.y / ((-10f * this.map.camera.zoom) / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
-                this.map.camera.invProjectionView.set(this.map.camera.combined);
-                Matrix4.inv(this.map.camera.invProjectionView.val);
-                this.map.camera.frustum.update(this.map.camera.invProjectionView);
-
-                float yScaleDisplacement = 0;
-                float xScaleDisplacement = 0;
-                float spriteAtlasWidth = previewSprite.getRegionWidth() / 64;
-                float spriteAtlasHeight = previewSprite.getRegionHeight() / 64;
-                float whiteSpaceWidth = (previewSprite.getWidth() - spriteAtlasWidth);
-
-                xScaleDisplacement = previewSprite.getWidth() / 2;
-
-                Vector3 p = Utils.project(this.map.camera, x + xScaleDisplacement, y);
-                x = p.x;
-                y = Gdx.graphics.getHeight() - p.y;
-                this.map.camera.update();
-                p = Utils.unproject(this.map.camera, x, y);
-                x = p.x;
-                y = p.y;
-
-                yScaleDisplacement = ((spriteAtlasHeight * previewSprite.getScaleY()) - spriteAtlasHeight) / 2f;
-                xScaleDisplacement = -(spriteAtlasWidth / 2);
-                xScaleDisplacement -= (whiteSpaceWidth * previewSprite.getScaleX() / 2);
-
-                previewSprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
-
-                float perspectiveScale = Utils.getPerspectiveScaleFactor(this.map, this.map.selectedLayer, this.map.camera, y);
-
-                previewSprite.setScale(perspectiveScale);
+                previewSprite.setPosition(x - map.cameraX - previewSprite.getWidth() / 2, y - map.cameraY - previewSprite.getHeight() / 2);
             }
             else
                 previewSprite.setPosition(x - map.cameraX - previewSprite.getWidth() / 2, y - map.cameraY - previewSprite.getHeight() / 2);
@@ -1051,7 +1002,6 @@ public class MapInput implements InputProcessor
 //        this.map.camera.position.x -= this.dragDifferencePos.x;
 //        this.map.camera.position.y -= this.dragDifferencePos.y;
         this.map.camera.update();
-        PropertyToolPane.updatePerspective(this.map);
         return false;
     }
 }

@@ -40,7 +40,6 @@ public class ToolPane extends Group
     public Tool blocked;
     public Tool spriteGridColors;
     public Tool parallax;
-    public Tool perspective;
     public Tool top;
     public Tool depth;
     public Tool lines;
@@ -97,7 +96,6 @@ public class ToolPane extends Group
         this.spriteGridColors = new Tool(editor, this, true, Tools.SPRITEGRIDCOLORS);
         this.parallax = new Tool(editor, this, true, Tools.PARALLAX);
         this.parallax.select();
-        this.perspective = new Tool(editor, this, true, Tools.PERSPECTIVE);
         this.top = new Tool(editor, this, true, Tools.TOP);
         this.top.select();
         this.depth = new Tool(editor, this, true, Tools.DEPTH);
@@ -148,7 +146,6 @@ public class ToolPane extends Group
         this.toolTable.add(this.blocked).padRight(1);
         this.toolTable.add(this.spriteGridColors).padRight(1);
         this.toolTable.add(this.parallax).padRight(1);
-        this.toolTable.add(this.perspective).padRight(1);
         this.toolTable.add(this.top).padRight(1);
         this.toolTable.add(this.depth).padRight(1);
         this.toolTable.add(this.lines).padRight(1);
@@ -201,7 +198,6 @@ public class ToolPane extends Group
         this.blocked.setSize(toolHeight, toolHeight);
         this.spriteGridColors.setSize(toolHeight, toolHeight);
         this.parallax.setSize(toolHeight, toolHeight);
-        this.perspective.setSize(toolHeight, toolHeight);
         this.top.setSize(toolHeight, toolHeight);
         this.depth.setSize(toolHeight, toolHeight);
         this.lines.setSize(toolHeight, toolHeight);
@@ -225,7 +221,6 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.blocked).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.spriteGridColors).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.parallax).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.perspective).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.top).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.depth).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.lines).size(toolHeight, toolHeight);
@@ -280,13 +275,6 @@ public class ToolPane extends Group
                     this.editor.activeMap.updateLayerSpriteGrids();
                 else if(selectedTool == this.fence)
                     this.random.select();
-                if((selectedTool == this.spriteGridColors || selectedTool == this.blocked) && this.perspective.selected)
-                    this.perspective.unselect();
-                else if(selectedTool == this.perspective && (this.spriteGridColors.selected || this.blocked.selected))
-                {
-                    this.spriteGridColors.unselect();
-                    this.blocked.unselect();
-                }
                 selectedTool.select();
                 if(selectedTool == this.fence || selectedTool == this.stairs)
                     editor.activeMap.shuffleRandomSpriteTool(false);
@@ -299,9 +287,6 @@ public class ToolPane extends Group
                         selectedTool.unselect();
                 }
             }
-
-            if(selectedTool == this.perspective && editor.activeMap != null)
-                PropertyToolPane.updatePerspective(editor.activeMap);
         }
         else
         {

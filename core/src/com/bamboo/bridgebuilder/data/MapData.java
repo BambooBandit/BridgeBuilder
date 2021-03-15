@@ -21,10 +21,6 @@ public class MapData
         MapSprite.resetIdCounter();
         map.updateLayerSpriteGrids();
 
-        boolean perspective = map.editor.fileMenu.toolPane.perspective.selected;
-        if(perspective)
-            map.editor.fileMenu.toolPane.selectTool(map.editor.fileMenu.toolPane.perspective);
-
         this.name = map.name;
         this.lProps = new ArrayList<>();
         this.props = new ArrayList<>();
@@ -91,9 +87,6 @@ public class MapData
             if(this.groups != null)
                 this.groups.clear();
         }
-
-        if(perspective)
-            map.editor.fileMenu.toolPane.selectTool(map.editor.fileMenu.toolPane.perspective);
     }
 }
 

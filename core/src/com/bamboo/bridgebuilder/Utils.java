@@ -1,10 +1,8 @@
 package com.bamboo.bridgebuilder;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -426,75 +424,6 @@ public class Utils
             }
         }
         return null;
-    }
-
-    public static Vector3 projector = new Vector3();
-    public static OrthographicCamera perspectiveCamera = new OrthographicCamera();
-    public static Vector3 projectWorldToPerspective(Map map, Layer layer, OrthographicCamera camera, float x, float y)
-    {
-        projector.set(x, y, 0);
-
-        updatePerspectiveCamera(map, layer, camera);
-
-        perspectiveCamera.project(projector);
-        float xP = projector.x;
-        float yP = Gdx.graphics.getHeight() - projector.y;
-        projector.set(xP, yP, 0);
-        camera.unproject(projector);
-
-        return projector;
-    }
-
-    private static void updatePerspectiveCamera(Map map, Layer layer, OrthographicCamera camera)
-    {
-        perspectiveCamera.viewportWidth = camera.viewportWidth;
-        perspectiveCamera.viewportHeight = camera.viewportHeight;
-        perspectiveCamera.position.set(camera.position);
-        perspectiveCamera.zoom = camera.zoom;
-        perspectiveCamera.update();
-
-        float skew = 0;
-        float antiDepth = 0;
-        try
-        {
-            skew = Float.parseFloat(Utils.getSkewPerspectiveProperty(map, layer).value.getText());
-            antiDepth = Float.parseFloat(Utils.getAntiDepthPerspectiveProperty(map, layer).value.getText());
-        }catch (Exception e){}
-
-        float[] m = perspectiveCamera.combined.getValues();
-        if (antiDepth >= .1f)
-            skew /= antiDepth * 15;
-        m[Matrix4.M31] += skew;
-        m[Matrix4.M11] += perspectiveCamera.position.y / ((-10f * perspectiveCamera.zoom) / skew) - ((.097f * antiDepth) / (antiDepth + .086f));
-        perspectiveCamera.invProjectionView.set(perspectiveCamera.combined);
-        Matrix4.inv(perspectiveCamera.invProjectionView.val);
-        perspectiveCamera.frustum.update(perspectiveCamera.invProjectionView);
-    }
-
-    private static void setPerspectiveZoom(float zoom)
-    {
-        perspectiveCamera.zoom = zoom;
-        perspectiveCamera.update();
-    }
-
-    public static float getPerspectiveScaleFactor(Map map, Layer layer, OrthographicCamera camera, float y)
-    {
-        Vector3 p = projectWorldToPerspective(map, layer, camera, 0, y);
-        float xBotLeft = p.x;
-        float yBotLeft = p.y;
-        p = projectWorldToPerspective(map, layer, camera, 1, y);
-        float xBotRight = p.x;
-        float yBotRight = p.y;
-        p = projectWorldToPerspective(map, layer, camera, 0, 1);
-        float xTopLeft = p.x;
-        float yTopLeft = p.y;
-        p = projectWorldToPerspective(map, layer, camera, 1, 1);
-        float xTopRight = p.x;
-        float yTopRight = p.y;
-        float botDist = Utils.getDistance(xBotLeft, xBotRight, yBotLeft, yBotRight);
-        float topDist = Utils.getDistance(xTopLeft, xTopRight, yTopLeft, yTopRight);
-
-        return botDist / topDist;
     }
 
     public static String capitalize(String name) {

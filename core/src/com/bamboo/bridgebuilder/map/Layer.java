@@ -5,7 +5,6 @@ import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerField;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
-import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public abstract class Layer<T extends LayerChild>
@@ -122,8 +121,6 @@ public abstract class Layer<T extends LayerChild>
             this.map.camera.update();
             this.editor.batch.setProjectionMatrix(map.camera.combined);
             this.editor.shapeRenderer.setProjectionMatrix(map.camera.combined);
-
-            PropertyToolPane.updatePerspective(map);
         }
         else
         {
@@ -145,7 +142,5 @@ public abstract class Layer<T extends LayerChild>
             this.editor.batch.setProjectionMatrix(map.camera.combined);
             this.editor.shapeRenderer.setProjectionMatrix(map.camera.combined);
         }
-
-        PropertyToolPane.updatePerspective(map);
     }
 }

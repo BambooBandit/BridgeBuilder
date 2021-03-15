@@ -217,28 +217,5 @@ public class PropertyToolPane extends Group
                 }
             }
         }
-
-        if(map.editor.fileMenu.toolPane.perspective.selected)
-            updatePerspective(map);
-    }
-
-    public static void updatePerspective(Map map)
-    {
-        // Disable perspective for now
-        if(1 == 1)
-            return;
-        for(int i = 0; i < map.layers.size; i++)
-        {
-            Layer layer = map.layers.get(i);
-            if(layer instanceof SpriteLayer)
-            {
-                SpriteLayer spriteLayer = (SpriteLayer) layer;
-                for (int k = 0; k < spriteLayer.children.size; k++)
-                {
-                    MapSprite mapSprite = spriteLayer.children.get(k);
-                    mapSprite.updatePerspective();
-                }
-            }
-        }
     }
 }
