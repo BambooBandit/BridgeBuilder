@@ -6,8 +6,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -962,21 +962,10 @@ public class Map implements Screen
                 float randomG = this.editor.fileMenu.toolPane.minMaxDialog.randomGValue;
                 float randomB = this.editor.fileMenu.toolPane.minMaxDialog.randomBValue;
                 float randomA = this.editor.fileMenu.toolPane.minMaxDialog.randomAValue;
-                Sprite previewSprite = spriteTool.previewSprites.get(i);
-                if(Utils.doesLayerHavePerspective(this, this.selectedLayer))
-                {
-                    previewSprite.setScale(randomScale, randomScale);
-                    previewSprite.setRotation(randomRotation);
-                    previewSprite.setColor(randomR, randomG, randomB, randomA);
-                    previewSprite.setPosition(coords.x - cameraX - previewSprite.getWidth() / 2, coords.y - cameraY - previewSprite.getHeight() / 2);
-                }
-                else
-                {
-                    previewSprite.setScale(randomScale, randomScale);
-                    previewSprite.setRotation(randomRotation);
-                    previewSprite.setColor(randomR, randomG, randomB, randomA);
-                    previewSprite.setPosition(coords.x - cameraX - previewSprite.getWidth() / 2, coords.y - cameraY - previewSprite.getHeight() / 2);
-                }
+                TextureAtlas.AtlasSprite previewSprite = (TextureAtlas.AtlasSprite) spriteTool.previewSprites.get(i);
+                previewSprite.setRotation(randomRotation);
+                previewSprite.setColor(randomR, randomG, randomB, randomA);
+                input.handlePreviewSpritePositionUpdate(coords.x + cameraX, coords.y + cameraY);
             }
         }
 
