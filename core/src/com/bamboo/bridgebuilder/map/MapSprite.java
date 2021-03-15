@@ -365,29 +365,31 @@ public class MapSprite extends LayerChild
         if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
             sprite.setAlpha(sprite.getColor().a / 3.5f);
 
+        float spriteX;
+        float spriteY;
         if(parentSprite == null)
         {
-            float spriteX = this.x - ((this.width * this.scale) - this.width) / 2f;
-            float spriteY = this.y - ((this.height * this.scale) - this.height) / 2f;
+            spriteX = this.x - ((this.width * this.scale) - this.width) / 2f;
+            spriteY = this.y - ((this.height * this.scale) - this.height) / 2f;
             if(Utils.getPropertyField(layer.properties, "ground") != null)
             {
                 spriteX = this.x;
                 spriteY = this.y;
             }
-            sprite.setPosition(spriteX - perspectiveOffsetX, spriteY - perspectiveOffsetY);
         }
         else
         {
-            float spriteX = this.parentSprite.x - ((this.parentSprite.width * this.parentSprite.scale) - this.parentSprite.width) / 2f;
-            float spriteY = this.parentSprite.y - ((this.parentSprite.height * this.parentSprite.scale) - this.parentSprite.height) / 2f;
+            spriteX = this.parentSprite.x - ((this.parentSprite.width * this.parentSprite.scale) - this.parentSprite.width) / 2f;
+            spriteY = this.parentSprite.y - ((this.parentSprite.height * this.parentSprite.scale) - this.parentSprite.height) / 2f;
             if(Utils.getPropertyField(layer.properties, "ground") != null)
             {
                 spriteX = this.parentSprite.x;
                 spriteY = this.parentSprite.y;
             }
-            sprite.setPosition(spriteX - this.parentSprite.perspectiveOffsetX, spriteY - this.parentSprite.perspectiveOffsetY);
-            sprite.setOrigin(parentSprite.width / 2f, parentSprite.height / 2f);
         }
+        sprite.setPosition(spriteX - this.perspectiveOffsetX, spriteY - this.perspectiveOffsetY);
+        sprite.setOriginCenter();
+        sprite.setOrigin(width / 2f, sprite.getOriginY());
         sprite.setScale(this.scale * this.perspectiveScale);
 
         float u = sprite.getU();
@@ -433,8 +435,12 @@ public class MapSprite extends LayerChild
         }
         else
         {
-            float attachedOffsetX = ((this.x - this.parentSprite.x) * (this.parentSprite.perspectiveScale));
-            float attachedOffsetY = ((this.y - this.parentSprite.y) * (this.parentSprite.perspectiveScale));
+            float thisSpriteX = this.x - ((this.width * this.scale) - this.width) / 2f;
+            float thisSpriteY = this.y - ((this.height * this.scale) - this.height) / 2f;
+            float parentSpriteX = parentSprite.x - ((parentSprite.width * parentSprite.scale) - parentSprite.width) / 2f;
+            float parentSpriteY = parentSprite.y - ((parentSprite.height * parentSprite.scale) - parentSprite.height) / 2f;
+            float attachedOffsetX = ((thisSpriteX - parentSpriteX) * (this.parentSprite.perspectiveScale));
+            float attachedOffsetY = ((thisSpriteY - parentSpriteY) * (this.parentSprite.perspectiveScale));
             lowestY = parentSprite.getLowestY();
 
             LabelFieldPropertyValuePropertyField fenceProperty = (LabelFieldPropertyValuePropertyField) Utils.getPropertyField(lockedProperties, "Fence");
@@ -502,27 +508,20 @@ public class MapSprite extends LayerChild
                 verts[2] = colorFloatBits;
                 verts[3] = u;
                 verts[4] = v;
-                MapSprite parent = parentSprite;
-                if (parentSprite.toEdgeSprite != null)
-                {
-                    parent = parentSprite.toEdgeSprite;
-                    lowestY = parent.getLowestY();
-                }
-                offset = parent.skewOffset(parent.getX() + (parent.width / 2f), parent.getLowestY(), (vertices[SpriteBatch.Y3] + y2Offset) - lowestY);
+                offset = parentSprite.skewOffset(parentSprite.getX() + (parentSprite.width / 2f), parentSprite.getLowestY(), (vertices[SpriteBatch.Y3] + y2Offset) - lowestY);
                 verts[5] = vertices[SpriteBatch.X3] + x2Offset + offset.x + attachedOffsetX;
                 verts[6] = vertices[SpriteBatch.Y3] + y2Offset + offset.y + attachedOffsetY;
                 verts[7] = colorFloatBits;
                 verts[8] = u2;
                 verts[9] = v;
-                offset = parent.skewOffset(parent.getX() + (parent.width / 2f), parent.getLowestY(), (vertices[SpriteBatch.Y4] + y3Offset) - lowestY);
+                offset = parentSprite.skewOffset(parentSprite.getX() + (parentSprite.width / 2f), parentSprite.getLowestY(), (vertices[SpriteBatch.Y4] + y3Offset) - lowestY);
                 verts[10] = vertices[SpriteBatch.X4] + x3Offset + offset.x + attachedOffsetX;
                 verts[11] = vertices[SpriteBatch.Y4] + y3Offset + offset.y + attachedOffsetY;
                 verts[12] = colorFloatBits;
                 verts[13] = u2;
                 verts[14] = v2;
-                parent = parentSprite;
-                lowestY = parent.getLowestY();
-                offset = parentSprite.skewOffset(parent.getX() + (parent.width / 2f), parentSprite.getLowestY(), (vertices[SpriteBatch.Y1] + y4Offset) - lowestY);
+                lowestY = parentSprite.getLowestY();
+                offset = parentSprite.skewOffset(parentSprite.getX() + (parentSprite.width / 2f), parentSprite.getLowestY(), (vertices[SpriteBatch.Y1] + y4Offset) - lowestY);
                 verts[15] = vertices[SpriteBatch.X1] + x4Offset + offset.x + attachedOffsetX;
                 verts[16] = vertices[SpriteBatch.Y1] + y4Offset + offset.y + attachedOffsetY;
                 verts[17] = colorFloatBits;
@@ -569,16 +568,14 @@ public class MapSprite extends LayerChild
                     TextureAtlas.AtlasSprite topsprite = tool.topSprites.get(i);
 
 
-                    float spriteX = this.x - ((this.width * this.scale) - this.width) / 2f;
-                    float spriteY = this.y - ((this.height * this.scale) - this.height) / 2f;
+                    spriteX = this.x - ((this.width * this.scale) - this.width) / 2f;
+                    spriteY = this.y - ((this.height * this.scale) - this.height) / 2f;
                     if(Utils.getPropertyField(layer.properties, "ground") != null)
                     {
                         spriteX = this.x;
                         spriteY = this.y;
                     }
                     topsprite.setPosition(spriteX - perspectiveOffsetX, spriteY - perspectiveOffsetY);
-//                    topsprite.setPosition(x - map.cameraX + perspectiveOffsetX, y - map.cameraY + perspectiveOffsetY);
-//                    topsprite.setPosition(sprite.getX(), sprite.getY());
                     topsprite.setRotation(sprite.getRotation());
                     topsprite.setOrigin(sprite.getOriginX(), sprite.getOriginY());
                     topsprite.setScale(this.scale * perspectiveScale);
@@ -1091,30 +1088,27 @@ public class MapSprite extends LayerChild
     
     private void updatePerspectiveTall()
     {
-        if(this.parentSprite != null)
+        float spriteX;
+        float spriteY;
+        if(parentSprite != null)
         {
-            perspectiveOffsetX = map.cameraX;
-            perspectiveOffsetY = map.cameraY;
-            perspectiveScale = this.parentSprite.perspectiveScale;
-            return;
+            spriteX = this.parentSprite.x - ((this.parentSprite.width * this.parentSprite.scale) - this.parentSprite.width) / 2f;
+            spriteY = this.parentSprite.y - ((this.parentSprite.height * this.parentSprite.scale) - this.parentSprite.height) / 2f;
         }
-        SpriteLayer spriteLayer = (SpriteLayer) this.layer;
-        float spriteX = this.x - ((this.width * this.scale) - this.width) / 2f;
-        float spriteY = this.y - ((this.height * this.scale) - this.height) / 2f;
-
+        else
+        {
+            spriteX = this.x - ((this.width * this.scale) - this.width) / 2f;
+            spriteY = this.y - ((this.height * this.scale) - this.height) / 2f;
+        }
         float trimX = spriteX;
         float trimY = spriteY;
         float trimHeight = (this.sprite.getAtlasRegion().getRegionHeight() / 64f);
-        trimHeight = this.sprite.getHeight();
 
-        if(this.parentSprite != null)
-        {
-            float parentSpriteX = this.parentSprite.x - ((this.parentSprite.width * this.parentSprite.scale) - this.parentSprite.width) / 2f;
-            float parentSpriteY = this.parentSprite.y - ((this.parentSprite.height * this.parentSprite.scale) - this.parentSprite.height) / 2f;
-            trimX = parentSpriteX;
-            trimY = parentSpriteY;
-            trimHeight = this.sprite.getHeight();
-        }
+//        if(this.parentSprite != null)
+//        {
+//            trimX = this.parentSprite.x;
+//            trimY = this.parentSprite.y;
+//        }
 
         float yScaleDisplacement = 0;
         float xScaleDisplacement = 0;
@@ -1122,18 +1116,34 @@ public class MapSprite extends LayerChild
         float x = trimX;
         float y = trimY;
 
-        Vector3 p = spriteLayer.perspective.projectWorldToPerspective(x, y);
+        Perspective perspective = ((SpriteLayer)this.layer).perspective;
+        Vector3 p = perspective.projectWorldToPerspective(x, y);
         x = p.x;
         y = p.y;
 
-        float scale = spriteLayer.perspective.getScaleFactor(trimY);
+        float scale = perspective.getScaleFactor(trimY);
         this.perspectiveScale = scale;
+//        float depth = MathUtils.clamp(MathUtils.norm(-.075f, .35f, scale / ((perspective.skew * 25) * perspective.camera.zoom)), 0, 1);
+//        if(mapSprite instanceof AnimatedMapSprite)
+//        {
+//            AnimatedMapSprite animatedMapSprite = (AnimatedMapSprite) mapSprite;
+//            animatedMapSprite.animation.setDepth(depth);
+//        }
+//        else
+//            mapSprite.sprite.setDepth(depth);
+
         scale *= this.scale;
+        if(this.parentSprite != null)
+        {
+//            scale = 1;
+//            this.scale = 1;
+//            this.perspectiveScale = 1;
+        }
 
         yScaleDisplacement += (((trimHeight * (scale)) - trimHeight)) / 2f;
         xScaleDisplacement += (((this.width) * (scale)) - this.width) / 2f;
 
-        this.perspectiveOffsetX = spriteX - (x + (xScaleDisplacement));
-        this.perspectiveOffsetY = spriteY - (y + (yScaleDisplacement));
+        this.perspectiveOffsetX = trimX - (x + (xScaleDisplacement));
+        this.perspectiveOffsetY = trimY - (y + (yScaleDisplacement));
     }
 }
