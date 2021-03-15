@@ -25,7 +25,7 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelLabelProperty
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
-public class MapSprite extends LayerChild
+public class MapSprite extends LayerChild implements Comparable<MapSprite>
 {
     public float rotation, scale;
     public EditorPolygon polygon; // Used to show the sprite bounds even when scaled and rotated
@@ -60,6 +60,8 @@ public class MapSprite extends LayerChild
 
     public float x1Offset = 0, y1Offset = 0, x2Offset = 0, y2Offset = 0, x3Offset = 0, y3Offset = 0, x4Offset = 0, y4Offset = 0;
     public MoveBox offsetMovebox1, offsetMovebox2, offsetMovebox3, offsetMovebox4;
+
+    public Vector2 c1, c2;
 
     public MapSprite(Map map, Layer layer, SpriteTool tool, float x, float y)
     {
@@ -1118,5 +1120,230 @@ public class MapSprite extends LayerChild
 
         this.perspectiveOffsetX = trimX - (x + (xScaleDisplacement));
         this.perspectiveOffsetY = trimY - (y + (yScaleDisplacement));
+    }
+
+    public void updateC()
+    {
+        MapPoint c1Point = (MapPoint) Utils.getAttachedMapObjectWithProperty(this, "c1");
+        MapPoint c2Point = (MapPoint) Utils.getAttachedMapObjectWithProperty(this, "c2");
+
+        if(c1Point == null)
+        {
+            c1 = null;
+            c2 = null;
+            return;
+        }
+
+        c1 = new Vector2(c1Point.x, c1Point.y);
+        c2 = new Vector2(c2Point.x, c2Point.y);
+
+
+        // make c2 connect to edgeSprites c2
+        if(toEdgeSprite != null)
+        {
+            float x1, y1;
+            float x2, y2;
+            if (Utils.getAttachedMapObjectWithProperty(this, "edgeC") != null && Utils.getAttachedMapObjectWithProperty(toEdgeSprite, "edgeC") != null)
+            {
+                MapPoint point1 = (MapPoint) Utils.getAttachedMapObjectWithProperty(this, "edgeC");
+                MapPoint point2 = (MapPoint) Utils.getAttachedMapObjectWithProperty(toEdgeSprite, "edgeC");
+                x1 = point1.x;
+                y1 = point1.y;
+                x2 = point2.x;
+                y2 = point2.y;
+
+                float dx = x2 - x1;
+                float dy = y2 - y1;
+                float radius = .05f;
+                float length = (float) Math.sqrt(dx * dx + dy * dy);
+                if (length > 0)
+                {
+                    dx /= length;
+                    dy /= length;
+                }
+                dx *= length - radius;
+                dy *= length - radius;
+                float x4 = (x1 + dx);
+                float y4 = (y1 + dy);
+                dx = x2 - x1;
+                dy = y2 - y1;
+                length = (float) Math.sqrt(dx * dx + dy * dy);
+                if (length > 0)
+                {
+                    dx /= length;
+                    dy /= length;
+                }
+                dx *= length - radius;
+                dy *= length - radius;
+                float x3 = (x2 - dx);
+                float y3 = (y2 - dy);
+                x1 = x3;
+                y1 = y3;
+                x2 = x4;
+                y2 = y4;
+            } else
+            {
+                MapPoint point1 = (MapPoint) Utils.getAttachedMapObjectWithProperty(this, "c1");
+                MapPoint point2 = (MapPoint) Utils.getAttachedMapObjectWithProperty(toEdgeSprite, "c2");
+                x1 = point1.x;
+                y1 = point1.y;
+                x2 = point2.x;
+                y2 = point2.y;
+            }
+            // Since this snaps from edgeC to edgeC, make it branch off to c2 as well
+            if (Utils.getAttachedMapObjectWithProperty(this, "edgeC") != null && Utils.getAttachedMapObjectWithProperty(toEdgeSprite, "edgeC") != null)
+            {
+                MapPoint p2 = (MapPoint) Utils.getAttachedMapObjectWithProperty(this, "c2");
+                MapPoint p1 = (MapPoint) Utils.getAttachedMapObjectWithProperty(toEdgeSprite, "edgeC");
+                c1.set(x1, y1);
+                c2.set(x2, y2);
+            } else
+            {
+                c1.set(x1, y1);
+                c2.set(x2, y2);
+            }
+            // End of the fence connections. Make the cPositions start and end to match
+            if (toEdgeSprite.toEdgeSprite == null)
+            {
+                if (Utils.getAttachedMapObjectWithProperty(this, "edgeC") != null && Utils.getAttachedMapObjectWithProperty(toEdgeSprite, "edgeC") != null)
+                {
+                    MapPoint p2 = (MapPoint) Utils.getAttachedMapObjectWithProperty(this, "c2");
+                    MapPoint point1 = (MapPoint) Utils.getAttachedMapObjectWithProperty(toEdgeSprite, "edgeC");
+                    MapPoint point2;
+                    if (p2.x > point1.x)
+                        point2 = (MapPoint) Utils.getAttachedMapObjectWithProperty(toEdgeSprite, "c1");
+                    else
+                        point2 = (MapPoint) Utils.getAttachedMapObjectWithProperty(toEdgeSprite, "c2");
+                    x1 = point1.x;
+                    y1 = point1.y;
+                    x2 = point2.x;
+                    y2 = point2.y;
+
+                    float dx = x2 - x1;
+                    float dy = y2 - y1;
+                    float radius = .05f;
+                    float length = (float) Math.sqrt(dx * dx + dy * dy);
+                    if (length > 0)
+                    {
+                        dx /= length;
+                        dy /= length;
+                    }
+                    dx *= length - radius;
+                    dy *= length - radius;
+                    float x4 = (x1 + dx);
+                    float y4 = (y1 + dy);
+                    dx = x2 - x1;
+                    dy = y2 - y1;
+                    length = (float) Math.sqrt(dx * dx + dy * dy);
+                    if (length > 0)
+                    {
+                        dx /= length;
+                        dy /= length;
+                    }
+                    dx *= length - radius;
+                    dy *= length - radius;
+                    float x3 = (x2 - dx);
+                    float y3 = (y2 - dy);
+                    x1 = x3;
+                    y1 = y3;
+                    x2 = x4;
+                    y2 = y4;
+                } else
+                {
+                    MapPoint point1 = (MapPoint) Utils.getAttachedMapObjectWithProperty(toEdgeSprite, "c1");
+                    MapPoint point2 = (MapPoint) Utils.getAttachedMapObjectWithProperty(toEdgeSprite, "c2");
+                    x1 = point1.x;
+                    y1 = point1.y;
+                    x2 = point2.x;
+                    y2 = point2.y;
+                }
+                toEdgeSprite.c1 = new Vector2();
+                toEdgeSprite.c2 = new Vector2();
+                toEdgeSprite.c1.set(x1, y1);
+                toEdgeSprite.c2.set(x2, y2);
+                if(toEdgeSprite.c1.x > toEdgeSprite.c2.x)
+                {
+                    float c1X = toEdgeSprite.c1.x;
+                    float c1Y = toEdgeSprite.c1.y;
+                    toEdgeSprite.c1.set(toEdgeSprite.c2.x, toEdgeSprite.c2.y);
+                    toEdgeSprite.c2.set(c1X, c1Y);
+                }
+            }
+        }
+
+
+        if(c1.x > c2.x)
+        {
+            float c1X = c1.x;
+            float c1Y = c1.y;
+            c1.set(c2.x, c2.y);
+            c2.set(c1X, c1Y);
+        }
+    }
+
+    @Override
+    public int compareTo(MapSprite other)
+    {
+        int thisCPresent = 1;
+        int otherCPresent = 1;
+        if(c1 == null)
+            thisCPresent = 0;
+        if(other.c1 == null)
+            otherCPresent = 0;
+        if(!(thisCPresent == 1 && otherCPresent == 1))
+            return Integer.compare(thisCPresent, otherCPresent);
+
+        /*if min and max z is within the other line, check which side of other line any this.point is on
+        if right, draw last, if left draw first
+        if min and max z are not both within the other line, you sort by min-z
+        the higher min-z draws first
+        if x1 < x2 then its normal, if x1 > x2 then the line is reversed*/
+
+        float minZ;
+        float maxZ;
+        float otherMinZ;
+        float otherMaxZ;
+
+        if(c1.y < c2.y)
+        {
+            minZ = c1.y;
+            maxZ = c2.y;
+        }
+        else
+        {
+            minZ = c2.y;
+            maxZ = c1.y;
+        }
+        if(other.c1.y < other.c2.y)
+        {
+            otherMinZ = other.c1.y;
+            otherMaxZ = other.c2.y;
+        }
+        else
+        {
+            otherMinZ = other.c2.y;
+            otherMaxZ = other.c1.y;
+        }
+
+        float midCX = (c1.x + c2.x) / 2f;
+        float midCY = (c1.y + c2.y) / 2f;
+        float otherMidCX = (other.c1.x + other.c2.x) / 2f;
+        float otherMidCY = (other.c1.y + other.c2.y) / 2f;
+
+        // this sandwhiched between other, test side of line
+        if(Utils.areTwoNumbersWithinNumbers(minZ, maxZ, otherMinZ, otherMaxZ))
+        {
+            return Intersector.pointLineSide(other.c2.x, other.c2.y, other.c1.x, other.c1.y, midCX, midCY);
+        }
+        // other sandwhiched between this, test side of line
+        else if(Utils.areTwoNumbersWithinNumbers(otherMinZ, otherMaxZ, minZ, maxZ))
+        {
+            return Intersector.pointLineSide(c1.x, c1.y, c2.x, c2.y, otherMidCX, otherMidCY);
+        }
+        // No sandwhiching going on, test for which minZ is higher
+        else
+        {
+            return Float.compare(otherMinZ, minZ);
+        }
     }
 }

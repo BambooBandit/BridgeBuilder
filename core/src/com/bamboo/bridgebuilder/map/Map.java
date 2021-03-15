@@ -211,6 +211,7 @@ public class Map implements Screen
         drawObjectLayers();
         drawSnapPreview();
         drawSnap();
+        drawC();
         if(this.editor.fileMenu.toolPane.b2drender.selected)
         {
             this.editor.shapeRenderer.end();
@@ -326,6 +327,33 @@ public class Map implements Screen
                 {
                     MapObject from = objectLayer.children.get(k);
                     drawSnapFlicker(from);
+                }
+            }
+        }
+    }
+
+    private void drawC()
+    {
+        for(int i = 0; i < layers.size; i ++)
+        {
+            Layer layer = layers.get(i);
+            if(layer instanceof SpriteLayer)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                for(int k = 0; k < spriteLayer.children.size; k ++)
+                {
+                    MapSprite mapSprite = spriteLayer.children.get(k);
+                    if(mapSprite.c1 != null)
+                    {
+                        editor.shapeRenderer.setColor(Color.OLIVE);
+                        editor.shapeRenderer.line(
+                                mapSprite.c1.x - cameraX,
+                                mapSprite.c1.y - cameraY,
+                                mapSprite.c2.x - cameraX,
+                                mapSprite.c2.y - cameraY);
+                        editor.shapeRenderer.circle(mapSprite.c2.x - cameraX,
+                                mapSprite.c2.y - cameraY, .2f, 5);
+                    }
                 }
             }
         }
@@ -1745,5 +1773,30 @@ public class Map implements Screen
         }
 
         return mapSprite;
+    }
+
+    /** Sorts the selected layer (or all layers if none are selected) based on c1's, c2's and y's. */
+    public void sort()
+    {
+        if(selectedLayer == null)
+        {
+            for(int i = 0; i < layers.size; i ++)
+            {
+                Layer layer = layers.get(i);
+                if(layer instanceof SpriteLayer)
+                {
+                    SpriteLayer spriteLayer = (SpriteLayer) layer;
+                    spriteLayer.sort();
+                }
+            }
+            return;
+        }
+
+        if(selectedLayer != null && selectedLayer instanceof SpriteLayer)
+        {
+            SpriteLayer spriteLayer = (SpriteLayer) selectedLayer;
+            spriteLayer.sort();
+            return;
+        }
     }
 }

@@ -8,9 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.bamboo.bridgebuilder.map.AttachedMapObjectManager;
-import com.bamboo.bridgebuilder.map.Layer;
-import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
@@ -94,6 +92,11 @@ public class Utils
         unprojector.set(x, y, 0);
         camera.project(unprojector);
         return unprojector;
+    }
+
+    public static boolean areTwoNumbersWithinNumbers(float num1, float num2, float num3, float num4)
+    {
+        return num1 >= num3 && num1 <= num4 && num2 >= num3 && num2 <= num4;
     }
 
     public static boolean doesLayerHavePerspective(Map map, Layer layer)
@@ -401,6 +404,19 @@ public class Utils
                 if(labelFieldProperty.getProperty() != null && labelFieldProperty.getProperty().equals(propertyName))
                     return labelFieldProperty;
             }
+        }
+        return null;
+    }
+
+    public static MapObject getAttachedMapObjectWithProperty(MapSprite mapSprite, String propertyName)
+    {
+        if(mapSprite.attachedMapObjects == null)
+            return null;
+        for(int i = 0; i < mapSprite.attachedMapObjects.size; i ++)
+        {
+            MapObject mapObject = mapSprite.attachedMapObjects.get(i);
+            if(getPropertyField(mapObject.properties, propertyName) != null)
+                return mapObject;
         }
         return null;
     }

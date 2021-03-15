@@ -95,4 +95,11 @@ public class SpriteLayer extends Layer
         super.setZ(z);
         this.perspective.cameraHeight = z;
     }
+
+    public void sort()
+    {
+        for(int i = 0; i < children.size; i ++)
+            children.get(i).updateC();
+        children.sort();
+    }
 }

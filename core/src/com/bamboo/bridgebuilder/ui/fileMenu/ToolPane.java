@@ -54,6 +54,7 @@ public class ToolPane extends Group
     private TextButton bringDown;
     private TextButton bringTop;
     private TextButton bringBottom;
+    private TextButton sort;
     private TextButton layerDownOverride;
     private TextButton layerUpOverride;
     private TextButton layerOverrideReset;
@@ -109,9 +110,10 @@ public class ToolPane extends Group
         this.bringDown = new TextButton("v", skin);
         this.bringTop = new TextButton("^^", skin);
         this.bringBottom = new TextButton("vv", skin);
-        this.layerDownOverride = new TextButton("Layer Override v", skin);
-        this.layerUpOverride = new TextButton("Layer Override ^", skin);
-        this.layerOverrideReset= new TextButton("Layer Override Reset", skin);
+        this.sort = new TextButton("sort", skin);
+        this.layerDownOverride = new TextButton("LOI v", skin);
+        this.layerUpOverride = new TextButton("LOI ^", skin);
+        this.layerOverrideReset= new TextButton("LOI Reset", skin);
 
         this.gradientDialog = new GradientDialog(editor.stage, skin);
         this.gradientButton = new TextButton("Gradient", skin);
@@ -153,19 +155,20 @@ public class ToolPane extends Group
         this.toolTable.add(this.attachedSprites).padRight(1);
         this.toolTable.add(this.selectAttachedSprites).padRight(1);
         this.toolTable.add(this.splat).padRight(1);
-        this.toolTable.add(this.fence).padRight(4);
+        this.toolTable.add(this.fence).padRight(5);
         this.toolTable.add(this.bringUp);
         this.toolTable.add(this.bringDown);
         this.toolTable.add(this.bringTop);
-        this.toolTable.add(this.bringBottom).padRight(4);
+        this.toolTable.add(this.bringBottom).padRight(5);
+        this.toolTable.add(this.sort).padRight(5);
         this.toolTable.add(this.layerDownOverride);
         this.toolTable.add(this.layerUpOverride);
-        this.toolTable.add(this.layerOverrideReset).padRight(4);
-        this.toolTable.add(this.gradientButton).padRight(4);
-        this.toolTable.add(this.splatButton).padRight(4);
-        this.toolTable.add(this.minMaxButton).padRight(4);
-        this.toolTable.add(this.stairsButton).padRight(4);
-        this.toolTable.add(this.groupButton).padRight(4);
+        this.toolTable.add(this.layerOverrideReset).padRight(5);
+        this.toolTable.add(this.gradientButton).padRight(5);
+        this.toolTable.add(this.splatButton).padRight(5);
+        this.toolTable.add(this.minMaxButton).padRight(5);
+        this.toolTable.add(this.stairsButton).padRight(5);
+        this.toolTable.add(this.groupButton).padRight(5);
         this.toolTable.add(this.fps).padRight(1);
 
         this.pane = new Stack();
@@ -233,9 +236,10 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.bringDown).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringTop).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringBottom).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.layerDownOverride).size(toolHeight * 4.75f, toolHeight);
-        this.toolTable.getCell(this.layerUpOverride).size(toolHeight * 4.75f, toolHeight);
-        this.toolTable.getCell(this.layerOverrideReset).size(toolHeight * 4.75f, toolHeight);
+        this.toolTable.getCell(this.sort).size(toolHeight * 2.3f, toolHeight);
+        this.toolTable.getCell(this.layerDownOverride).size(toolHeight * 2.5f, toolHeight);
+        this.toolTable.getCell(this.layerUpOverride).size(toolHeight * 2.5f, toolHeight);
+        this.toolTable.getCell(this.layerOverrideReset).size(toolHeight * 2.5f, toolHeight);
         this.toolTable.getCell(this.gradientButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.splatButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.minMaxButton).size(toolHeight * 2.3f, toolHeight);
@@ -391,6 +395,18 @@ public class ToolPane extends Group
                 MapSprite selectedSprite = map.selectedSprites.first();
                 MoveMapSpriteIndex moveMapSpriteIndex = new MoveMapSpriteIndex(map, selectedSprite, false, true);
                 map.executeCommand(moveMapSpriteIndex);
+            }
+        });
+
+        this.sort.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                Map map = ((Map)editor.getScreen());
+                if(map == null)
+                    return;
+                map.sort();
             }
         });
 
