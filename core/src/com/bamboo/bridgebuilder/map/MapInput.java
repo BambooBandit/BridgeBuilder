@@ -616,7 +616,7 @@ public class MapInput implements InputProcessor
                 DrawMapSprite drawMapSprite;
                 if(Utils.doesLayerHavePerspective(this.map, this.map.selectedLayer))
                 {
-                    Perspective perspective = ((SpriteLayer) this.map.selectedLayer).perspective;
+                    Perspective perspective = this.map.selectedLayer.perspective;
                     Vector3 projector = Utils.project(map.camera, x - map.cameraX, y - map.cameraY);
                     Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
                     drawMapSprite = new DrawMapSprite(this.map, (SpriteLayer) this.map.selectedLayer, unprojector.x, unprojector.y);
@@ -781,16 +781,26 @@ public class MapInput implements InputProcessor
         if(this.map.selectedLayer instanceof SpriteLayer && this.map.selectedSprites.size != 1)
             return false;
 
+        float perspectiveX = x;
+        float perspectiveY = y;
+        if(Utils.doesLayerHavePerspective(this.map, this.map.selectedLayer))
+        {
+            Perspective perspective = this.map.selectedLayer.perspective;
+            Vector3 projector = Utils.project(map.camera, x - map.cameraX, y - map.cameraY);
+            Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
+            perspectiveX = unprojector.x;
+            perspectiveY = unprojector.y;
+        }
+
         DrawMapPoint drawMapPoint;
         if(this.map.selectedLayer instanceof ObjectLayer)
         {
-            drawMapPoint = new DrawMapPoint(this.map, (ObjectLayer) this.map.selectedLayer, x, y);
+            drawMapPoint = new DrawMapPoint(this.map, (ObjectLayer) this.map.selectedLayer, perspectiveX, perspectiveY);
             this.map.executeCommand(drawMapPoint);
         }
         else
         {
-            new InstanceOrSpriteToolDialog(editor.stage, map.skin, map, this.map.selectedSprites.first(), null, x, y);
-//            drawMapPoint = new DrawMapPoint(this.map, this.map.selectedSprites.first(), x, y);
+            new InstanceOrSpriteToolDialog(editor.stage, map.skin, map, this.map.selectedSprites.first(), null, perspectiveX, perspectiveY);
         }
         return true;
     }
@@ -805,7 +815,17 @@ public class MapInput implements InputProcessor
         if(Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE) && this.map.input.mapPolygonVertices.size >= 6)
             return false;
 
-        DrawMapPolygonVertice drawMapPolygonVertice = new DrawMapPolygonVertice(this.map, x, y, this.objectVerticePosition.x, this.objectVerticePosition.y, Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE));
+        DrawMapPolygonVertice drawMapPolygonVertice;
+        if(Utils.doesLayerHavePerspective(this.map, this.map.selectedLayer))
+        {
+            Perspective perspective = this.map.selectedLayer.perspective;
+            Vector3 projector = Utils.project(map.camera, x - map.cameraX, y - map.cameraY);
+            Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
+            drawMapPolygonVertice = new DrawMapPolygonVertice(this.map, unprojector.x, unprojector.y, this.objectVerticePosition.x, this.objectVerticePosition.y, Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE));
+        }
+        else
+            drawMapPolygonVertice = new DrawMapPolygonVertice(this.map, x, y, this.objectVerticePosition.x, this.objectVerticePosition.y, Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE));
+
         this.map.executeCommand(drawMapPolygonVertice);
         return true;
     }
@@ -970,11 +990,6 @@ public class MapInput implements InputProcessor
             return false;
 
         float randomScale = this.editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
-        float randomRotation = this.editor.fileMenu.toolPane.minMaxDialog.randomRotationValue;
-        float randomR = this.editor.fileMenu.toolPane.minMaxDialog.randomRValue;
-        float randomG = this.editor.fileMenu.toolPane.minMaxDialog.randomGValue;
-        float randomB = this.editor.fileMenu.toolPane.minMaxDialog.randomBValue;
-        float randomA = this.editor.fileMenu.toolPane.minMaxDialog.randomAValue;
 
         for(int i = 0; i < spriteTool.previewSprites.size; i ++)
         {

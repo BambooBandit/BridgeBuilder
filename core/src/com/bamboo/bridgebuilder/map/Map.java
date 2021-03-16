@@ -486,6 +486,7 @@ public class Map implements Screen
     {
         if(!Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE))
             return;
+        this.editor.shapeRenderer.setProjectionMatrix(selectedLayer.perspective.perspectiveCamera.combined);
         this.editor.shapeRenderer.setColor(Color.GRAY);
         int oldIndex = 0;
         if(Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE) && this.input.mapPolygonVertices.size == 8)
