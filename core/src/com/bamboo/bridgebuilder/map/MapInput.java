@@ -669,6 +669,11 @@ public class MapInput implements InputProcessor
             AddMapSpritesToGroup addMapSpritesToGroup = new AddMapSpritesToGroup(map, (MapPolygon) map.hoveredChild);
             this.map.executeCommand(addMapSpritesToGroup);
         }
+        else if(map.hoveredChild instanceof MapPolygon && editor.fileMenu.toolPane.groupDialog.shouldRemove())
+        {
+            RemoveMapSpritesFromGroup removeMapSpritesFromGroup = new RemoveMapSpritesFromGroup(map, (MapPolygon) map.hoveredChild);
+            this.map.executeCommand(removeMapSpritesFromGroup);
+        }
         else
         {
             SelectLayerChild selectLayerChild = new SelectLayerChild(this.map, this.map.hoveredChild, Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT));

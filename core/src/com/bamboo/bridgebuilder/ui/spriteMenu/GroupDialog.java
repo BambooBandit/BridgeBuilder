@@ -22,9 +22,11 @@ public class GroupDialog extends Window
 
     private Table table;
     private Label addLabel;
+    private Label removeLabel;
     private Label createLabel;
     private Label selectLabel;
     public CheckBox addCheckBox;
+    public CheckBox removeCheckBox;
     public CheckBox createCheckBox;
     public CheckBox selectCheckBox;
 
@@ -48,7 +50,7 @@ public class GroupDialog extends Window
                 CheckBox checkBox = (CheckBox) actor;
                 if(checkBox.isChecked())
                 {
-                    if(checkBox == addCheckBox)
+                    if(checkBox == addCheckBox || checkBox == removeCheckBox)
                     {
                         if(editor.activeMap.selectedSprites.size == 0)
                         {
@@ -97,19 +99,23 @@ public class GroupDialog extends Window
             }
         };
         this.addLabel = new Label("Add to existing group: ", skin);
+        this.removeLabel = new Label("Remove from existing group: ", skin);
         this.createLabel = new Label("Add to new group: ", skin);
         this.selectLabel = new Label("Select group: ", skin);
         this.addCheckBox = new CheckBox("", skin);
+        this.removeCheckBox = new CheckBox("", skin);
         this.createCheckBox = new CheckBox("", skin);
         this.selectCheckBox = new CheckBox("", skin);
 
         this.checkBoxGroup = new ButtonGroup<>();
         this.checkBoxGroup.setMinCheckCount(0);
         this.checkBoxGroup.add(addCheckBox);
+        this.checkBoxGroup.add(removeCheckBox);
         this.checkBoxGroup.add(createCheckBox);
         this.checkBoxGroup.add(selectCheckBox);
 
         this.addCheckBox.addListener(changeListener);
+        this.removeCheckBox.addListener(changeListener);
         this.createCheckBox.addListener(changeListener);
         this.selectCheckBox.addListener(changeListener);
 
@@ -126,6 +132,8 @@ public class GroupDialog extends Window
 
         this.table.add(this.addLabel).padBottom(15);
         this.table.add(this.addCheckBox).padBottom(15).row();
+        this.table.add(this.removeLabel).padBottom(15);
+        this.table.add(this.removeCheckBox).padBottom(15).row();
         this.table.add(this.createLabel).padBottom(15);
         this.table.add(this.createCheckBox).padBottom(15).row();
         this.table.add(this.selectLabel).padBottom(15);
@@ -149,6 +157,7 @@ public class GroupDialog extends Window
     public void close()
     {
         addCheckBox.setChecked(false);
+        removeCheckBox.setChecked(false);
         createCheckBox.setChecked(false);
         selectCheckBox.setChecked(false);
 
@@ -181,6 +190,14 @@ public class GroupDialog extends Window
             return false;
 
         return addCheckBox.isChecked();
+    }
+
+    public boolean shouldRemove()
+    {
+        if(!this.isVisible())
+            return false;
+
+        return removeCheckBox.isChecked();
     }
 
     public boolean shouldCreate()
