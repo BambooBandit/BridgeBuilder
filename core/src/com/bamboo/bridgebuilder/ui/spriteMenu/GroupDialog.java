@@ -152,12 +152,19 @@ public class GroupDialog extends Window
         createCheckBox.setChecked(false);
         selectCheckBox.setChecked(false);
 
-        editor.activeMap.selectedLayer = editor.activeMap.selectedLayerPriorToGroupMode;
-        editor.activeMap.selectedLayer.layerField.select();
-        for(int i = 0; i < editor.activeMap.groupPolygons.children.size; i ++)
+        if(editor.activeMap != null)
         {
-            LayerChild layerChild = editor.activeMap.groupPolygons.children.get(i);
-            layerChild.unselect();
+            editor.activeMap.selectedLayer = editor.activeMap.selectedLayerPriorToGroupMode;
+            if (editor.activeMap.selectedLayer != null)
+                editor.activeMap.selectedLayer.layerField.select();
+            if (editor.activeMap.groupPolygons != null)
+            {
+                for (int i = 0; i < editor.activeMap.groupPolygons.children.size; i++)
+                {
+                    LayerChild layerChild = editor.activeMap.groupPolygons.children.get(i);
+                    layerChild.unselect();
+                }
+            }
         }
         this.setVisible(false);
     }

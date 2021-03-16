@@ -419,7 +419,11 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
                 spriteY = this.parentSprite.y;
             }
         }
+
         sprite.setPosition(spriteX - this.perspectiveOffsetX, spriteY - this.perspectiveOffsetY);
+
+        if(layer.perspective.skew > .005f && !Utils.isLayerGround(layer) && (sprite.getBoundingRectangle().y) < -150)
+            return;
         sprite.setOriginCenter();
         sprite.setOrigin(width / 2f, sprite.getOriginY());
         sprite.setScale(this.scale * this.perspectiveScale);

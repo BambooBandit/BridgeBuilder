@@ -1,6 +1,7 @@
 package com.bamboo.bridgebuilder.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -73,7 +74,6 @@ public class Perspective
             this.screenHeight = Gdx.graphics.getHeight();
 
         float cameraPerspectiveZoom = this.map.perspectiveZoom;
-        float cameraAngle = 0;
         this.skew = (float) (cameraPerspectiveZoom / (.25f + Math.pow(perspectiveCamera.position.y, .25f)));
 
         float[] m = perspectiveCamera.combined.getValues();
@@ -83,7 +83,10 @@ public class Perspective
 //            skew /= (Math.pow(cameraHeight, .045f));
         m[Matrix4.M31] += skew;
         m[Matrix4.M11] += 20 / ((-10f * perspectiveCamera.zoom) / skew);
-        m[Matrix4.M01] = cameraAngle * skew / perspectiveCamera.zoom;
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+            m[Matrix4.M01] = 2 * skew / perspectiveCamera.zoom;
+        else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+            m[Matrix4.M01] = -2 * skew / perspectiveCamera.zoom;
         perspectiveCamera.near = -100f;
         if(!this.useSkewWithHeight)
             m[Matrix4.M13] += (cameraHeight / perspectiveCamera.zoom);

@@ -117,6 +117,7 @@ public class MapInput implements InputProcessor
             this.currentPos.set(coords.x, coords.y);
             this.dragOriginPos.set(coords.x, coords.y);
 
+
             if(handleMapSpriteCreation(coords.x, coords.y, button))
                 return false;
             if(handleManipulatorBoxMoveLayerChildTouchDown(coords.x, coords.y, button))

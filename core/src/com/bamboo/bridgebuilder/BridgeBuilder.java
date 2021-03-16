@@ -207,7 +207,7 @@ public class BridgeBuilder extends Game
 					}
 					return true;
 				}
-				else if(keycode == Input.Keys.UP)
+				else if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && keycode == Input.Keys.UP)
 				{
 					if(activeMap != null)
 					{
@@ -233,7 +233,7 @@ public class BridgeBuilder extends Game
 						}
 					}
 				}
-				else if(keycode == Input.Keys.DOWN)
+				else if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && keycode == Input.Keys.DOWN)
 				{
 					if(activeMap != null)
 					{
@@ -259,7 +259,7 @@ public class BridgeBuilder extends Game
 						}
 					}
 				}
-				else if(keycode == Input.Keys.LEFT)
+				else if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && keycode == Input.Keys.LEFT)
 				{
 					if(activeMap != null)
 					{
@@ -285,7 +285,7 @@ public class BridgeBuilder extends Game
 						}
 					}
 				}
-				else if(keycode == Input.Keys.RIGHT)
+				else if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && keycode == Input.Keys.RIGHT)
 				{
 					if(activeMap != null)
 					{

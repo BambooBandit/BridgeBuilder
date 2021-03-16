@@ -184,6 +184,8 @@ public class Map implements Screen
         this.camera.zoom = this.zoom;
         this.camera.update();
 
+        if(groupPolygons != null)
+            groupPolygons.update();
         for(int i = 0; i < layers.size; i ++)
             layers.get(i).update();
 
@@ -764,7 +766,10 @@ public class Map implements Screen
             }
         }
         if(this.groupPolygons != null)
+        {
+            editor.shapeRenderer.setProjectionMatrix(groupPolygons.perspective.perspectiveCamera.combined);
             this.groupPolygons.draw();
+        }
     }
 
     private void printDustTypes()

@@ -97,6 +97,7 @@ public class MapTabPane extends Group
                         {
                             if(editor.fileMenu.toolPane.attachedSprites.selected)
                                 editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.attachedSprites);
+                            editor.fileMenu.toolPane.groupDialog.close();
                             map.editor.fileMenu.save(map, true, false);
                         }
 
@@ -105,6 +106,7 @@ public class MapTabPane extends Group
                         {
                             if(editor.fileMenu.toolPane.attachedSprites.selected)
                                 editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.attachedSprites);
+                            editor.fileMenu.toolPane.groupDialog.close();
                             removeMap(map);
                         }
                     };
@@ -113,6 +115,7 @@ public class MapTabPane extends Group
                 {
                     if(editor.fileMenu.toolPane.attachedSprites.selected)
                         editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.attachedSprites);
+                    editor.fileMenu.toolPane.groupDialog.close();
                     removeMap(map);
                 }
             }
@@ -168,6 +171,14 @@ public class MapTabPane extends Group
     /** Makes the editor look at this map. */
     public void lookAtMap(Map map)
     {
+        if(this.editor.activeMap == map)
+            return;
+
+        if(editor.fileMenu.toolPane.attachedSprites.selected)
+            editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.attachedSprites);
+        if(editor.fileMenu.toolPane.groupDialog != null)
+            editor.fileMenu.toolPane.groupDialog.close();
+
         this.editor.activeMap = map;
         this.editor.setScreen(map);
         if(map != null)
