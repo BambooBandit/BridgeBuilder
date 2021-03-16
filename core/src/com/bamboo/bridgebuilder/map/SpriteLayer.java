@@ -10,20 +10,17 @@ import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 public class SpriteLayer extends Layer
 {
     public Array<MapSprite> children;
-    public Perspective perspective;
 
     public SpriteLayer(BridgeBuilder editor, Map map, LayerField layerField)
     {
         super(editor, map, LayerTypes.SPRITE, layerField);
         this.children = super.children;
-        this.perspective = new Perspective(map, this, map.camera, this.z, true);
     }
 
     @Override
     public void update()
     {
-        perspective.update();
-
+        super.update();
         for(int i = 0; i < this.children.size; i ++)
             this.children.get(i).update();
     }

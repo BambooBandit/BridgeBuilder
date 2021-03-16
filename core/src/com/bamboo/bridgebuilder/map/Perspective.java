@@ -20,12 +20,12 @@ public class Perspective
     public float cameraHeight;
     public boolean useSkewWithHeight;
     public Map map;
-    public SpriteLayer spriteLayer;
+    public Layer layer;
 
-    public Perspective(Map map, SpriteLayer spriteLayer, OrthographicCamera camera, float cameraHeight, boolean useSkewWithHeight)
+    public Perspective(Map map, Layer layer, OrthographicCamera camera, float cameraHeight, boolean useSkewWithHeight)
     {
         this.map = map;
-        this.spriteLayer = spriteLayer;
+        this.layer = layer;
 
         this.cameraHeight = cameraHeight;
         this.useSkewWithHeight = useSkewWithHeight;
@@ -94,7 +94,7 @@ public class Perspective
         Matrix4.inv(perspectiveCamera.invProjectionView.val);
         perspectiveCamera.frustum.update(perspectiveCamera.invProjectionView);
 
-        projectWorldToPerspectiveSky(spriteLayer.width / 2f, 99999);
+        projectWorldToPerspectiveSky(layer.width / 2f, 99999);
         this.vanishingPoint.set(projector.x, projector.y, 0);
         Vector3 coords = Utils.project(camera, this.vanishingPoint.x, this.vanishingPoint.y);
         this.vanishingPointInScreenCoords.set(coords.x, coords.y);

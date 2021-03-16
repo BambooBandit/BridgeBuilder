@@ -428,6 +428,7 @@ public class Map implements Screen
                 if (!layer.layerField.attachedVisibleImg.isVisible())
                     continue;
                 layer.setCameraZoomToThisLayer();
+                editor.shapeRenderer.setProjectionMatrix(layer.perspective.perspectiveCamera.combined);
                 SpriteLayer spriteLayer = (SpriteLayer) layer;
                 for(int k = 0; k < spriteLayer.children.size; k ++)
                 {
@@ -753,10 +754,12 @@ public class Map implements Screen
             return;
         for(int i = 0; i < this.layers.size; i ++)
         {
-            if(this.layers.get(i) instanceof ObjectLayer)
+            Layer layer = this.layers.get(i);
+            if(layer instanceof ObjectLayer)
             {
-                if (this.layers.get(i).layerField.visibleImg.isVisible() && this.layers.get(i).overrideSprite == null)
-                    this.layers.get(i).draw();
+                editor.shapeRenderer.setProjectionMatrix(layer.perspective.perspectiveCamera.combined);
+                if (layer.layerField.visibleImg.isVisible() && layer.overrideSprite == null)
+                    layer.draw();
             }
         }
         if(this.groupPolygons != null)
@@ -952,11 +955,8 @@ public class Map implements Screen
         {
             SpriteTool spriteTool = getSpriteToolFromSelectedTools();
             Vector3 coords = Utils.unproject(this.camera, Gdx.input.getX(), Gdx.input.getY());
-            float x = coords.x;
-            float y = coords.y;
             for (int i = 0; i < getSpriteToolFromSelectedTools().previewSprites.size; i++)
             {
-                float randomScale = this.editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
                 float randomRotation = this.editor.fileMenu.toolPane.minMaxDialog.randomRotationValue;
                 float randomR = this.editor.fileMenu.toolPane.minMaxDialog.randomRValue;
                 float randomG = this.editor.fileMenu.toolPane.minMaxDialog.randomGValue;

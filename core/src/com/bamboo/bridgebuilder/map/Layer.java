@@ -25,8 +25,12 @@ public abstract class Layer<T extends LayerChild>
 
     public Array<PropertyField> properties;
 
+    public Perspective perspective;
+
     public Layer(BridgeBuilder editor, Map map, LayerTypes type, LayerField layerField)
     {
+        this.perspective = new Perspective(map, this, map.camera, this.z, true);
+
         this.width = 5;
         this.height = 5;
         this.z = 0;
@@ -59,7 +63,10 @@ public abstract class Layer<T extends LayerChild>
             moveBox.sprite.draw(map.editor.batch);
     }
 
-    public abstract void update();
+    public void update()
+    {
+        perspective.update();
+    }
     public abstract void draw();
 
     public void resize(int width, int height, boolean down, boolean right)
@@ -115,6 +122,8 @@ public abstract class Layer<T extends LayerChild>
 
     public void setCameraZoomToThisLayer()
     {
+        if(1 == 1)
+            return;
         if(editor.fileMenu.toolPane.parallax.selected)
         {
             this.map.camera.zoom = this.map.zoom;

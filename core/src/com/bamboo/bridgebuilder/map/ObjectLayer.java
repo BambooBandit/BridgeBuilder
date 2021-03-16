@@ -17,8 +17,6 @@ public class ObjectLayer extends Layer
         this.children = super.children;
     }
 
-    @Override public void update() { }
-
     @Override
     public void draw()
     {
