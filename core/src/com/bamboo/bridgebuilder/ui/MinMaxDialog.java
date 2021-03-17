@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.Utils;
 
 public class MinMaxDialog extends Window
@@ -63,10 +64,12 @@ public class MinMaxDialog extends Window
     public float randomBValue = 1;
     public float randomAValue = 1;
 
-    public MinMaxDialog(Stage stage, Skin skin)
+    private BridgeBuilder editor;
+
+    public MinMaxDialog(BridgeBuilder editor, Stage stage, Skin skin)
     {
         super("Min Max", skin);
-
+        this.editor = editor;
         this.minMaxTable = new Table();
 
         this.reset = new TextButton("Reset", skin);
@@ -165,6 +168,7 @@ public class MinMaxDialog extends Window
                 {
                     minSizeValue = 0;
                 }
+                shuffle();
                 return false;
             }
         });
@@ -183,6 +187,7 @@ public class MinMaxDialog extends Window
                 {
                     maxSizeValue = 0;
                 }
+                shuffle();
                 return false;
             }
         });
@@ -202,6 +207,7 @@ public class MinMaxDialog extends Window
                 {
                     minRotationValue = 0;
                 }
+                shuffle();
                 return false;
             }
         });
@@ -220,6 +226,7 @@ public class MinMaxDialog extends Window
                 {
                     maxRotationValue = 0;
                 }
+                shuffle();
                 return false;
             }
         });
@@ -238,6 +245,7 @@ public class MinMaxDialog extends Window
                 {
                     minRValue = 0;
                 }
+                shuffle();
                 return false;
             }
         });
@@ -256,6 +264,7 @@ public class MinMaxDialog extends Window
                 {
                     maxRValue = 0;
                 }
+                shuffle();
                 return false;
             }
         });
@@ -274,6 +283,7 @@ public class MinMaxDialog extends Window
                 {
                     minGValue = 0;
                 }
+                shuffle();
                 return false;
             }
         });
@@ -292,6 +302,7 @@ public class MinMaxDialog extends Window
                 {
                     maxGValue = 0;
                 }
+                shuffle();
                 return false;
             }
         });
@@ -310,6 +321,7 @@ public class MinMaxDialog extends Window
                 {
                     minBValue = 0;
                 }
+                shuffle();
                 return false;
             }
         });
@@ -328,6 +340,7 @@ public class MinMaxDialog extends Window
                 {
                     maxBValue = 0;
                 }
+                shuffle();
                 return false;
             }
         });
@@ -346,6 +359,7 @@ public class MinMaxDialog extends Window
                 {
                     minAValue = 0;
                 }
+                shuffle();
                 return false;
             }
         });
@@ -364,6 +378,7 @@ public class MinMaxDialog extends Window
                 {
                     maxAValue = 0;
                 }
+                shuffle();
                 return false;
             }
         });
@@ -405,5 +420,12 @@ public class MinMaxDialog extends Window
         this.maxBValue = 1;
         this.minAValue = 1;
         this.maxAValue = 1;
+    }
+
+    /** Shuffle the selected sprite tools in order to reflect the recent changes in min max values. */
+    private void shuffle()
+    {
+        for(int i = 0; i < editor.maps.size; i++)
+            editor.maps.get(i).shuffleRandomSpriteTool(false);
     }
 }

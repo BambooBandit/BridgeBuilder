@@ -121,7 +121,7 @@ public class ToolPane extends Group
         this.splatDialog = new SplatDialog(editor.stage, skin);
         this.splatButton = new TextButton("Splat", skin);
 
-        this.minMaxDialog = new MinMaxDialog(editor.stage, skin);
+        this.minMaxDialog = new MinMaxDialog(editor, editor.stage, skin);
         this.minMaxButton = new TextButton("Min Max", skin);
 
         this.stairsDialog = new StairsDialog(editor.stage, skin);
