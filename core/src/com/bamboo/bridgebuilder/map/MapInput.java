@@ -1058,7 +1058,7 @@ public class MapInput implements InputProcessor
 //            this.map.zoom = .1f;
 
 
-        if(!Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
         {
             this.map.perspectiveZoom += amount / 500f;
 
@@ -1066,9 +1066,9 @@ public class MapInput implements InputProcessor
                 this.map.perspectiveZoom = .0075f;
             else if(this.map.perspectiveZoom < 0)
                 this.map.perspectiveZoom = 0;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
             return false;
+        }
+
 
         this.map.zoom += amount / 4f;
 
