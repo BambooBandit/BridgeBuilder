@@ -209,6 +209,7 @@ public class DrawFence implements Command
         if (fromFence.attachedSprites == null)
         {
             fromFence.attachedSprites = new SpriteLayer(map.editor, map, null);
+            fromFence.attachedSprites.perspective = fromFence.layer.perspective;
             fromFence.attachedSprites.addMapSprite(fromFence, 0);
         }
         SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
