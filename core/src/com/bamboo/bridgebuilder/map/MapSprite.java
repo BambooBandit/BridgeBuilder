@@ -989,7 +989,10 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     @Override
     public boolean isHoveredOver(float x, float y)
     {
-        return this.polygon.contains(x, y);
+        polygon.setPosition(this.x - map.cameraX, this.y - map.cameraY);
+        boolean contains = this.polygon.contains(x, y);
+        polygon.setPosition(this.x, this.y);
+        return contains;
     }
 
     @Override

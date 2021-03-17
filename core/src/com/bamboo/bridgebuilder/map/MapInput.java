@@ -195,16 +195,13 @@ public class MapInput implements InputProcessor
         try
         {
             Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
-            coords.x += map.cameraX;
-            coords.y += map.cameraY;
-            this.currentPos.set(coords.x, coords.y);
-            String xCoord = String.format("%.2f", coords.x);
-            String yCoord = String.format("%.2f", coords.y);
-            editor.mouseCoordTooltip.label.setText("(" + xCoord + ", " + yCoord  +")   (" + screenX + ", " + screenY + ")");
-            handlePreviewSpritePositionUpdate(coords.x, coords.y);
-            handleHoveredLayerChildUpdate(coords.x, coords.y);
-            handleManipulatorBoxHover(coords.x, coords.y);
-            handleSelectedPolygonVerticeHover(coords.x, coords.y);
+            float coordsX = coords.x + map.cameraX;
+            float coordsY = coords.y + map.cameraY;
+            this.currentPos.set(coordsX, coordsY);
+            handlePreviewSpritePositionUpdate(coordsX, coordsY);
+            handleHoveredLayerChildUpdate(coordsX, coordsY);
+            handleManipulatorBoxHover(coordsX, coordsY);
+            handleSelectedPolygonVerticeHover(coordsX, coordsY);
         } catch(Exception e){
             this.editor.crashRecovery(e);
         }
