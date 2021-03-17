@@ -197,6 +197,9 @@ public class MapInput implements InputProcessor
             Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
             float coordsX = coords.x + map.cameraX;
             float coordsY = coords.y + map.cameraY;
+            String xCoord = String.format("%.2f", coordsX);
+            String yCoord = String.format("%.2f", coordsY);
+            editor.mouseCoordTooltip.label.setText("(" + xCoord + ", " + yCoord  +")   (" + screenX + ", " + screenY + ")");
             this.currentPos.set(coordsX, coordsY);
             handlePreviewSpritePositionUpdate(coordsX, coordsY);
             handleHoveredLayerChildUpdate(coordsX, coordsY);

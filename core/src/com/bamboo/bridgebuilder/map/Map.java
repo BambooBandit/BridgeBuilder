@@ -468,6 +468,7 @@ public class Map implements Screen
         for(int i = 0; i < this.selectedSprites.size; i ++)
         {
             MapSprite selectedSprite = this.selectedSprites.get(i);
+            this.editor.shapeRenderer.setProjectionMatrix(selectedSprite.layer.perspective.perspectiveCamera.combined);
             if(selectedSprite == this.hoveredChild)
                 selectedSprite.drawSelectedHoveredOutline();
             else

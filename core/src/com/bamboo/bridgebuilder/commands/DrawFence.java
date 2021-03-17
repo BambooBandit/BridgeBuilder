@@ -218,11 +218,13 @@ public class DrawFence implements Command
         LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(connector.lockedProperties, "Fence");
         fenceProperty.value.setText("true");
         (fromFence.attachedSprites).addMapSprite(connector, 0);
+        fromX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
+        toX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
         if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
             connector.setPosition(fromX, fromY - connector.height / 2f);
         else
             connector.setPosition(fromX, fromY);
-        connector.x2Offset = toX - (connector.x + connector.width);
+        connector.x2Offset = toX - (connector.x + connector.width * connector.scale);
         if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
             connector.y2Offset = toY - (connector.y + connector.height / 2f);
         else

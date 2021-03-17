@@ -65,6 +65,9 @@ public class Perspective
 
     public void update()
     {
+        float cameraHeight = this.cameraHeight;
+        if(!map.editor.fileMenu.toolPane.parallax.selected)
+            cameraHeight = 0;
         matchOrthogonalCamera();
         setZoom(map.zoom);
 
