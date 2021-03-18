@@ -22,6 +22,7 @@ public class Perspective
     public boolean useSkewWithHeight;
     public Map map;
     public Layer layer;
+    public boolean isAboveHorizon;
 
     public Perspective(Map map, Layer layer, OrthographicCamera camera, float cameraHeight, boolean useSkewWithHeight)
     {
@@ -104,6 +105,13 @@ public class Perspective
         this.vanishingPoint.set(projector.x, projector.y, 0);
         Vector3 coords = Utils.project(camera, this.vanishingPoint.x, this.vanishingPoint.y);
         this.vanishingPointInScreenCoords.set(coords.x, coords.y);
+
+        updateIfAboveHorizon();
+    }
+
+    private void updateIfAboveHorizon()
+    {
+        isAboveHorizon = (projectWorldToPerspective(map.cameraX, map.cameraY).y >= vanishingPoint.y);
     }
 
     public Vector3 projectScreenToPerspective(float x, float y)
@@ -147,6 +155,10 @@ public class Perspective
         boolean overflow = false;
         if(projector.y < vanishingPointInScreenY)
             overflow = true;
+
+        if(isAboveHorizon)
+            overflow = !overflow;
+
         unproject(camera, projector);
 
         float cap = this.map.cameraY - .95f / skew;
