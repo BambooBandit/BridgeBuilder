@@ -20,6 +20,13 @@ public class MapData
     {
         MapSprite.resetIdCounter();
         map.updateLayerSpriteGrids();
+        float oldPerspective = map.perspectiveZoom;
+        map.perspectiveZoom = 0;
+        for(int i = 0; i < map.layers.size; i ++)
+        {
+            map.layers.get(i).update();
+        }
+        map.perspectiveZoom = oldPerspective;
 
         this.name = map.name;
         this.lProps = new ArrayList<>();

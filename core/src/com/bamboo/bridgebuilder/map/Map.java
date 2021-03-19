@@ -1576,7 +1576,6 @@ public class Map implements Screen
     {
         MapSprite.resetIdCounter();
 
-
         SpriteSheet spriteSheet = null;
         // delete all properties and things
         for(int i = 0; i < spriteMenu.spriteSheets.size; i ++)
