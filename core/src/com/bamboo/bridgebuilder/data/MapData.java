@@ -19,9 +19,9 @@ public class MapData
     public MapData(Map map, boolean settingBBMDefaults)
     {
         MapSprite.resetIdCounter();
-        map.updateLayerSpriteGrids();
         float oldPerspective = map.perspectiveZoom;
         map.perspectiveZoom = 0;
+        map.updateLayerSpriteGrids();
         for(int i = 0; i < map.layers.size; i ++)
         {
             map.layers.get(i).update();
