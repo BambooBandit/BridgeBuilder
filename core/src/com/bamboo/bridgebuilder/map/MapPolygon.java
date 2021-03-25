@@ -254,7 +254,10 @@ public class MapPolygon extends MapObject
     @Override
     public boolean isHoveredOver(float[] vertices)
     {
-        return Intersector.overlapConvexPolygons(polygon.getTransformedVertices(), vertices, null);
+        polygon.setPosition(polygon.getX() + map.cameraX, polygon.getY() + map.cameraY);
+        boolean isHoveredOver = Intersector.overlapConvexPolygons(polygon.getTransformedVertices(), vertices, null);
+        polygon.setPosition(polygon.getX() - map.cameraX, polygon.getY() - map.cameraY);
+        return isHoveredOver;
     }
 
     public void moveVertice(float x, float y)

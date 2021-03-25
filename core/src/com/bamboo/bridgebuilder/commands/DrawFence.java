@@ -22,7 +22,7 @@ public class DrawFence implements Command
 
     private Array<DrawFence> chainedCommands; // Used for adding multiple mapsprites in one execution
 
-    private boolean stairs = false;
+    private boolean inFront = false;
 
     public DrawFence(Map map, SpriteLayer layer, float x, float y)
     {
@@ -33,8 +33,8 @@ public class DrawFence implements Command
         this.connectors = new Array<>();
         this.lastFencePlacedOld = map.lastFencePlaced;
 
-        if(map.editor.fileMenu.toolPane.stairs.selected)
-            stairs = true;
+        if(map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorBeInFront())
+            inFront = true;
     }
 
     @Override
@@ -217,7 +217,10 @@ public class DrawFence implements Command
         MapSprite connector = new MapSprite(this.map, fromFence.attachedSprites, spriteTool, fromX, fromY);
         LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(connector.lockedProperties, "Fence");
         fenceProperty.value.setText("true");
-        (fromFence.attachedSprites).addMapSprite(connector, 0);
+        if(inFront)
+            (fromFence.attachedSprites).addMapSprite(connector, -1);
+        else
+            (fromFence.attachedSprites).addMapSprite(connector, 0);
         fromX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
         toX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
         if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())

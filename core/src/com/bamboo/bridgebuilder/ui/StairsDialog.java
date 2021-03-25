@@ -24,6 +24,7 @@ public class StairsDialog extends Window
     private Label connectorCenterHeightLabel;
     private Label snapLabel;
     private Label transparentParentLabel;
+    private Label connectorInFrontLabel;
     private TextField initialHeightField;
     private TextField finalHeightField;
     private TextField stairAmountField;
@@ -33,6 +34,7 @@ public class StairsDialog extends Window
     private CheckBox parentCenterHeightCheckBox;
     private CheckBox connectorCenterHeightCheckBox;
     private CheckBox transparentParentCheckBox;
+    private CheckBox connectorInFrontCheckBox;
 
     public StairsDialog(Stage stage, Skin skin)
     {
@@ -47,6 +49,7 @@ public class StairsDialog extends Window
         this.thicknessLabel = new Label("Thickness: ", skin);
         this.heightLabel = new Label("Height offset: ", skin);
         this.transparentParentLabel = new Label("Should parent be transparent: ", skin);
+        this.connectorInFrontLabel = new Label("Should connector be in front: ", skin);
         this.snapLabel = new Label("Should snap: ", skin);
         this.parentCenterHeightLabel = new Label("Should parent height be centered: ", skin);
         this.connectorCenterHeightLabel = new Label("Should connector height be centered: ", skin);
@@ -63,6 +66,8 @@ public class StairsDialog extends Window
         this.snapCheckBox.setChecked(true);
         this.transparentParentCheckBox = new CheckBox("", skin);
         this.transparentParentCheckBox.setChecked(false);
+        this.connectorInFrontCheckBox = new CheckBox("", skin);
+        this.connectorInFrontCheckBox.setChecked(false);
 
         this.close = new TextButton("Close", skin);
         this.close.setColor(Color.FIREBRICK);
@@ -91,6 +96,8 @@ public class StairsDialog extends Window
         this.table.add(this.connectorCenterHeightCheckBox).padBottom(15).row();
         this.table.add(this.transparentParentLabel).padBottom(15);
         this.table.add(this.transparentParentCheckBox).padBottom(15).row();
+        this.table.add(this.connectorInFrontLabel).padBottom(15);
+        this.table.add(this.connectorInFrontCheckBox).padBottom(15).row();
         this.table.add(this.snapLabel).padBottom(15);
         this.table.add(this.snapCheckBox).padBottom(15).row();
         this.table.add(this.close);
@@ -166,6 +173,11 @@ public class StairsDialog extends Window
     public boolean shouldConnectorHeightBeCentered()
     {
         return connectorCenterHeightCheckBox.isChecked();
+    }
+
+    public boolean shouldConnectorBeInFront()
+    {
+        return connectorInFrontCheckBox.isChecked();
     }
 
 }
