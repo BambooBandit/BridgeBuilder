@@ -591,7 +591,7 @@ public class Map implements Screen
         if(!this.editor.fileMenu.toolPane.gradient.selected || !this.input.draggingGradient)
             return;
         this.editor.shapeRenderer.setColor(Color.BLACK);
-        this.editor.shapeRenderer.line(this.input.gradientX, this.input.gradientY, this.input.currentPos.x, this.input.currentPos.y);
+        this.editor.shapeRenderer.line(this.input.gradientX - cameraX, this.input.gradientY - cameraY, this.input.currentPos.x - cameraX, this.input.currentPos.y - cameraY);
 
     }
 

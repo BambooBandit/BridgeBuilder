@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.FloatArray;
@@ -14,6 +15,7 @@ import com.bamboo.bridgebuilder.commands.*;
 import com.bamboo.bridgebuilder.ui.InstanceOrSpriteToolDialog;
 import com.bamboo.bridgebuilder.ui.SnapSpriteDialog;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
+import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 
@@ -205,6 +207,7 @@ public class MapInput implements InputProcessor
             handleHoveredLayerChildUpdate(coordsX, coordsY);
             handleManipulatorBoxHover(coordsX, coordsY);
             handleSelectedPolygonVerticeHover(coordsX, coordsY);
+            updateGradientPreview(coordsX, coordsY);
         } catch(Exception e){
             this.editor.crashRecovery(e);
         }
@@ -567,6 +570,54 @@ public class MapInput implements InputProcessor
         }
     }
 
+    private void updateGradientPreview(float x, float y)
+    {
+        if(!draggingGradient)
+            return;
+        float fromR = map.editor.fileMenu.toolPane.gradientDialog.getFromR();
+        float fromG = map.editor.fileMenu.toolPane.gradientDialog.getFromG();
+        float fromB = map.editor.fileMenu.toolPane.gradientDialog.getFromB();
+        float fromA = map.editor.fileMenu.toolPane.gradientDialog.getFromA();
+        float toR = map.editor.fileMenu.toolPane.gradientDialog.getToR();
+        float toG = map.editor.fileMenu.toolPane.gradientDialog.getToG();
+        float toB = map.editor.fileMenu.toolPane.gradientDialog.getToB();
+        float toA = map.editor.fileMenu.toolPane.gradientDialog.getToA();
+        float fromX = this.gradientX;
+        float fromY = this.gradientY;
+
+        float toX = x;
+        float toY = y;
+        float angle = Utils.degreeAngleFix(90 - Utils.getAngleDegree(fromX, fromY, toX, toY));
+        this.map.camera.rotate(angle);
+        this.map.camera.update();
+
+        float projectedFromY = Utils.project(this.map.camera, fromX, fromY).y;
+        float projectedToY = Utils.project(this.map.camera, toX, toY).y;
+
+        for(int i = 0; i < map.selectedSprites.size; i ++)
+        {
+            MapSprite mapSprite = map.selectedSprites.get(i);
+            float projY = Utils.project(this.map.camera, mapSprite.getX(), mapSprite.getY()).y;
+            float norm = MathUtils.norm(projectedFromY, projectedToY, projY);
+            float newR = MathUtils.lerp(fromR, toR, norm);
+            float newG = MathUtils.lerp(fromG, toG, norm);
+            float newB = MathUtils.lerp(fromB, toB, norm);
+            float newA = MathUtils.lerp(fromA, toA, norm);
+            if(fromR < 0 || toR < 0)
+                newR = mapSprite.sprite.getColor().r;
+            if(fromG < 0 || toG < 0)
+                newG = mapSprite.sprite.getColor().g;
+            if(fromB < 0 || toB < 0)
+                newB = mapSprite.sprite.getColor().b;
+            if(fromA < 0 || toA < 0)
+                newA = mapSprite.sprite.getColor().a;
+            mapSprite.sprite.setColor(newR, newG, newB, newA);
+        }
+
+        this.map.camera.rotate(-angle);
+        this.map.camera.update();
+    }
+
     private boolean handleMapSpriteCreation(float x, float y, int button)
     {
         if(!Utils.isFileToolThisType(this.editor, Tools.BRUSH) || this.map.selectedLayer == null || !(this.map.selectedLayer instanceof SpriteLayer) || button != Input.Buttons.LEFT)
@@ -769,6 +820,7 @@ public class MapInput implements InputProcessor
         if(button != Input.Buttons.LEFT)
         {
             this.draggingGradient = false;
+            PropertyToolPane.apply(map);
             return true;
         }
 

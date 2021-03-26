@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
 
 public class ApplyGradient implements Command
 {
@@ -38,6 +39,11 @@ public class ApplyGradient implements Command
         this.oldColors = new ObjectMap<>();
     }
 
+    public void update()
+    {
+
+    }
+
     @Override
     public void execute()
     {
@@ -56,7 +62,9 @@ public class ApplyGradient implements Command
         for(int i = 0; i < this.selectedSprites.size; i ++)
         {
             MapSprite mapSprite = this.selectedSprites.get(i);
-            this.oldColors.put(mapSprite, new Color(mapSprite.sprite.getColor()));
+            ColorPropertyField colorProperty = Utils.getLockedColorField("Tint", mapSprite.lockedProperties);
+            Color oldColor = new Color(colorProperty.getR(), colorProperty.getG(), colorProperty.getB(), colorProperty.getA());
+            this.oldColors.put(mapSprite, oldColor);
             float projY = Utils.project(this.map.camera, mapSprite.getX(), mapSprite.getY()).y;
             float norm = MathUtils.norm(projectedFromY, projectedToY, projY);
             float newR = MathUtils.lerp(this.fromR, this.toR, norm);
