@@ -420,6 +420,8 @@ public class MinMaxDialog extends Window
         this.maxBValue = 1;
         this.minAValue = 1;
         this.maxAValue = 1;
+
+        shuffle();
     }
 
     /** Shuffle the selected sprite tools in order to reflect the recent changes in min max values. */
