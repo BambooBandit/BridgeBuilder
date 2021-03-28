@@ -53,6 +53,7 @@ public class LayerField extends Group
             this.mapLayer = new ObjectLayer(editor, map, this);
 
         this.layerName = new TextField(name, skin);
+        this.layerName.setDisabled(true);
         this.layerName.addListener(new InputListener()
         {
             public boolean keyDown (InputEvent event, int keycode)
@@ -65,6 +66,25 @@ public class LayerField extends Group
                 return false;
             }
         });
+
+        this.layerName.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked (InputEvent event, float x, float y)
+            {
+                for(int i = 0; i < map.layerMenu.layers.size; i ++)
+                {
+                    LayerField layer = map.layerMenu.layers.get(i);
+                    if(layer.layerName == layerName)
+                        continue;
+                    layer.layerName.clearSelection();
+                    layer.layerName.setDisabled(true);
+                }
+                int tapCount = getTapCount();
+                if(tapCount == 2)
+                    layerName.setDisabled(false);
+            }
+            });
 
         this.table = new Table();
         this.table.bottom().left();

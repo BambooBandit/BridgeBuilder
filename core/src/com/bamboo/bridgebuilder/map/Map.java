@@ -14,10 +14,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.bamboo.bridgebuilder.BridgeBuilder;
@@ -654,6 +656,27 @@ public class Map implements Screen
 
     private void drawHoveredOutline()
     {
+        for(int i = 0; i < layers.size; i ++)
+        {
+            Layer layer = layers.get(i);
+            for (int k = 0; k < layer.layerField.layerName.getListeners().size; k++)
+            {
+                EventListener layerListener = layer.layerField.layerName.getListeners().get(k);
+                if (layerListener instanceof ClickListener)
+                {
+                    ClickListener clickListener = (ClickListener) layerListener;
+                    if (clickListener.isOver())
+                    {
+                        for(int s = 0; s < layer.children.size; s ++)
+                        {
+                            LayerChild layerChild = (LayerChild) layer.children.get(s);
+                            layerChild.drawHoverOutline();
+                        }
+                        return;
+                    }
+                }
+            }
+        }
         if(!Utils.isFileToolThisType(editor, Tools.SELECT))
             return;
 
