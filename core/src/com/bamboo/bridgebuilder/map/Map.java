@@ -437,7 +437,7 @@ public class Map implements Screen
                 for(int k = 0; k < spriteLayer.children.size; k ++)
                 {
                     MapSprite mapSprite = spriteLayer.children.get(k);
-                    if(mapSprite.tool.hasAttachedMapObjects())
+                    if(mapSprite.attachedMapObjects != null)
                     {
                         for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
                             mapSprite.attachedMapObjects.get(s).draw();

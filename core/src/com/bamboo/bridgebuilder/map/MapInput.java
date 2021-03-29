@@ -440,7 +440,7 @@ public class MapInput implements InputProcessor
             for (int i = 0; i < map.selectedSprites.size; i++)
             {
                 MapSprite mapSprite = map.selectedSprites.get(i);
-                if (mapSprite.tool.hasAttachedMapObjects())
+                if (mapSprite.attachedMapObjects != null)
                 {
                     for (int k = 0; k < mapSprite.attachedMapObjects.size; k++)
                     {
