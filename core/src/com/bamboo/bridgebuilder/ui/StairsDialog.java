@@ -25,11 +25,15 @@ public class StairsDialog extends Window
     private Label snapLabel;
     private Label transparentParentLabel;
     private Label connectorInFrontLabel;
+    private Label stackAmountLabel;
+    private Label stackHeightMultiplierLabel;
     private TextField initialHeightField;
     private TextField finalHeightField;
     private TextField stairAmountField;
     private TextField thicknessField;
     private TextField heightField;
+    private TextField stackAmountField;
+    private TextField stackHeightMultiplierField;
     private CheckBox snapCheckBox;
     private CheckBox parentCenterHeightCheckBox;
     private CheckBox connectorCenterHeightCheckBox;
@@ -51,6 +55,8 @@ public class StairsDialog extends Window
         this.transparentParentLabel = new Label("Should parent be transparent: ", skin);
         this.connectorInFrontLabel = new Label("Should connector be in front: ", skin);
         this.snapLabel = new Label("Should snap: ", skin);
+        this.stackAmountLabel = new Label("Stack amount: ", skin);
+        this.stackHeightMultiplierLabel = new Label("Stack height multiplier: ", skin);
         this.parentCenterHeightLabel = new Label("Should parent height be centered: ", skin);
         this.connectorCenterHeightLabel = new Label("Should connector height be centered: ", skin);
         this.initialHeightField = new TextField("0", skin);
@@ -58,6 +64,8 @@ public class StairsDialog extends Window
         this.stairAmountField = new TextField("1", skin);
         this.thicknessField = new TextField("1", skin);
         this.heightField = new TextField("0", skin);
+        this.stackAmountField = new TextField("1", skin);
+        this.stackHeightMultiplierField = new TextField("1", skin);
         this.parentCenterHeightCheckBox = new CheckBox("", skin);
         this.parentCenterHeightCheckBox.setChecked(false);
         this.connectorCenterHeightCheckBox = new CheckBox("", skin);
@@ -90,6 +98,10 @@ public class StairsDialog extends Window
         this.table.add(this.thicknessField).padBottom(15).row();
         this.table.add(this.heightLabel).padBottom(15);
         this.table.add(this.heightField).padBottom(15).row();
+        this.table.add(this.stackAmountLabel).padBottom(15);
+        this.table.add(this.stackAmountField).padBottom(15).row();
+        this.table.add(this.stackHeightMultiplierLabel).padBottom(15);
+        this.table.add(this.stackHeightMultiplierField).padBottom(15).row();
         this.table.add(this.parentCenterHeightLabel).padBottom(15);
         this.table.add(this.parentCenterHeightCheckBox).padBottom(15).row();
         this.table.add(this.connectorCenterHeightLabel).padBottom(15);
@@ -104,7 +116,7 @@ public class StairsDialog extends Window
 
         this.add(this.table);
 
-        setSize(Gdx.graphics.getWidth() / 3f, Gdx.graphics.getHeight() / 2f);
+        setSize(Gdx.graphics.getWidth() / 3f, Gdx.graphics.getHeight() / 1.75f);
         this.setPosition((stage.getWidth() / 2f), (stage.getHeight() / 2f), Align.center);
         stage.addActor(this);
         setVisible(false);
@@ -145,6 +157,20 @@ public class StairsDialog extends Window
     {
         float num = 1;
         try { num = Float.parseFloat(this.thicknessField.getText()); } catch (NumberFormatException e){}
+        return num;
+    }
+
+    public int getStackAmount()
+    {
+        int num = 1;
+        try { num = Integer.parseInt(this.stackAmountField.getText()); } catch (NumberFormatException e){}
+        return num;
+    }
+
+    public float getStackHeightMultiplier()
+    {
+        float num = 1;
+        try { num = Float.parseFloat(this.stackHeightMultiplierField.getText()); } catch (NumberFormatException e){}
         return num;
     }
 

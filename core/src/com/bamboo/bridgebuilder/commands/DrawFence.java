@@ -53,6 +53,9 @@ public class DrawFence implements Command
                 mapSprite.setColor(color.r, color.g, color.b, 0);
             }
             this.map.shuffleRandomSpriteTool(false);
+
+            for(int stack = 1; stack < map.editor.fileMenu.toolPane.stairsDialog.getStackAmount(); stack ++)
+                createStackedPost(this.mapSprite, stack);
         }
         if(this.map.lastFencePlaced != null)
         {
@@ -114,18 +117,20 @@ public class DrawFence implements Command
         MapSprite fromFence = this.map.lastFencePlaced;
         MapSprite toFence = this.mapSprite;
 
-        int fenceID = 1;
-        while(1 == 1)
+        for(int stack = 0; stack < map.editor.fileMenu.toolPane.stairsDialog.getStackAmount(); stack ++)
         {
-            MapPoint fromPoint = getAttachedMapPointWithPropertyValue(fromFence, "fenceStart", fenceID);
-            MapPoint toPoint = getAttachedMapPointWithPropertyValue(toFence, "fenceEnd", fenceID);
-            if(fromPoint != null && toPoint != null)
+            int fenceID = 1;
+            while (1 == 1)
             {
-                createConnectorForFence(fromFence, toFence, fromPoint.x, fromPoint.y, toPoint.x, toPoint.y);
-                fenceID ++;
+                MapPoint fromPoint = getAttachedMapPointWithPropertyValue(fromFence, "fenceStart", fenceID);
+                MapPoint toPoint = getAttachedMapPointWithPropertyValue(toFence, "fenceEnd", fenceID);
+                if (fromPoint != null && toPoint != null)
+                {
+                    createConnectorForFence(fromFence, toFence, fromPoint.x, fromPoint.y, toPoint.x, toPoint.y, stack);
+                    fenceID++;
+                } else
+                    break;
             }
-            else
-                break;
         }
 
     }
@@ -153,7 +158,25 @@ public class DrawFence implements Command
         return null;
     }
 
-    private void createConnectorForFence(MapSprite fromFence, MapSprite toFence, float fromX, float fromY, float toX, float toY)
+    private void createStackedPost(MapSprite post, int stack)
+    {
+        float stackHeightMultiplier = map.editor.fileMenu.toolPane.stairsDialog.getStackHeightMultiplier();
+        if (post.attachedSprites == null)
+        {
+            post.attachedSprites = new SpriteLayer(map.editor, map, null);
+            post.attachedSprites.perspective = post.layer.perspective;
+            post.attachedSprites.addMapSprite(post, 0);
+        }
+
+        SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
+        MapSprite stackedPost = new MapSprite(this.map, post.attachedSprites, spriteTool, post.x + post.width / 2f, post.y + (post.height / 2f) + (post.height * stack * stackHeightMultiplier));
+        (post.attachedSprites).addMapSprite(stackedPost, -1);
+        stackedPost.parentSprite = post;
+
+        map.shuffleRandomSpriteTool(false);
+    }
+
+    private void createConnectorForFence(MapSprite fromFence, MapSprite toFence, float fromX, float fromY, float toX, float toY, int stack)
     {
         boolean allSelectedArePosts = true;
         for(int i = 0; i < map.spriteMenu.selectedSpriteTools.size; i ++)
@@ -223,6 +246,9 @@ public class DrawFence implements Command
             (fromFence.attachedSprites).addMapSprite(connector, 0);
         fromX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
         toX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
+        float stackHeightMultiplier = map.editor.fileMenu.toolPane.stairsDialog.getStackHeightMultiplier();
+        fromY += fromFence.height * (stack * stackHeightMultiplier);
+        toY += fromFence.height * (stack * stackHeightMultiplier);
         if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
             connector.setPosition(fromX, fromY - connector.height / 2f);
         else
