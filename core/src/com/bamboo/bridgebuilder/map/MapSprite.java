@@ -839,7 +839,6 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
         }
 
         this.polygon.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
-//        this.sprite.setPosition(x + xScaleDisplacement, y + yScaleDisplacement);
         this.sprite.setScale(scale);
 
         x += this.width / 2;
