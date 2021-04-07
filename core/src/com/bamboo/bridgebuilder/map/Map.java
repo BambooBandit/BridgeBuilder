@@ -470,7 +470,10 @@ public class Map implements Screen
         for(int i = 0; i < this.selectedSprites.size; i ++)
         {
             MapSprite selectedSprite = this.selectedSprites.get(i);
-            this.editor.shapeRenderer.setProjectionMatrix(selectedSprite.layer.perspective.perspectiveCamera.combined);
+            if(Utils.isLayerGround(selectedSprite.layer))
+                this.editor.shapeRenderer.setProjectionMatrix(selectedSprite.layer.perspective.perspectiveCamera.combined);
+            else
+                this.editor.shapeRenderer.setProjectionMatrix(selectedSprite.layer.perspective.camera.combined);
             if(selectedSprite == this.hoveredChild)
                 selectedSprite.drawSelectedHoveredOutline();
             else
@@ -659,6 +662,10 @@ public class Map implements Screen
         for(int i = 0; i < layers.size; i ++)
         {
             Layer layer = layers.get(i);
+            if(Utils.isLayerGround(layer))
+                this.editor.shapeRenderer.setProjectionMatrix(layer.perspective.perspectiveCamera.combined);
+            else
+                this.editor.shapeRenderer.setProjectionMatrix(layer.perspective.camera.combined);
             for (int k = 0; k < layer.layerField.layerName.getListeners().size; k++)
             {
                 EventListener layerListener = layer.layerField.layerName.getListeners().get(k);
@@ -669,6 +676,7 @@ public class Map implements Screen
                     {
                         for(int s = 0; s < layer.children.size; s ++)
                         {
+
                             LayerChild layerChild = (LayerChild) layer.children.get(s);
                             layerChild.drawHoverOutline();
                         }
@@ -682,6 +690,10 @@ public class Map implements Screen
 
         if(this.hoveredChild == null)
             return;
+        if(Utils.isLayerGround(selectedLayer))
+            this.editor.shapeRenderer.setProjectionMatrix(selectedLayer.perspective.perspectiveCamera.combined);
+        else
+            this.editor.shapeRenderer.setProjectionMatrix(selectedLayer.perspective.camera.combined);
         this.hoveredChild.drawHoverOutline();
     }
 
