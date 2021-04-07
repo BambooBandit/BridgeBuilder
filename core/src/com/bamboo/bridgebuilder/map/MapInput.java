@@ -3,6 +3,7 @@ package com.bamboo.bridgebuilder.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -113,9 +114,14 @@ public class MapInput implements InputProcessor
             this.map.stage.unfocusAll();
             this.editor.stage.unfocusAll();
 
-            Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
+            OrthographicCamera camera;
+            if(this.map.selectedLayer == null)
+                camera = map.camera;
+            else
+                camera = map.selectedLayer.perspective.camera;
+            Vector3 coords = Utils.unproject(camera, screenX, screenY);
             coords.x += map.cameraX;
-            coords.y += map.cameraY;
+            coords.y += map.cameraY - Utils.getCameraHeightOffset(map.selectedLayer);
             this.currentPos.set(coords.x, coords.y);
             this.dragOriginPos.set(coords.x, coords.y);
 
@@ -174,9 +180,14 @@ public class MapInput implements InputProcessor
         try
         {
 
-            Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
+            OrthographicCamera camera;
+            if(this.map.selectedLayer == null)
+                camera = map.camera;
+            else
+                camera = map.selectedLayer.perspective.camera;
+            Vector3 coords = Utils.unproject(camera, screenX, screenY);
             coords.x += map.cameraX;
-            coords.y += map.cameraY;
+            coords.y += map.cameraY - Utils.getCameraHeightOffset(map.selectedLayer);
             this.currentPos.set(coords.x, coords.y);
             this.dragDifferencePos.set(coords.x, coords.y);
             this.dragDifferencePos = this.dragDifferencePos.sub(this.dragOriginPos.x, this.dragOriginPos.y);
@@ -196,9 +207,14 @@ public class MapInput implements InputProcessor
     {
         try
         {
-            Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
+            OrthographicCamera camera;
+            if(this.map.selectedLayer == null)
+                camera = map.camera;
+            else
+                camera = map.selectedLayer.perspective.camera;
+            Vector3 coords = Utils.unproject(camera, screenX, screenY);
             float coordsX = coords.x + map.cameraX;
-            float coordsY = coords.y + map.cameraY;
+            float coordsY = coords.y + map.cameraY - Utils.getCameraHeightOffset(map.selectedLayer);
             String xCoord = String.format("%.2f", coordsX);
             String yCoord = String.format("%.2f", coordsY);
             editor.mouseCoordTooltip.label.setText("(" + xCoord + ", " + yCoord  +")   (" + screenX + ", " + screenY + ")");

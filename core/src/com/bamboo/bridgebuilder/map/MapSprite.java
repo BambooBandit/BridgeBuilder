@@ -93,10 +93,10 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
         this.offsetMovebox3 = new MoveBox();
         this.offsetMovebox4 = new MoveBox();
         float[] spriteVertices = this.sprite.getVertices();
-        offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + map.cameraX + x1Offset - (offsetMovebox1.scale * offsetMovebox1.width / 2f), spriteVertices[SpriteBatch.Y2] + map.cameraY + y1Offset - (offsetMovebox1.scale * offsetMovebox1.height / 2f));
-        offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + map.cameraX + x2Offset - (offsetMovebox2.scale * offsetMovebox2.width / 2f), spriteVertices[SpriteBatch.Y3] + map.cameraY + y2Offset - (offsetMovebox2.scale * offsetMovebox2.height / 2f));
-        offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + map.cameraX + x3Offset - (offsetMovebox3.scale * offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + map.cameraY + y3Offset - (offsetMovebox3.scale * offsetMovebox3.height / 2f));
-        offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + map.cameraX + x4Offset - (offsetMovebox4.scale * offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + map.cameraY + y4Offset - (offsetMovebox4.scale * offsetMovebox4.height / 2f));
+        offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + map.cameraX + x1Offset - (offsetMovebox1.scale * offsetMovebox1.width / 2f), spriteVertices[SpriteBatch.Y2] + map.cameraY + y1Offset + Utils.getCameraHeightOffset(layer) - (offsetMovebox1.scale * offsetMovebox1.height / 2f));
+        offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + map.cameraX + x2Offset - (offsetMovebox2.scale * offsetMovebox2.width / 2f), spriteVertices[SpriteBatch.Y3] + map.cameraY + y2Offset + Utils.getCameraHeightOffset(layer) - (offsetMovebox2.scale * offsetMovebox2.height / 2f));
+        offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + map.cameraX + x3Offset - (offsetMovebox3.scale * offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + map.cameraY + y3Offset + Utils.getCameraHeightOffset(layer) - (offsetMovebox3.scale * offsetMovebox3.height / 2f));
+        offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + map.cameraX + x4Offset - (offsetMovebox4.scale * offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + map.cameraY + y4Offset + Utils.getCameraHeightOffset(layer) - (offsetMovebox4.scale * offsetMovebox4.height / 2f));
 
         this.verts = new float[20];
         this.scale = 1;
@@ -667,7 +667,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     @Override
     public void drawHoverOutline()
     {
-        polygon.setPosition(x - map.cameraX, y - map.cameraY);
+        polygon.setPosition(x - map.cameraX, y - map.cameraY + Utils.getCameraHeightOffset(layer));
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.ORANGE);
         map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
@@ -677,7 +677,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     @Override
     public void drawSelectedOutline()
     {
-        polygon.setPosition(x - map.cameraX, y - map.cameraY);
+        polygon.setPosition(x - map.cameraX, y - map.cameraY + Utils.getCameraHeightOffset(layer));
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.GREEN);
         map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
@@ -687,7 +687,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     @Override
     public void drawSelectedHoveredOutline()
     {
-        polygon.setPosition(x - map.cameraX, y - map.cameraY);
+        polygon.setPosition(x - map.cameraX, y - map.cameraY + Utils.getCameraHeightOffset(layer));
         map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.YELLOW);
         map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
@@ -849,10 +849,10 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
 
         sprite.setPosition(x - map.cameraX - width / 2f, y - map.cameraY - height / 2f);
         float[] spriteVertices = this.sprite.getVertices();
-        offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + map.cameraX + x1Offset - (offsetMovebox1.scale * offsetMovebox1.width / 2f), spriteVertices[SpriteBatch.Y2] + map.cameraY + y1Offset - (offsetMovebox1.scale * offsetMovebox1.height / 2f));
-        offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + map.cameraX + x2Offset - (offsetMovebox2.scale * offsetMovebox2.width / 2f), spriteVertices[SpriteBatch.Y3] + map.cameraY + y2Offset - (offsetMovebox2.scale * offsetMovebox2.height / 2f));
-        offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + map.cameraX + x3Offset - (offsetMovebox3.scale * offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + map.cameraY + y3Offset - (offsetMovebox3.scale * offsetMovebox3.height / 2f));
-        offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + map.cameraX + x4Offset - (offsetMovebox4.scale * offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + map.cameraY + y4Offset - (offsetMovebox4.scale * offsetMovebox4.height / 2f));
+        offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + map.cameraX + x1Offset - (offsetMovebox1.scale * offsetMovebox1.width / 2f), spriteVertices[SpriteBatch.Y2] + map.cameraY + y1Offset + Utils.getCameraHeightOffset(layer) - (offsetMovebox1.scale * offsetMovebox1.height / 2f));
+        offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + map.cameraX + x2Offset - (offsetMovebox2.scale * offsetMovebox2.width / 2f), spriteVertices[SpriteBatch.Y3] + map.cameraY + y2Offset + Utils.getCameraHeightOffset(layer) - (offsetMovebox2.scale * offsetMovebox2.height / 2f));
+        offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + map.cameraX + x3Offset - (offsetMovebox3.scale * offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + map.cameraY + y3Offset + Utils.getCameraHeightOffset(layer) - (offsetMovebox3.scale * offsetMovebox3.height / 2f));
+        offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + map.cameraX + x4Offset - (offsetMovebox4.scale * offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + map.cameraY + y4Offset + Utils.getCameraHeightOffset(layer) - (offsetMovebox4.scale * offsetMovebox4.height / 2f));
 
         if(this.tool.hasAttachedMapObjects())
         {
@@ -918,6 +918,12 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     @Override
     public void select()
     {
+        sprite.setPosition(x - map.cameraX, y - map.cameraY);
+        float[] spriteVertices = this.sprite.getVertices();
+        offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + map.cameraX + x1Offset - (offsetMovebox1.scale * offsetMovebox1.width / 2f), spriteVertices[SpriteBatch.Y2] + map.cameraY + y1Offset + Utils.getCameraHeightOffset(layer) - (offsetMovebox1.scale * offsetMovebox1.height / 2f));
+        offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + map.cameraX + x2Offset - (offsetMovebox2.scale * offsetMovebox2.width / 2f), spriteVertices[SpriteBatch.Y3] + map.cameraY + y2Offset + Utils.getCameraHeightOffset(layer) - (offsetMovebox2.scale * offsetMovebox2.height / 2f));
+        offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + map.cameraX + x3Offset - (offsetMovebox3.scale * offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + map.cameraY + y3Offset + Utils.getCameraHeightOffset(layer) - (offsetMovebox3.scale * offsetMovebox3.height / 2f));
+        offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + map.cameraX + x4Offset - (offsetMovebox4.scale * offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + map.cameraY + y4Offset + Utils.getCameraHeightOffset(layer) - (offsetMovebox4.scale * offsetMovebox4.height / 2f));
         if(this.selected)
             return;
         this.map.selectedSprites.add(this);
