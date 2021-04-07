@@ -470,7 +470,7 @@ public class Map implements Screen
         for(int i = 0; i < this.selectedSprites.size; i ++)
         {
             MapSprite selectedSprite = this.selectedSprites.get(i);
-            this.editor.shapeRenderer.setProjectionMatrix(selectedSprite.layer.perspective.camera.combined);
+            this.editor.shapeRenderer.setProjectionMatrix(selectedSprite.layer.perspective.perspectiveCamera.combined);
             if(selectedSprite == this.hoveredChild)
                 selectedSprite.drawSelectedHoveredOutline();
             else
@@ -593,7 +593,7 @@ public class Map implements Screen
         if(!this.editor.fileMenu.toolPane.gradient.selected || !this.input.draggingGradient)
             return;
         this.editor.shapeRenderer.setColor(Color.BLACK);
-        this.editor.shapeRenderer.line(this.input.gradientX - cameraX, this.input.gradientY - cameraY + Utils.getCameraHeightOffset(selectedLayer), this.input.currentPos.x - cameraX, this.input.currentPos.y - cameraY + Utils.getCameraHeightOffset(selectedLayer));
+        this.editor.shapeRenderer.line(this.input.gradientX - cameraX, this.input.gradientY - cameraY, this.input.currentPos.x - cameraX, this.input.currentPos.y - cameraY);
 
     }
 
@@ -651,7 +651,7 @@ public class Map implements Screen
         }
 
         this.editor.shapeRenderer.setColor(Color.CYAN);
-        this.editor.shapeRenderer.rect(this.input.boxSelect.rectangle.x - cameraX, this.input.boxSelect.rectangle.y - cameraY + Utils.getCameraHeightOffset(selectedLayer), this.input.boxSelect.rectangle.width, this.input.boxSelect.rectangle.height);
+        this.editor.shapeRenderer.rect(this.input.boxSelect.rectangle.x - cameraX, this.input.boxSelect.rectangle.y - cameraY, this.input.boxSelect.rectangle.width, this.input.boxSelect.rectangle.height);
     }
 
     private void drawHoveredOutline()
@@ -984,7 +984,7 @@ public class Map implements Screen
         if(getSpriteToolFromSelectedTools() != null)
         {
             SpriteTool spriteTool = getSpriteToolFromSelectedTools();
-            Vector3 coords = Utils.unproject(selectedLayer.perspective.camera, Gdx.input.getX(), Gdx.input.getY());
+            Vector3 coords = Utils.unproject(this.camera, Gdx.input.getX(), Gdx.input.getY());
             for (int i = 0; i < getSpriteToolFromSelectedTools().previewSprites.size; i++)
             {
                 float randomRotation = this.editor.fileMenu.toolPane.minMaxDialog.randomRotationValue;
@@ -1778,10 +1778,10 @@ public class Map implements Screen
         mapSprite.x4Offset = mapSpriteData.x4;
         mapSprite.y4Offset = mapSpriteData.y4;
         float[] spriteVertices = mapSprite.sprite.getVertices();
-        mapSprite.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + mapSprite.map.cameraX + mapSprite.x1Offset - (mapSprite.offsetMovebox1.scale * mapSprite.offsetMovebox1.width / 2f), spriteVertices[SpriteBatch.Y2] + mapSprite.map.cameraY + mapSprite.y1Offset + Utils.getCameraHeightOffset(mapSprite.layer) - (mapSprite.offsetMovebox1.scale * mapSprite.offsetMovebox1.height / 2f));
-        mapSprite.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + mapSprite.map.cameraX + mapSprite.x2Offset - (mapSprite.offsetMovebox2.scale * mapSprite.offsetMovebox2.width / 2f), spriteVertices[SpriteBatch.Y3] + mapSprite.map.cameraY + mapSprite.y2Offset + Utils.getCameraHeightOffset(mapSprite.layer) - (mapSprite.offsetMovebox2.scale * mapSprite.offsetMovebox2.height / 2f));
-        mapSprite.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + mapSprite.map.cameraX + mapSprite.x3Offset - (mapSprite.offsetMovebox3.scale * mapSprite.offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + mapSprite.map.cameraY + mapSprite.y3Offset + Utils.getCameraHeightOffset(mapSprite.layer) - (mapSprite.offsetMovebox3.scale * mapSprite.offsetMovebox3.height / 2f));
-        mapSprite.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + mapSprite.map.cameraX + mapSprite.x4Offset - (mapSprite.offsetMovebox4.scale * mapSprite.offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + mapSprite.map.cameraY + mapSprite.y4Offset + Utils.getCameraHeightOffset(mapSprite.layer) - (mapSprite.offsetMovebox4.scale * mapSprite.offsetMovebox4.height / 2f));
+        mapSprite.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + mapSprite.map.cameraX + mapSprite.x1Offset - (mapSprite.offsetMovebox1.scale * mapSprite.offsetMovebox1.width / 2f), spriteVertices[SpriteBatch.Y2] + mapSprite.map.cameraY + mapSprite.y1Offset - (mapSprite.offsetMovebox1.scale * mapSprite.offsetMovebox1.height / 2f));
+        mapSprite.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + mapSprite.map.cameraX + mapSprite.x2Offset - (mapSprite.offsetMovebox2.scale * mapSprite.offsetMovebox2.width / 2f), spriteVertices[SpriteBatch.Y3] + mapSprite.map.cameraY + mapSprite.y2Offset - (mapSprite.offsetMovebox2.scale * mapSprite.offsetMovebox2.height / 2f));
+        mapSprite.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + mapSprite.map.cameraX + mapSprite.x3Offset - (mapSprite.offsetMovebox3.scale * mapSprite.offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + mapSprite.map.cameraY + mapSprite.y3Offset - (mapSprite.offsetMovebox3.scale * mapSprite.offsetMovebox3.height / 2f));
+        mapSprite.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + mapSprite.map.cameraX + mapSprite.x4Offset - (mapSprite.offsetMovebox4.scale * mapSprite.offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + mapSprite.map.cameraY + mapSprite.y4Offset - (mapSprite.offsetMovebox4.scale * mapSprite.offsetMovebox4.height / 2f));
         mapSprite.polygon.setOffset(mapSprite.x1Offset, mapSprite.x2Offset, mapSprite.x3Offset, mapSprite.x4Offset, mapSprite.y1Offset, mapSprite.y2Offset, mapSprite.y3Offset, mapSprite.y4Offset);
 
         if(mapSpriteData.props != null)

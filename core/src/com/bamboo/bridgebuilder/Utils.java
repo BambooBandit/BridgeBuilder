@@ -80,19 +80,6 @@ public class Utils
         return unprojector.y;
     }
 
-    public static float getCameraHeightOffset(Layer layer)
-    {
-//        float offset = 0;
-//        if(layer == null)
-//            return 0;
-//        if(!layer.perspective.useSkewWithHeight)
-//            offset += (layer.perspective.cameraHeight / layer.perspective.perspectiveCamera.zoom);
-//        else
-//            offset += ((layer.perspective.cameraHeight * ((layer.perspective.skew) / layer.perspective.perspectiveCamera.zoom)));
-//        offset += ((layer.perspective.cameraHeight / 8f) / ((Math.pow(layer.perspective.skew, 1.25f) * 21f) + 1)) / layer.perspective.perspectiveCamera.zoom;
-        return layer.perspective.cameraHeight;
-    }
-
     public static Vector3 unproject(Camera camera, float x, float y)
     {
         unprojector.set(x, y, 0);
