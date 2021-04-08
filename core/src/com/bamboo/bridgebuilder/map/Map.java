@@ -534,16 +534,16 @@ public class Map implements Screen
         float initialheight = editor.fileMenu.toolPane.stairsDialog.getInitialHeight();
         if (this.input.stairVertices.size >= 2)
         {
-            this.editor.shapeRenderer.circle(this.input.stairVertices.get(0) + this.input.stairVerticePosition.x, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y, .1f, 7);
+            this.editor.shapeRenderer.circle(this.input.stairVertices.get(0) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y - cameraY, .1f, 7);
             for (int i = 2; i < this.input.stairVertices.size; i += 2)
             {
                 this.editor.shapeRenderer.setColor(Color.WHITE);
-                this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y + initialheight, this.input.stairVertices.get(i) + this.input.stairVerticePosition.x, this.input.stairVertices.get(i + 1) + this.input.stairVerticePosition.y + initialheight);
+                this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y + initialheight - cameraY, this.input.stairVertices.get(i) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(i + 1) + this.input.stairVerticePosition.y + initialheight - cameraY);
                 this.editor.shapeRenderer.setColor(Color.GRAY);
-                this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y, this.input.stairVertices.get(i) + this.input.stairVerticePosition.x, this.input.stairVertices.get(i + 1) + this.input.stairVerticePosition.y);
+                this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y - cameraY, this.input.stairVertices.get(i) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(i + 1) + this.input.stairVerticePosition.y - cameraY);
                 if(i >= 6)
                 {
-                    this.editor.shapeRenderer.line(this.input.stairVertices.get(6) + this.input.stairVerticePosition.x, this.input.stairVertices.get(7) + this.input.stairVerticePosition.y, this.input.stairVertices.get(0) + this.input.stairVerticePosition.x, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y);
+                    this.editor.shapeRenderer.line(this.input.stairVertices.get(6) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(7) + this.input.stairVerticePosition.y - cameraY, this.input.stairVertices.get(0) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y - cameraY);
                 }
                 oldIndex += 2;
             }
@@ -553,7 +553,7 @@ public class Map implements Screen
         oldIndex = 0;
         if (this.input.stairVertices.size >= 2)
         {
-            this.editor.shapeRenderer.circle(this.input.stairVertices.get(0) + this.input.stairVerticePosition.x, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y, .1f, 7);
+            this.editor.shapeRenderer.circle(this.input.stairVertices.get(0) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y - cameraY, .1f, 7);
             float fromHeight = 0;
             float toHeight = 0;
             for (int i = 2; i < this.input.stairVertices.size; i += 2)
@@ -573,21 +573,21 @@ public class Map implements Screen
                     fromHeight = finalheight;
                     toHeight = initialheight;
                 }
-                this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y + fromHeight, this.input.stairVertices.get(i) + this.input.stairVerticePosition.x, this.input.stairVertices.get(i + 1) + this.input.stairVerticePosition.y + toHeight);
-                this.editor.shapeRenderer.line(this.input.stairVertices.get(0) + this.input.stairVerticePosition.x, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y, this.input.stairVertices.get(0) + this.input.stairVerticePosition.x, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y + initialheight);
+                this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y + fromHeight - cameraY, this.input.stairVertices.get(i) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(i + 1) + this.input.stairVerticePosition.y + toHeight - cameraY);
+                this.editor.shapeRenderer.line(this.input.stairVertices.get(0) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y - cameraY, this.input.stairVertices.get(0) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y + initialheight - cameraY);
                 if(i >= 2)
-                    this.editor.shapeRenderer.line(this.input.stairVertices.get(2) + this.input.stairVerticePosition.x, this.input.stairVertices.get(3) + this.input.stairVerticePosition.y, this.input.stairVertices.get(2) + this.input.stairVerticePosition.x, this.input.stairVertices.get(3) + this.input.stairVerticePosition.y + finalheight);
+                    this.editor.shapeRenderer.line(this.input.stairVertices.get(2) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(3) + this.input.stairVerticePosition.y - cameraY, this.input.stairVertices.get(2) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(3) + this.input.stairVerticePosition.y + finalheight - cameraY);
                 if(i >= 4)
-                    this.editor.shapeRenderer.line(this.input.stairVertices.get(4) + this.input.stairVerticePosition.x, this.input.stairVertices.get(5) + this.input.stairVerticePosition.y, this.input.stairVertices.get(4) + this.input.stairVerticePosition.x, this.input.stairVertices.get(5) + this.input.stairVerticePosition.y + finalheight);
+                    this.editor.shapeRenderer.line(this.input.stairVertices.get(4) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(5) + this.input.stairVerticePosition.y - cameraY, this.input.stairVertices.get(4) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(5) + this.input.stairVerticePosition.y + finalheight - cameraY);
                 if(i >= 6)
                 {
-                    this.editor.shapeRenderer.line(this.input.stairVertices.get(6) + this.input.stairVerticePosition.x, this.input.stairVertices.get(7) + this.input.stairVerticePosition.y + toHeight, this.input.stairVertices.get(0) + this.input.stairVerticePosition.x, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y + toHeight);
-                    this.editor.shapeRenderer.line(this.input.stairVertices.get(6) + this.input.stairVerticePosition.x, this.input.stairVertices.get(7) + this.input.stairVerticePosition.y, this.input.stairVertices.get(6) + this.input.stairVerticePosition.x, this.input.stairVertices.get(7) + this.input.stairVerticePosition.y + initialheight);
+                    this.editor.shapeRenderer.line(this.input.stairVertices.get(6) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(7) + this.input.stairVerticePosition.y + toHeight - cameraY, this.input.stairVertices.get(0) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y + toHeight - cameraY);
+                    this.editor.shapeRenderer.line(this.input.stairVertices.get(6) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(7) + this.input.stairVerticePosition.y - cameraY, this.input.stairVertices.get(6) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(7) + this.input.stairVerticePosition.y + initialheight - cameraY);
                 }
                 oldIndex += 2;
             }
             if(Utils.isFileToolThisType(editor, Tools.DRAWRECTANGLE))
-                this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y, this.input.stairVertices.get(0) + this.input.stairVerticePosition.x, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y);
+                this.editor.shapeRenderer.line(this.input.stairVertices.get(oldIndex) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(oldIndex + 1) + this.input.stairVerticePosition.y - cameraY, this.input.stairVertices.get(0) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y - cameraY);
         }
     }
 

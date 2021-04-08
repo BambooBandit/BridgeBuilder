@@ -132,17 +132,17 @@ public class StairsDialog extends Window
         this.setVisible(true);
     }
 
-    public int getInitialHeight()
+    public float getInitialHeight()
     {
-        int num = 0;
-        try { num = Integer.parseInt(this.initialHeightField.getText()); } catch (NumberFormatException e){}
+        float num = 0;
+        try { num = Float.parseFloat(this.initialHeightField.getText()); } catch (NumberFormatException e){}
         return num;
     }
 
-    public int getFinalHeight()
+    public float getFinalHeight()
     {
-        int num = 5;
-        try { num = Integer.parseInt(this.finalHeightField.getText()); } catch (NumberFormatException e){}
+        float num = 5;
+        try { num = Float.parseFloat(this.finalHeightField.getText()); } catch (NumberFormatException e){}
         return num;
     }
 
