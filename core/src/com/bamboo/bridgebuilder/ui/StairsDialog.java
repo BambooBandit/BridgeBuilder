@@ -27,6 +27,7 @@ public class StairsDialog extends Window
     private Label connectorInFrontLabel;
     private Label stackAmountLabel;
     private Label stackHeightMultiplierLabel;
+    private Label connectorWidthOvershootLabel;
     private TextField initialHeightField;
     private TextField finalHeightField;
     private TextField stairAmountField;
@@ -34,6 +35,7 @@ public class StairsDialog extends Window
     private TextField heightField;
     private TextField stackAmountField;
     private TextField stackHeightMultiplierField;
+    private TextField connectorWidthOvershootField;
     private CheckBox snapCheckBox;
     private CheckBox parentCenterHeightCheckBox;
     private CheckBox connectorCenterHeightCheckBox;
@@ -59,6 +61,7 @@ public class StairsDialog extends Window
         this.stackHeightMultiplierLabel = new Label("Stack height multiplier: ", skin);
         this.parentCenterHeightLabel = new Label("Should parent height be centered: ", skin);
         this.connectorCenterHeightLabel = new Label("Should connector height be centered: ", skin);
+        this.connectorWidthOvershootLabel = new Label("Connector width overshoot: ", skin);
         this.initialHeightField = new TextField("0", skin);
         this.finalHeightField = new TextField("5", skin);
         this.stairAmountField = new TextField("1", skin);
@@ -66,6 +69,7 @@ public class StairsDialog extends Window
         this.heightField = new TextField("0", skin);
         this.stackAmountField = new TextField("1", skin);
         this.stackHeightMultiplierField = new TextField("1", skin);
+        this.connectorWidthOvershootField = new TextField("1.005", skin);
         this.parentCenterHeightCheckBox = new CheckBox("", skin);
         this.parentCenterHeightCheckBox.setChecked(false);
         this.connectorCenterHeightCheckBox = new CheckBox("", skin);
@@ -102,6 +106,8 @@ public class StairsDialog extends Window
         this.table.add(this.stackAmountField).padBottom(15).row();
         this.table.add(this.stackHeightMultiplierLabel).padBottom(15);
         this.table.add(this.stackHeightMultiplierField).padBottom(15).row();
+        this.table.add(this.connectorWidthOvershootLabel).padBottom(15);
+        this.table.add(this.connectorWidthOvershootField).padBottom(15).row();
         this.table.add(this.parentCenterHeightLabel).padBottom(15);
         this.table.add(this.parentCenterHeightCheckBox).padBottom(15).row();
         this.table.add(this.connectorCenterHeightLabel).padBottom(15);
@@ -116,7 +122,7 @@ public class StairsDialog extends Window
 
         this.add(this.table);
 
-        setSize(Gdx.graphics.getWidth() / 3f, Gdx.graphics.getHeight() / 1.75f);
+        setSize(Gdx.graphics.getWidth() / 3f, Gdx.graphics.getHeight() / 1.5f);
         this.setPosition((stage.getWidth() / 2f), (stage.getHeight() / 2f), Align.center);
         stage.addActor(this);
         setVisible(false);
@@ -130,6 +136,13 @@ public class StairsDialog extends Window
     public void open()
     {
         this.setVisible(true);
+    }
+
+    public float getConnectorWidthOvershoot()
+    {
+        float num = 1.005f;
+        try { num = Float.parseFloat(this.connectorWidthOvershootField.getText()); } catch (NumberFormatException e){}
+        return num;
     }
 
     public float getInitialHeight()

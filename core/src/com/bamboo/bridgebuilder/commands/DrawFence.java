@@ -249,6 +249,17 @@ public class DrawFence implements Command
         float stackHeightMultiplier = map.editor.fileMenu.toolPane.stairsDialog.getStackHeightMultiplier();
         fromY += fromFence.height * (stack * stackHeightMultiplier);
         toY += fromFence.height * (stack * stackHeightMultiplier);
+
+        float overshoot = map.editor.fileMenu.toolPane.stairsDialog.getConnectorWidthOvershoot();
+        float midX = (fromX + toX) / 2f;
+        float xDiff = (toX - midX) * overshoot;
+        fromX = midX - xDiff;
+        toX = midX + xDiff;
+        float midY = (fromY + toY) / 2f;
+        float yDiff = (toY - midY) * overshoot;
+        fromY = midY - yDiff;
+        toY = midY + yDiff;
+
         if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
             connector.setPosition(fromX, fromY - connector.height / 2f);
         else
