@@ -53,7 +53,7 @@ public class SelectSpriteTool implements Command
                             map.spriteMenu.selectedSpriteTools.add(tool);
                             this.map.propertyMenu.rebuild();
                             tool.select();
-                            this.map.shuffleRandomSpriteTool(false);
+                            this.map.shuffleRandomSpriteTool(false, -1);
                         }
                     }
                     else
@@ -62,7 +62,7 @@ public class SelectSpriteTool implements Command
                         map.spriteMenu.selectedSpriteTools.add(tool);
                         this.map.propertyMenu.rebuild();
                         tool.select();
-                        this.map.shuffleRandomSpriteTool(false);
+                        this.map.shuffleRandomSpriteTool(false, -1);
                     }
                 }
                 else if (tool.tool == SpriteMenuTools.SPRITE)
@@ -72,7 +72,7 @@ public class SelectSpriteTool implements Command
                         map.spriteMenu.selectedSpriteTools.removeValue(tool, false);
                         this.map.propertyMenu.rebuild();
                         tool.unselect();
-                        this.map.shuffleRandomSpriteTool(false);
+                        this.map.shuffleRandomSpriteTool(false, -1);
                     }
                 }
             }
@@ -92,6 +92,6 @@ public class SelectSpriteTool implements Command
             this.map.spriteMenu.selectedSpriteTools.get(i).select();
 
         this.map.propertyMenu.rebuild();
-        this.map.shuffleRandomSpriteTool(false);
+        this.map.shuffleRandomSpriteTool(false, -1);
     }
 }

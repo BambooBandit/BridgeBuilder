@@ -281,7 +281,7 @@ public class ToolPane extends Group
                     this.random.select();
                 selectedTool.select();
                 if(selectedTool == this.fence || selectedTool == this.stairs)
-                    editor.activeMap.shuffleRandomSpriteTool(false);
+                    editor.activeMap.shuffleRandomSpriteTool(false, -1);
 
                 if(selectedTool == this.attachedSprites)
                 {
@@ -306,7 +306,7 @@ public class ToolPane extends Group
                     {
                         this.fence.select();
                         this.random.select();
-                        editor.activeMap.shuffleRandomSpriteTool(false);
+                        editor.activeMap.shuffleRandomSpriteTool(false, -1);
                     }
                     tool.select();
                 }

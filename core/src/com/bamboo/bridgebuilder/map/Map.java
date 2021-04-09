@@ -34,6 +34,7 @@ import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenu;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteMenuTools;
@@ -968,7 +969,7 @@ public class Map implements Screen
         return this.spriteMenu.selectedSpriteTools.first();
     }
 
-    public void shuffleRandomSpriteTool(boolean ignoreFencePost)
+    public void shuffleRandomSpriteTool(boolean ignoreFencePost, float stack)
     {
         if(getSpriteToolFromSelectedTools() == null)
             return;
@@ -1016,7 +1017,7 @@ public class Map implements Screen
             if(!Utils.canBuildFenceFromSelectedSpriteTools(this))
                 return;
             if (!spriteTool.hasAttachedMapObjects()) {
-                shuffleRandomSpriteTool(false);
+                shuffleRandomSpriteTool(false, stack);
                 return;
             }
             boolean hasFencePost = false;
@@ -1026,8 +1027,38 @@ public class Map implements Screen
                     hasFencePost = true;
             }
             if (!hasFencePost) {
-                shuffleRandomSpriteTool(false);
+                shuffleRandomSpriteTool(false, stack);
                 return;
+            }
+        }
+
+        if(ignoreFencePost && stack != -1 && editor.fileMenu.toolPane.fence.selected)
+        {
+            FieldFieldPropertyValuePropertyField stackProperty;
+            Array<SpriteTool> spriteTools = getAllSelectedSpriteTools();
+
+            boolean contains = false;
+            for (int i = 0; i < spriteTools.size; i++)
+            {
+                SpriteTool tool = spriteTools.get(i);
+                stackProperty = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(tool.properties, "stack");
+                if(stackProperty != null && Integer.parseInt(stackProperty.value.getText()) == stack)
+                    contains = true;
+            }
+            if(!contains)
+                return;
+
+            SpriteTool spriteTool = getSpriteToolFromSelectedTools();
+            stackProperty = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(spriteTool.properties, "stack");
+            if(stackProperty != null && Integer.parseInt(stackProperty.value.getText()) == stack)
+                return;
+
+            for (int i = 0; i < spriteTools.size; i++)
+            {
+                SpriteTool tool = spriteTools.get(i);
+                stackProperty = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(tool.properties, "stack");
+                if(stackProperty != null && Integer.parseInt(stackProperty.value.getText()) == stack)
+                    shuffleRandomSpriteTool(ignoreFencePost, stack);
             }
         }
     }

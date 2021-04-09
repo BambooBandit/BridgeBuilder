@@ -52,7 +52,7 @@ public class DrawFence implements Command
                 Color color = mapSprite.sprite.getColor();
                 mapSprite.setColor(color.r, color.g, color.b, 0);
             }
-            this.map.shuffleRandomSpriteTool(false);
+            this.map.shuffleRandomSpriteTool(false, -1);
 
             for(int stack = 1; stack < map.editor.fileMenu.toolPane.stairsDialog.getStackAmount(); stack ++)
                 createStackedPost(this.mapSprite, stack);
@@ -173,7 +173,7 @@ public class DrawFence implements Command
         (post.attachedSprites).addMapSprite(stackedPost, -1);
         stackedPost.parentSprite = post;
 
-        map.shuffleRandomSpriteTool(false);
+        map.shuffleRandomSpriteTool(false, stack);
     }
 
     private void createConnectorForFence(MapSprite fromFence, MapSprite toFence, float fromX, float fromY, float toX, float toY, int stack)
@@ -217,7 +217,7 @@ public class DrawFence implements Command
                 }
                 if (hasFencePost)
                 {
-                    this.map.shuffleRandomSpriteTool(true);
+                    this.map.shuffleRandomSpriteTool(true, stack);
                     continue;
                 }
                 else
@@ -226,7 +226,7 @@ public class DrawFence implements Command
         }
         else
         {
-            this.map.shuffleRandomSpriteTool(false);
+            this.map.shuffleRandomSpriteTool(false, stack);
         }
 
         if (fromFence.attachedSprites == null)
@@ -291,6 +291,6 @@ public class DrawFence implements Command
                 toFence.fromEdgeSprites.add(fromFence);
             }
         }
-        this.map.shuffleRandomSpriteTool(false);
+        this.map.shuffleRandomSpriteTool(false, stack);
     }
 }

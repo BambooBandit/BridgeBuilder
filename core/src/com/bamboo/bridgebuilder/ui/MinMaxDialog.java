@@ -428,6 +428,6 @@ public class MinMaxDialog extends Window
     private void shuffle()
     {
         for(int i = 0; i < editor.maps.size; i++)
-            editor.maps.get(i).shuffleRandomSpriteTool(false);
+            editor.maps.get(i).shuffleRandomSpriteTool(false, -1);
     }
 }
