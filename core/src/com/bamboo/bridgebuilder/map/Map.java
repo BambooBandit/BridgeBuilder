@@ -1042,7 +1042,7 @@ public class Map implements Screen
             {
                 SpriteTool tool = spriteTools.get(i);
                 stackProperty = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(tool.properties, "stack");
-                if(stackProperty != null && Integer.parseInt(stackProperty.value.getText()) == stack)
+                if(stackProperty == null || Integer.parseInt(stackProperty.value.getText()) == stack)
                     contains = true;
             }
             if(!contains)
@@ -1050,7 +1050,7 @@ public class Map implements Screen
 
             SpriteTool spriteTool = getSpriteToolFromSelectedTools();
             stackProperty = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(spriteTool.properties, "stack");
-            if(stackProperty != null && Integer.parseInt(stackProperty.value.getText()) == stack)
+            if(stackProperty == null || Integer.parseInt(stackProperty.value.getText()) == stack)
                 return;
 
             for (int i = 0; i < spriteTools.size; i++)
