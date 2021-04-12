@@ -931,7 +931,8 @@ public class MapInput implements InputProcessor
                 AddMapSpritesToGroup addMapSpritesToGroup = new AddMapSpritesToGroup(map, drawMapPolygon.mapPolygon);
                 this.map.executeCommand(addMapSpritesToGroup);
                 clearMapPolygonVertices(button);
-
+                drawMapPolygon.mapPolygon.layer.children.sort();
+                drawMapPolygon.mapPolygon.layer.children.reverse();
             }
             this.map.pushCommand(drawMapPolygon);
         }
