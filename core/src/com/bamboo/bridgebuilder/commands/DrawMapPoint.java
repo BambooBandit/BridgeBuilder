@@ -42,6 +42,7 @@ public class DrawMapPoint implements Command
             if (this.mapPoint == null)
                 this.mapPoint = new MapPoint(this.map, this.selectedObjectLayer, this.x, this.y);
             this.selectedObjectLayer.addMapObject(this.mapPoint);
+            this.selectedObjectLayer.children.sort();
         }
         else
         {

@@ -1578,7 +1578,7 @@ public class Map implements Screen
             if(mapData.groups != null)
             {
                 groupPolygons = new ObjectLayer(editor, this, null);
-                for(int i = 0; i < mapData.groups.size(); i++)
+                for (int i = 0; i < mapData.groups.size(); i++)
                 {
                     GroupMapPolygonData mapPolygonData = mapData.groups.get(i);
                     MapPolygon mapPolygon = new MapPolygon(this, groupPolygons, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);

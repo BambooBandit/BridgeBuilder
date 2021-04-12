@@ -46,6 +46,7 @@ public class DrawMapPolygon implements Command
             if (this.mapPolygon == null)
                 this.mapPolygon = new MapPolygon(this.map, this.selectedObjectLayer, vertices.toArray(), this.objectX, this.objectY);
             this.selectedObjectLayer.addMapObject(mapPolygon);
+            this.selectedObjectLayer.children.sort();
         }
         else
         {
