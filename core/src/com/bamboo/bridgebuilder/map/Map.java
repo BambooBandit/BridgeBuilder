@@ -226,11 +226,14 @@ public class Map implements Screen
 
         drawHoveredOutline();
         drawSelectedOutlines();
+        if(selectedLayer != null)
+            this.editor.shapeRenderer.setProjectionMatrix(selectedLayer.perspective.camera.combined);
         drawUnfinishedMapPolygon();
         drawUnfinishedStairs();
         drawGradientLine();
         drawVerticeSelect();
         drawBoxSelect();
+
         //shaperenderer end
         this.editor.shapeRenderer.end();
 
