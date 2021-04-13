@@ -1632,6 +1632,7 @@ public class Map implements Screen
                         }
                     }
                 }
+                groupPolygons.children.sort();
             }
 
 
