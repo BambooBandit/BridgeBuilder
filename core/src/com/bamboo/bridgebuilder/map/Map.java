@@ -224,7 +224,11 @@ public class Map implements Screen
             this.editor.shapeRenderer.begin();
         }
 
+        if(selectedLayer != null)
+            this.editor.shapeRenderer.setProjectionMatrix(selectedLayer.perspective.camera.combined);
         drawHoveredOutline();
+        if(selectedLayer != null)
+            this.editor.shapeRenderer.setProjectionMatrix(selectedLayer.perspective.camera.combined);
         drawSelectedOutlines();
         if(selectedLayer != null)
             this.editor.shapeRenderer.setProjectionMatrix(selectedLayer.perspective.camera.combined);
