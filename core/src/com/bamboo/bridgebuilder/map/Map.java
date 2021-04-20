@@ -781,7 +781,7 @@ public class Map implements Screen
     {
         if(layer == null || layer.layerField.visibleImg.isVisible())
         {
-            if(layer instanceof SpriteLayer && ((SpriteLayer) layer).perspective != null)
+            if(layer.perspective != null)
             {
                 SpriteLayer spriteLayer = (SpriteLayer) layer;
                 Perspective perspective = spriteLayer.perspective;
