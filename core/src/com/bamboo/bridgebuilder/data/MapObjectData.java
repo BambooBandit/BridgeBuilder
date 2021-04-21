@@ -33,6 +33,8 @@ public abstract class MapObjectData extends LayerChildData
                 this.props.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
             else if(property instanceof LabelFieldPropertyValuePropertyField)
                 this.props.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
+            else if(property instanceof LabelLabelPropertyValuePropertyField)
+                this.props.add(new LabelLabelPropertyValuePropertyFieldData((LabelLabelPropertyValuePropertyField) property));
         }
         this.lProps = new ArrayList<>();
         for(int i = 0; i < mapObject.lockedProperties.size; i ++)
@@ -46,6 +48,9 @@ public abstract class MapObjectData extends LayerChildData
                 this.lProps.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
             else if(property instanceof LabelFieldPropertyValuePropertyField)
                 this.lProps.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
+            else if(property instanceof LabelLabelPropertyValuePropertyField)
+                this.lProps.add(new LabelLabelPropertyValuePropertyFieldData((LabelLabelPropertyValuePropertyField) property));
+
         }
 
         this.offsetX = offsetX;
