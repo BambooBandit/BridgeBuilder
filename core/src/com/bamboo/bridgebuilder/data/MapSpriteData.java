@@ -10,7 +10,6 @@ public class MapSpriteData extends LayerChildData
 {
     public float z;
     public float r, g, b, a;
-    public long id;
     public String n; // Sprite name
     public String sN; // Sheet name
     public float rot, scl, w, h;
@@ -30,7 +29,6 @@ public class MapSpriteData extends LayerChildData
     {
         super(mapSprite);
         this.z = mapSprite.z;
-        this.id = mapSprite.id;
         this.n = mapSprite.tool.name;
 
         if(mapSprite.attachedSprites != null && mapSprite.attachedSprites.children.size > 0)
@@ -90,7 +88,6 @@ public class MapSpriteData extends LayerChildData
             else if(property instanceof LabelFieldPropertyValuePropertyField)
                 this.props.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
         }
-
         if(mapSprite.attachedMapObjectManagers != null)
         {
             if(mapSprite.attachedMapObjectManagers.size > 0)

@@ -20,59 +20,6 @@ public class MapData
     public MapData(){}
     public MapData(Map map, boolean settingBBMDefaults)
     {
-        int count = 0;
-        for(int i = 0; i < map.layers.size; i ++)
-        {
-            for(int k = 0; k < map.layers.get(i).children.size; k ++)
-            {
-                LayerChild layerChild = (LayerChild) map.layers.get(i).children.get(k);
-                if(layerChild instanceof MapSprite)
-                {
-                    MapSprite mapSprite = (MapSprite) layerChild;
-
-                    if(mapSprite.attachedSprites != null)
-                    {
-                        for(int s = 0; s < mapSprite.attachedSprites.children.size; s ++)
-                        {
-                            MapSprite attachedMapSprite = mapSprite.attachedSprites.children.get(s);
-                            if(Utils.getPropertyField(attachedMapSprite.instanceSpecificProperties, "id") != null)
-                            {
-                                count ++;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if(Utils.getPropertyField(mapSprite.instanceSpecificProperties, "id") != null)
-                        {
-                            count ++;
-                        }
-                    }
-                    if(mapSprite.attachedMapObjects != null)
-                    {
-                        for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
-                        {
-                            MapObject mapObject = mapSprite.attachedMapObjects.get(s);
-                            if(Utils.getPropertyField(mapObject.properties, "id") != null)
-                            {
-                                count ++;
-                            }
-                        }
-                    }
-                }
-                else if(layerChild instanceof MapObject)
-                {
-                    MapObject mapObject = (MapObject) layerChild;
-                    if(Utils.getPropertyField(mapObject.properties, "id") != null)
-                    {
-                        count ++;
-                    }
-                }
-            }
-        }
-        System.out.println(count + " id properties");
-
-
         resetIdCounter();
         float oldPerspective = map.perspectiveZoom;
         map.perspectiveZoom = 0;

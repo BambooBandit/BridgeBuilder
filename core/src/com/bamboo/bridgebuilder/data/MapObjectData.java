@@ -9,7 +9,6 @@ public abstract class MapObjectData extends LayerChildData
 {
     public ArrayList<PropertyData> props;
     public ArrayList<PropertyData> lProps; // locked properties
-    public long id;
 
     // Used for attached map objects only
     public float offsetX, offsetY;
@@ -18,8 +17,6 @@ public abstract class MapObjectData extends LayerChildData
     public MapObjectData(MapObject mapObject, float offsetX, float offsetY)
     {
         super(mapObject);
-
-        this.id = mapObject.id;
 
         this.props = new ArrayList<>();
         for(int i = 0; i < mapObject.properties.size; i ++)

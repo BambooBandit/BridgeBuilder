@@ -5,7 +5,7 @@ import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
-public class AttachedMapObjectManager
+public class AttachedMapObjectManager implements Comparable<AttachedMapObjectManager>
 {
     public SpriteTool spriteTool; // null if instance specific
     public Array<MapObject> attachedMapObjects;
@@ -33,7 +33,10 @@ public class AttachedMapObjectManager
         this.offsetY = mapObject.getY() - mapSprite.getY();
         mapObject.attachedMapObjectManager = this;
         mapObject.properties = this.properties;
-        mapObject.attachedId = idIncrementer ++;
+        if(spriteTool != null)
+            mapObject.attachedId = idIncrementer ++;
+        else
+            mapObject.attachedId = -1;
         addCopyOfMapObjectToAllOtherMapSpritesOfThisSpriteTool(mapObject, mapSprite);
         mapSprite.addAttachedMapObject(mapObject);
     }
@@ -51,7 +54,10 @@ public class AttachedMapObjectManager
         this.offsetY = offsetY;
         mapObject.attachedMapObjectManager = this;
         mapObject.properties = this.properties;
-        mapObject.attachedId = idIncrementer ++;
+        if(spriteTool != null)
+            mapObject.attachedId = idIncrementer ++;
+        else
+            mapObject.attachedId = -1;
     }
 
     public void moveBy(float xOffset, float yOffset)
@@ -283,5 +289,10 @@ public class AttachedMapObjectManager
             if(mapObject.attachedSprite == mapSprite)
                 mapObject.select();
         }
+    }
+
+    @Override
+    public int compareTo(AttachedMapObjectManager o) {
+        return this.attachedMapObjects.first().compareTo(o.attachedMapObjects.first());
     }
 }

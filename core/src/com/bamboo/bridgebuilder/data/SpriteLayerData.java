@@ -34,7 +34,14 @@ public class SpriteLayerData extends LayerData
                 for(int k = 0; k < mapSprite.attachedMapObjects.size; k ++)
                 {
                     MapObject child = mapSprite.attachedMapObjects.get(k);
-                    child.setID(getAndIncrementId());
+                    if(child.attachedId != -1)
+                        child.setID(getAndIncrementId());
+                }
+                for(int k = 0; k < mapSprite.attachedMapObjects.size; k ++)
+                {
+                    MapObject child = mapSprite.attachedMapObjects.get(k);
+                    if(child.attachedId == -1)
+                        child.setID(getAndIncrementId());
                 }
             }
         }
