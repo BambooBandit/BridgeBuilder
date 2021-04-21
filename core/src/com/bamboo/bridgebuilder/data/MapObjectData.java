@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public abstract class MapObjectData extends LayerChildData
 {
     public ArrayList<PropertyData> props;
-    public ArrayList<PropertyData> lProps; // locked properties
 
     // Used for attached map objects only
     public float offsetX, offsetY;
@@ -32,22 +31,6 @@ public abstract class MapObjectData extends LayerChildData
                 this.props.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
             else if(property instanceof LabelLabelPropertyValuePropertyField)
                 this.props.add(new LabelLabelPropertyValuePropertyFieldData((LabelLabelPropertyValuePropertyField) property));
-        }
-        this.lProps = new ArrayList<>();
-        for(int i = 0; i < mapObject.lockedProperties.size; i ++)
-        {
-            PropertyField property = mapObject.lockedProperties.get(i);
-            if(property instanceof ColorPropertyField)
-                this.lProps.add(new ColorPropertyFieldData((ColorPropertyField) property));
-            else if(property instanceof LightPropertyField)
-                this.lProps.add(new LightPropertyFieldData((LightPropertyField) property));
-            else if(property instanceof FieldFieldPropertyValuePropertyField)
-                this.lProps.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
-            else if(property instanceof LabelFieldPropertyValuePropertyField)
-                this.lProps.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
-            else if(property instanceof LabelLabelPropertyValuePropertyField)
-                this.lProps.add(new LabelLabelPropertyValuePropertyFieldData((LabelLabelPropertyValuePropertyField) property));
-
         }
 
         this.offsetX = offsetX;
