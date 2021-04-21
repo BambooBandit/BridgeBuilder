@@ -1,9 +1,12 @@
 package com.bamboo.bridgebuilder.data;
 
+import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.map.MapSprite;
 import com.bamboo.bridgebuilder.map.SpriteLayer;
 
 import java.util.ArrayList;
+
+import static com.bamboo.bridgebuilder.map.LayerChild.getAndIncrementId;
 
 public class SpriteLayerData extends LayerData
 {
@@ -21,11 +24,19 @@ public class SpriteLayerData extends LayerData
                 for(int k = 0; k < mapSprite.attachedSprites.children.size; k ++)
                 {
                     MapSprite child = mapSprite.attachedSprites.children.get(k);
-                    child.setID(MapSprite.getAndIncrementId());
+                    child.setID(getAndIncrementId());
                 }
             }
             else
-                mapSprite.setID(MapSprite.getAndIncrementId());
+                mapSprite.setID(getAndIncrementId());
+            if(mapSprite.attachedMapObjects != null)
+            {
+                for(int k = 0; k < mapSprite.attachedMapObjects.size; k ++)
+                {
+                    MapObject child = mapSprite.attachedMapObjects.get(k);
+                    child.setID(getAndIncrementId());
+                }
+            }
         }
         for(int i = 0; i < layer.children.size; i ++)
         {

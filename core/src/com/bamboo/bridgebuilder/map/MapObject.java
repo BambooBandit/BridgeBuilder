@@ -2,6 +2,7 @@ package com.bamboo.bridgebuilder.map;
 
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelLabelPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public abstract class MapObject extends LayerChild implements Comparable<MapObject>
@@ -12,7 +13,7 @@ public abstract class MapObject extends LayerChild implements Comparable<MapObje
     public MapSprite attachedSprite = null;
 
     public AttachedMapObjectManager attachedMapObjectManager;
-    public int id = 0; // Used to know if one attached map object is the same one on another map sprite of the same type
+    public int attachedId = 0; // Used to know if one attached map object is the same one on another map sprite of the same type
 
     public MapObject(Map map, Layer layer, float x, float y)
     {
@@ -20,6 +21,10 @@ public abstract class MapObject extends LayerChild implements Comparable<MapObje
         this.properties = new Array<>();
         this.moveBox = new MoveBox();
         this.moveBox.setPosition(x, y);
+
+        LabelLabelPropertyValuePropertyField idProperty = new LabelLabelPropertyValuePropertyField("ID", "0", map.skin, map.propertyMenu, null, false);
+        this.lockedProperties.add(idProperty);
+
     }
 
     public MapObject(Map map, MapSprite mapSprite, float x, float y)
@@ -28,6 +33,9 @@ public abstract class MapObject extends LayerChild implements Comparable<MapObje
         this.attachedSprite = mapSprite;
         this.moveBox = new MoveBox();
         this.moveBox.setPosition(x, y);
+
+        LabelLabelPropertyValuePropertyField idProperty = new LabelLabelPropertyValuePropertyField("ID", "0", map.skin, map.propertyMenu, null, false);
+        this.lockedProperties.add(idProperty);
     }
 
     public MapObject(Map map, float x, float y)
@@ -35,6 +43,9 @@ public abstract class MapObject extends LayerChild implements Comparable<MapObje
         super(map, x, y);
         this.moveBox = new MoveBox();
         this.moveBox.setPosition(x, y);
+
+        LabelLabelPropertyValuePropertyField idProperty = new LabelLabelPropertyValuePropertyField("ID", "0", map.skin, map.propertyMenu, null, false);
+        this.lockedProperties.add(idProperty);
     }
 
     @Override

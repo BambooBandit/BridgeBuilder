@@ -194,6 +194,8 @@ public class PropertyPanel extends Group
         if(map.selectedObjects.size == 1)
         {
             menu.propertyTypeLabel.setText("Object Custom Properties");
+            for(int i = 0; i < map.selectedObjects.first().lockedProperties.size; i ++)
+                this.table.add(map.selectedObjects.first().lockedProperties.get(i)).padBottom(1).row();
             this.table.add(this.menu.propertyTypeLabel).row();
             Array<PropertyField> properties = map.selectedObjects.first().properties;
             for (int i = 0; i < properties.size; i++)

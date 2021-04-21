@@ -203,7 +203,7 @@ public class MapPoint extends MapObject
             mapPoint = new MapPoint(map, this.attachedSprite, this.point.getX(), this.point.getY());
         else
             mapPoint = new MapPoint(map, this.layer, this.point.getX(), this.point.getY());
-        mapPoint.id = this.id;
+        mapPoint.attachedId = this.attachedId;
         mapPoint.attachedMapObjectManager = this.attachedMapObjectManager;
         mapPoint.properties = this.attachedMapObjectManager.properties;
         if(this.light != null)

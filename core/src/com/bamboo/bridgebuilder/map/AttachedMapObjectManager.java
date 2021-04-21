@@ -33,7 +33,7 @@ public class AttachedMapObjectManager
         this.offsetY = mapObject.getY() - mapSprite.getY();
         mapObject.attachedMapObjectManager = this;
         mapObject.properties = this.properties;
-        mapObject.id = idIncrementer ++;
+        mapObject.attachedId = idIncrementer ++;
         addCopyOfMapObjectToAllOtherMapSpritesOfThisSpriteTool(mapObject, mapSprite);
         mapSprite.addAttachedMapObject(mapObject);
     }
@@ -51,7 +51,7 @@ public class AttachedMapObjectManager
         this.offsetY = offsetY;
         mapObject.attachedMapObjectManager = this;
         mapObject.properties = this.properties;
-        mapObject.id = idIncrementer ++;
+        mapObject.attachedId = idIncrementer ++;
     }
 
     public void moveBy(float xOffset, float yOffset)
@@ -131,7 +131,7 @@ public class AttachedMapObjectManager
 
                     for(int s = 0; s < child.attachedMapObjects.size; s ++)
                     {
-                        if(child.attachedMapObjects.get(s).id == mapObject.id)
+                        if(child.attachedMapObjects.get(s).attachedId == mapObject.attachedId)
                         {
                             MapObject attachedMapObject = child.attachedMapObjects.get(s);
                             removeAttachedMapObject(attachedMapObject);
@@ -158,7 +158,7 @@ public class AttachedMapObjectManager
 
         for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
         {
-            if(mapSprite.attachedMapObjects.get(s).id == mapObject.id)
+            if(mapSprite.attachedMapObjects.get(s).attachedId == mapObject.attachedId)
             {
                 MapObject attachedMapObject = mapSprite.attachedMapObjects.get(s);
                 removeAttachedMapObject(attachedMapObject);

@@ -44,6 +44,9 @@ import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 import java.io.File;
 import java.util.Stack;
 
+import static com.bamboo.bridgebuilder.map.LayerChild.getAndIncrementId;
+import static com.bamboo.bridgebuilder.map.LayerChild.resetIdCounter;
+
 public class Map implements Screen
 {
     public BridgeBuilder editor;
@@ -781,10 +784,9 @@ public class Map implements Screen
     {
         if(layer == null || layer.layerField.visibleImg.isVisible())
         {
-            if(layer.perspective != null)
+            if(layer != null && layer.perspective != null)
             {
-                SpriteLayer spriteLayer = (SpriteLayer) layer;
-                Perspective perspective = spriteLayer.perspective;
+                Perspective perspective = layer.perspective;
                 this.rayHandler.setCombinedMatrix(perspective.perspectiveCamera.combined, perspective.perspectiveCamera.position.x, perspective.perspectiveCamera.position.y, perspective.perspectiveCamera.viewportWidth * perspective.perspectiveCamera.zoom * 2f, perspective.perspectiveCamera.viewportHeight * perspective.perspectiveCamera.zoom * 2f);
             }
             else
@@ -1216,7 +1218,7 @@ public class Map implements Screen
 
     public void loadMap(MapData mapData, boolean setDefaultsOnly)
     {
-        MapSprite.resetIdCounter();
+        resetIdCounter();
         if(!setDefaultsOnly)
         {
             this.name = mapData.name;
@@ -1458,12 +1460,28 @@ public class Map implements Screen
                             for (int k = 0; k < mapSprite.attachedSprites.children.size; k++)
                             {
                                 MapSprite attached = mapSprite.attachedSprites.children.get(k);
-                                attached.setID(attached.getAndIncrementId());
+                                attached.setID(getAndIncrementId());
                             }
                         } else
                         {
-                            mapSprite.setID(MapSprite.getAndIncrementId());
+                            mapSprite.setID(getAndIncrementId());
                         }
+                        if(mapSprite.attachedMapObjects != null)
+                        {
+                            for (int k = 0; k < mapSprite.attachedMapObjects.size; k++)
+                            {
+                                MapObject attached = mapSprite.attachedMapObjects.get(k);
+                                attached.setID(getAndIncrementId());
+                            }
+                        }
+                    }
+                }
+                else if(layer instanceof ObjectLayer)
+                {
+                    for (int s = 0; s < layer.children.size; s++)
+                    {
+                        MapObject mapObject = (MapObject) layer.children.get(s);
+                        mapObject.setID(getAndIncrementId());
                     }
                 }
             }
@@ -1648,7 +1666,7 @@ public class Map implements Screen
 
     public void loadMap(MapData mapData, String defaultSheet, String currentSheet)
     {
-        MapSprite.resetIdCounter();
+        resetIdCounter();
 
         SpriteSheet spriteSheet = null;
         // delete all properties and things

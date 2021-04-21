@@ -439,7 +439,7 @@ public class MapPolygon extends MapObject
             mapPolygon = new MapPolygon(map, this.attachedSprite, this.polygon.getVertices(), this.polygon.getX(), this.polygon.getY());
         else
             mapPolygon = new MapPolygon(map, this.layer, this.polygon.getVertices(), this.polygon.getX(), this.polygon.getY());
-        mapPolygon.id = this.id;
+        mapPolygon.attachedId = this.attachedId;
         mapPolygon.attachedMapObjectManager = this.attachedMapObjectManager;
         mapPolygon.properties = this.attachedMapObjectManager.properties;
         if(this.body != null)

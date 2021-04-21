@@ -6,6 +6,8 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 
 import java.util.ArrayList;
 
+import static com.bamboo.bridgebuilder.map.LayerChild.resetIdCounter;
+
 public class MapData
 {
     public String name;
@@ -18,7 +20,7 @@ public class MapData
     public MapData(){}
     public MapData(Map map, boolean settingBBMDefaults)
     {
-        MapSprite.resetIdCounter();
+        resetIdCounter();
         float oldPerspective = map.perspectiveZoom;
         map.perspectiveZoom = 0;
         map.updateLayerSpriteGrids();

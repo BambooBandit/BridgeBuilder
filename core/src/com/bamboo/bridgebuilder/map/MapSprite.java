@@ -32,11 +32,8 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     public RotationBox rotationBox;
     public MoveBox moveBox;
     public ScaleBox scaleBox;
-    public Array<PropertyField> lockedProperties; // properties such as rotation. They belong to all sprites
     public Array<PropertyField> instanceSpecificProperties; // properties for just the mapsprite, not the spritetool
     public float z;
-    public static int idCounter = 1;
-    public int id; // Used to be able to set any sprites id and specifically retrieve it in the game
     public TextureAtlas.AtlasSprite sprite;
     public SpriteTool tool;
     public float width, height;
@@ -66,7 +63,6 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     public MapSprite(Map map, Layer layer, SpriteTool tool, float x, float y)
     {
         super(map, layer, x, y);
-        this.lockedProperties = new Array<>();
         this.instanceSpecificProperties = new Array<>();
         this.sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) tool.textureRegion);
         this.sprite.setSize(sprite.getAtlasRegion().originalWidth / 64f, sprite.getAtlasRegion().originalHeight / 64f);
@@ -204,24 +200,6 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
         this.setColor(randomR, randomG, randomB, randomA);
         this.setPosition(x, y);
         this.updatePerspective();
-    }
-
-    public void setID(int id)
-    {
-        for(int i = 0; i < lockedProperties.size; i ++)
-        {
-            PropertyField propertyField = lockedProperties.get(i);
-            if(propertyField instanceof LabelLabelPropertyValuePropertyField)
-            {
-                LabelLabelPropertyValuePropertyField labelLabelProperty = (LabelLabelPropertyValuePropertyField) propertyField;
-                if(labelLabelProperty.getProperty().equals("ID"))
-                {
-                    labelLabelProperty.value.setText(Integer.toString(id));
-                    break;
-                }
-            }
-        }
-        this.id = id;
     }
 
 
@@ -1052,16 +1030,6 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
 
         float[] vertices = {lowestX, lowestY, highestX, lowestY, highestX, highestY, lowestX, highestY};
         this.polygon.setVertices(vertices);
-    }
-
-    public static int getAndIncrementId()
-    {
-        return idCounter ++;
-    }
-
-    public static void resetIdCounter()
-    {
-        idCounter = 1;
     }
     
     private void updatePerspectiveTall()
