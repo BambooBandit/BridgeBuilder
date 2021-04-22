@@ -5,7 +5,7 @@ import com.bamboo.bridgebuilder.map.LayerChild;
 public abstract class LayerChildData
 {
     public float x, y;
-    public int fId; // to flicker mapSprite id
+    public long fId; // to flicker mapSprite id
     public long id;
 
     public LayerChildData(){}

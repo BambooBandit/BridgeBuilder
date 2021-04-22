@@ -18,11 +18,12 @@ public class MapSpriteData extends LayerChildData
     public static int defaultScaleValue = 1;
     public boolean parent;
     public float x1, y1, x2, y2, x3, y3, x4, y4;
-    public int eId; // to edge mapSprite id
+    public long eId; // to edge mapSprite id
     public boolean fence; // Used to tell which parts of the attached sprites are fences
     public boolean ignoreProps; // Used to tell whether or not to ignore properties for this sprite
     public ArrayList<PropertyData> props; // instance specific properties
     public ArrayList<MapObjectData> objs; // this map sprite instance attached objects
+    public ArrayList<Long> toIDs; // attached tool map object ID's
 
     public MapSpriteData() {}
     public MapSpriteData(MapSprite mapSprite)
@@ -88,6 +89,20 @@ public class MapSpriteData extends LayerChildData
             else if(property instanceof LabelFieldPropertyValuePropertyField)
                 this.props.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
         }
+
+        // tool object id's
+//        System.out.println(mapSprite.tool.attachedMapObjectManagers);
+        if(mapSprite.tool.attachedMapObjectManagers != null)
+        {
+            this.toIDs = new ArrayList<>();
+            for(int i = 0; i < mapSprite.tool.attachedMapObjectManagers.size; i ++)
+            {
+                AttachedMapObjectManager attachedMapObjectManager = mapSprite.tool.attachedMapObjectManagers.get(i);
+                MapObject mapObject = attachedMapObjectManager.getMapObjectByParent(mapSprite);
+                this.toIDs.add(mapObject.id);
+            }
+        }
+
         if(mapSprite.attachedMapObjectManagers != null)
         {
             if(mapSprite.attachedMapObjectManagers.size > 0)

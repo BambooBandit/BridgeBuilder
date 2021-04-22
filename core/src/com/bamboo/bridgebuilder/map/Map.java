@@ -44,9 +44,6 @@ import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 import java.io.File;
 import java.util.Stack;
 
-import static com.bamboo.bridgebuilder.map.LayerChild.getAndIncrementId;
-import static com.bamboo.bridgebuilder.map.LayerChild.resetIdCounter;
-
 public class Map implements Screen
 {
     public BridgeBuilder editor;
@@ -108,6 +105,8 @@ public class Map implements Screen
     private int undoRedoPointer = -1;
     private Stack<Command> commandStack = new Stack<>();
     private int stackThreshold = 75;
+
+    public long idCounter = 1;
 
     public Map(BridgeBuilder editor, String name)
     {
@@ -1218,7 +1217,6 @@ public class Map implements Screen
 
     public void loadMap(MapData mapData, boolean setDefaultsOnly)
     {
-        resetIdCounter();
         if(!setDefaultsOnly)
         {
             this.name = mapData.name;
@@ -1318,6 +1316,7 @@ public class Map implements Screen
                                 mapObject = mapPoint;
                             }
                             mapObject.flickerId = mapObjectData.fId;
+                            mapObject.setID(mapObject.id);
                             // attached manager
                             spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.offsetX, mapObjectData.offsetY);
                             if (setDefaultsOnly)
@@ -1433,6 +1432,7 @@ public class Map implements Screen
                             ((ObjectLayer) layer).addMapObject(mapPoint);
                         }
                         mapObject.flickerId = mapObjectData.fId;
+                        mapObject.setID(mapObjectData.id);
                         // object properties
                         propSize = mapObjectData.props.size();
                         for (int s = 0; s < propSize; s++)
@@ -1446,45 +1446,6 @@ public class Map implements Screen
             }
 
             // edge sprites and ID's
-            for(int i = 0; i < layers.size; i ++)
-            {
-                Layer layer = layers.get(i);
-                if (layer instanceof SpriteLayer)
-                {
-                    // ID
-                    for (int s = 0; s < layer.children.size; s++)
-                    {
-                        MapSprite mapSprite = (MapSprite) layer.children.get(s);
-                        if (mapSprite.attachedSprites != null)
-                        {
-                            for (int k = 0; k < mapSprite.attachedSprites.children.size; k++)
-                            {
-                                MapSprite attached = mapSprite.attachedSprites.children.get(k);
-                                attached.setID(getAndIncrementId());
-                            }
-                        } else
-                        {
-                            mapSprite.setID(getAndIncrementId());
-                        }
-                        if(mapSprite.attachedMapObjects != null)
-                        {
-                            for (int k = 0; k < mapSprite.attachedMapObjects.size; k++)
-                            {
-                                MapObject attached = mapSprite.attachedMapObjects.get(k);
-                                attached.setID(getAndIncrementId());
-                            }
-                        }
-                    }
-                }
-                else if(layer instanceof ObjectLayer)
-                {
-                    for (int s = 0; s < layer.children.size; s++)
-                    {
-                        MapObject mapObject = (MapObject) layer.children.get(s);
-                        mapObject.setID(getAndIncrementId());
-                    }
-                }
-            }
             for(int i = 0; i < layers.size; i ++)
             {
                 Layer layer = layers.get(i);
@@ -1506,7 +1467,7 @@ public class Map implements Screen
                                 for (int k = 0; k < toLayer.children.size; k++)
                                 {
                                     MapSprite edge = (MapSprite) toLayer.children.get(k);
-                                    int id = edge.id;
+                                    long id = edge.id;
                                     if (edgeId == id)
                                     {
                                         SnapMapSpriteEdge snapMapSpriteEdge = new SnapMapSpriteEdge(mapSprite, edge);
@@ -1534,7 +1495,7 @@ public class Map implements Screen
                                 for (int k = 0; k < toLayer.children.size; k++)
                                 {
                                     MapSprite flicker = (MapSprite) toLayer.children.get(k);
-                                    int id = flicker.id;
+                                    long id = flicker.id;
                                     if (flickerId == id)
                                     {
                                         SnapMapSpriteFlicker snapMapSpriteFlicker = new SnapMapSpriteFlicker(mapSprite, flicker);
@@ -1564,7 +1525,7 @@ public class Map implements Screen
                                 for (int k = 0; k < toLayer.children.size; k++)
                                 {
                                     MapSprite flicker = (MapSprite) toLayer.children.get(k);
-                                    int id = flicker.id;
+                                    long id = flicker.id;
                                     if (flickerId == id)
                                     {
                                         SnapMapSpriteFlicker snapMapSpriteFlicker = new SnapMapSpriteFlicker(mapObject, flicker);
@@ -1662,12 +1623,11 @@ public class Map implements Screen
         }
         PropertyToolPane.apply(this);
         propertyMenu.mapPropertyPanel.apply();
+        setIdCounter(mapData.idCounter);
     }
 
     public void loadMap(MapData mapData, String defaultSheet, String currentSheet)
     {
-        resetIdCounter();
-
         SpriteSheet spriteSheet = null;
         // delete all properties and things
         for(int i = 0; i < spriteMenu.spriteSheets.size; i ++)
@@ -1754,6 +1714,7 @@ public class Map implements Screen
                             mapObject = mapPoint;
                         }
                         mapObject.flickerId = mapObjectData.fId;
+                        mapObject.setID(mapObjectData.id);
                         // attached manager
                         spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.offsetX, mapObjectData.offsetY);
                         mapObject.attachedMapObjectManager.addCopyOfMapObjectToAllMapSpritesOfThisSpriteTool(mapObject);
@@ -1787,6 +1748,7 @@ public class Map implements Screen
         MapSprite mapSprite = new MapSprite(this, layer, spriteTool, mapSpriteData.x, mapSpriteData.y);
         mapSprite.edgeId = mapSpriteData.eId;
         mapSprite.flickerId = mapSpriteData.fId;
+        mapSprite.setID(mapSpriteData.id);
         LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(mapSprite.lockedProperties, "Fence");
         if(mapSpriteData.fence)
             fenceProperty.value.setText("true");
@@ -1805,6 +1767,7 @@ public class Map implements Screen
         mapSprite.setPosition(mapSpriteData.x, mapSpriteData.y);
         Utils.setCenterOrigin(mapSprite.getX(), mapSprite.getY());
         // attached map objects
+        // instance map objects
         if (mapSpriteData.objs != null)
         {
             int objSize = mapSpriteData.objs.size();
@@ -1824,6 +1787,7 @@ public class Map implements Screen
                     mapObject = mapPoint;
                 }
                 mapObject.flickerId = mapObjectData.fId;
+                mapObject.setID(mapObjectData.id);
                 // attached manager
                 mapSprite.createAttachedMapObject(this, mapObject, mapObjectData.offsetX, mapObjectData.offsetY, false);
                 // object properties
@@ -1836,6 +1800,16 @@ public class Map implements Screen
                 }
             }
         }
+        // tool attached map object ids
+        if(mapSpriteData.toIDs != null)
+        {
+            for(int i = 0; i < mapSpriteData.toIDs.size(); i ++)
+            {
+                long ID = mapSpriteData.toIDs.get(i);
+                mapSprite.tool.attachedMapObjectManagers.get(i).getMapObjectByParent(mapSprite).setID(ID);
+            }
+        }
+
         mapSprite.setRotation(mapSpriteData.rot);
         mapSprite.layerOverrideIndex = mapSpriteData.loi;
         mapSprite.x1Offset = mapSpriteData.x1;
@@ -1885,5 +1859,15 @@ public class Map implements Screen
             spriteLayer.sort();
             return;
         }
+    }
+
+    public long getAndIncrementId()
+    {
+        return idCounter ++;
+    }
+
+    public void setIdCounter(long id)
+    {
+        idCounter = id;
     }
 }

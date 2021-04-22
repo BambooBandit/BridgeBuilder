@@ -13,10 +13,9 @@ public abstract class LayerChild
     public float perspectiveOffsetX = 1;
     public float perspectiveOffsetY = 1;
     public float perspectiveScale = 1;
-    public int flickerId;
+    public long flickerId;
     public MapSprite toFlicker;
-    public int id; // Used to be able to set any layer childs  id and specifically retrieve it in the game
-    public static int idCounter = 1;
+    public long id; // Used to be able to set any layer childs  id and specifically retrieve it in the game
 
     public Array<PropertyField> lockedProperties; // properties such as ID, rotation, scale, etc. They belong to all layer children
 
@@ -26,6 +25,9 @@ public abstract class LayerChild
         this.layer = layer;
 
         this.lockedProperties = new Array<>();
+        LabelLabelPropertyValuePropertyField idProperty = new LabelLabelPropertyValuePropertyField("ID", "0", map.skin, map.propertyMenu, null, false);
+        this.lockedProperties.add(idProperty);
+        setID(map.getAndIncrementId());
     }
 
     public LayerChild(Map map, float x, float y)
@@ -33,9 +35,12 @@ public abstract class LayerChild
         this.map = map;
 
         this.lockedProperties = new Array<>();
+        LabelLabelPropertyValuePropertyField idProperty = new LabelLabelPropertyValuePropertyField("ID", "0", map.skin, map.propertyMenu, null, false);
+        this.lockedProperties.add(idProperty);
+        setID(map.getAndIncrementId());
     }
 
-    public void setID(int id)
+    public void setID(long id)
     {
         for(int i = 0; i < lockedProperties.size; i ++)
         {
@@ -45,22 +50,12 @@ public abstract class LayerChild
                 LabelLabelPropertyValuePropertyField labelLabelProperty = (LabelLabelPropertyValuePropertyField) propertyField;
                 if(labelLabelProperty.getProperty().equals("ID"))
                 {
-                    labelLabelProperty.value.setText(Integer.toString(id));
+                    labelLabelProperty.value.setText(Long.toString(id));
                     break;
                 }
             }
         }
         this.id = id;
-    }
-
-    public static int getAndIncrementId()
-    {
-        return idCounter ++;
-    }
-
-    public static void resetIdCounter()
-    {
-        idCounter = 1;
     }
 
     public abstract void update();

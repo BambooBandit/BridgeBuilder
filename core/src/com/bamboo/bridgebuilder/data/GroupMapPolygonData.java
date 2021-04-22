@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class GroupMapPolygonData extends MapPolygonData
 {
-    public ArrayList<Integer> mapSpriteIDs;
+    public ArrayList<Long> mapSpriteIDs;
 
     public GroupMapPolygonData(){}
     public GroupMapPolygonData(MapPolygon mapPolygon, float offsetX, float offsetY)

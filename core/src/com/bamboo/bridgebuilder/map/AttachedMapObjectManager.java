@@ -60,6 +60,17 @@ public class AttachedMapObjectManager implements Comparable<AttachedMapObjectMan
             mapObject.attachedId = -1;
     }
 
+    public MapObject getMapObjectByParent(MapSprite mapSprite)
+    {
+        for(int i = 0; i < attachedMapObjects.size; i ++)
+        {
+            MapObject mapObject = attachedMapObjects.get(i);
+            if(mapObject.attachedSprite == mapSprite)
+                return mapObject;
+        }
+        return null;
+    }
+
     public void moveBy(float xOffset, float yOffset)
     {
         for(int i = 0; i < this.attachedMapObjects.size; i ++)

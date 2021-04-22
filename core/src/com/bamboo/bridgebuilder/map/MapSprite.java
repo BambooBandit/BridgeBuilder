@@ -21,7 +21,6 @@ import com.bamboo.bridgebuilder.ui.manipulators.RotationBox;
 import com.bamboo.bridgebuilder.ui.manipulators.ScaleBox;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelLabelPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
@@ -50,7 +49,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     public MapSprite parentSprite; // For the above
 
     // sprite connections
-    public int edgeId;
+    public long edgeId;
     public MapSprite toEdgeSprite;
     public Array<MapSprite> fromEdgeSprites;
     public Array<LayerChild> fromFlickers;
@@ -105,7 +104,6 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
                 return c == '.' || c == '-' || Character.isDigit(c);
             }
         };
-        LabelLabelPropertyValuePropertyField idProperty = new LabelLabelPropertyValuePropertyField("ID", "0", map.skin, map.propertyMenu, null, false);
         LabelFieldPropertyValuePropertyField rotationProperty = new LabelFieldPropertyValuePropertyField("Rotation", "0", map.skin, map.propertyMenu, null, false);
         LabelFieldPropertyValuePropertyField scaleProperty = new LabelFieldPropertyValuePropertyField("Scale", "1", map.skin, map.propertyMenu, null, false);
         LabelFieldPropertyValuePropertyField zProperty = new LabelFieldPropertyValuePropertyField("Z", "0", map.skin, map.propertyMenu, null, false);
@@ -113,7 +111,6 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
         LabelFieldPropertyValuePropertyField ignoreProperty = new LabelFieldPropertyValuePropertyField("IgnoreProps", "false", map.skin, map.propertyMenu, null, false);
         ColorPropertyField colorProperty = new ColorPropertyField(map.skin, map.propertyMenu, null, false, "Tint", 1, 1, 1, 1);
 
-        this.lockedProperties.add(idProperty);
         this.lockedProperties.add(rotationProperty);
         this.lockedProperties.add(scaleProperty);
         this.lockedProperties.add(zProperty);

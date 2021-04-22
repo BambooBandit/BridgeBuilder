@@ -7,8 +7,6 @@ import com.bamboo.bridgebuilder.map.ObjectLayer;
 
 import java.util.ArrayList;
 
-import static com.bamboo.bridgebuilder.map.LayerChild.getAndIncrementId;
-
 public class ObjectLayerData extends LayerData
 {
     public ArrayList<MapObjectData> children;
@@ -18,11 +16,6 @@ public class ObjectLayerData extends LayerData
     {
         super(layer);
         this.children = new ArrayList<>();
-        for(int i = 0; i < layer.children.size; i ++)
-        {
-            MapObject mapObject = layer.children.get(i);
-            mapObject.setID(getAndIncrementId());
-        }
 
         for(int i = 0; i < layer.children.size; i ++)
         {
