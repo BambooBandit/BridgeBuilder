@@ -91,7 +91,6 @@ public class MapSpriteData extends LayerChildData
         }
 
         // tool object id's
-//        System.out.println(mapSprite.tool.attachedMapObjectManagers);
         if(mapSprite.tool.attachedMapObjectManagers != null)
         {
             this.toIDs = new ArrayList<>();
