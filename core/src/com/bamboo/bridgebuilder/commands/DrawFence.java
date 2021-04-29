@@ -172,6 +172,11 @@ public class DrawFence implements Command
         MapSprite stackedPost = new MapSprite(this.map, post.attachedSprites, spriteTool, post.x + post.width / 2f, post.y + (post.height / 2f) + (post.height * stack * stackHeightMultiplier));
         (post.attachedSprites).addMapSprite(stackedPost, -1);
         stackedPost.parentSprite = post;
+        if(map.editor.fileMenu.toolPane.stairsDialog.shouldParentBeTransparent())
+        {
+            Color color = stackedPost.sprite.getColor();
+            stackedPost.setColor(color.r, color.g, color.b, 0);
+        }
 
         map.shuffleRandomSpriteTool(false, stack);
     }
@@ -243,7 +248,7 @@ public class DrawFence implements Command
         if(inFront)
             (fromFence.attachedSprites).addMapSprite(connector, -1);
         else
-            (fromFence.attachedSprites).addMapSprite(connector, 0);
+            (fromFence.attachedSprites).addMapSprite(connector, stack);
         fromX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
         toX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
         float stackHeightMultiplier = map.editor.fileMenu.toolPane.stairsDialog.getStackHeightMultiplier();
@@ -260,15 +265,18 @@ public class DrawFence implements Command
         fromY = midY - yDiff;
         toY = midY + yDiff;
 
+        float heightOffset = map.editor.fileMenu.toolPane.stairsDialog.getHeightOffset();
+
         if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
             connector.setPosition(fromX, fromY - connector.height / 2f);
         else
             connector.setPosition(fromX, fromY);
+        connector.y1Offset += heightOffset;
         connector.x2Offset = toX - (connector.x + connector.width * connector.scale);
         if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
-            connector.y2Offset = toY - (connector.y + connector.height / 2f);
+            connector.y2Offset = toY - (connector.y + connector.height / 2f) + heightOffset;
         else
-            connector.y2Offset = toY - connector.y;
+            connector.y2Offset = toY - connector.y + heightOffset;
         connector.x3Offset = connector.x2Offset;
         if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
             connector.y3Offset = toY - (connector.y + connector.height / 2f);

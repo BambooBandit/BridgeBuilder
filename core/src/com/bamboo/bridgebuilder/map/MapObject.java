@@ -95,6 +95,6 @@ public abstract class MapObject extends LayerChild implements Comparable<MapObje
         if(other instanceof MapPoint)
             return -1;
 
-        return Float.compare(getArea(), other.getArea());
+        return Float.compare(other.getArea(), getArea());
     }
 }
