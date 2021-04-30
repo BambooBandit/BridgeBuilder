@@ -98,6 +98,7 @@ public class Map implements Screen
     public File file = null;
 
     public MapSprite lastFencePlaced;
+    public float lastFencePlacedDistance;
 
     public ObjectLayer groupPolygons; // Each group of map sprites has a polygon associated with it in this layer. Used for making multiple sprites do something when entering a polygon
 

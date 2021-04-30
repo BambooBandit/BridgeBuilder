@@ -202,6 +202,11 @@ public class MapInput implements InputProcessor
             String xCoord = String.format("%.2f", coordsX);
             String yCoord = String.format("%.2f", coordsY);
             editor.mouseCoordTooltip.label.setText("(" + xCoord + ", " + yCoord  +")   (" + screenX + ", " + screenY + ")");
+            if(editor.fileMenu.toolPane.fence.selected && map.lastFencePlaced != null)
+            {
+                float currentDistance = Utils.getDistance(map.lastFencePlaced.x + map.lastFencePlaced.width / 2f, coordsX, (map.lastFencePlaced.y + map.lastFencePlaced.height / 2f), coordsY);
+                editor.fenceDistanceTooltip.label.setText("(Fence Distance) last: " + (Math.round(map.lastFencePlacedDistance * 100.0) / 100.0) + ". current: " + (Math.round(currentDistance * 100.0) / 100.0));
+            }
             this.currentPos.set(coordsX, coordsY);
             handlePreviewSpritePositionUpdate(coordsX, coordsY);
             handleHoveredLayerChildUpdate(coordsX, coordsY);

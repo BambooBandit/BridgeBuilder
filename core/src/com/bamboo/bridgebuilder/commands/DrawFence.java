@@ -73,6 +73,13 @@ public class DrawFence implements Command
         }
         this.lastFencePlacedOld = this.map.lastFencePlaced;
         this.map.lastFencePlaced = this.mapSprite;
+
+        if(lastFencePlacedOld != null)
+        {
+            map.lastFencePlacedDistance = Utils.getDistance(map.lastFencePlaced.x, lastFencePlacedOld.x, map.lastFencePlaced.y, lastFencePlacedOld.y);
+            map.editor.fenceDistanceTooltip.label.setText("(Fence Distance) last: " + (Math.round(map.lastFencePlacedDistance * 100.0) / 100.0) + ". current: 0");
+        }
+
         this.layer.addMapSprite(this.mapSprite, -1);
 
         if(this.map.editor.fileMenu.toolPane.depth.selected)

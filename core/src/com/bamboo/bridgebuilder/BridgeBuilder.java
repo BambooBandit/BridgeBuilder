@@ -35,6 +35,7 @@ public class BridgeBuilder extends Game
 
 	public static Tooltip mouseCoordTooltip;
 	public static Tooltip selectedCountTooltip;
+	public static Tooltip fenceDistanceTooltip;
 
 	public FileMenu fileMenu;
 
@@ -59,10 +60,12 @@ public class BridgeBuilder extends Game
 		this.shapeRenderer = new ShapeRenderer();
 		this.stage = new Stage(new ScreenViewport());
 
-		this.mouseCoordTooltip = new Tooltip(this, "(0, 0) ", " (0, 0)", EditorAssets.getUISkin(), false, true);
-		this.selectedCountTooltip = new Tooltip(this, "0 selected", "", EditorAssets.getUISkin(), false, false);
-		this.stage.addActor(this.mouseCoordTooltip);
-		this.stage.addActor(this.selectedCountTooltip);
+		mouseCoordTooltip = new Tooltip(this, "(0, 0) ", " (0, 0)", EditorAssets.getUISkin(), false, 0);
+		fenceDistanceTooltip = new Tooltip(this, "(Fence Distance) last: 0. current: 0", "", EditorAssets.getUISkin(), false, 1);
+		selectedCountTooltip = new Tooltip(this, "0 selected", "", EditorAssets.getUISkin(), false, 2);
+		this.stage.addActor(mouseCoordTooltip);
+		this.stage.addActor(fenceDistanceTooltip);
+		this.stage.addActor(selectedCountTooltip);
 
 		// fileMenu
 		this.fileMenu = new FileMenu(EditorAssets.getUISkin(), this);
