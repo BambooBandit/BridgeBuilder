@@ -107,6 +107,11 @@ public class PasteItems implements Command
 
     private void convertItemToLayerAndMapAndMapSheet(LayerChild layerChild, Layer toLayer, Map toMap)
     {
+        if(layerChild.map != toMap)
+        {
+            layerChild.setID(layerChild.map.getAndIncrementId());
+        }
+
         layerChild.map = toMap;
         layerChild.layer = toLayer;
         if(layerChild instanceof MapSprite)
