@@ -241,6 +241,17 @@ public class AttachedMapObjectManager implements Comparable<AttachedMapObjectMan
                 for(int k = 0; k < spriteLayer.children.size; k ++)
                 {
                     MapSprite child = spriteLayer.children.get(k);
+                    if(child.attachedSprites != null)
+                    {
+                        for(int s = 0; s < child.attachedSprites.children.size; s ++)
+                        {
+                            MapSprite attached = child.attachedSprites.children.get(s);
+                            if(attached == mapSprite || attached.tool != this.spriteTool)
+                                continue;
+                            else
+                                addCopyOfMapObjectToThisMapSprite(mapObject, attached);
+                        }
+                    }
                     if(child == mapSprite || child.tool != this.spriteTool)
                         continue;
                     else
