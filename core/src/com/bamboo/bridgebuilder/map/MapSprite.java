@@ -829,7 +829,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
         offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + map.cameraX + x3Offset - (offsetMovebox3.scale * offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + map.cameraY + y3Offset - (offsetMovebox3.scale * offsetMovebox3.height / 2f));
         offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + map.cameraX + x4Offset - (offsetMovebox4.scale * offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + map.cameraY + y4Offset - (offsetMovebox4.scale * offsetMovebox4.height / 2f));
 
-        if(this.tool.hasAttachedMapObjects())
+        if(this.attachedMapObjects != null && this.attachedMapObjects.size > 0)
         {
             for(int i = 0; i < this.attachedMapObjects.size; i ++)
             {

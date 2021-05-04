@@ -275,7 +275,7 @@ public class MapPolygon extends MapObject
         float[] vertices = this.polygon.getVertices();
         vertices[index] = x - this.polygon.getX() - map.cameraX;
         vertices[index + 1] = y - this.polygon.getY() - map.cameraY;
-        setPosition(x, y);
+        setPosition(this.x, this.y);
         remakeBody();
     }
 
@@ -370,7 +370,7 @@ public class MapPolygon extends MapObject
         if (indexOfSelectedVertice != -1)
         {
             map.editor.shapeRenderer.setColor(Color.GREEN);
-            map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfSelectedVertice] + map.cameraX, polygon.getTransformedVertices()[indexOfSelectedVertice + 1] + map.cameraY, .1f, 7);
+            map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfSelectedVertice], polygon.getTransformedVertices()[indexOfSelectedVertice + 1], .1f, 7);
         }
     }
 
@@ -379,7 +379,7 @@ public class MapPolygon extends MapObject
         if (indexOfHoveredVertice != -1)
         {
             map.editor.shapeRenderer.setColor(Color.ORANGE);
-            map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfHoveredVertice] + map.cameraX, polygon.getTransformedVertices()[indexOfHoveredVertice + 1] + map.cameraY, .1f, 7);
+            map.editor.shapeRenderer.circle(polygon.getTransformedVertices()[indexOfHoveredVertice], polygon.getTransformedVertices()[indexOfHoveredVertice + 1], .1f, 7);
         }
     }
 

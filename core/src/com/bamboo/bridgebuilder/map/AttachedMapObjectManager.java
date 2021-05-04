@@ -175,7 +175,15 @@ public class AttachedMapObjectManager implements Comparable<AttachedMapObjectMan
 
         for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
         {
-            if(mapSprite.attachedMapObjects.get(s).attachedId == mapObject.attachedId)
+            boolean remove = false;
+            if(mapObject.attachedId == -1)
+            {
+                if(mapObject == mapSprite.attachedMapObjects.get(s))
+                    remove = true;
+            }
+            else if(mapSprite.attachedMapObjects.get(s).attachedId == mapObject.attachedId)
+                remove = true;
+            if(remove)
             {
                 MapObject attachedMapObject = mapSprite.attachedMapObjects.get(s);
                 removeAttachedMapObject(attachedMapObject);
