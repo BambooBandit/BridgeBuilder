@@ -122,6 +122,16 @@ public class Map implements Screen
         this.editor = editor;
         init();
         loadMap(mapData, false);
+        for(int i = 0; i < layers.size; i ++)
+        {
+            Layer layer = layers.get(i);
+            if(Utils.getPropertyField(layer.properties, "playableFloor") != null)
+            {
+                cameraX = layer.width / 2f;
+                cameraY = layer.height / 2f;
+                break;
+            }
+        }
     }
 
     private void init()
