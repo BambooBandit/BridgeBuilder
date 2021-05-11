@@ -16,6 +16,7 @@ import com.bamboo.bridgebuilder.ui.InstanceOrSpriteToolDialog;
 import com.bamboo.bridgebuilder.ui.SnapSpriteDialog;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
+import com.bamboo.bridgebuilder.ui.spriteMenu.LayerOverrideDialog;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 
@@ -44,7 +45,9 @@ public class MapInput implements InputProcessor
     public float gradientX, gradientY; // Used for gradient placement
     public boolean draggingGradient = false;
 
-    public LayerChild snapFromThisObject = null; // Hold control while having one object selected, you can snap to another object
+    public LayerChild snapFromThisObject = null; // Hold alt while having one object selected, you can snap to another object
+
+    public SpriteLayer overrideLayer; // Hold alt while having one layer selected, you can snap to a mapsprite in a secondary selected layer.
 
     public BoxSelect boxSelect;
 
@@ -70,6 +73,7 @@ public class MapInput implements InputProcessor
     public boolean keyDown(int keycode)
     {
         handleEdgeSnapKeyDown(keycode);
+        handleLayerOverrideKeyDown(keycode);
         return false;
     }
 
@@ -85,6 +89,20 @@ public class MapInput implements InputProcessor
             snapFromThisObject = map.selectedObjects.first();
     }
 
+    private void handleLayerOverrideKeyDown(int keycode)
+    {
+        if(map.selectedObjects.size > 0 || map.selectedSprites.size > 0)
+            return;
+        if(!(keycode == Input.Keys.ALT_LEFT && map.editor.fileMenu.toolPane.select.selected))
+            return;
+        if(!(map.selectedLayer instanceof SpriteLayer))
+            return;
+        if(map.secondarySelectedLayer == null)
+            return;
+
+        overrideLayer = (SpriteLayer) map.selectedLayer;
+    }
+
     private void handleEdgeSnapKeyUp(int keycode)
     {
         if(keycode != Input.Keys.ALT_LEFT)
@@ -92,10 +110,19 @@ public class MapInput implements InputProcessor
         snapFromThisObject = null;
     }
 
+    private void handleLayerOverrideKeyUp(int keycode)
+    {
+        if(keycode != Input.Keys.ALT_LEFT)
+            return;
+
+        overrideLayer = null;
+    }
+
     @Override
     public boolean keyUp(int keycode)
     {
         handleEdgeSnapKeyUp(keycode);
+        handleLayerOverrideKeyUp(keycode);
         return false;
     }
 
@@ -713,7 +740,14 @@ public class MapInput implements InputProcessor
 
         if(this.snapFromThisObject != null && this.map.hoveredChild != this.snapFromThisObject && !(this.map.hoveredChild instanceof MapObject))
         {
-            SnapSpriteDialog snapSpriteDialog = new SnapSpriteDialog(editor.stage, map.skin, map, this.snapFromThisObject, (MapSprite) this.map.hoveredChild);
+            new SnapSpriteDialog(editor.stage, map.skin, map, this.snapFromThisObject, this.map.hoveredChild);
+            return true;
+        }
+        if(this.overrideLayer != null && !(this.map.hoveredChild instanceof MapObject))
+        {
+            if(this.map.hoveredChild != null && this.map.hoveredChild.layer == this.map.selectedLayer)
+                return true;
+            new LayerOverrideDialog(editor.stage, map.skin, map, this.overrideLayer, (MapSprite) this.map.hoveredChild);
             return true;
         }
 

@@ -20,7 +20,8 @@ public abstract class Layer<T extends LayerChild>
     public MoveBox moveBox;
     public LayerField layerField;
     public LayerTypes type;
-    public MapSprite overrideSprite; // If null, render layer in the order its in. If not, when pressing layer ^ override or something, set this to equal the top sprite of the sprite layer beneath this layer. This will always be drawn before that sprite. Keep going down to do it to even lower layers.
+    public MapSprite overrideSprite; // If null, render layer in the order its in. If not, this will always be drawn before that sprite.
+    public MapSprite overrideSpriteBack; // If null, render layer in the order its in. If not, this will always be drawn before that sprite if its above the horizon in perspective.
     public byte floor;
 
     public Array<PropertyField> properties;

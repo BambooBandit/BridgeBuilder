@@ -14,6 +14,7 @@ public class MapSpriteData extends LayerChildData
     public String sN; // Sheet name
     public float rot, scl, w, h;
     public int loi; // layer override index. The index of the layer that has been overridden to always draw behind this sprite. It is also counting from 1 rather than 0 for JSON purposes.
+    public int loiB; // back layer override index. ^
     public static int defaultColorValue = 1;
     public static int defaultScaleValue = 1;
     public boolean parent;
@@ -56,6 +57,10 @@ public class MapSpriteData extends LayerChildData
             this.loi = mapSprite.layer.map.layers.indexOf(mapSprite.layerOverride, true) + 1;
         else
             this.loi = 0;
+        if(mapSprite.layerOverrideBack != null)
+            this.loiB = mapSprite.layer.map.layers.indexOf(mapSprite.layerOverrideBack, true) + 1;
+        else
+            this.loiB = 0;
 
         this.x1 = mapSprite.x1Offset;
         this.y1 = mapSprite.y1Offset;

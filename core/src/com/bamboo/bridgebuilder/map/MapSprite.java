@@ -39,6 +39,8 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
 
     public int layerOverrideIndex; // Only used to keep the reloading simple. When the MapSprite is made, store the index of the override layer here and use it later to set the bottom variable once all layers are created. 0 means no override. Index starts at 1.
     public Layer layerOverride; // If this is not null, before drawing this sprite, draw that whole layer. Used to organize different layer heights
+    public int layerOverrideIndexBack;
+    public Layer layerOverrideBack;
 
     private float[] verts; // Used to pass to the sprite batch for skewable drawing
 
@@ -412,6 +414,8 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
 
         if(layerOverride != null && layerOverride.layerField.isSelected)
             colorFloatBits = Color.BLUE.toFloatBits();
+        else if(layerOverrideBack != null && layerOverrideBack.layerField.isSelected)
+            colorFloatBits = Color.RED.toFloatBits();
 
         float lowestY = getLowestY();
 

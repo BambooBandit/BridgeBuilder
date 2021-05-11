@@ -7,10 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.commands.MoveMapSpriteIndex;
-import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
-import com.bamboo.bridgebuilder.map.SpriteLayer;
 import com.bamboo.bridgebuilder.ui.GradientDialog;
 import com.bamboo.bridgebuilder.ui.MinMaxDialog;
 import com.bamboo.bridgebuilder.ui.SplatDialog;
@@ -55,9 +53,6 @@ public class ToolPane extends Group
     private TextButton bringTop;
     private TextButton bringBottom;
     private TextButton sort;
-    private TextButton layerDownOverride;
-    private TextButton layerUpOverride;
-    private TextButton layerOverrideReset;
 
     public GradientDialog gradientDialog;
     private TextButton gradientButton;
@@ -111,9 +106,6 @@ public class ToolPane extends Group
         this.bringTop = new TextButton("^^", skin);
         this.bringBottom = new TextButton("vv", skin);
         this.sort = new TextButton("sort", skin);
-        this.layerDownOverride = new TextButton("LOI v", skin);
-        this.layerUpOverride = new TextButton("LOI ^", skin);
-        this.layerOverrideReset= new TextButton("LOI Reset", skin);
 
         this.gradientDialog = new GradientDialog(editor.stage, skin);
         this.gradientButton = new TextButton("Gradient", skin);
@@ -161,9 +153,6 @@ public class ToolPane extends Group
         this.toolTable.add(this.bringTop);
         this.toolTable.add(this.bringBottom).padRight(5);
         this.toolTable.add(this.sort).padRight(5);
-        this.toolTable.add(this.layerDownOverride);
-        this.toolTable.add(this.layerUpOverride);
-        this.toolTable.add(this.layerOverrideReset).padRight(5);
         this.toolTable.add(this.gradientButton).padRight(5);
         this.toolTable.add(this.splatButton).padRight(5);
         this.toolTable.add(this.minMaxButton).padRight(5);
@@ -237,9 +226,6 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.bringTop).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringBottom).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.sort).size(toolHeight * 2.3f, toolHeight);
-        this.toolTable.getCell(this.layerDownOverride).size(toolHeight * 2.5f, toolHeight);
-        this.toolTable.getCell(this.layerUpOverride).size(toolHeight * 2.5f, toolHeight);
-        this.toolTable.getCell(this.layerOverrideReset).size(toolHeight * 2.5f, toolHeight);
         this.toolTable.getCell(this.gradientButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.splatButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.minMaxButton).size(toolHeight * 2.3f, toolHeight);
@@ -410,156 +396,156 @@ public class ToolPane extends Group
             }
         });
 
-        this.layerDownOverride.addListener(new ClickListener()
-        {
-            @Override
-            public void clicked(InputEvent event, float x, float y)
-            {
-                Map map = ((Map)editor.getScreen());
-                if(map == null || map.selectedLayer == null)
-                    return;
-                if(map.selectedLayer.overrideSprite == null)
-                {
-                    int layerIndex = map.layers.indexOf(map.selectedLayer, true);
-                    if(layerIndex == 0)
-                        return;
-                    for(int i = layerIndex - 1; i > 0; i--)
-                    {
-                        Layer layer = map.layers.get(i);
-                        if(layer instanceof SpriteLayer)
-                        {
-                            SpriteLayer spriteLayer = (SpriteLayer) layer;
-                            if(spriteLayer.children.size == 0)
-                                continue;
-                            MapSprite mapSprite = spriteLayer.children.peek();
-                            if(mapSprite.layerOverride != null)
-                                continue;
-                            map.selectedLayer.overrideSprite = mapSprite;
-                            mapSprite.layerOverride = map.selectedLayer;
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    int layerIndex = map.layers.indexOf(map.selectedLayer.overrideSprite.layer, true);
-                    int spriteIndex = map.selectedLayer.overrideSprite.layer.children.indexOf(map.selectedLayer.overrideSprite, true);
-                    spriteIndex --;
-                    MapSprite mapSprite;
-                    if(spriteIndex < 0)
-                    {
-                        while(layerIndex - 1 > 0)
-                        {
-                            layerIndex--;
-                            if(map.layers.get(layerIndex) instanceof SpriteLayer)
-                                break;
-                        }
-                        if(layerIndex < 0 || !(map.layers.get(layerIndex) instanceof SpriteLayer))
-                            return;
-                        int i = ((SpriteLayer) map.layers.get(layerIndex)).children.size - 1;
-                        while(i >= 0)
-                        {
-                            mapSprite = (MapSprite) map.layers.get(layerIndex).children.get(i);
-                            if(mapSprite.layerOverride != null)
-                                i --;
-                            else
-                                break;
-                        }
-                        spriteIndex = i;
-                    }
-                    if(spriteIndex < 0)
-                        return;
-                    mapSprite = (MapSprite) map.layers.get(layerIndex).children.get(spriteIndex);
-                    map.selectedLayer.overrideSprite.layerOverride = null;
-                    map.selectedLayer.overrideSprite = mapSprite;
-                    map.selectedLayer.overrideSprite.layerOverride = map.selectedLayer;
-                }
-            }
-        });
-
-        this.layerUpOverride.addListener(new ClickListener()
-        {
-            @Override
-            public void clicked(InputEvent event, float x, float y)
-            {
-                Map map = ((Map)editor.getScreen());
-                if(map == null || map.selectedLayer == null)
-                    return;
-                if(map.selectedLayer.overrideSprite == null)
-                {
-                    int layerIndex = map.layers.indexOf(map.selectedLayer, true);
-                    if(layerIndex == map.layers.size - 1)
-                        return;
-                    for(int i = layerIndex + 1; i < map.layers.size; i++)
-                    {
-                        Layer layer = map.layers.get(i);
-                        if(layer instanceof SpriteLayer)
-                        {
-                            SpriteLayer spriteLayer = (SpriteLayer) layer;
-                            if(spriteLayer.children.size == 0)
-                                continue;
-                            MapSprite mapSprite = spriteLayer.children.peek();
-                            if(mapSprite.layerOverride != null)
-                                continue;
-                            map.selectedLayer.overrideSprite = mapSprite;
-                            mapSprite.layerOverride = map.selectedLayer;
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    int layerIndex = map.layers.indexOf(map.selectedLayer.overrideSprite.layer, true);
-                    int spriteIndex = map.selectedLayer.overrideSprite.layer.children.indexOf(map.selectedLayer.overrideSprite, true);
-                    spriteIndex ++;
-                    MapSprite mapSprite;
-                    if(spriteIndex >= map.selectedLayer.overrideSprite.layer.children.size)
-                    {
-                        while(layerIndex + 1 < map.layers.size - 1)
-                        {
-                            layerIndex++;
-                            if(map.layers.get(layerIndex) instanceof SpriteLayer)
-                                break;
-                        }
-                        if(layerIndex >= map.layers.size || !(map.layers.get(layerIndex) instanceof SpriteLayer))
-                            return;
-                        int i = 0;
-                        while(i < map.layers.get(layerIndex).children.size)
-                        {
-                            mapSprite = (MapSprite) map.layers.get(layerIndex).children.get(i);
-                            if(mapSprite.layerOverride != null)
-                                i ++;
-                            else
-                                break;
-                        }
-                        spriteIndex = i;
-                    }
-
-                    if(spriteIndex >= map.layers.get(layerIndex).children.size)
-                        return;
-
-                    mapSprite = (MapSprite) map.layers.get(layerIndex).children.get(spriteIndex);
-                    map.selectedLayer.overrideSprite.layerOverride = null;
-                    map.selectedLayer.overrideSprite = mapSprite;
-                    map.selectedLayer.overrideSprite.layerOverride = map.selectedLayer;
-                }
-            }
-        });
-        this.layerOverrideReset.addListener(new ClickListener()
-        {
-            @Override
-            public void clicked(InputEvent event, float x, float y)
-            {
-                Map map = ((Map)editor.getScreen());
-                if(map == null || map.selectedLayer == null)
-                    return;
-                if(map.selectedLayer.overrideSprite != null)
-                {
-                    map.selectedLayer.overrideSprite.layerOverride = null;
-                    map.selectedLayer.overrideSprite = null;
-                }
-            }
-        });
+//        this.layerDownOverride.addListener(new ClickListener()
+//        {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y)
+//            {
+//                Map map = ((Map)editor.getScreen());
+//                if(map == null || map.selectedLayer == null)
+//                    return;
+//                if(map.selectedLayer.overrideSprite == null)
+//                {
+//                    int layerIndex = map.layers.indexOf(map.selectedLayer, true);
+//                    if(layerIndex == 0)
+//                        return;
+//                    for(int i = layerIndex - 1; i > 0; i--)
+//                    {
+//                        Layer layer = map.layers.get(i);
+//                        if(layer instanceof SpriteLayer)
+//                        {
+//                            SpriteLayer spriteLayer = (SpriteLayer) layer;
+//                            if(spriteLayer.children.size == 0)
+//                                continue;
+//                            MapSprite mapSprite = spriteLayer.children.peek();
+//                            if(mapSprite.layerOverride != null)
+//                                continue;
+//                            map.selectedLayer.overrideSprite = mapSprite;
+//                            mapSprite.layerOverride = map.selectedLayer;
+//                            return;
+//                        }
+//                    }
+//                }
+//                else
+//                {
+//                    int layerIndex = map.layers.indexOf(map.selectedLayer.overrideSprite.layer, true);
+//                    int spriteIndex = map.selectedLayer.overrideSprite.layer.children.indexOf(map.selectedLayer.overrideSprite, true);
+//                    spriteIndex --;
+//                    MapSprite mapSprite;
+//                    if(spriteIndex < 0)
+//                    {
+//                        while(layerIndex - 1 > 0)
+//                        {
+//                            layerIndex--;
+//                            if(map.layers.get(layerIndex) instanceof SpriteLayer)
+//                                break;
+//                        }
+//                        if(layerIndex < 0 || !(map.layers.get(layerIndex) instanceof SpriteLayer))
+//                            return;
+//                        int i = ((SpriteLayer) map.layers.get(layerIndex)).children.size - 1;
+//                        while(i >= 0)
+//                        {
+//                            mapSprite = (MapSprite) map.layers.get(layerIndex).children.get(i);
+//                            if(mapSprite.layerOverride != null)
+//                                i --;
+//                            else
+//                                break;
+//                        }
+//                        spriteIndex = i;
+//                    }
+//                    if(spriteIndex < 0)
+//                        return;
+//                    mapSprite = (MapSprite) map.layers.get(layerIndex).children.get(spriteIndex);
+//                    map.selectedLayer.overrideSprite.layerOverride = null;
+//                    map.selectedLayer.overrideSprite = mapSprite;
+//                    map.selectedLayer.overrideSprite.layerOverride = map.selectedLayer;
+//                }
+//            }
+//        });
+//
+//        this.layerUpOverride.addListener(new ClickListener()
+//        {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y)
+//            {
+//                Map map = ((Map)editor.getScreen());
+//                if(map == null || map.selectedLayer == null)
+//                    return;
+//                if(map.selectedLayer.overrideSprite == null)
+//                {
+//                    int layerIndex = map.layers.indexOf(map.selectedLayer, true);
+//                    if(layerIndex == map.layers.size - 1)
+//                        return;
+//                    for(int i = layerIndex + 1; i < map.layers.size; i++)
+//                    {
+//                        Layer layer = map.layers.get(i);
+//                        if(layer instanceof SpriteLayer)
+//                        {
+//                            SpriteLayer spriteLayer = (SpriteLayer) layer;
+//                            if(spriteLayer.children.size == 0)
+//                                continue;
+//                            MapSprite mapSprite = spriteLayer.children.peek();
+//                            if(mapSprite.layerOverride != null)
+//                                continue;
+//                            map.selectedLayer.overrideSprite = mapSprite;
+//                            mapSprite.layerOverride = map.selectedLayer;
+//                            return;
+//                        }
+//                    }
+//                }
+//                else
+//                {
+//                    int layerIndex = map.layers.indexOf(map.selectedLayer.overrideSprite.layer, true);
+//                    int spriteIndex = map.selectedLayer.overrideSprite.layer.children.indexOf(map.selectedLayer.overrideSprite, true);
+//                    spriteIndex ++;
+//                    MapSprite mapSprite;
+//                    if(spriteIndex >= map.selectedLayer.overrideSprite.layer.children.size)
+//                    {
+//                        while(layerIndex + 1 < map.layers.size - 1)
+//                        {
+//                            layerIndex++;
+//                            if(map.layers.get(layerIndex) instanceof SpriteLayer)
+//                                break;
+//                        }
+//                        if(layerIndex >= map.layers.size || !(map.layers.get(layerIndex) instanceof SpriteLayer))
+//                            return;
+//                        int i = 0;
+//                        while(i < map.layers.get(layerIndex).children.size)
+//                        {
+//                            mapSprite = (MapSprite) map.layers.get(layerIndex).children.get(i);
+//                            if(mapSprite.layerOverride != null)
+//                                i ++;
+//                            else
+//                                break;
+//                        }
+//                        spriteIndex = i;
+//                    }
+//
+//                    if(spriteIndex >= map.layers.get(layerIndex).children.size)
+//                        return;
+//
+//                    mapSprite = (MapSprite) map.layers.get(layerIndex).children.get(spriteIndex);
+//                    map.selectedLayer.overrideSprite.layerOverride = null;
+//                    map.selectedLayer.overrideSprite = mapSprite;
+//                    map.selectedLayer.overrideSprite.layerOverride = map.selectedLayer;
+//                }
+//            }
+//        });
+//        this.layerOverrideReset.addListener(new ClickListener()
+//        {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y)
+//            {
+//                Map map = ((Map)editor.getScreen());
+//                if(map == null || map.selectedLayer == null)
+//                    return;
+//                if(map.selectedLayer.overrideSprite != null)
+//                {
+//                    map.selectedLayer.overrideSprite.layerOverride = null;
+//                    map.selectedLayer.overrideSprite = null;
+//                }
+//            }
+//        });
 
         this.minMaxButton.addListener(new ClickListener()
         {

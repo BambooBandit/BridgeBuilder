@@ -228,6 +228,7 @@ public class Map implements Screen
         drawAttachedObjects();
         drawObjectLayers();
         drawSnapPreview();
+        drawLayerOverridePreview();
         drawSnap();
         drawC();
         if(this.editor.fileMenu.toolPane.b2drender.selected)
@@ -328,6 +329,15 @@ public class Map implements Screen
             toY = input.currentPos.y;
         }
         editor.shapeRenderer.line(fromX - cameraX, fromY - cameraY, toX - cameraX, toY - cameraY);
+    }
+
+    private void drawLayerOverridePreview()
+    {
+        if(input.overrideLayer == null)
+            return;
+
+        editor.shapeRenderer.setColor(Color.GOLD);
+        editor.shapeRenderer.circle(input.currentPos.x - cameraX, input.currentPos.y - cameraY, 2);
     }
 
     private void drawSnap()
@@ -1566,6 +1576,11 @@ public class Map implements Screen
                         mapSprite.layerOverride = layers.get(mapSprite.layerOverrideIndex - 1);
                         mapSprite.layerOverride.overrideSprite = mapSprite;
                     }
+                    if(mapSprite.layerOverrideIndexBack > 0)
+                    {
+                        mapSprite.layerOverrideBack = layers.get(mapSprite.layerOverrideIndexBack - 1);
+                        mapSprite.layerOverrideBack.overrideSpriteBack = mapSprite;
+                    }
                 }
             }
 
@@ -1823,6 +1838,7 @@ public class Map implements Screen
 
         mapSprite.setRotation(mapSpriteData.rot);
         mapSprite.layerOverrideIndex = mapSpriteData.loi;
+        mapSprite.layerOverrideIndexBack = mapSpriteData.loiB;
         mapSprite.x1Offset = mapSpriteData.x1;
         mapSprite.y1Offset = mapSpriteData.y1;
         mapSprite.x2Offset = mapSpriteData.x2;
