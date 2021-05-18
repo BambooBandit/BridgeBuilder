@@ -15,17 +15,38 @@ public class DeleteSelectedMapSprites implements Command
     private IntMap<MapSprite> deletedSprites;
     private SpriteLayer selectedLayer;
 
+    private Array<LayerOverride> chainedCommands; // Used for keeping track of layer overrides
+
     public DeleteSelectedMapSprites(Array<MapSprite> selectedMapSprites, SpriteLayer selectedLayer)
     {
         if(selectedMapSprites.size > 0)
             this.selectedSprites = new Array<>(selectedMapSprites);
         this.selectedLayer = selectedLayer;
         this.deletedSprites = new IntMap();
+
+        for(int i = 0; i < selectedMapSprites.size; i ++)
+        {
+            MapSprite selectedMapSprite = selectedMapSprites.get(i);
+            if (selectedMapSprite.layerOverride != null)
+            {
+                LayerOverride layerOverride = new LayerOverride((SpriteLayer) selectedMapSprite.layerOverride, null, true);
+                addCommandToChain(layerOverride);
+            }
+            if (selectedMapSprite.layerOverrideBack != null)
+            {
+                LayerOverride layerOverride = new LayerOverride((SpriteLayer) selectedMapSprite.layerOverrideBack, null, false);
+                addCommandToChain(layerOverride);
+            }
+        }
     }
 
     @Override
     public void execute()
     {
+        if (this.chainedCommands != null)
+            for (int i = 0; i < this.chainedCommands.size; i++)
+                this.chainedCommands.get(i).execute();
+
         if(this.selectedLayer != null)
         {
             this.deletedSprites.clear();
@@ -100,5 +121,16 @@ public class DeleteSelectedMapSprites implements Command
 
         if(this.selectedLayer.map.editor.fileMenu.toolPane.spriteGridColors.selected)
             this.selectedLayer.map.updateLayerSpriteGrids();
+
+        if (this.chainedCommands != null)
+            for (int i = 0; i < this.chainedCommands.size; i++)
+                this.chainedCommands.get(i).undo();
+    }
+
+    public void addCommandToChain(LayerOverride command)
+    {
+        if (this.chainedCommands == null)
+            this.chainedCommands = new Array<>();
+        this.chainedCommands.add(command);
     }
 }

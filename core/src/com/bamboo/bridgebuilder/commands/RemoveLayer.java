@@ -1,7 +1,9 @@
 package com.bamboo.bridgebuilder.commands;
 
+import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
+import com.bamboo.bridgebuilder.map.SpriteLayer;
 
 public class RemoveLayer implements Command
 {
@@ -10,6 +12,8 @@ public class RemoveLayer implements Command
     private int layerIndex;
     private boolean selected;
     private boolean secondarySelected;
+
+    private Array<LayerOverride> chainedCommands; // Used for keeping track of layer overrides
 
     public RemoveLayer(Map map, Layer layer)
     {
@@ -23,7 +27,21 @@ public class RemoveLayer implements Command
             if(this.map.layerMenu.layers.get(i) == layer.layerField)
             {
                 this.layerIndex = i;
-                return;
+                break;
+            }
+        }
+
+        if(layer instanceof SpriteLayer)
+        {
+            if (layer.overrideSprite != null)
+            {
+                LayerOverride layerOverride = new LayerOverride((SpriteLayer) layer, null, true);
+                addCommandToChain(layerOverride);
+            }
+            if (layer.overrideSpriteBack != null)
+            {
+                LayerOverride layerOverride = new LayerOverride((SpriteLayer) layer, null, false);
+                addCommandToChain(layerOverride);
             }
         }
     }
@@ -31,6 +49,10 @@ public class RemoveLayer implements Command
     @Override
     public void execute()
     {
+        if (this.chainedCommands != null)
+            for (int i = 0; i < this.chainedCommands.size; i++)
+                this.chainedCommands.get(i).execute();
+
         if(this.selected)
         {
             this.layer.layerField.unselect();
@@ -60,5 +82,16 @@ public class RemoveLayer implements Command
             this.map.secondarySelectedLayer = this.layer;
         }
         this.map.propertyMenu.rebuild();
+
+        if (this.chainedCommands != null)
+            for (int i = 0; i < this.chainedCommands.size; i++)
+                this.chainedCommands.get(i).undo();
+    }
+
+    public void addCommandToChain(LayerOverride command)
+    {
+        if (this.chainedCommands == null)
+            this.chainedCommands = new Array<>();
+        this.chainedCommands.add(command);
     }
 }
