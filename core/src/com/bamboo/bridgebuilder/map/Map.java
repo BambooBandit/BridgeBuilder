@@ -473,6 +473,18 @@ public class Map implements Screen
                         for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
                             mapSprite.attachedMapObjects.get(s).draw();
                     }
+                    if(mapSprite.attachedSprites != null)
+                    {
+                        for(int s = 0; s < mapSprite.attachedSprites.children.size; s ++)
+                        {
+                            MapSprite attachedMapSprite = mapSprite.attachedSprites.children.get(s);
+                            if(attachedMapSprite.attachedMapObjects != null)
+                            {
+                                for(int m = 0; m < attachedMapSprite.attachedMapObjects.size; m ++)
+                                    attachedMapSprite.attachedMapObjects.get(m).draw();
+                            }
+                        }
+                    }
                 }
             }
         }
