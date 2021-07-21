@@ -22,7 +22,8 @@ public abstract class LayerData
         this.y = layer.y;
         this.z = layer.z;
 
-        this.props = new ArrayList<>();
+        if(layer.properties.size > 0)
+            this.props = new ArrayList<>();
         for(int i = 0; i < layer.properties.size; i ++)
         {
             PropertyField property = (PropertyField) layer.properties.get(i);

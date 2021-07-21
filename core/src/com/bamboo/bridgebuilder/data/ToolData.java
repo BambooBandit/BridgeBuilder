@@ -12,46 +12,48 @@ import java.util.ArrayList;
 public class ToolData
 {
     public String n; // sprite name
-    public ArrayList<PropertyData> props; // properties
-    public ArrayList<PropertyData> lProps; // locked properties
-    public ArrayList<MapObjectData> objs; // attached objects
+    public ArrayList<PropertyData> p; // properties
+    public ArrayList<PropertyData> lP; // locked properties
+    public ArrayList<MapObjectData> o; // attached objects
     public ToolData(){}
     public ToolData(SpriteTool spriteTool)
     {
         this.n = spriteTool.name;
 
-        this.props = new ArrayList<>();
+        if(spriteTool.properties.size > 0)
+            this.p = new ArrayList<>();
         for(int i = 0; i < spriteTool.properties.size; i ++)
         {
             PropertyField property = spriteTool.properties.get(i);
             if(property instanceof ColorPropertyField)
-                this.props.add(new ColorPropertyFieldData((ColorPropertyField) property));
+                this.p.add(new ColorPropertyFieldData((ColorPropertyField) property));
             else if(property instanceof LightPropertyField)
-                this.props.add(new LightPropertyFieldData((LightPropertyField) property));
+                this.p.add(new LightPropertyFieldData((LightPropertyField) property));
             else if(property instanceof FieldFieldPropertyValuePropertyField)
-                this.props.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
+                this.p.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
             else if(property instanceof LabelFieldPropertyValuePropertyField)
-                this.props.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
+                this.p.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
         }
 
-        this.lProps = new ArrayList<>();
+        if(spriteTool.lockedProperties.size > 0)
+            this.lP = new ArrayList<>();
         for(int i = 0; i < spriteTool.lockedProperties.size; i ++)
         {
             PropertyField property = spriteTool.lockedProperties.get(i);
             if(property instanceof ColorPropertyField)
-                this.lProps.add(new ColorPropertyFieldData((ColorPropertyField) property));
+                this.lP.add(new ColorPropertyFieldData((ColorPropertyField) property));
             else if(property instanceof LightPropertyField)
-                this.lProps.add(new LightPropertyFieldData((LightPropertyField) property));
+                this.lP.add(new LightPropertyFieldData((LightPropertyField) property));
             else if(property instanceof FieldFieldPropertyValuePropertyField)
-                this.lProps.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
+                this.lP.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
             else if(property instanceof LabelFieldPropertyValuePropertyField)
-                this.lProps.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
+                this.lP.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
         }
 
         if(spriteTool.attachedMapObjectManagers != null)
         {
             if(spriteTool.attachedMapObjectManagers.size > 0)
-                this.objs = new ArrayList<>();
+                this.o = new ArrayList<>();
             spriteTool.attachedMapObjectManagers.sort();
             for (int i = 0; i < spriteTool.attachedMapObjectManagers.size; i++)
             {
@@ -64,7 +66,7 @@ public class ToolData
                     mapObjectData = new MapPointData((MapPoint) mapObject, attachedMapObjectManager.offsetX, attachedMapObjectManager.offsetY);
                 else
                     mapObjectData = new MapPolygonData((MapPolygon) mapObject, attachedMapObjectManager.offsetX, attachedMapObjectManager.offsetY);
-                this.objs.add(mapObjectData);
+                this.o.add(mapObjectData);
             }
         }
     }

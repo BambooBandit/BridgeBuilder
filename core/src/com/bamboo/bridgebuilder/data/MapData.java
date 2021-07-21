@@ -30,8 +30,10 @@ public class MapData
         map.perspectiveZoom = oldPerspective;
 
         this.name = map.name;
-        this.lProps = new ArrayList<>();
-        this.props = new ArrayList<>();
+        if(map.propertyMenu.mapPropertyPanel.lockedProperties.size > 0)
+            this.lProps = new ArrayList<>();
+        if(map.propertyMenu.mapPropertyPanel.properties.size > 0)
+            this.props = new ArrayList<>();
         for(int i = 0; i < map.propertyMenu.mapPropertyPanel.lockedProperties.size; i ++)
         {
             PropertyField property = map.propertyMenu.mapPropertyPanel.lockedProperties.get(i);

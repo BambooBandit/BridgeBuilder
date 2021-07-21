@@ -1,20 +1,16 @@
 package com.bamboo.bridgebuilder.data;
 
+import com.badlogic.gdx.graphics.Color;
 import com.bamboo.bridgebuilder.map.SpriteGrid;
 
 public class CellData
 {
     public String t; // dust type
-    public float r, g, b, a;
-    public boolean bl; // blocked
+    public int c; // color, rgb
     public CellData(){}
     public CellData(SpriteGrid.SpriteCell spriteCell)
     {
         this.t = spriteCell.dustType;
-        this.r = spriteCell.r;
-        this.g = spriteCell.g;
-        this.b = spriteCell.b;
-        this.a = spriteCell.a;
-        this.bl = spriteCell.blocked;
+        this.c = Color.rgb888(spriteCell.r, spriteCell.g, spriteCell.b);
     }
 }

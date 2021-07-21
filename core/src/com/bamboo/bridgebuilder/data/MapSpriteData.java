@@ -12,19 +12,19 @@ public class MapSpriteData extends LayerChildData
     public float r, g, b, a;
     public String n; // Sprite name
     public String sN; // Sheet name
-    public float rot, scl, w, h;
+    public float ro, s, w, h; // rotation, scale, width, height
     public int loi; // layer override index. The index of the layer that has been overridden to always draw behind this sprite. It is also counting from 1 rather than 0 for JSON purposes.
     public int loiB; // back layer override index. ^
     public static int defaultColorValue = 1;
     public static int defaultScaleValue = 1;
-    public boolean parent;
+    public boolean pa; // parent
     public float x1, y1, x2, y2, x3, y3, x4, y4;
-    public long eId; // to edge mapSprite id
-    public boolean fence; // Used to tell which parts of the attached sprites are fences
-    public boolean ignoreProps; // Used to tell whether or not to ignore properties for this sprite
-    public ArrayList<PropertyData> props; // instance specific properties
-    public ArrayList<MapObjectData> objs; // this map sprite instance attached objects
-    public ArrayList<Long> toIDs; // attached tool map object ID's
+    public long e; // eId - to edge mapSprite id
+    public boolean f; // fence - Used to tell which parts of the attached sprites are fences
+    public boolean iP; // ignore props - Used to tell whether or not to ignore properties for this sprite
+    public ArrayList<PropertyData> p; // properties - instance specific properties
+    public ArrayList<MapObjectData> o; // objects - this map sprite instance attached objects
+    public ArrayList<Long> to; // toIDs - attached tool map object ID's
 
     public MapSpriteData() {}
     public MapSpriteData(MapSprite mapSprite)
@@ -34,7 +34,8 @@ public class MapSpriteData extends LayerChildData
         this.n = mapSprite.tool.name;
 
         if(mapSprite.attachedSprites != null && mapSprite.attachedSprites.children.size > 0)
-            parent = true;
+            pa = true;
+
 
         if(mapSprite.tool.sheet.name.startsWith("editor"))
         {
@@ -44,8 +45,8 @@ public class MapSpriteData extends LayerChildData
         else
             this.sN = mapSprite.tool.sheet.name;
 
-        this.rot = mapSprite.sprite.getRotation();
-        this.scl = mapSprite.sprite.getScaleX() - defaultScaleValue;
+        this.ro = mapSprite.sprite.getRotation();
+        this.s = mapSprite.sprite.getScaleX() - defaultScaleValue;
         this.w = mapSprite.sprite.getWidth();
         this.h = mapSprite.sprite.getHeight();
         ColorPropertyField colorProperty = Utils.getLockedColorField("Tint", mapSprite.lockedProperties);
@@ -72,45 +73,47 @@ public class MapSpriteData extends LayerChildData
         this.y4 = mapSprite.y4Offset;
 
         if(mapSprite.toEdgeSprite != null)
-            this.eId = mapSprite.toEdgeSprite.id;
+            this.e = mapSprite.toEdgeSprite.id;
 
         LabelFieldPropertyValuePropertyField fenceProperty = (LabelFieldPropertyValuePropertyField) Utils.getPropertyField(mapSprite.lockedProperties, "Fence");
-        this.fence = fenceProperty.value.getText().equals("true");
+        this.f = fenceProperty.value.getText().equals("true");
 
         LabelFieldPropertyValuePropertyField ignoreProperty = (LabelFieldPropertyValuePropertyField) Utils.getPropertyField(mapSprite.lockedProperties, "IgnoreProps");
-        this.ignoreProps = ignoreProperty.value.getText().equals("true");
+        this.iP = ignoreProperty.value.getText().equals("true");
 
         if(mapSprite.instanceSpecificProperties.size > 0)
-            this.props = new ArrayList<>();
+            this.p = new ArrayList<>();
         for(int i = 0; i < mapSprite.instanceSpecificProperties.size; i ++)
         {
             PropertyField property = mapSprite.instanceSpecificProperties.get(i);
             if(property instanceof ColorPropertyField)
-                this.props.add(new ColorPropertyFieldData((ColorPropertyField) property));
+                this.p.add(new ColorPropertyFieldData((ColorPropertyField) property));
             else if(property instanceof LightPropertyField)
-                this.props.add(new LightPropertyFieldData((LightPropertyField) property));
+                this.p.add(new LightPropertyFieldData((LightPropertyField) property));
             else if(property instanceof FieldFieldPropertyValuePropertyField)
-                this.props.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
+                this.p.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
             else if(property instanceof LabelFieldPropertyValuePropertyField)
-                this.props.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
+                this.p.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
         }
 
         // tool object id's
         if(mapSprite.tool.attachedMapObjectManagers != null)
         {
-            this.toIDs = new ArrayList<>();
+            if(mapSprite.tool.attachedMapObjectManagers.size > 0)
+                this.to = new ArrayList<>();
             for(int i = 0; i < mapSprite.tool.attachedMapObjectManagers.size; i ++)
             {
                 AttachedMapObjectManager attachedMapObjectManager = mapSprite.tool.attachedMapObjectManagers.get(i);
                 MapObject mapObject = attachedMapObjectManager.getMapObjectByParent(mapSprite);
-                this.toIDs.add(mapObject.id);
+
+                this.to.add(mapObject.id);
             }
         }
 
         if(mapSprite.attachedMapObjectManagers != null)
         {
             if(mapSprite.attachedMapObjectManagers.size > 0)
-                this.objs = new ArrayList<>();
+                this.o = new ArrayList<>();
             for (int i = 0; i < mapSprite.attachedMapObjectManagers.size; i++)
             {
                 AttachedMapObjectManager attachedMapObjectManager = mapSprite.attachedMapObjectManagers.get(i);
@@ -122,7 +125,7 @@ public class MapSpriteData extends LayerChildData
                     mapObjectData = new MapPointData((MapPoint) mapObject, attachedMapObjectManager.offsetX, attachedMapObjectManager.offsetY);
                 else
                     mapObjectData = new MapPolygonData((MapPolygon) mapObject, attachedMapObjectManager.offsetX, attachedMapObjectManager.offsetY);
-                this.objs.add(mapObjectData);
+                this.o.add(mapObjectData);
             }
         }
     }

@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
@@ -109,6 +110,10 @@ public class Map implements Screen
 
     public long idCounter = 1;
 
+    public PolygonMerger polygonMerger;
+
+    private Array<FloatArray> mergedPolygons;
+
     public Map(BridgeBuilder editor, String name)
     {
         this.editor = editor;
@@ -195,6 +200,11 @@ public class Map implements Screen
         Gdx.gl.glClearColor(this.r, this.g, this.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.Q))
+//        {
+//            mergedPolygons = mergePolygons();
+//        }
+
         this.world.step(delta, 1, 1);
 
         this.camera.zoom = this.zoom;
@@ -222,7 +232,6 @@ public class Map implements Screen
         this.editor.shapeRenderer.begin();
         //shaperenderer begin
         drawSpriteGrid();
-        drawBlocked();
         drawLayerOutline();
         drawGrid();
         drawAttachedObjects();
@@ -231,6 +240,18 @@ public class Map implements Screen
         drawLayerOverridePreview();
         drawSnap();
         drawC();
+        if(mergedPolygons != null)
+        {
+            for (int i = 0; i < mergedPolygons.size; i++)
+            {
+                editor.shapeRenderer.setColor(Color.RED);
+                FloatArray polygon = mergedPolygons.get(i);
+                if(polygon.size == 0)
+                    continue;
+                editor.shapeRenderer.polygon(polygon.toArray());
+            }
+        }
+
         if(this.editor.fileMenu.toolPane.b2drender.selected)
         {
             this.editor.shapeRenderer.end();
@@ -864,19 +885,6 @@ public class Map implements Screen
         }
     }
 
-    private void drawBlocked()
-    {
-        for(int i = 0; i < this.layers.size; i ++)
-        {
-            if(this.layers.get(i) instanceof ObjectLayer)
-            {
-                ObjectLayer objectLayer = (ObjectLayer) this.layers.get(i);
-                if (objectLayer.layerField.visibleImg.isVisible() && objectLayer.overrideSprite == null && this.editor.fileMenu.toolPane.blocked.selected && objectLayer.spriteGrid != null)
-                    objectLayer.spriteGrid.drawBlocked();
-            }
-        }
-    }
-
     private void drawSpriteGrid()
     {
         for(int i = 0; i < this.layers.size; i ++)
@@ -1315,32 +1323,36 @@ public class Map implements Screen
                     spriteTool.properties.clear();
 
                     // properties
-                    int propSize = toolData.props.size();
+                    int propSize = 0;
+                    if(toolData.p != null)
+                        propSize = toolData.p.size();
                     for (int s = 0; s < propSize; s++)
                     {
-                        PropertyData propertyData = toolData.props.get(s);
+                        PropertyData propertyData = toolData.p.get(s);
                         propertyMenu.newProperty(propertyData, spriteTool.properties);
                     }
                     // locked properties
-                    propSize = toolData.lProps.size();
+                    propSize = 0;
+                    if(toolData.lP != null)
+                        propSize = toolData.lP.size();
                     for (int s = 0; s < propSize; s++)
                     {
-                        PropertyData propertyData = toolData.lProps.get(s);
+                        PropertyData propertyData = toolData.lP.get(s);
                         propertyMenu.changeLockedPropertyValue(propertyData, spriteTool.lockedProperties);
                     }
 
                     // attached map objects
-                    if (toolData.objs != null)
+                    if (toolData.o != null)
                     {
-                        int objSize = toolData.objs.size();
+                        int objSize = toolData.o.size();
                         for (int s = 0; s < objSize; s++)
                         {
-                            MapObjectData mapObjectData = toolData.objs.get(s);
+                            MapObjectData mapObjectData = toolData.o.get(s);
                             MapObject mapObject;
                             if (mapObjectData instanceof MapPolygonData)
                             {
                                 MapPolygonData mapPolygonData = (MapPolygonData) mapObjectData;
-                                MapPolygon mapPolygon = new MapPolygon(this, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
+                                MapPolygon mapPolygon = new MapPolygon(this, mapPolygonData.v, mapPolygonData.x, mapPolygonData.y);
                                 mapObject = mapPolygon;
                             } else
                             {
@@ -1351,15 +1363,17 @@ public class Map implements Screen
                             mapObject.flickerId = mapObjectData.fId;
                             mapObject.setID(mapObject.id);
                             // attached manager
-                            spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.offsetX, mapObjectData.offsetY);
+                            spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.oX, mapObjectData.oY);
                             if (setDefaultsOnly)
                                 mapObject.attachedMapObjectManager.addCopyOfMapObjectToAllMapSpritesOfThisSpriteTool(mapObject);
                             // object properties
-                            propSize = mapObjectData.props.size();
+                            propSize = 0;
+                            if(mapObjectData.p != null)
+                                propSize = mapObjectData.p.size();
                             mapObject.properties.clear();
                             for (int p = 0; p < propSize; p++)
                             {
-                                PropertyData propertyData = mapObjectData.props.get(p);
+                                PropertyData propertyData = mapObjectData.p.get(p);
                                 propertyMenu.newProperty(propertyData, mapObject.properties);
                             }
                         }
@@ -1386,7 +1400,9 @@ public class Map implements Screen
                 LayerField.createOrRemoveGrid(layer, layer.layerField.layerName);
 
                 // layer properties
-                int propSize = layerData.props.size();
+                int propSize = 0;
+                if(layerData.props != null)
+                    propSize = layerData.props.size();
                 for (int p = 0; p < propSize; p++)
                 {
                     PropertyData propertyData = layerData.props.get(p);
@@ -1397,7 +1413,9 @@ public class Map implements Screen
                 if (layerData instanceof SpriteLayerData)
                 {
                     SpriteLayerData spriteLayerData = (SpriteLayerData) layerData;
-                    int childSize = spriteLayerData.children.size();
+                    int childSize = 0;
+                    if(spriteLayerData.children != null)
+                        childSize = spriteLayerData.children.size();
                     parent:
                     for (int k = 0; k < childSize; k++)
                     {
@@ -1406,10 +1424,10 @@ public class Map implements Screen
                         {
                             AttachedMapSpriteData attachedMapSpriteData = (AttachedMapSpriteData) mapSpriteData;
                             MapSprite parentMapSprite = null;
-                            for(int s = 0; s < attachedMapSpriteData.sprites.size(); s++)
+                            for(int s = 0; s < attachedMapSpriteData.s.size(); s++)
                             {
-                                MapSpriteData attachedData = attachedMapSpriteData.sprites.get(s);
-                                if(attachedData.parent)
+                                MapSpriteData attachedData = attachedMapSpriteData.s.get(s);
+                                if(attachedData.pa)
                                 {
                                     parentMapSprite = loadMapSpriteData(attachedData, layer);
                                     if(parentMapSprite == null)
@@ -1421,10 +1439,10 @@ public class Map implements Screen
                             parentMapSprite.attachedSprites = new SpriteLayer(editor, this, null);
                             parentMapSprite.attachedSprites.perspective = ((SpriteLayer)parentMapSprite.layer).perspective;
                             child:
-                            for(int s = 0; s < attachedMapSpriteData.sprites.size(); s++)
+                            for(int s = 0; s < attachedMapSpriteData.s.size(); s++)
                             {
-                                MapSpriteData attachedData = attachedMapSpriteData.sprites.get(s);
-                                if (attachedData.parent)
+                                MapSpriteData attachedData = attachedMapSpriteData.s.get(s);
+                                if (attachedData.pa)
                                 {
                                     parentMapSprite.attachedSprites.addMapSprite(parentMapSprite, -1);
                                     continue;
@@ -1446,7 +1464,9 @@ public class Map implements Screen
                 } else if (layerData instanceof ObjectLayerData)
                 {
                     ObjectLayerData objectLayerData = (ObjectLayerData) layerData;
-                    int childSize = objectLayerData.children.size();
+                    int childSize = 0;
+                    if(objectLayerData.children != null)
+                        childSize = objectLayerData.children.size();
                     for (int k = 0; k < childSize; k++)
                     {
                         MapObjectData mapObjectData = objectLayerData.children.get(k);
@@ -1454,7 +1474,7 @@ public class Map implements Screen
                         if (mapObjectData instanceof MapPolygonData)
                         {
                             MapPolygonData mapPolygonData = (MapPolygonData) mapObjectData;
-                            MapPolygon mapPolygon = new MapPolygon(this, layer, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
+                            MapPolygon mapPolygon = new MapPolygon(this, layer, mapPolygonData.v, mapPolygonData.x, mapPolygonData.y);
                             mapObject = mapPolygon;
                             ((ObjectLayer) layer).addMapObject(mapPolygon);
                         } else
@@ -1465,12 +1485,14 @@ public class Map implements Screen
                             ((ObjectLayer) layer).addMapObject(mapPoint);
                         }
                         mapObject.flickerId = mapObjectData.fId;
-                        mapObject.setID(mapObjectData.id);
+                        mapObject.setID(mapObjectData.i);
                         // object properties
-                        propSize = mapObjectData.props.size();
+                        propSize = 0;
+                        if(mapObjectData.p != null)
+                            propSize = mapObjectData.p.size();
                         for (int s = 0; s < propSize; s++)
                         {
-                            PropertyData propertyData = mapObjectData.props.get(s);
+                            PropertyData propertyData = mapObjectData.p.get(s);
                             propertyMenu.newProperty(propertyData, mapObject.properties);
                         }
                     }
@@ -1605,14 +1627,14 @@ public class Map implements Screen
                 for (int i = 0; i < mapData.groups.size(); i++)
                 {
                     GroupMapPolygonData mapPolygonData = mapData.groups.get(i);
-                    MapPolygon mapPolygon = new MapPolygon(this, groupPolygons, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
+                    MapPolygon mapPolygon = new MapPolygon(this, groupPolygons, mapPolygonData.v, mapPolygonData.x, mapPolygonData.y);
                     (groupPolygons).addMapObject(mapPolygon);
                     mapPolygon.mapSprites = new Array<>();
                     // object properties
-                    int propSize = mapPolygonData.props.size();
+                    int propSize = mapPolygonData.p.size();
                     for (int s = 0; s < propSize; s++)
                     {
-                        PropertyData propertyData = mapPolygonData.props.get(s);
+                        PropertyData propertyData = mapPolygonData.p.get(s);
                         propertyMenu.newProperty(propertyData, mapPolygon.properties);
                     }
                 }
@@ -1718,32 +1740,32 @@ public class Map implements Screen
                 spriteTool.properties.clear();
 
                 // properties
-                int propSize = toolData.props.size();
+                int propSize = toolData.p.size();
                 for (int s = 0; s < propSize; s++)
                 {
-                    PropertyData propertyData = toolData.props.get(s);
+                    PropertyData propertyData = toolData.p.get(s);
                     propertyMenu.newProperty(propertyData, spriteTool.properties);
                 }
                 // locked properties
-                propSize = toolData.lProps.size();
+                propSize = toolData.lP.size();
                 for (int s = 0; s < propSize; s++)
                 {
-                    PropertyData propertyData = toolData.lProps.get(s);
+                    PropertyData propertyData = toolData.lP.get(s);
                     propertyMenu.changeLockedPropertyValue(propertyData, spriteTool.lockedProperties);
                 }
 
                 // attached map objects
-                if (toolData.objs != null)
+                if (toolData.o != null)
                 {
-                    int objSize = toolData.objs.size();
+                    int objSize = toolData.o.size();
                     for (int s = 0; s < objSize; s++)
                     {
-                        MapObjectData mapObjectData = toolData.objs.get(s);
+                        MapObjectData mapObjectData = toolData.o.get(s);
                         MapObject mapObject;
                         if (mapObjectData instanceof MapPolygonData)
                         {
                             MapPolygonData mapPolygonData = (MapPolygonData) mapObjectData;
-                            MapPolygon mapPolygon = new MapPolygon(this, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
+                            MapPolygon mapPolygon = new MapPolygon(this, mapPolygonData.v, mapPolygonData.x, mapPolygonData.y);
                             mapObject = mapPolygon;
                         } else
                         {
@@ -1752,16 +1774,16 @@ public class Map implements Screen
                             mapObject = mapPoint;
                         }
                         mapObject.flickerId = mapObjectData.fId;
-                        mapObject.setID(mapObjectData.id);
+                        mapObject.setID(mapObjectData.i);
                         // attached manager
-                        spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.offsetX, mapObjectData.offsetY);
+                        spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.oX, mapObjectData.oY);
                         mapObject.attachedMapObjectManager.addCopyOfMapObjectToAllMapSpritesOfThisSpriteTool(mapObject);
                         // object properties
-                        propSize = mapObjectData.props.size();
+                        propSize = mapObjectData.p.size();
                         mapObject.properties.clear();
                         for (int p = 0; p < propSize; p++)
                         {
-                            PropertyData propertyData = mapObjectData.props.get(p);
+                            PropertyData propertyData = mapObjectData.p.get(p);
                             propertyMenu.newProperty(propertyData, mapObject.properties);
                         }
                     }
@@ -1784,39 +1806,39 @@ public class Map implements Screen
         if(spriteTool == null)
             return null;
         MapSprite mapSprite = new MapSprite(this, layer, spriteTool, mapSpriteData.x, mapSpriteData.y);
-        mapSprite.edgeId = mapSpriteData.eId;
+        mapSprite.edgeId = mapSpriteData.e;
         mapSprite.flickerId = mapSpriteData.fId;
-        mapSprite.setID(mapSpriteData.id);
+        mapSprite.setID(mapSpriteData.i);
         LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(mapSprite.lockedProperties, "Fence");
-        if(mapSpriteData.fence)
+        if(mapSpriteData.f)
             fenceProperty.value.setText("true");
         else
             fenceProperty.value.setText("false");
 
         LabelFieldPropertyValuePropertyField ignoreProperty = Utils.getLockedPropertyField(mapSprite.lockedProperties, "IgnoreProps");
-        if(mapSpriteData.ignoreProps)
+        if(mapSpriteData.iP)
             ignoreProperty.value.setText("true");
         else
             ignoreProperty.value.setText("false");
 
         mapSprite.setZ(mapSpriteData.z);
-        mapSprite.setScale(mapSpriteData.scl + MapSpriteData.defaultScaleValue);
+        mapSprite.setScale(mapSpriteData.s + MapSpriteData.defaultScaleValue);
         mapSprite.setColor(mapSpriteData.r + MapSpriteData.defaultColorValue, mapSpriteData.g + MapSpriteData.defaultColorValue, mapSpriteData.b + MapSpriteData.defaultColorValue, mapSpriteData.a + MapSpriteData.defaultColorValue);
         mapSprite.setPosition(mapSpriteData.x, mapSpriteData.y);
         Utils.setCenterOrigin(mapSprite.getX(), mapSprite.getY());
         // attached map objects
         // instance map objects
-        if (mapSpriteData.objs != null)
+        if (mapSpriteData.o != null)
         {
-            int objSize = mapSpriteData.objs.size();
+            int objSize = mapSpriteData.o.size();
             for (int s = 0; s < objSize; s++)
             {
-                MapObjectData mapObjectData = mapSpriteData.objs.get(s);
+                MapObjectData mapObjectData = mapSpriteData.o.get(s);
                 MapObject mapObject;
                 if (mapObjectData instanceof MapPolygonData)
                 {
                     MapPolygonData mapPolygonData = (MapPolygonData) mapObjectData;
-                    MapPolygon mapPolygon = new MapPolygon(this, mapPolygonData.verts, mapPolygonData.x, mapPolygonData.y);
+                    MapPolygon mapPolygon = new MapPolygon(this, mapPolygonData.v, mapPolygonData.x, mapPolygonData.y);
                     mapObject = mapPolygon;
                 } else
                 {
@@ -1825,30 +1847,30 @@ public class Map implements Screen
                     mapObject = mapPoint;
                 }
                 mapObject.flickerId = mapObjectData.fId;
-                mapObject.setID(mapObjectData.id);
+                mapObject.setID(mapObjectData.i);
                 // attached manager
-                mapSprite.createAttachedMapObject(this, mapObject, mapObjectData.offsetX, mapObjectData.offsetY, false);
+                mapSprite.createAttachedMapObject(this, mapObject, mapObjectData.oX, mapObjectData.oY, false);
                 // object properties
-                int propSize = mapObjectData.props.size();
+                int propSize = mapObjectData.p.size();
                 mapObject.properties.clear();
                 for (int p = 0; p < propSize; p++)
                 {
-                    PropertyData propertyData = mapObjectData.props.get(p);
+                    PropertyData propertyData = mapObjectData.p.get(p);
                     propertyMenu.newProperty(propertyData, mapObject.properties);
                 }
             }
         }
         // tool attached map object ids
-        if(mapSpriteData.toIDs != null)
+        if(mapSpriteData.to != null)
         {
-            for(int i = 0; i < mapSpriteData.toIDs.size(); i ++)
+            for(int i = 0; i < mapSpriteData.to.size(); i ++)
             {
-                long ID = mapSpriteData.toIDs.get(i);
+                long ID = mapSpriteData.to.get(i);
                 mapSprite.tool.attachedMapObjectManagers.get(i).getMapObjectByParent(mapSprite).setID(ID);
             }
         }
 
-        mapSprite.setRotation(mapSpriteData.rot);
+        mapSprite.setRotation(mapSpriteData.ro);
         mapSprite.layerOverrideIndex = mapSpriteData.loi;
         mapSprite.layerOverrideIndexBack = mapSpriteData.loiB;
         mapSprite.x1Offset = mapSpriteData.x1;
@@ -1866,13 +1888,22 @@ public class Map implements Screen
         mapSprite.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + mapSprite.map.cameraX + mapSprite.x4Offset - (mapSprite.offsetMovebox4.scale * mapSprite.offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + mapSprite.map.cameraY + mapSprite.y4Offset - (mapSprite.offsetMovebox4.scale * mapSprite.offsetMovebox4.height / 2f));
         mapSprite.polygon.setOffset(mapSprite.x1Offset, mapSprite.x2Offset, mapSprite.x3Offset, mapSprite.x4Offset, mapSprite.y1Offset, mapSprite.y2Offset, mapSprite.y3Offset, mapSprite.y4Offset);
 
-        if(mapSpriteData.props != null)
+        if(mapSpriteData.p != null)
         {
-            for (int i = 0; i < mapSpriteData.props.size(); i++)
-                propertyMenu.newProperty(mapSpriteData.props.get(i), mapSprite.instanceSpecificProperties);
+            for (int i = 0; i < mapSpriteData.p.size(); i++)
+                propertyMenu.newProperty(mapSpriteData.p.get(i), mapSprite.instanceSpecificProperties);
         }
 
         return mapSprite;
+    }
+
+    public Array<MapPolygon> mergePolygons()
+    {
+        if(selectedObjects == null || selectedObjects.size == 0)
+            return null;
+        if(polygonMerger == null)
+            polygonMerger = new PolygonMerger(this);
+        return polygonMerger.convertToMapPolygons(polygonMerger.merge(selectedObjects));
     }
 
     /** Sorts sprite layers based on c1's and c2's. */

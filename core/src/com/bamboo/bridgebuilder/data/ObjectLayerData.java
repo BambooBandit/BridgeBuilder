@@ -15,7 +15,8 @@ public class ObjectLayerData extends LayerData
     public ObjectLayerData(ObjectLayer layer)
     {
         super(layer);
-        this.children = new ArrayList<>();
+        if(layer.children.size > 0)
+            this.children = new ArrayList<>();
 
         for(int i = 0; i < layer.children.size; i ++)
         {
@@ -28,7 +29,8 @@ public class ObjectLayerData extends LayerData
         ObjectLayer objectLayer = layer;
         if(objectLayer.spriteGrid != null)
         {
-            this.grid = new ArrayList<>(objectLayer.spriteGrid.grid.size);
+            if(objectLayer.spriteGrid.grid.size > 0)
+                this.grid = new ArrayList<>(objectLayer.spriteGrid.grid.size);
             for(int i = 0; i < objectLayer.spriteGrid.grid.size; i ++)
                 this.grid.add(new CellData(objectLayer.spriteGrid.grid.get(i)));
         }

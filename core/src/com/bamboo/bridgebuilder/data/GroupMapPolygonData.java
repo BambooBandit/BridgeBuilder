@@ -15,7 +15,8 @@ public class GroupMapPolygonData extends MapPolygonData
         super(mapPolygon, offsetX, offsetY);
         if(mapPolygon.mapSprites != null && mapPolygon.mapSprites.size > 0)
         {
-            this.mapSpriteIDs = new ArrayList<>();
+            if(mapPolygon.mapSprites.size > 0)
+                this.mapSpriteIDs = new ArrayList<>();
             for(int i = 0; i < mapPolygon.mapSprites.size; i ++)
             {
                 MapSprite mapSprite = mapPolygon.mapSprites.get(i);

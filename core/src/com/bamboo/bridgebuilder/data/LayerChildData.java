@@ -6,7 +6,7 @@ public abstract class LayerChildData
 {
     public float x, y;
     public long fId; // to flicker mapSprite id
-    public long id;
+    public long i; // id
 
     public LayerChildData(){}
     public LayerChildData(LayerChild layerChild)
@@ -14,7 +14,7 @@ public abstract class LayerChildData
         if(layerChild.toFlicker != null)
             this.fId = layerChild.toFlicker.id;
 
-        this.id = layerChild.id;
+        this.i = layerChild.id;
 
         this.x = layerChild.getX();
         this.y = layerChild.getY();

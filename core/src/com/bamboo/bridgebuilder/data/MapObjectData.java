@@ -7,33 +7,34 @@ import java.util.ArrayList;
 
 public abstract class MapObjectData extends LayerChildData
 {
-    public ArrayList<PropertyData> props;
+    public ArrayList<PropertyData> p; // props
 
     // Used for attached map objects only
-    public float offsetX, offsetY;
+    public float oX, oY; //offsetX, offsetY
 
     public MapObjectData() {}
-    public MapObjectData(MapObject mapObject, float offsetX, float offsetY)
+    public MapObjectData(MapObject mapObject, float oX, float oY)
     {
         super(mapObject);
 
-        this.props = new ArrayList<>();
+        if(mapObject.properties.size > 0)
+            this.p = new ArrayList<>();
         for(int i = 0; i < mapObject.properties.size; i ++)
         {
             PropertyField property = mapObject.properties.get(i);
             if(property instanceof ColorPropertyField)
-                this.props.add(new ColorPropertyFieldData((ColorPropertyField) property));
+                this.p.add(new ColorPropertyFieldData((ColorPropertyField) property));
             else if(property instanceof LightPropertyField)
-                this.props.add(new LightPropertyFieldData((LightPropertyField) property));
+                this.p.add(new LightPropertyFieldData((LightPropertyField) property));
             else if(property instanceof FieldFieldPropertyValuePropertyField)
-                this.props.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
+                this.p.add(new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) property));
             else if(property instanceof LabelFieldPropertyValuePropertyField)
-                this.props.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
+                this.p.add(new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) property));
             else if(property instanceof LabelLabelPropertyValuePropertyField)
-                this.props.add(new LabelLabelPropertyValuePropertyFieldData((LabelLabelPropertyValuePropertyField) property));
+                this.p.add(new LabelLabelPropertyValuePropertyFieldData((LabelLabelPropertyValuePropertyField) property));
         }
 
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
+        this.oX = oX;
+        this.oY = oY;
     }
 }

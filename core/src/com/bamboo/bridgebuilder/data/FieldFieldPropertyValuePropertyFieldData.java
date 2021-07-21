@@ -4,13 +4,13 @@ import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldProperty
 
 public class FieldFieldPropertyValuePropertyFieldData extends PropertyData
 {
-    public String prop;
-    public String val;
+    public String p; // prop
+    public String v; // val
     FieldFieldPropertyValuePropertyFieldData(){}
     FieldFieldPropertyValuePropertyFieldData(FieldFieldPropertyValuePropertyField property)
     {
         super(property);
-        this.prop = property.getProperty();
-        this.val = property.getValue();
+        this.p = property.getProperty();
+        this.v = property.getValue();
     }
 }

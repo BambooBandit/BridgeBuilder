@@ -35,7 +35,6 @@ public class ToolPane extends Group
     public Tool grab;
     public Tool gradient;
     public Tool random;
-    public Tool blocked;
     public Tool spriteGridColors;
     public Tool parallax;
     public Tool top;
@@ -69,6 +68,8 @@ public class ToolPane extends Group
     public GroupDialog groupDialog;
     private TextButton groupButton;
 
+    private TextButton mergeButton;
+
     private BridgeBuilder editor;
 
     public Label fps;
@@ -88,7 +89,6 @@ public class ToolPane extends Group
         this.gradient = new Tool(editor, this, false, Tools.GRADIENT);
         this.stairs = new Tool(editor, this, false, Tools.STAIRS);
         this.random = new Tool(editor, this, true, Tools.RANDOM);
-        this.blocked = new Tool(editor, this, true, Tools.BLOCKED);
         this.spriteGridColors = new Tool(editor, this, true, Tools.SPRITEGRIDCOLORS);
         this.parallax = new Tool(editor, this, true, Tools.PARALLAX);
         this.parallax.select();
@@ -122,6 +122,8 @@ public class ToolPane extends Group
         this.groupDialog = new GroupDialog(editor.stage, skin, editor);
         this.groupButton = new TextButton("Group", skin);
 
+        this.mergeButton = new TextButton("Merge", skin);
+
         this.fps = new Label("0", skin);
 
         setListeners();
@@ -137,7 +139,6 @@ public class ToolPane extends Group
         this.toolTable.add(this.gradient).padRight(1);
         this.toolTable.add(this.stairs).padRight(1);
         this.toolTable.add(this.random).padRight(1);
-        this.toolTable.add(this.blocked).padRight(1);
         this.toolTable.add(this.spriteGridColors).padRight(1);
         this.toolTable.add(this.parallax).padRight(1);
         this.toolTable.add(this.top).padRight(1);
@@ -158,6 +159,7 @@ public class ToolPane extends Group
         this.toolTable.add(this.minMaxButton).padRight(5);
         this.toolTable.add(this.stairsButton).padRight(5);
         this.toolTable.add(this.groupButton).padRight(5);
+        this.toolTable.add(this.mergeButton).padRight(5);
         this.toolTable.add(this.fps).padRight(1);
 
         this.pane = new Stack();
@@ -187,7 +189,6 @@ public class ToolPane extends Group
         this.gradient.setSize(toolHeight, toolHeight);
         this.stairs.setSize(toolHeight, toolHeight);
         this.random.setSize(toolHeight, toolHeight);
-        this.blocked.setSize(toolHeight, toolHeight);
         this.spriteGridColors.setSize(toolHeight, toolHeight);
         this.parallax.setSize(toolHeight, toolHeight);
         this.top.setSize(toolHeight, toolHeight);
@@ -210,7 +211,6 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.gradient).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.stairs).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.random).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.blocked).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.spriteGridColors).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.parallax).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.top).size(toolHeight, toolHeight);
@@ -231,6 +231,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.minMaxButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.stairsButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.groupButton).size(toolHeight * 2.3f, toolHeight);
+        this.toolTable.getCell(this.mergeButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.fps).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();
 
@@ -572,6 +573,16 @@ public class ToolPane extends Group
             {
                 if(editor.activeMap != null)
                     groupDialog.open();
+            }
+        });
+
+        this.mergeButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                if(editor.activeMap != null)
+                    editor.activeMap.mergePolygons();
             }
         });
     }

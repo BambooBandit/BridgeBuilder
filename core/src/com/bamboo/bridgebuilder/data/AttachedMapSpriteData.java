@@ -6,19 +6,20 @@ import java.util.ArrayList;
 
 public class AttachedMapSpriteData extends LayerChildData
 {
-    public ArrayList<MapSpriteData> sprites;
+    public ArrayList<MapSpriteData> s; // sprites
 
     public AttachedMapSpriteData() {}
     public AttachedMapSpriteData(MapSprite mapSprite)
     {
         super(mapSprite);
-        this.sprites = new ArrayList<>();
+        if(mapSprite.attachedSprites.children.size > 0)
+            this.s = new ArrayList<>();
 
         for(int i = 0; i < mapSprite.attachedSprites.children.size; i ++)
         {
             MapSprite child = mapSprite.attachedSprites.children.get(i);
             MapSpriteData mapSpriteData = new MapSpriteData(child);
-            sprites.add(mapSpriteData);
+            s.add(mapSpriteData);
         }
     }
 }

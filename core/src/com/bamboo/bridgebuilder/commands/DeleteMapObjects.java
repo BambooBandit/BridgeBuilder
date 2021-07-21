@@ -54,6 +54,8 @@ public class DeleteMapObjects implements Command
                 }
                 mapObject.unselect();
             }
+            this.selectedLayer.map.editor.selectedCountTooltip.label.setText((selectedLayer.map.selectedObjects.size + selectedLayer.map.selectedSprites.size) + " selected");
+
             this.selectedLayer.map.colorizeGroup();
             this.selectedLayer.children.removeAll(this.selectedObjects, true);
             this.selectedLayer.map.propertyMenu.rebuild();
@@ -99,6 +101,8 @@ public class DeleteMapObjects implements Command
             this.selectedLayer.children.add(mapObject);
             mapObject.select();
         }
+        this.selectedLayer.map.editor.selectedCountTooltip.label.setText((selectedLayer.map.selectedObjects.size + selectedLayer.map.selectedSprites.size) + " selected");
+
         this.selectedLayer.map.propertyMenu.rebuild();
         this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
         this.selectedLayer.map.colorizeGroup();

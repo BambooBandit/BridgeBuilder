@@ -116,22 +116,22 @@ public class PropertyMenu extends Group
         if(propertyData instanceof FieldFieldPropertyValuePropertyFieldData)
         {
             FieldFieldPropertyValuePropertyFieldData data = (FieldFieldPropertyValuePropertyFieldData) propertyData;
-            properties.add(new FieldFieldPropertyValuePropertyField(data.prop, data.val, this.skin, this, properties, true));
+            properties.add(new FieldFieldPropertyValuePropertyField(data.p, data.v, this.skin, this, properties, true));
         }
         else if(propertyData instanceof LabelFieldPropertyValuePropertyFieldData)
         {
             LabelFieldPropertyValuePropertyFieldData data = (LabelFieldPropertyValuePropertyFieldData) propertyData;
-            properties.add(new LabelFieldPropertyValuePropertyField(data.prop, data.val, this.skin, this, properties, true));
+            properties.add(new LabelFieldPropertyValuePropertyField(data.p, data.v, this.skin, this, properties, true));
         }
         else if(propertyData instanceof ColorPropertyFieldData)
         {
             ColorPropertyFieldData data = (ColorPropertyFieldData) propertyData;
-            properties.add(new ColorPropertyField(this.skin, this, properties, true, data.prop, data.r, data.g, data.b, data.a));
+            properties.add(new ColorPropertyField(this.skin, this, properties, true, data.p, data.r, data.g, data.b, data.a));
         }
         else if(propertyData instanceof LightPropertyFieldData)
         {
             LightPropertyFieldData data = (LightPropertyFieldData) propertyData;
-            properties.add(new LightPropertyField(this.skin, this, properties, true, data.r, data.g, data.b, data.a, data.dis, data.ray));
+            properties.add(new LightPropertyField(this.skin, this, properties, true, data.r, data.g, data.b, data.a, data.d, data.ra));
         }
     }
 
@@ -145,26 +145,26 @@ public class PropertyMenu extends Group
             {
                 FieldFieldPropertyValuePropertyField property = (FieldFieldPropertyValuePropertyField) propertyField;
                 FieldFieldPropertyValuePropertyFieldData data = (FieldFieldPropertyValuePropertyFieldData) propertyData;
-                if(!data.prop.equals(property.property))
+                if(!data.p.equals(property.property))
                     continue;
-                property.value.setText(data.val);
+                property.value.setText(data.v);
             }
             else if(propertyData instanceof LabelFieldPropertyValuePropertyFieldData && propertyField instanceof LabelFieldPropertyValuePropertyField)
             {
                 LabelFieldPropertyValuePropertyField property = (LabelFieldPropertyValuePropertyField) propertyField;
                 LabelFieldPropertyValuePropertyFieldData data = (LabelFieldPropertyValuePropertyFieldData) propertyData;
-                if(!data.prop.equals(property.getProperty()))
+                if(!data.p.equals(property.getProperty()))
                     continue;
-                property.value.setText(data.val);
+                property.value.setText(data.v);
             }
-            else if(propertyData instanceof ColorPropertyFieldData && propertyField instanceof ColorPropertyField && ((ColorPropertyField) propertyField).property.getText().toString().equals(((ColorPropertyFieldData) propertyData).prop))
+            else if(propertyData instanceof ColorPropertyFieldData && propertyField instanceof ColorPropertyField && ((ColorPropertyField) propertyField).property.getText().toString().equals(((ColorPropertyFieldData) propertyData).p))
             {
                 ColorPropertyField property = (ColorPropertyField) propertyField;
                 ColorPropertyFieldData data = (ColorPropertyFieldData) propertyData;
                 property.setRGBA(data.r, data.g, data.b, data.a + ColorPropertyFieldData.defaultAlphaValue);
 
             }
-            else if(propertyData instanceof OpaqueColorPropertyFieldData && propertyField instanceof OpaqueColorPropertyField && ((OpaqueColorPropertyField) propertyField).property.getText().toString().equals(((OpaqueColorPropertyFieldData) propertyData).prop))
+            else if(propertyData instanceof OpaqueColorPropertyFieldData && propertyField instanceof OpaqueColorPropertyField && ((OpaqueColorPropertyField) propertyField).property.getText().toString().equals(((OpaqueColorPropertyFieldData) propertyData).p))
             {
                 OpaqueColorPropertyField property = (OpaqueColorPropertyField) propertyField;
                 OpaqueColorPropertyFieldData data = (OpaqueColorPropertyFieldData) propertyData;
@@ -175,7 +175,7 @@ public class PropertyMenu extends Group
             {
                 LightPropertyField property = (LightPropertyField) propertyField;
                 LightPropertyFieldData data = (LightPropertyFieldData) propertyData;
-                property.setRGBADR(data.r, data.g, data.b, data.a, data.dis, data.ray);
+                property.setRGBADR(data.r, data.g, data.b, data.a, data.d, data.ra);
             }
         }
     }

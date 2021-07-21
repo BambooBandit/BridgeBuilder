@@ -76,6 +76,8 @@ public class DeleteSelectedMapSprites implements Command
             this.selectedLayer.children.removeAll(this.selectedSprites, true);
             for(int i = 0; i < this.selectedSprites.size; i ++)
                 this.selectedSprites.get(i).unselect();
+            this.selectedLayer.map.editor.selectedCountTooltip.label.setText((selectedLayer.map.selectedObjects.size + selectedLayer.map.selectedSprites.size) + " selected");
+
             this.selectedLayer.map.propertyMenu.rebuild();
             this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
         }

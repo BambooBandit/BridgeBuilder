@@ -12,7 +12,8 @@ public class SpriteLayerData extends LayerData
     public SpriteLayerData(SpriteLayer layer)
     {
         super(layer);
-        this.children = new ArrayList<>();
+        if(layer.children.size > 0)
+            this.children = new ArrayList<>();
         for(int i = 0; i < layer.children.size; i ++)
         {
             MapSprite mapSprite = layer.children.get(i);

@@ -175,8 +175,6 @@ public class BridgeBuilder extends Game
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.drawPoint);
 				else if(keycode == Input.Keys.I)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.objectVerticeSelect);
-				else if(keycode == Input.Keys.K)
-					fileMenu.toolPane.selectTool(fileMenu.toolPane.blocked);
 				else if(keycode == Input.Keys.L)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.parallax);
 				else if(keycode == Input.Keys.N)

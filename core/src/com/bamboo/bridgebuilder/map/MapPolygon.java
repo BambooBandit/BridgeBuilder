@@ -146,7 +146,7 @@ public class MapPolygon extends MapObject
         if(this.body != null)
             this.body.setTransform(this.polygon.getTransformedVertices()[0], this.polygon.getTransformedVertices()[1], (float) Math.toRadians(this.getRotation()));
 
-        if(this.map.editor.fileMenu.toolPane.blocked.selected || this.map.editor.fileMenu.toolPane.spriteGridColors.selected)
+        if(this.map.editor.fileMenu.toolPane.spriteGridColors.selected)
             this.map.updateLayerSpriteGrids();
 
     }
@@ -314,8 +314,6 @@ public class MapPolygon extends MapObject
         fixtureDef.filter.maskBits = PhysicsBits.LIGHT_PHYSICS;
         this.body = this.map.world.createBody(bodyDef).createFixture(fixtureDef).getBody();
         this.body.setTransform(this.polygon.getTransformedVertices()[0], this.polygon.getTransformedVertices()[1], (float) Math.toRadians(this.getRotation()));
-        if(map.editor.fileMenu.toolPane.blocked.selected)
-            this.map.updateLayerSpriteGrids();
     }
 
     public void destroyBody()
@@ -324,8 +322,6 @@ public class MapPolygon extends MapObject
             return;
         this.map.world.destroyBody(this.body);
         this.body = null;
-        if(map.editor.fileMenu.toolPane.blocked.selected)
-            this.map.updateLayerSpriteGrids();
     }
 
     /** Used for when the vertices of the body are affected, like during scaling, etc.*/

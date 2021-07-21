@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -40,21 +39,6 @@ public class SpriteGrid
             this.grid.add(new SpriteCell());
 
         this.fbo = new FrameBuffer(Pixmap.Format.RGBA8888, this.objectLayer.width, this.objectLayer.height, false);
-    }
-
-    public void drawBlocked()
-    {
-        this.objectLayer.map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-        this.objectLayer.map.editor.shapeRenderer.setColor(1, 0, 0, .35f);
-        for(int i = 0; i < this.grid.size; i ++)
-        {
-            if(this.grid.get(i).blocked)
-            {
-                int x = (int) Math.floor(i % this.objectLayer.width);
-                int y = (int) Math.floor(i / this.objectLayer.width);
-                this.objectLayer.map.editor.shapeRenderer.rect(x - objectLayer.map.cameraX, y - objectLayer.map.cameraY, 1, 1);
-            }
-        }
     }
 
     public void drawColor()
@@ -95,7 +79,6 @@ public class SpriteGrid
         for(int i = 0; i < this.grid.size; i ++)
         {
             SpriteCell cell = this.grid.get(i);
-            cell.blocked = false;
             cell.dustType = null;
             cell.dustIndex = -1;
             cell.r = 0;
@@ -180,10 +163,7 @@ public class SpriteGrid
 
         Rectangle polygonRectangle = mapPolygon.polygon.getBoundingRectangle();
 
-        boolean bl = false;
         boolean dT = false;
-        if(mapPolygon.body != null)
-            bl = true;
 
         FieldFieldPropertyValuePropertyField property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(mapPolygon.properties, "dustType");
         String comparedDustType = null;
@@ -193,10 +173,11 @@ public class SpriteGrid
             dT = true;
         }
 
-        int rectX = (int) Math.floor(polygonRectangle.x) - 1;
-        int rectY = (int) Math.floor(polygonRectangle.y) - 1;
-        int rectWidth = (int) Math.ceil(polygonRectangle.width) + 2;
-        int rectHeight = (int) Math.ceil(polygonRectangle.height) + 2;
+        float shiftSize = 0f;
+        int rectX = (int) ((int) Math.floor(polygonRectangle.x) - 1 - shiftSize);
+        int rectY = (int) ((int) Math.floor(polygonRectangle.y) - 1 - shiftSize);
+        int rectWidth = (int) ((int) Math.ceil(polygonRectangle.width) + ((1 + shiftSize) * 2));
+        int rectHeight = (int) ((int) Math.ceil(polygonRectangle.height) + ((1 + shiftSize) * 2));
 
         for(int y = rectY; y < rectY + rectHeight; y++)
         {
@@ -204,9 +185,6 @@ public class SpriteGrid
             {
                 SpriteCell cell = getCell(x, y);
                 if(cell == null)
-                    continue;
-
-                if(bl && cell.blocked)
                     continue;
 
                 if(dT)
@@ -225,15 +203,10 @@ public class SpriteGrid
                 rectangle[6] = x + bezelSize;
                 rectangle[7] = y + 1f - (bezelSize * 2f);
 
-                if (Intersector.overlapConvexPolygons(rectangle, mapPolygon.polygon.getTransformedVertices(), null))
+                if(dT)
                 {
-                    if(bl)
-                        cell.blocked = true;
-                    if(dT)
-                    {
-                        cell.dustIndex = index;
-                        cell.dustType = comparedDustType;
-                    }
+                    cell.dustIndex = index;
+                    cell.dustType = comparedDustType;
                 }
             }
         }
@@ -376,7 +349,6 @@ public class SpriteGrid
         public int dustIndex = -1;
         public String dustType = null;
         public float r, g, b, a;
-        public boolean blocked;
     }
 
     private boolean doesDustTypeHavePriority(String dustType, int layerIndex, String comparingDustType, int comparingLayerIndex)
