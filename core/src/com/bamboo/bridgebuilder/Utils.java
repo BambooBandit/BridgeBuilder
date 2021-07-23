@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FloatArray;
 import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
@@ -25,6 +26,7 @@ public class Utils
     public static Vector2 positionDifference = new Vector2();
     public static Vector2 spritePositionCopy = new Vector2();
     public static boolean print = true;
+    public static FloatArray triangles = new FloatArray();
 
     public static float[] boxSelectCommandVertices = new float[8];
 
@@ -35,6 +37,59 @@ public class Utils
             return angle;
         else
             return angle + 360f;
+    }
+
+    public static boolean containsProperty(Array<PropertyField> properties, String property)
+    {
+        if(properties != null)
+        {
+            for (int i = 0; i < properties.size; i++)
+            {
+                if (properties.get(i) instanceof FieldFieldPropertyValuePropertyField)
+                {
+                    FieldFieldPropertyValuePropertyField propertyData = (FieldFieldPropertyValuePropertyField) properties.get(i);
+                    if (propertyData.getProperty().equals(property))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static FloatArray triangleFan(float[] polygon)
+    {
+        int start = 0;
+        int curr = 2;
+        int prev = polygon.length - 2;
+        FloatArray out = triangles;
+        out.clear();
+
+        while(start != curr)
+        {
+            out.add(polygon[start]);
+            out.add(polygon[start + 1]);
+            out.add(polygon[curr]);
+            out.add(polygon[curr + 1]);
+            out.add(polygon[prev]);
+            out.add(polygon[prev + 1]);
+            prev = curr;
+            curr = curr + 2 == polygon.length ? 0 : curr + 2;
+        }
+
+        return out;
+    }
+
+    public static FloatArray weighTriangles(FloatArray triangleVertices)
+    {
+        for(int i = 0; i < triangleVertices.size; i += 7)
+        {
+            float area = Math.abs(((triangleVertices.get(i) * (triangleVertices.get(i + 3) - triangleVertices.get(i + 5)) + triangleVertices.get(i + 2) * (triangleVertices.get(i + 5) - triangleVertices.get(i + 1)) + triangleVertices.get(i + 4) * (triangleVertices.get(i + 1) - triangleVertices.get(i + 3))))) / 2;
+            if(i + 6 >= triangleVertices.size - 1)
+                triangleVertices.add(area);
+            else
+                triangleVertices.insert(i + 6, area);
+        }
+        return triangleVertices;
     }
 
     public static void print(String string)

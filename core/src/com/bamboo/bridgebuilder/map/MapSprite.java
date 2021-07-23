@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -16,6 +15,7 @@ import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.DisableAttachedSpriteEditMode;
 import com.bamboo.bridgebuilder.commands.EnableAttachedSpriteEditMode;
+import com.bamboo.bridgebuilder.ui.BBShapeRenderer;
 import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
 import com.bamboo.bridgebuilder.ui.manipulators.RotationBox;
 import com.bamboo.bridgebuilder.ui.manipulators.ScaleBox;
@@ -647,7 +647,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     public void drawHoverOutline()
     {
         polygon.setPosition(x - map.cameraX, y - map.cameraY);
-        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.ORANGE);
         map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
         polygon.setPosition(x, y);
@@ -657,7 +657,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     public void drawSelectedOutline()
     {
         polygon.setPosition(x - map.cameraX, y - map.cameraY);
-        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.GREEN);
         map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
         polygon.setPosition(x, y);
@@ -667,7 +667,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     public void drawSelectedHoveredOutline()
     {
         polygon.setPosition(x - map.cameraX, y - map.cameraY);
-        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.YELLOW);
         map.editor.shapeRenderer.polygon(polygon.getTransformedVertices());
         polygon.setPosition(x, y);

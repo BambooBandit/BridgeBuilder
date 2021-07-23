@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -28,6 +27,7 @@ import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.*;
 import com.bamboo.bridgebuilder.data.*;
+import com.bamboo.bridgebuilder.ui.BBShapeRenderer;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerField;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerMenu;
@@ -102,6 +102,7 @@ public class Map implements Screen
     public float lastFencePlacedDistance;
 
     public ObjectLayer groupPolygons; // Each group of map sprites has a polygon associated with it in this layer. Used for making multiple sprites do something when entering a polygon
+    public Array<MapObject> mergedPolygonPreview = null;
 
     // For undo/redo
     private int undoRedoPointer = -1;
@@ -240,6 +241,8 @@ public class Map implements Screen
         drawLayerOverridePreview();
         drawSnap();
         drawC();
+        drawMergePolygonPreview();
+        drawFailedMergedPolygons();
         if(mergedPolygons != null)
         {
             for (int i = 0; i < mergedPolygons.size; i++)
@@ -294,6 +297,51 @@ public class Map implements Screen
         this.stage.getBatch().enableBlending();
         this.stage.act();
         this.stage.draw();
+    }
+
+    private void drawMergePolygonPreview()
+    {
+        if(mergedPolygonPreview == null)
+            return;
+        editor.shapeRenderer.setColor(Color.RED);
+        editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
+
+        for(int i = 0; i < mergedPolygonPreview.size; i ++)
+        {
+            MapPolygon mapPolygon = (MapPolygon) mergedPolygonPreview.get(i);
+            mapPolygon.polygon.setPosition(mapPolygon.x - cameraX, mapPolygon.y - cameraY);
+            float[] vertices = mapPolygon.polygon.getTransformedVertices();
+            editor.shapeRenderer.polygon(vertices, 0, vertices.length);
+//            float[] vertices = mapPolygon.polygon.getTransformedVertices();
+//            FloatArray triangles = Utils.triangleFan(vertices);
+//            for(int k = 0; k < triangles.size; k += 6)
+//            {
+//                editor.shapeRenderer.triangle(triangles.get(k), triangles.get(k + 1), triangles.get(k + 2), triangles.get(k + 3), triangles.get(k + 4), triangles.get(k + 5));
+//            }
+        }
+        editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
+    }
+
+    private void drawFailedMergedPolygons()
+    {
+        if(polygonMerger != null && polygonMerger.failedPolygon2.size > 0 && polygonMerger.failedPolygon1.size > 0)
+        {
+            editor.shapeRenderer.setColor(Color.RED);
+            float[] toArray1 = polygonMerger.failedPolygon1.toArray();
+            float[] toArray2 = polygonMerger.failedPolygon2.toArray();
+            for(int i = 0; i < toArray1.length; i += 2)
+            {
+                toArray1[i] -= cameraX;
+                toArray1[i + 1] -= cameraY;
+            }
+            for(int i = 0; i < toArray2.length; i += 2)
+            {
+                toArray2[i] -= cameraX;
+                toArray2[i + 1] -= cameraY;
+            }
+            editor.shapeRenderer.polygon(toArray1);
+            editor.shapeRenderer.polygon(toArray2);
+        }
     }
 
     private void drawSnapPreview()
@@ -902,7 +950,7 @@ public class Map implements Screen
     {
         if(this.selectedLayer != null)
         {
-            this.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+            this.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
             this.editor.shapeRenderer.setColor(Color.BLACK);
             int layerWidth = this.selectedLayer.width;
             int layerHeight = this.selectedLayer.height;
@@ -920,7 +968,7 @@ public class Map implements Screen
     {
         if(this.selectedLayer != null)
         {
-            this.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+            this.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
             this.editor.shapeRenderer.setColor(Color.BLACK);
             int layerWidth = this.selectedLayer.width;
             int layerHeight = this.selectedLayer.height;
@@ -1897,13 +1945,13 @@ public class Map implements Screen
         return mapSprite;
     }
 
-    public Array<MapPolygon> mergePolygons()
+    public Array<MapPolygon> mergePolygons(Array<MapObject> objects)
     {
-        if(selectedObjects == null || selectedObjects.size == 0)
+        if(objects == null || objects.size == 0)
             return null;
         if(polygonMerger == null)
             polygonMerger = new PolygonMerger(this);
-        return polygonMerger.convertToMapPolygons(polygonMerger.merge(selectedObjects));
+        return polygonMerger.convertToMapPolygons(polygonMerger.merge(objects));
     }
 
     /** Sorts sprite layers based on c1's and c2's. */

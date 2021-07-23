@@ -4,10 +4,11 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.bamboo.bridgebuilder.commands.MergeMapPolygons;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Polygon;
+import com.bamboo.bridgebuilder.ui.FailedToMergeDialog;
+import org.locationtech.jts.geom.*;
+
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 public class PolygonMerger
 {
@@ -16,8 +17,15 @@ public class PolygonMerger
 
     private FloatArray temp;
 
-    private Array<FloatArray> result;
+    public Array<FloatArray> result;
 
+    public MapPolygon failedToMergePolygon;
+    public FloatArray failedPolygon1;
+    public FloatArray failedPolygon2;
+
+    private float scale = 1;
+
+    DecimalFormat df;
 
     public PolygonMerger(Map map)
     {
@@ -25,10 +33,27 @@ public class PolygonMerger
         this.mergedPolygons = new Array<>();
         this.temp = new FloatArray();
         this.result = new Array<>();
+
+        this.failedPolygon1 = new FloatArray();
+        this.failedPolygon2 = new FloatArray();
+
+        df = new DecimalFormat("#.#######");
+        df.setRoundingMode(RoundingMode.CEILING);
+    }
+
+    private void setTemp(MapPolygon polygon)
+    {
+        temp.clear();
+        temp.addAll(polygon.polygon.getTransformedVertices());
+        for(int i = 0; i < temp.size; i ++)
+            temp.set(i, temp.get(i) * scale);
     }
 
     public Array<FloatArray> merge(Array<MapObject> polygons)
     {
+        failedToMergePolygon = null;
+        failedPolygon1.clear();
+        failedPolygon2.clear();
         result.clear();
         mergedPolygons.clear();
 
@@ -42,14 +67,19 @@ public class PolygonMerger
             {
                 if(i == k)
                     continue;
-                prepMergePolygon((MapPolygon) polygons.get(k));
+                if(!prepMergePolygon((MapPolygon) polygons.get(k)))
+                {
+                    FailedToMergeDialog failedToMergeDialog = new FailedToMergeDialog(map.stage, map.skin, map, map.polygonMerger);
+                    map.polygonMerger.result.clear();
+                    return result;
+                }
             }
         }
         mergeResults();
         return result;
     }
 
-    private void mergeResults()
+    private boolean mergeResults()
     {
         for(int i = 0; i < result.size; i ++)
         {
@@ -61,28 +91,34 @@ public class PolygonMerger
                 FloatArray polygon2 = result.get(k);
                 if(Intersector.intersectPolygons(polygon1, polygon2))
                 {
-                    mergePolygons(polygon1, polygon2);
+                    boolean mergedSuccessfully = mergePolygons(polygon1, polygon2);
+                    if(!mergedSuccessfully)
+                    {
+                        FailedToMergeDialog failedToMergeDialog = new FailedToMergeDialog(map.stage, map.skin, map, map.polygonMerger);
+                        map.polygonMerger.result.clear();
+                        return false;
+                    }
+
                     result.removeIndex(k);
                     mergeResults();
-                    return;
+                    return mergedSuccessfully;
                 }
             }
         }
-        return;
+        return true;
     }
 
-    private void prepMergePolygon(MapPolygon polygon)
+    private boolean prepMergePolygon(MapPolygon polygon)
     {
         if(mergedPolygons.contains(polygon, true))
-            return;
+            return true;
 
         FloatArray resultArray = null;
         if(result.size > 0)
         {
             for (int i = 0; i < result.size; i++)
             {
-                temp.clear();
-                temp.addAll(polygon.polygon.getTransformedVertices());
+                setTemp(polygon);
                 if(result.get(i).size > 0 && Intersector.intersectPolygons(result.get(i), temp))
                 {
                     resultArray = result.get(i);
@@ -99,41 +135,58 @@ public class PolygonMerger
         if(resultArray.size == 0)
         {
             mergedPolygons.add(polygon);
-            temp.clear();
-            temp.addAll(polygon.polygon.getTransformedVertices());
+            setTemp(polygon);
             resultArray.addAll(temp);
         }
         else
         {
             // turn resultArray into a merge of resultArray and temp
-            mergePolygons(resultArray, polygon);
+            return mergePolygons(resultArray, polygon);
         }
+        return true;
     }
 
-    private void mergePolygons(FloatArray resultArray, MapPolygon polygon)
+    private boolean mergePolygons(FloatArray resultArray, MapPolygon polygon)
     {
-        temp.clear();
-        temp.addAll(polygon.polygon.getTransformedVertices());
-        mergePolygons(resultArray, temp);
+        setTemp(polygon);
 
         mergedPolygons.add(polygon);
+
+        boolean mergedSuccessfully = mergePolygons(resultArray, temp);
+        if(!mergedSuccessfully)
+            failedToMergePolygon = polygon;
+        return mergedSuccessfully;
     }
 
-    private void mergePolygons(FloatArray resultArray, FloatArray polygon)
+    private boolean mergePolygons(FloatArray resultArray, FloatArray polygon)
     {
         // create polygons
         Coordinate[] pc1 = new Coordinate[(resultArray.size / 2) + 1];
         for(int i = 0; i < pc1.length - 1; i ++)
-            pc1[i] = new Coordinate(resultArray.get(i * 2), resultArray.get((i * 2) + 1));
-        pc1[pc1.length - 1] = new Coordinate(resultArray.get(0), resultArray.get(1));
+            pc1[i] = new Coordinate(Float.parseFloat(df.format(resultArray.get(i * 2))), Float.parseFloat(df.format(resultArray.get((i * 2) + 1))));
+        pc1[pc1.length - 1] = new Coordinate(Float.parseFloat(df.format(resultArray.get(0))), Float.parseFloat(df.format(resultArray.get(1))));
         Coordinate[] pc2 = new Coordinate[(polygon.size / 2) + 1];
         for(int i = 0; i < pc2.length - 1; i ++)
-            pc2[i] = new Coordinate(polygon.get(i * 2), polygon.get((i * 2) + 1));
-        pc2[pc2.length - 1] = new Coordinate(polygon.get(0), polygon.get(1));
+            pc2[i] = new Coordinate(Float.parseFloat(df.format(polygon.get(i * 2))), Float.parseFloat(df.format(polygon.get((i * 2) + 1))));
+        pc2[pc2.length - 1] = new Coordinate(Float.parseFloat(df.format(polygon.get(0))), Float.parseFloat(df.format(polygon.get(1))));
         Polygon p1 = new GeometryFactory().createPolygon(pc1);
         Polygon p2 = new GeometryFactory().createPolygon(pc2);
         // calculate union
-        Geometry union = p1.union(p2);
+        Geometry union;
+        try
+        {
+            union = p1.union(p2);
+        }catch (TopologyException e)
+        {
+            e.printStackTrace();
+            failedPolygon1.addAll(resultArray);
+            failedPolygon2.addAll(polygon);
+            for(int i = 0; i < failedPolygon1.size; i ++)
+                failedPolygon1.set(i, failedPolygon1.get(i) / scale);
+            for(int i = 0; i < failedPolygon2.size; i ++)
+                failedPolygon2.set(i, failedPolygon2.get(i) / scale);
+            return false;
+        }
 
         Coordinate[] unionCoords = union.getCoordinates();
         resultArray.clear();
@@ -142,6 +195,7 @@ public class PolygonMerger
             resultArray.add((float) unionCoords[i].x);
             resultArray.add((float) unionCoords[i].y);
         }
+        return true;
     }
 
     public Array<MapPolygon> convertToMapPolygons(Array<FloatArray> polygonVertices)

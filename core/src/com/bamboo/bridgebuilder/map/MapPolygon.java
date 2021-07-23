@@ -1,7 +1,6 @@
 package com.bamboo.bridgebuilder.map;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -12,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.PhysicsBits;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.ui.BBShapeRenderer;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
@@ -59,7 +59,7 @@ public class MapPolygon extends MapObject
     public void draw()
     {
         polygon.setPosition(x - map.cameraX, y - map.cameraY);
-        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         if(mapSprites == null)
             map.editor.shapeRenderer.setColor(Color.CYAN);
         else
@@ -97,7 +97,7 @@ public class MapPolygon extends MapObject
     public void draw(float xOffset, float yOffset)
     {
         setPosition(getX() + xOffset, getY() + yOffset);
-        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.CYAN);
         map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
 
@@ -192,7 +192,7 @@ public class MapPolygon extends MapObject
     @Override
     public void drawHoverOutline()
     {
-        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.ORANGE);
         map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
     }
@@ -200,7 +200,7 @@ public class MapPolygon extends MapObject
     @Override
     public void drawSelectedOutline()
     {
-        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.GREEN);
         map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
     }
@@ -208,7 +208,7 @@ public class MapPolygon extends MapObject
     @Override
     public void drawSelectedHoveredOutline()
     {
-        map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.YELLOW);
         map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
     }

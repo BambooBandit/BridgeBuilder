@@ -1,9 +1,15 @@
 package com.bamboo.bridgebuilder.data;
 
+import com.badlogic.gdx.math.Rectangle;
+import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
+import com.dongbat.walkable.PathHelper;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class MapData
@@ -15,10 +21,15 @@ public class MapData
     public ArrayList<PropertyData> props;
     public ArrayList<GroupMapPolygonData> groups;
     public long idCounter;
+//    public String pathfinding; // yaml
 
     public MapData(){}
     public MapData(Map map, boolean settingBBMDefaults)
     {
+//        this.pathfinding = savePathfindingMeshAsYaml(map);
+
+
+
         this.idCounter = map.idCounter;
         float oldPerspective = map.perspectiveZoom;
         map.perspectiveZoom = 0;
@@ -96,6 +107,119 @@ public class MapData
             this.layers.clear();
             if(this.groups != null)
                 this.groups.clear();
+        }
+    }
+
+    private String savePathfindingMeshAsYaml(Map map)
+    {
+        boolean hasPathfindingLayer = false;
+        float width = 0, height = 0, z = 0;
+        for(int i = 0; i < map.layers.size; i ++)
+        {
+            Layer layer = map.layers.get(i);
+            if(Utils.getPropertyField(layer.properties, "pathfinding") != null)
+                hasPathfindingLayer = true;
+            if(Utils.getPropertyField(layer.properties, "playableFloor") != null)
+            {
+                width = layer.width;
+                height = layer.height;
+                z = layer.z;
+            }
+        }
+        PathHelper pathHelper = new PathHelper(width, height, 1000);
+        ArrayList<MapPolygon> obstacles = getObstacles(map, hasPathfindingLayer, z);
+        int size = obstacles.size();
+        for(int i = 0; i < size; i ++)
+        {
+            pathHelper.addPolygon(obstacles.get(i).polygon.getTransformedVertices());
+        }
+
+
+
+
+        ByteArrayOutputStream outputStream = null;
+
+        try
+        {
+            outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+
+            objectOutputStream.writeObject(pathHelper);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+
+
+        return outputStream.toString();
+    }
+
+    private ArrayList<MapPolygon> getObstacles(Map map, boolean hasPathfindingLayer, float z)
+    {
+        ArrayList<MapPolygon> obstacles = new ArrayList<MapPolygon>();
+
+        for(int i = 0; i < map.layers.size; i ++)
+        {
+            Layer layer = map.layers.get(i);
+            if(layer instanceof SpriteLayer)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                for(int k = 0; k < spriteLayer.children.size; k ++)
+                {
+                    MapSprite mapSprite = spriteLayer.children.get(k);
+                    if(mapSprite.attachedMapObjects != null)
+                    {
+                        for (int s = 0; s < mapSprite.attachedMapObjects.size; s++)
+                        {
+                            MapObject mapObject = mapSprite.attachedMapObjects.get(s);
+                            if(mapObject instanceof MapPolygon)
+                                addObstacle((MapPolygon) mapObject, obstacles, hasPathfindingLayer, z);
+                        }
+                    }
+                }
+            }
+            else if(layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                for(int k = 0; k < objectLayer.children.size; k ++)
+                {
+                    MapObject mapObject = objectLayer.children.get(k);
+                    if(mapObject instanceof MapPolygon)
+                        addObstacle((MapPolygon) mapObject, obstacles, hasPathfindingLayer, z);
+                }
+            }
+        }
+        return obstacles;
+    }
+
+    private void addObstacle(MapPolygon mapPolygon, ArrayList<MapPolygon> obstacles, boolean hasPathfindingLayer, float z)
+    {
+        Layer layer = mapPolygon.layer;
+        if(layer == null && mapPolygon.attachedSprite != null)
+            layer = mapPolygon.attachedSprite.layer;
+        if(layer.z != z)
+            return;
+        EditorPolygon polygon = mapPolygon.polygon;
+        if ((hasPathfindingLayer && Utils.containsProperty(layer.properties, "pathfinding")) || (!hasPathfindingLayer && (Utils.containsProperty(mapPolygon.properties, "pathfinding") || (Utils.containsProperty(mapPolygon.properties, "blocked") && !Utils.containsProperty(mapPolygon.properties, "ignorePathfinding") && !Utils.containsProperty(layer.properties, "ignorePathfinding")))))
+        {
+            if (polygon.area() < 0) // counter-clockwise. flip
+            {
+                float[] newPolygon = new float[polygon.getVertices().length];
+                for (int i = 0; i < polygon.getVertices().length; i += 2)
+                {
+                    newPolygon[polygon.getVertices().length - 1 - i - 1] = polygon.getVertices()[i];
+                    newPolygon[polygon.getVertices().length - 1 - i] = polygon.getVertices()[i + 1];
+                }
+                polygon.setVertices(newPolygon);
+            }
+
+            Rectangle boundingRectangle = polygon.getBoundingRectangle();
+            if (boundingRectangle.width > 1f || boundingRectangle.height > 1f)
+                obstacles.add(mapPolygon);
         }
     }
 }

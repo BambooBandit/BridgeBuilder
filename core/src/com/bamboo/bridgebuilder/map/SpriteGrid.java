@@ -6,12 +6,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.ui.BBShapeRenderer;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 
@@ -43,7 +43,7 @@ public class SpriteGrid
 
     public void drawColor()
     {
-        this.objectLayer.map.editor.shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+        this.objectLayer.map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
         for(int i = 0; i < this.grid.size; i ++)
         {
             SpriteCell cell = this.grid.get(i);

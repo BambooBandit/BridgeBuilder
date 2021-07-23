@@ -3,7 +3,6 @@ package com.bamboo.bridgebuilder;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -12,6 +11,7 @@ import com.bamboo.bridgebuilder.commands.CreateLayer;
 import com.bamboo.bridgebuilder.commands.MoveMapSpriteIndex;
 import com.bamboo.bridgebuilder.commands.SelectLayer;
 import com.bamboo.bridgebuilder.map.*;
+import com.bamboo.bridgebuilder.ui.BBShapeRenderer;
 import com.bamboo.bridgebuilder.ui.fileMenu.FileMenu;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tool;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tooltip;
@@ -29,7 +29,7 @@ public class BridgeBuilder extends Game
 
 	public Stage stage;
 	public SpriteBatch batch;
-	public ShapeRenderer shapeRenderer;
+	public BBShapeRenderer shapeRenderer;
 	public InputMultiplexer inputMultiplexer;
 	public static Preferences prefs;
 
@@ -57,7 +57,7 @@ public class BridgeBuilder extends Game
 		this.maps = new Array<>();
 
 		this.batch = new SpriteBatch();
-		this.shapeRenderer = new ShapeRenderer();
+		this.shapeRenderer = new BBShapeRenderer();
 		this.stage = new Stage(new ScreenViewport());
 
 		mouseCoordTooltip = new Tooltip(this, "(0, 0) ", " (0, 0)", EditorAssets.getUISkin(), false, 0);

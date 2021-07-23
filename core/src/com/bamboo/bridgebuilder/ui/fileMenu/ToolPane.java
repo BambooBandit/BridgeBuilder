@@ -9,10 +9,7 @@ import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.commands.MoveMapSpriteIndex;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
-import com.bamboo.bridgebuilder.ui.GradientDialog;
-import com.bamboo.bridgebuilder.ui.MinMaxDialog;
-import com.bamboo.bridgebuilder.ui.SplatDialog;
-import com.bamboo.bridgebuilder.ui.StairsDialog;
+import com.bamboo.bridgebuilder.ui.*;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 import com.bamboo.bridgebuilder.ui.spriteMenu.GroupDialog;
 
@@ -582,7 +579,11 @@ public class ToolPane extends Group
             public void clicked(InputEvent event, float x, float y)
             {
                 if(editor.activeMap != null)
-                    editor.activeMap.mergePolygons();
+                {
+                    MergeDialog mergeDialog = new MergeDialog(editor.stage, editor.activeMap.skin, editor.activeMap);
+                    mergeDialog.open();
+//                    editor.activeMap.mergePolygons();
+                }
             }
         });
     }
