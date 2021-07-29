@@ -61,7 +61,6 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         implementation 'org.locationtech.jts:jts-core:1.15.0'
-        implementation 'com.github.BambooBandit:jwalkable:1.0.2'
     }
 }
 
