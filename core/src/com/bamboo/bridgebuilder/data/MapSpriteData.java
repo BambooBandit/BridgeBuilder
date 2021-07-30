@@ -105,7 +105,6 @@ public class MapSpriteData extends LayerChildData
             {
                 AttachedMapObjectManager attachedMapObjectManager = mapSprite.tool.attachedMapObjectManagers.get(i);
                 MapObject mapObject = attachedMapObjectManager.getMapObjectByParent(mapSprite);
-
                 this.to.add(mapObject.id);
             }
         }

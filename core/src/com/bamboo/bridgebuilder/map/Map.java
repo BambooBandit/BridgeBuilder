@@ -43,6 +43,7 @@ import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteSheet;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Stack;
 
 public class Map implements Screen
@@ -1732,6 +1733,8 @@ public class Map implements Screen
         PropertyToolPane.apply(this);
         propertyMenu.mapPropertyPanel.apply();
         setIdCounter(mapData.idCounter);
+
+        fixDuplicateIDs();
     }
 
     public void loadMap(MapData mapData, String defaultSheet, String currentSheet)
@@ -1987,5 +1990,112 @@ public class Map implements Screen
     public void setIdCounter(long id)
     {
         idCounter = id;
+    }
+
+    public void fixDuplicateIDs()
+    {
+        // Fix the idCounter
+        long largestID = 0;
+        for (int i = 0; i < layers.size; i++)
+        {
+            Layer layer = layers.get(i);
+            if (layer instanceof SpriteLayer)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                for (int s = 0; s < spriteLayer.children.size; s++)
+                {
+                    MapSprite mapSprite = spriteLayer.children.get(s);
+                    if (mapSprite.id > largestID)
+                        largestID = mapSprite.id;
+                    if(mapSprite.attachedMapObjects != null)
+                    {
+                        for(int k = 0; k < mapSprite.attachedMapObjects.size; k ++)
+                        {
+                            MapObject mapObject = mapSprite.attachedMapObjects.get(k);
+                            if(mapObject.id > largestID)
+                                largestID = mapObject.id;
+                        }
+                    }
+                    if(mapSprite.attachedSprites != null)
+                    {
+                        for(int k = 0; k < mapSprite.attachedSprites.children.size; k ++)
+                        {
+                            MapSprite attachedSprite = mapSprite.attachedSprites.children.get(k);
+                            if(attachedSprite.id > largestID)
+                                largestID = attachedSprite.id;
+                        }
+                    }
+                }
+            } else if (layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                for (int s = 0; s < objectLayer.children.size; s++)
+                {
+                    LayerChild mapObject = objectLayer.children.get(s);
+                    if (mapObject.id > largestID)
+                        largestID = mapObject.id;
+                }
+            }
+        }
+        for (int i = 0; i < this.groupPolygons.children.size; i++)
+        {
+            MapObject mapObject = this.groupPolygons.children.get(i);
+            if (mapObject.id > largestID)
+                largestID = mapObject.id;
+        }
+        this.idCounter = largestID + 1;
+
+
+
+        // Find collisions and use the idCounter to reset them
+        HashSet<Long> hashSet = new HashSet<>();
+
+        for (int i = 0; i < layers.size; i++)
+        {
+            Layer layer = layers.get(i);
+            if (layer instanceof SpriteLayer)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                for (int s = 0; s < spriteLayer.children.size; s++)
+                {
+                    MapSprite mapSprite = spriteLayer.children.get(s);
+                    if(!hashSet.add(mapSprite.id))
+                        mapSprite.setID(getAndIncrementId());
+                    if(mapSprite.attachedMapObjects != null)
+                    {
+                        for(int k = 0; k < mapSprite.attachedMapObjects.size; k ++)
+                        {
+                            MapObject mapObject = mapSprite.attachedMapObjects.get(k);
+                            if(!hashSet.add(mapObject.id))
+                                mapObject.setID(getAndIncrementId());
+                        }
+                    }
+                    if(mapSprite.attachedSprites != null)
+                    {
+                        for(int k = 0; k < mapSprite.attachedSprites.children.size; k ++)
+                        {
+                            MapSprite attachedSprite = mapSprite.attachedSprites.children.get(k);
+                            if(!hashSet.add(attachedSprite.id))
+                                attachedSprite.setID(getAndIncrementId());
+                        }
+                    }
+                }
+            } else if (layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                for (int s = 0; s < objectLayer.children.size; s++)
+                {
+                    LayerChild mapObject = objectLayer.children.get(s);
+                    if(!hashSet.add(mapObject.id))
+                        mapObject.setID(getAndIncrementId());
+                }
+            }
+        }
+        for (int i = 0; i < this.groupPolygons.children.size; i++)
+        {
+            MapObject mapObject = this.groupPolygons.children.get(i);
+            if(!hashSet.add(mapObject.id))
+                mapObject.setID(getAndIncrementId());
+        }
     }
 }

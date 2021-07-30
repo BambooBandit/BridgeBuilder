@@ -111,6 +111,16 @@ public class DeleteSelectedMapSprites implements Command
                     for (int k = 0; k < entry.value.fromFlickers.size; k++)
                         entry.value.fromFlickers.get(k).toFlicker = entry.value;
                 }
+
+                if(entry.value.attachedMapObjects != null)
+                {
+                    for (int k = 0; k < entry.value.attachedMapObjects.size; k++)
+                    {
+                        MapObject mapObject = entry.value.attachedMapObjects.get(k);
+                        mapObject.attachedMapObjectManager.attachedMapObjects.add(mapObject);
+                    }
+                }
+
                 this.deletedSprites.remove(entry.key);
                 entry.value.select();
             }
