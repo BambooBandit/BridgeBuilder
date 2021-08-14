@@ -2037,11 +2037,14 @@ public class Map implements Screen
                 }
             }
         }
-        for (int i = 0; i < this.groupPolygons.children.size; i++)
+        if(this.groupPolygons != null)
         {
-            MapObject mapObject = this.groupPolygons.children.get(i);
-            if (mapObject.id > largestID)
-                largestID = mapObject.id;
+            for (int i = 0; i < this.groupPolygons.children.size; i++)
+            {
+                MapObject mapObject = this.groupPolygons.children.get(i);
+                if (mapObject.id > largestID)
+                    largestID = mapObject.id;
+            }
         }
         this.idCounter = largestID + 1;
 
@@ -2091,11 +2094,14 @@ public class Map implements Screen
                 }
             }
         }
-        for (int i = 0; i < this.groupPolygons.children.size; i++)
+        if(this.groupPolygons != null)
         {
-            MapObject mapObject = this.groupPolygons.children.get(i);
-            if(!hashSet.add(mapObject.id))
-                mapObject.setID(getAndIncrementId());
+            for (int i = 0; i < this.groupPolygons.children.size; i++)
+            {
+                MapObject mapObject = this.groupPolygons.children.get(i);
+                if (!hashSet.add(mapObject.id))
+                    mapObject.setID(getAndIncrementId());
+            }
         }
     }
 }
