@@ -43,7 +43,6 @@ public class DrawFence implements Command
     {
         if(this.mapSprite == null)
         {
-            SpriteLayer layer = (SpriteLayer) this.map.selectedLayer;
             SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
             this.mapSprite = new MapSprite(this.map, layer, spriteTool, this.x, this.y);
             if(map.editor.fileMenu.toolPane.stairsDialog.shouldParentHeightBeCentered())

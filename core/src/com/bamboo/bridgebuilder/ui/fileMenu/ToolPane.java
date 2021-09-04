@@ -42,6 +42,7 @@ public class ToolPane extends Group
     public Tool selectAttachedSprites;
     public Tool splat;
     public Tool fence;
+    public Tool branch;
     public Tool stairs;
     public Tool selectedTool;
     private TextButton bringUp;
@@ -61,6 +62,9 @@ public class ToolPane extends Group
 
     public StairsDialog stairsDialog;
     private TextButton stairsButton;
+
+    public BranchDialog branchDialog;
+    private TextButton branchButton;
 
     public GroupDialog groupDialog;
     private TextButton groupButton;
@@ -98,6 +102,7 @@ public class ToolPane extends Group
         this.selectAttachedSprites = new Tool(editor, this, true, Tools.SELECTATTACHEDSPRITES);
         this.splat = new Tool(editor, this, true, Tools.SPLAT);
         this.fence = new Tool(editor, this, true, Tools.FENCE);
+        this.branch = new Tool(editor, this, true, Tools.BRANCH);
         this.bringUp = new TextButton("^", skin);
         this.bringDown = new TextButton("v", skin);
         this.bringTop = new TextButton("^^", skin);
@@ -115,6 +120,9 @@ public class ToolPane extends Group
 
         this.stairsDialog = new StairsDialog(editor.stage, skin);
         this.stairsButton = new TextButton("Stairs", skin);
+
+        this.branchDialog = new BranchDialog(editor.stage, skin);
+        this.branchButton = new TextButton("Branches", skin);
 
         this.groupDialog = new GroupDialog(editor.stage, skin, editor);
         this.groupButton = new TextButton("Group", skin);
@@ -145,7 +153,8 @@ public class ToolPane extends Group
         this.toolTable.add(this.attachedSprites).padRight(1);
         this.toolTable.add(this.selectAttachedSprites).padRight(1);
         this.toolTable.add(this.splat).padRight(1);
-        this.toolTable.add(this.fence).padRight(5);
+        this.toolTable.add(this.fence).padRight(1);
+        this.toolTable.add(this.branch).padRight(5);
         this.toolTable.add(this.bringUp);
         this.toolTable.add(this.bringDown);
         this.toolTable.add(this.bringTop);
@@ -155,6 +164,7 @@ public class ToolPane extends Group
         this.toolTable.add(this.splatButton).padRight(5);
         this.toolTable.add(this.minMaxButton).padRight(5);
         this.toolTable.add(this.stairsButton).padRight(5);
+        this.toolTable.add(this.branchButton).padRight(5);
         this.toolTable.add(this.groupButton).padRight(5);
         this.toolTable.add(this.mergeButton).padRight(5);
         this.toolTable.add(this.fps).padRight(1);
@@ -196,6 +206,7 @@ public class ToolPane extends Group
         this.selectAttachedSprites.setSize(toolHeight, toolHeight);
         this.splat.setSize(toolHeight, toolHeight);
         this.fence.setSize(toolHeight, toolHeight);
+        this.branch.setSize(toolHeight, toolHeight);
 
         this.toolTable.getCell(this.brush).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.drawPoint).size(toolHeight, toolHeight);
@@ -218,6 +229,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.selectAttachedSprites).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.splat).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.fence).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.branch).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringUp).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringDown).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringTop).size(toolHeight, toolHeight);
@@ -227,6 +239,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.splatButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.minMaxButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.stairsButton).size(toolHeight * 2.3f, toolHeight);
+        this.toolTable.getCell(this.branchButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.groupButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.mergeButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.fps).size(toolHeight, toolHeight);
@@ -249,6 +262,8 @@ public class ToolPane extends Group
                     this.editor.activeMap.editAttachedMapSprite.disableEditAttachedSpritesMode();
                 else if(selectedTool == this.fence)
                     this.editor.activeMap.lastFencePlaced = null;
+                else if(selectedTool == this.branch)
+                    this.editor.activeMap.lastBranchPlaced = null;
                 if(selectedTool == this.random && this.fence.selected)
                     return;
                 if(selectedTool == this.fence && this.stairs.selected)
@@ -560,6 +575,15 @@ public class ToolPane extends Group
             public void clicked(InputEvent event, float x, float y)
             {
                 stairsDialog.setVisible(true);
+            }
+        });
+
+        this.branchButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                branchDialog.setVisible(true);
             }
         });
 

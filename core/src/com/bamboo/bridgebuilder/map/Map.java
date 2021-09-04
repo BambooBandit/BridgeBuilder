@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.LongArray;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
@@ -100,6 +101,7 @@ public class Map implements Screen
     public File file = null;
 
     public MapSprite lastFencePlaced;
+    public MapPoint lastBranchPlaced;
     public float lastFencePlacedDistance;
 
     public ObjectLayer groupPolygons; // Each group of map sprites has a polygon associated with it in this layer. Used for making multiple sprites do something when entering a polygon
@@ -432,6 +434,8 @@ public class Map implements Screen
                 {
                     MapObject from = objectLayer.children.get(k);
                     drawSnapFlicker(from);
+                    if(from instanceof MapPoint)
+                        drawSnapBranch((MapPoint) from);
                 }
             }
         }
@@ -519,6 +523,46 @@ public class Map implements Screen
             editor.shapeRenderer.circle(to.x - cameraX + (to.width / 2f),
                     to.y - cameraY + (to.height / 2f), .2f, 5);
         }
+    }
+
+    private void drawSnapBranch(MapPoint mapPoint)
+    {
+        MapPoint from = mapPoint;
+        if((from.toBranchPoints == null))
+            return;
+
+        editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
+        for(int i = 0; i < from.toBranchPoints.size; i ++)
+        {
+            editor.shapeRenderer.setColor(Color.ROYAL);
+            MapPoint to = from.toBranchPoints.get(i);
+            editor.shapeRenderer.rectLine(from.x - cameraX,
+                    from.y - cameraY,
+                    to.x - cameraX,
+                    to.y - cameraY,
+                    camera.zoom * .1f);
+
+            editor.shapeRenderer.setColor(Color.NAVY);
+            double dy = to.y - from.y;
+            double dx = to.x - from.x;
+            double theta = Math.atan2(dy, dx);
+            float barb = (.6f + (.6f * camera.zoom)) / 2f;
+            double phi = Math.toRadians(20);
+            double x, y, rho = theta + phi;
+            for(int j = 0; j < 2; j++)
+            {
+                x = to.x - barb * Math.cos(rho);
+                y = to.y - barb * Math.sin(rho);
+
+                editor.shapeRenderer.rectLine(to.x - cameraX,
+                        to.y - cameraY,
+                        (float)x - cameraX,
+                        (float)y - cameraY,
+                        camera.zoom * .1f);
+                rho = theta - phi;
+            }
+        }
+        editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
     }
 
     private void drawAttachedObjects()
@@ -1534,6 +1578,17 @@ public class Map implements Screen
                             ((ObjectLayer) layer).addMapObject(mapPoint);
                         }
                         mapObject.flickerId = mapObjectData.fId;
+                        if(mapObject instanceof MapPoint)
+                        {
+                            MapPointData mapPointData = (MapPointData) mapObjectData;
+                            MapPoint mapPoint = (MapPoint) mapObject;
+                            if(mapPointData.bId != null)
+                            {
+                                mapPoint.toBranchIds = new LongArray();
+                                for(int s = 0; s < mapPointData.bId.size(); s ++)
+                                    mapPoint.toBranchIds.add(mapPointData.bId.get(s));
+                            }
+                        }
                         mapObject.setID(mapObjectData.i);
                         // object properties
                         propSize = 0;
@@ -1635,6 +1690,39 @@ public class Map implements Screen
                                         SnapMapSpriteFlicker snapMapSpriteFlicker = new SnapMapSpriteFlicker(mapObject, flicker);
                                         executeCommand(snapMapSpriteFlicker);
                                         continue flicker;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Branch
+                    branch:
+                    for (int s = 0; s < layer.children.size; s++)
+                    {
+                        MapObject mapObject = (MapObject) layer.children.get(s);
+                        if(!(mapObject instanceof MapPoint))
+                            continue branch;
+                        MapPoint mapPoint = (MapPoint) mapObject;
+                        if (mapPoint.toBranchIds == null || mapPoint.toBranchIds.size == 0)
+                            continue branch;
+                        for(int m = 0; m < layers.size; m++)
+                        {
+                            Layer toLayer = layers.get(m);
+                            if(toLayer instanceof ObjectLayer)
+                            {
+                                toMapPoint:
+                                for (int k = 0; k < toLayer.children.size; k++)
+                                {
+                                    MapObject toMapObject = (MapObject) toLayer.children.get(k);
+                                    if(!(toMapObject instanceof MapPoint))
+                                        continue toMapPoint;
+                                    MapPoint branch = (MapPoint) toMapObject;
+                                    long id = branch.id;
+                                    if (mapPoint.toBranchIds.contains(id))
+                                    {
+                                        SnapMapPointBranch snapMapSpriteFlicker = new SnapMapPointBranch(mapPoint, branch);
+                                        executeCommand(snapMapSpriteFlicker);
                                     }
                                 }
                             }

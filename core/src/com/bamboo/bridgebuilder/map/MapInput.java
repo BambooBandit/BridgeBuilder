@@ -743,6 +743,13 @@ public class MapInput implements InputProcessor
             new SnapSpriteDialog(editor.stage, map.skin, map, this.snapFromThisObject, this.map.hoveredChild);
             return true;
         }
+        if(this.snapFromThisObject != null && this.map.hoveredChild != this.snapFromThisObject && this.snapFromThisObject instanceof MapPoint && this.map.hoveredChild instanceof MapPoint)
+        {
+            SnapMapPointBranch snapMapPointBranch = new SnapMapPointBranch((MapPoint) this.snapFromThisObject, (MapPoint) this.map.hoveredChild);
+            this.map.input.snapFromThisObject = null;
+            this.map.executeCommand(snapMapPointBranch);
+            return true;
+        }
         if(this.overrideLayer != null && !(this.map.hoveredChild instanceof MapObject))
         {
             if(this.map.hoveredChild != null && this.map.hoveredChild.layer == this.map.selectedLayer)
@@ -887,6 +894,13 @@ public class MapInput implements InputProcessor
             Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
             perspectiveX = unprojector.x;
             perspectiveY = unprojector.y;
+        }
+
+        if(Command.shouldExecute(map, DrawBranch.class))
+        {
+            DrawBranch drawBranch = new DrawBranch(map, (ObjectLayer) this.map.selectedLayer, perspectiveX, perspectiveY);
+            map.executeCommand(drawBranch);
+            return true;
         }
 
         DrawMapPoint drawMapPoint;

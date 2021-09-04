@@ -3,10 +3,7 @@ package com.bamboo.bridgebuilder.commands;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.bamboo.bridgebuilder.Utils;
-import com.bamboo.bridgebuilder.map.Map;
-import com.bamboo.bridgebuilder.map.MapObject;
-import com.bamboo.bridgebuilder.map.MapPolygon;
-import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 /** Command pattern used for undo/redo. TODO pool them. */
@@ -84,6 +81,10 @@ public interface Command
                 }
             }
             return map.editor.fileMenu.toolPane.fence.selected && Utils.canBuildFenceFromSelectedSpriteTools(map) && !(map.editAttachedMapSprite != null && (map.selectedSprites.size != 1 || (map.selectedSprites.first().attachedSprites == null || !map.selectedSprites.first().attachedSprites.equals(map.selectedLayer)))) && selectedFencePost;
+        }
+        else if(command == DrawBranch.class)
+        {
+            return map.editor.fileMenu.toolPane.branch.selected && map.selectedLayer != null && map.selectedLayer instanceof ObjectLayer;
         }
         return true;
     }

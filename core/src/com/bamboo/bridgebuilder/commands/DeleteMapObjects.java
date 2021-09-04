@@ -46,7 +46,16 @@ public class DeleteMapObjects implements Command
             {
                 MapObject mapObject = this.selectedObjects.get(i);
                 if(mapObject instanceof MapPoint)
-                    ((MapPoint) mapObject).destroyLight();
+                {
+                    MapPoint mapPoint = (MapPoint) mapObject;
+                    mapPoint.destroyLight();
+
+                    if(mapPoint.fromBranchPoints != null)
+                    {
+                        for (int k = 0; k < mapPoint.fromBranchPoints.size; k++)
+                            mapPoint.fromBranchPoints.get(k).toBranchPoints.removeValue(mapPoint, true);
+                    }
+                }
                 else if(mapObject instanceof MapPolygon)
                 {
                     MapPolygon mapPolygon = (MapPolygon) mapObject;
@@ -98,6 +107,18 @@ public class DeleteMapObjects implements Command
         for(int i = 0; i < this.deletedObjects.size; i ++)
         {
             MapObject mapObject = this.deletedObjects.get(i);
+            if(selectedLayer instanceof ObjectLayer)
+            {
+                if(mapObject instanceof MapPoint)
+                {
+                    MapPoint mapPoint = (MapPoint) mapObject;
+                    if(mapPoint.fromBranchPoints != null)
+                    {
+                        for (int k = 0; k < mapPoint.fromBranchPoints.size; k++)
+                            mapPoint.fromBranchPoints.get(k).toBranchPoints.add(mapPoint);
+                    }
+                }
+            }
             this.selectedLayer.children.add(mapObject);
             mapObject.select();
         }

@@ -3,6 +3,8 @@ package com.bamboo.bridgebuilder.map;
 import box2dLight.PointLight;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.LongArray;
 import com.bamboo.bridgebuilder.EditorPoint;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.BBShapeRenderer;
@@ -13,6 +15,11 @@ public class MapPoint extends MapObject
     public static float[] pointShape = new float[10];
     public EditorPoint point;
     public PointLight light;
+
+    // branch connections
+    public LongArray toBranchIds;
+    public Array<MapPoint> toBranchPoints;
+    public Array<MapPoint> fromBranchPoints;
 
     public MapPoint(Map map, Layer layer, float x, float y)
     {
