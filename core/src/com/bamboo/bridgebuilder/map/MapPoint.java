@@ -8,7 +8,9 @@ import com.badlogic.gdx.utils.LongArray;
 import com.bamboo.bridgebuilder.EditorPoint;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.BBShapeRenderer;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LightPropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
 public class MapPoint extends MapObject
 {
@@ -99,6 +101,27 @@ public class MapPoint extends MapObject
         pointShape[8] = x + .1333f;
         pointShape[9] = y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
+
+        PropertyField propertyField = Utils.getPropertyField(properties, "angle");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField angleProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float angle = (float) Math.toRadians(Float.parseFloat(angleProperty.getValue()));
+                drawAngle(angle);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
+    }
+
+    private void drawAngle(float angle)
+    {
+        map.editor.shapeRenderer.line(x - map.cameraX, y - map.cameraY, (float) (x - map.cameraX + Math.cos(angle) * .4), (float) (y - map.cameraY + Math.sin(angle) * .4));
     }
 
     @Override
@@ -120,7 +143,25 @@ public class MapPoint extends MapObject
         pointShape[8] = x + .1333f;
         pointShape[9] = y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
+
+        PropertyField propertyField = Utils.getPropertyField(properties, "angle");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField angleProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float angle = (float) Math.toRadians(Float.parseFloat(angleProperty.getValue()));
+                drawAngle(angle);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
+
         setPosition(getX() - xOffset, getY() - yOffset);
+
     }
 
     @Override
