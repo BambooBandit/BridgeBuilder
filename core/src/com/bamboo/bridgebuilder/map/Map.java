@@ -430,8 +430,11 @@ public class Map implements Screen
             else if(layer instanceof ObjectLayer)
             {
                 ObjectLayer objectLayer = (ObjectLayer) layer;
+                objects:
                 for(int k = 0; k < objectLayer.children.size; k ++)
                 {
+                    if(!objectLayer.layerField.visibleImg.isVisible())
+                        continue objects;
                     MapObject from = objectLayer.children.get(k);
                     drawSnapFlicker(from);
                     if(from instanceof MapPoint)
