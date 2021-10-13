@@ -100,20 +100,14 @@ public class SpriteGrid
         }
 
         // Check attached bodies in all sprite layers in the same floor, as well as other object layers in the same floor
-        int currentFloor = Integer.parseInt(this.objectLayer.layerField.layerName.getText().substring(6));
-        int iterationFloor = -1;
+        float currentFloor = objectLayer.z;
+        float iterationFloor = currentFloor - 1;
         for(int i = 0; i < this.objectLayer.map.layers.size; i ++)
         {
             Layer layer = this.objectLayer.map.layers.get(i);
             if(layer instanceof ObjectLayer)
             {
-                ObjectLayer objectLayer = (ObjectLayer) layer;
-                String name = objectLayer.layerField.layerName.getText();
-                if(name.startsWith("floor ") && Character.isDigit(name.charAt(name.length() - 1)))
-                {
-                    iterationFloor = Integer.parseInt(name.substring(6));
-                    continue;
-                }
+                iterationFloor = layer.z;
             }
             if(layer instanceof ObjectLayer)
             {
@@ -130,6 +124,7 @@ public class SpriteGrid
             }
             else if(layer instanceof SpriteLayer)
             {
+                iterationFloor = layer.z;
                 SpriteLayer spriteLayer = (SpriteLayer) layer;
                 if(iterationFloor == currentFloor)
                 {
@@ -234,8 +229,8 @@ public class SpriteGrid
         }
 
         // Render all sprite layers of the same floor to an fbo
-        int currentFloor = Integer.parseInt(this.objectLayer.layerField.layerName.getText().substring(6));
-        int iterationFloor = -1;
+        float currentFloor = objectLayer.z;
+        float iterationFloor = currentFloor - 1;
 
         this.fbo.bind();
         this.fbo.begin();
@@ -263,13 +258,11 @@ public class SpriteGrid
             Layer layer = this.objectLayer.map.layers.get(i);
             if(layer instanceof ObjectLayer)
             {
-                ObjectLayer objectLayer = (ObjectLayer) layer;
-                String name = objectLayer.layerField.layerName.getText();
-                if(name.startsWith("floor ") && Character.isDigit(name.charAt(name.length() - 1)))
-                    iterationFloor = Integer.parseInt(name.substring(6));
+                iterationFloor = layer.z;
             }
             else if(layer instanceof SpriteLayer)
             {
+                iterationFloor = layer.z;
                 SpriteLayer spriteLayer = (SpriteLayer) layer;
                 if(iterationFloor != currentFloor || Utils.getPropertyField(spriteLayer.properties, "ground") == null)
                     continue;
