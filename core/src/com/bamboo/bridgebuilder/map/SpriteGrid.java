@@ -20,7 +20,7 @@ import static com.badlogic.gdx.graphics.GL20.*;
 /** Creates a grid of information based on sprites on whichever floor this represents. Information such as average sprite color in cells, and what material you are walking on. */
 public class SpriteGrid
 {
-    private ObjectLayer objectLayer;
+    public ObjectLayer objectLayer;
     public Array<SpriteCell> grid; // Going from bottom left to top right. Every x amount of indices is x width of the layer and height of 1. False is not blocked, true is blocked.
 
     private FrameBuffer fbo;
@@ -85,6 +85,7 @@ public class SpriteGrid
             cell.g = 0;
             cell.b = 0;
             cell.a = 1;
+            cell.spriteGrid = this;
         }
 
         updateColorGrid();
@@ -298,6 +299,7 @@ public class SpriteGrid
             cell.g = rgba8888ToColor.g;
             cell.b = rgba8888ToColor.b;
             cell.a = rgba8888ToColor.a;
+            cell.spriteGrid = this;
         }
 
         objectLayer.map.colorizeGroup();
@@ -342,6 +344,7 @@ public class SpriteGrid
         public int dustIndex = -1;
         public String dustType = null;
         public float r, g, b, a;
+        public SpriteGrid spriteGrid;
     }
 
     private boolean doesDustTypeHavePriority(String dustType, int layerIndex, String comparingDustType, int comparingLayerIndex)

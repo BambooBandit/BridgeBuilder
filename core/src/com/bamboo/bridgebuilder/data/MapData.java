@@ -1,5 +1,6 @@
 package com.bamboo.bridgebuilder.data;
 
+import com.badlogic.gdx.graphics.Color;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
@@ -34,6 +35,10 @@ public class MapData
             this.lProps = new ArrayList<>();
         if(map.propertyMenu.mapPropertyPanel.properties.size > 0)
             this.props = new ArrayList<>();
+
+        OpaqueColorPropertyField backgroundColor = Utils.getLockedOpaqueColorField("Background", map.propertyMenu.mapPropertyPanel.lockedProperties);
+        CellData.defaultCValue = Color.rgb888(backgroundColor.getR(), backgroundColor.getG(), backgroundColor.getB());
+
         for(int i = 0; i < map.propertyMenu.mapPropertyPanel.lockedProperties.size; i ++)
         {
             PropertyField property = map.propertyMenu.mapPropertyPanel.lockedProperties.get(i);
