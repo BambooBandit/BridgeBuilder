@@ -66,6 +66,7 @@ public class ToolData
                     mapObjectData = new MapPointData((MapPoint) mapObject, attachedMapObjectManager.offsetX, attachedMapObjectManager.offsetY);
                 else
                     mapObjectData = new MapPolygonData((MapPolygon) mapObject, attachedMapObjectManager.offsetX, attachedMapObjectManager.offsetY);
+                mapObjectData.i = 0;
                 this.o.add(mapObjectData);
             }
         }

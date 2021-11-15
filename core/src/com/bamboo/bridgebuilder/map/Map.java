@@ -1359,14 +1359,17 @@ public class Map implements Screen
             this.name = mapData.name;
 
             // map properties
-            int propSize = mapData.props.size();
-            for (int s = 0; s < propSize; s++)
+            if(mapData.props != null)
             {
-                PropertyData propertyData = mapData.props.get(s);
-                propertyMenu.newProperty(propertyData, propertyMenu.mapPropertyPanel.properties);
+                int propSize = mapData.props.size();
+                for (int s = 0; s < propSize; s++)
+                {
+                    PropertyData propertyData = mapData.props.get(s);
+                    propertyMenu.newProperty(propertyData, propertyMenu.mapPropertyPanel.properties);
+                }
             }
             // map locked properties
-            propSize = mapData.lProps.size();
+            int propSize = mapData.lProps.size();
             for (int s = 0; s < propSize; s++)
             {
                 PropertyData propertyData = mapData.lProps.get(s);
@@ -2169,6 +2172,8 @@ public class Map implements Screen
                         for(int k = 0; k < mapSprite.attachedSprites.children.size; k ++)
                         {
                             MapSprite attachedSprite = mapSprite.attachedSprites.children.get(k);
+                            if(attachedSprite == mapSprite)
+                                continue;
                             if(!hashSet.add(attachedSprite.id))
                                 attachedSprite.setID(getAndIncrementId());
                         }

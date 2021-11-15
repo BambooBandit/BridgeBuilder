@@ -185,6 +185,8 @@ public class Utils
 
     public static boolean isLayerGround(Layer layer)
     {
+        if(layer == null)
+            return false;
         PropertyField groundProperty = Utils.getPropertyField(layer.properties, "ground");
         return groundProperty != null;
     }

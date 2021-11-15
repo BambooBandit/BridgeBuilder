@@ -36,5 +36,9 @@ public abstract class MapObjectData extends LayerChildData
 
         this.oX = oX;
         this.oY = oY;
+        if(Math.abs(this.oX - Math.round(this.oX)) < 0.0001)
+            this.oX = Math.round(this.oX);
+        if(Math.abs(this.oY - Math.round(this.oY)) < 0.0001)
+            this.oY = Math.round(this.oY);
     }
 }

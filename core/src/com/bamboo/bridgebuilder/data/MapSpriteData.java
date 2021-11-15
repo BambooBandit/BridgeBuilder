@@ -46,7 +46,9 @@ public class MapSpriteData extends LayerChildData
             this.sN = mapSprite.tool.sheet.name;
 
         this.ro = mapSprite.sprite.getRotation();
-        this.s = mapSprite.sprite.getScaleX() - defaultScaleValue;
+        this.s = mapSprite.scale - defaultScaleValue;
+        if(Math.abs(s - Math.round(s)) < 0.0001)
+            s = Math.round(s);
         this.w = mapSprite.sprite.getWidth();
         this.h = mapSprite.sprite.getHeight();
         ColorPropertyField colorProperty = Utils.getLockedColorField("Tint", mapSprite.lockedProperties);
