@@ -2176,6 +2176,15 @@ public class Map implements Screen
                                 continue;
                             if(!hashSet.add(attachedSprite.id))
                                 attachedSprite.setID(getAndIncrementId());
+                            if(attachedSprite.attachedMapObjects != null)
+                            {
+                                for(int t = 0; t < attachedSprite.attachedMapObjects.size; t ++)
+                                {
+                                    MapObject mapObject = attachedSprite.attachedMapObjects.get(t);
+                                    if(!hashSet.add(mapObject.id))
+                                        mapObject.setID(getAndIncrementId());
+                                }
+                            }
                         }
                     }
                 }
