@@ -36,7 +36,7 @@ public class GroupDialog extends Window
 
     public GroupDialog(Stage stage, Skin skin, BridgeBuilder editor)
     {
-        super("Stairs", skin);
+        super("Group", skin);
         this.editor = editor;
         this.skin = skin;
 

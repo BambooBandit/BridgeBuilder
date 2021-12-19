@@ -267,7 +267,8 @@ public class Map implements Screen
 
         if(selectedLayer != null)
             this.editor.shapeRenderer.setProjectionMatrix(selectedLayer.perspective.camera.combined);
-        drawHoveredOutline();
+        if(selectedLayer != null)
+            drawHoveredOutline();
         if(selectedLayer != null)
             this.editor.shapeRenderer.setProjectionMatrix(selectedLayer.perspective.camera.combined);
         drawSelectedOutlines();
