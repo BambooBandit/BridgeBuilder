@@ -15,6 +15,8 @@ public class ToolData
     public ArrayList<PropertyData> p; // properties
     public ArrayList<PropertyData> lP; // locked properties
     public ArrayList<MapObjectData> o; // attached objects
+    public String nT; // next tool
+    public String pT; // previous tool
     public ToolData(){}
     public ToolData(SpriteTool spriteTool)
     {
@@ -70,5 +72,10 @@ public class ToolData
                 this.o.add(mapObjectData);
             }
         }
+
+        if(spriteTool.nextTool != null)
+            this.nT = spriteTool.nextTool.name;
+        if(spriteTool.previousTool != null)
+            this.pT = spriteTool.previousTool.name;
     }
 }

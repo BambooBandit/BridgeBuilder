@@ -38,6 +38,9 @@ public class SpriteTool extends SpriteMenuTool
 
     public Array<AttachedMapObjectManager> attachedMapObjectManagers;
 
+    public SpriteTool nextTool;
+    public SpriteTool previousTool;
+
     public SpriteTool(SpriteMenuTools tool, SpriteSheet sheet, Image image, TextureRegion textureRegion, String name, int x, int y, SpriteMenuToolPane spriteMenuToolPane, Skin skin)
     {
         super(tool, sheet, image, spriteMenuToolPane, skin);

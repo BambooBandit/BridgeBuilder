@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.bamboo.bridgebuilder.commands.SnapMapSpriteEdge;
 import com.bamboo.bridgebuilder.commands.SnapMapSpriteFlicker;
+import com.bamboo.bridgebuilder.commands.SnapMapSpriteNextTool;
+import com.bamboo.bridgebuilder.commands.SnapMapSpritePreviousTool;
 import com.bamboo.bridgebuilder.map.LayerChild;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapSprite;
@@ -20,6 +22,8 @@ public class SnapSpriteDialog extends Window
 {
     private TextButton edge;
     private TextButton flicker;
+    private TextButton previousTool;
+    private TextButton nextTool;
     private TextButton close;
 
     private Skin skin;
@@ -47,6 +51,9 @@ public class SnapSpriteDialog extends Window
         this.edge = new TextButton("Edge", skin);
         this.flicker = new TextButton("Flicker", skin);
 
+        this.nextTool = new TextButton("Next Tool", skin);
+        this.previousTool = new TextButton("Previous Tool", skin);
+
         this.edge.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y)
@@ -71,6 +78,30 @@ public class SnapSpriteDialog extends Window
             }
         });
 
+        this.nextTool.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                if(to instanceof MapSprite || to == null)
+                {
+                    nextTool();
+                    close();
+                }
+            }
+        });
+
+        this.previousTool.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                if(to instanceof MapSprite || to == null)
+                {
+                    previousTool();
+                    close();
+                }
+            }
+        });
+
         this.close = new TextButton("Close", skin);
         this.close.setColor(Color.FIREBRICK);
         this.close.addListener(new ClickListener()
@@ -84,6 +115,8 @@ public class SnapSpriteDialog extends Window
 
         this.choiceTable.add(this.edge).padBottom(15);
         this.choiceTable.add(this.flicker).padBottom(15);
+        this.choiceTable.add(this.nextTool).padBottom(15);
+        this.choiceTable.add(this.previousTool).padBottom(15);
         this.table.add(this.choiceTable).row();
         this.table.add(this.close);
 
@@ -107,6 +140,20 @@ public class SnapSpriteDialog extends Window
         SnapMapSpriteFlicker snapMapSpriteFlicker = new SnapMapSpriteFlicker(this.from, (MapSprite)this.to);
         this.map.input.snapFromThisObject = null;
         this.map.executeCommand(snapMapSpriteFlicker);
+    }
+
+    private void nextTool()
+    {
+        SnapMapSpriteNextTool snapMapSpriteNextTool = new SnapMapSpriteNextTool((MapSprite) this.from, (MapSprite)this.to);
+        this.map.input.snapFromThisObject = null;
+        this.map.executeCommand(snapMapSpriteNextTool);
+    }
+
+    private void previousTool()
+    {
+        SnapMapSpritePreviousTool snapMapSpritePreviousTool = new SnapMapSpritePreviousTool((MapSprite) this.from, (MapSprite)this.to);
+        this.map.input.snapFromThisObject = null;
+        this.map.executeCommand(snapMapSpritePreviousTool);
     }
 
     public void close()

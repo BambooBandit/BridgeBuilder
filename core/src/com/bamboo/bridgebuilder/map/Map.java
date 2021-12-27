@@ -118,6 +118,8 @@ public class Map implements Screen
 
     private Array<FloatArray> mergedPolygons;
 
+    public SpriteTool nextPreviousTool = null;
+
     public Map(BridgeBuilder editor, String name)
     {
         this.editor = editor;
@@ -1108,8 +1110,23 @@ public class Map implements Screen
     {
         if(this.spriteMenu.selectedSpriteTools.size == 0)
             return null;
-        if(this.spriteMenu.selectedSpriteTools.first().tool != SpriteMenuTools.SPRITE)
-            return null;
+        if(this.nextPreviousTool != null)
+        {
+            boolean contains = false;
+            for(int i = 0; i < this.spriteMenu.selectedSpriteTools.size; i ++)
+            {
+                SpriteTool spriteTool = this.spriteMenu.selectedSpriteTools.get(i);
+                if(spriteTool.nextTool == this.nextPreviousTool || spriteTool.previousTool == this.nextPreviousTool)
+                {
+                    contains = true;
+                    break;
+                }
+            }
+            if(!contains)
+                this.nextPreviousTool = null;
+        }
+        if(this.nextPreviousTool != null)
+            return this.nextPreviousTool;
         if(this.editor.fileMenu.toolPane.random.selected && this.randomSpriteIndex < this.spriteMenu.selectedSpriteTools.size)
             return this.spriteMenu.selectedSpriteTools.get(this.randomSpriteIndex);
         return this.spriteMenu.selectedSpriteTools.first();
@@ -1421,6 +1438,11 @@ public class Map implements Screen
                     if (spriteTool == null)
                         continue;
                     spriteTool.properties.clear();
+
+                    if(toolData.nT != null)
+                        spriteTool.nextTool = spriteMenu.getSpriteTool(toolData.nT, sheetName);
+                    if(toolData.pT != null)
+                        spriteTool.previousTool = spriteMenu.getSpriteTool(toolData.pT, sheetName);
 
                     // properties
                     int propSize = 0;

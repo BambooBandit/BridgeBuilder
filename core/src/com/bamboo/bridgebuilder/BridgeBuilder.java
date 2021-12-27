@@ -3,6 +3,7 @@ package com.bamboo.bridgebuilder;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -114,6 +115,28 @@ public class BridgeBuilder extends Game
 					{
 						CreateLayer createLayer = new CreateLayer(activeMap, LayerTypes.OBJECT);
 						activeMap.executeCommand(createLayer);
+					}
+				}
+				else if(keycode == Input.Keys.LEFT)
+				{
+					if(activeMap != null && activeMap.getSpriteToolFromSelectedTools() != null && activeMap.getSpriteToolFromSelectedTools().previousTool != null)
+					{
+						Vector3 coords = Utils.unproject(activeMap.camera, Gdx.input.getX(), Gdx.input.getY());
+						float coordsX = coords.x + activeMap.cameraX;
+						float coordsY = coords.y + activeMap.cameraY;
+						activeMap.nextPreviousTool = activeMap.getSpriteToolFromSelectedTools().previousTool;
+						activeMap.input.handlePreviewSpritePositionUpdate(coordsX, coordsY);
+					}
+				}
+				else if(keycode == Input.Keys.RIGHT)
+				{
+					if(activeMap != null && activeMap.getSpriteToolFromSelectedTools() != null && activeMap.getSpriteToolFromSelectedTools().nextTool != null)
+					{
+						Vector3 coords = Utils.unproject(activeMap.camera, Gdx.input.getX(), Gdx.input.getY());
+						float coordsX = coords.x + activeMap.cameraX;
+						float coordsY = coords.y + activeMap.cameraY;
+						activeMap.nextPreviousTool = activeMap.getSpriteToolFromSelectedTools().nextTool;
+						activeMap.input.handlePreviewSpritePositionUpdate(coordsX, coordsY);
 					}
 				}
 				else if(keycode == Input.Keys.UP && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
