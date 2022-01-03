@@ -323,6 +323,7 @@ public class MapPolygon extends MapObject
     {
         if(this.body != null)
             return;
+//        System.out.println("start " + id);
         BodyDef bodyDef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         float oldRotation = this.polygon.getRotation();
@@ -343,6 +344,7 @@ public class MapPolygon extends MapObject
         fixtureDef.filter.maskBits = PhysicsBits.LIGHT_PHYSICS;
         this.body = this.map.world.createBody(bodyDef).createFixture(fixtureDef).getBody();
         this.body.setTransform(this.polygon.getTransformedVertices()[0], this.polygon.getTransformedVertices()[1], (float) Math.toRadians(this.getRotation()));
+//        System.out.println("end");
     }
 
     public void destroyBody()
