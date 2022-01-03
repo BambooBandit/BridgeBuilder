@@ -71,6 +71,8 @@ public abstract class MapObject extends LayerChild implements Comparable<MapObje
         this.selected = false;
     }
 
+    public void drawOutline() { }
+
     public final boolean isAttachedObject()
     {
         return this.attachedSprite != null;

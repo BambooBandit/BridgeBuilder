@@ -25,6 +25,9 @@ public class ObjectLayer extends Layer
         for(int i = 0; i < this.children.size; i ++)
             this.children.get(i).draw();
 
+        for(int i = 0; i < this.children.size; i ++)
+            this.children.get(i).drawOutline();
+
         setCameraZoomToSelectedLayer();
     }
 

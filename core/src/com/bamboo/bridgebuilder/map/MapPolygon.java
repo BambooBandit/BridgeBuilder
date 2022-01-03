@@ -56,7 +56,7 @@ public class MapPolygon extends MapObject
     @Override public void update() { }
 
     @Override
-    public void draw()
+    public void drawOutline()
     {
         polygon.setPosition(x - map.cameraX, y - map.cameraY);
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
@@ -91,6 +91,35 @@ public class MapPolygon extends MapObject
                 return;
             }
         }
+    }
+
+    @Override
+    public void draw()
+    {
+        polygon.setPosition(x - map.cameraX, y - map.cameraY);
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
+        if(mapSprites == null)
+        {
+            if(Utils.containsProperty(properties, "blocked"))
+                map.editor.shapeRenderer.setColor(1f, 0f, 0f, .3f);
+            else
+                map.editor.shapeRenderer.setColor(0f, 1f, 1f, .3f);
+        }
+        else
+        {
+            map.editor.shapeRenderer.setColor(.8f, 0, .8f, .3f);
+            for(int i = 0; i < mapSprites.size; i ++)
+            {
+                if(mapSprites.get(i).selected)
+                {
+                    map.editor.shapeRenderer.setColor(1, 0, 1, .3f);
+                    break;
+                }
+            }
+        }
+
+        map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
+
     }
 
     @Override
