@@ -1797,11 +1797,14 @@ public class Map implements Screen
                     (groupPolygons).addMapObject(mapPolygon);
                     mapPolygon.mapSprites = new Array<>();
                     // object properties
-                    int propSize = mapPolygonData.p.size();
-                    for (int s = 0; s < propSize; s++)
+                    if(mapPolygonData.p != null)
                     {
-                        PropertyData propertyData = mapPolygonData.p.get(s);
-                        propertyMenu.newProperty(propertyData, mapPolygon.properties);
+                        int propSize = mapPolygonData.p.size();
+                        for (int s = 0; s < propSize; s++)
+                        {
+                            PropertyData propertyData = mapPolygonData.p.get(s);
+                            propertyMenu.newProperty(propertyData, mapPolygon.properties);
+                        }
                     }
                 }
 
