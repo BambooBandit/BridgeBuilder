@@ -2022,12 +2022,16 @@ public class Map implements Screen
                 // attached manager
                 mapSprite.createAttachedMapObject(this, mapObject, mapObjectData.oX, mapObjectData.oY, false);
                 // object properties
-                int propSize = mapObjectData.p.size();
                 mapObject.properties.clear();
-                for (int p = 0; p < propSize; p++)
+                if(mapObjectData.p != null)
                 {
-                    PropertyData propertyData = mapObjectData.p.get(p);
-                    propertyMenu.newProperty(propertyData, mapObject.properties);
+                    int propSize = mapObjectData.p.size();
+                    for (int p = 0; p < propSize; p++)
+                    {
+                        PropertyData propertyData = mapObjectData.p.get(p);
+                        propertyMenu.newProperty(propertyData, mapObject.properties);
+                    }
+
                 }
             }
         }
