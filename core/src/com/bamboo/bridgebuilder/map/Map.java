@@ -591,7 +591,10 @@ public class Map implements Screen
                     if(mapSprite.attachedMapObjects != null)
                     {
                         for(int s = 0; s < mapSprite.attachedMapObjects.size; s ++)
+                        {
                             mapSprite.attachedMapObjects.get(s).draw();
+                            mapSprite.attachedMapObjects.get(s).drawOutline();
+                        }
                     }
                     if(mapSprite.attachedSprites != null)
                     {
@@ -601,7 +604,10 @@ public class Map implements Screen
                             if(attachedMapSprite.attachedMapObjects != null)
                             {
                                 for(int m = 0; m < attachedMapSprite.attachedMapObjects.size; m ++)
+                                {
                                     attachedMapSprite.attachedMapObjects.get(m).draw();
+                                    attachedMapSprite.attachedMapObjects.get(m).drawOutline();
+                                }
                             }
                         }
                     }
@@ -963,7 +969,7 @@ public class Map implements Screen
                     layer.draw();
             }
         }
-        if(this.groupPolygons != null)
+        if(this.groupPolygons != null && editor.fileMenu.toolPane.groupPolygons.selected)
         {
             editor.shapeRenderer.setProjectionMatrix(groupPolygons.perspective.perspectiveCamera.combined);
             this.groupPolygons.draw();

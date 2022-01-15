@@ -45,6 +45,8 @@ public class ToolPane extends Group
     public Tool branch;
     public Tool stairs;
     public Tool selectedTool;
+    public Tool filledPolygons;
+    public Tool groupPolygons;
     private TextButton bringUp;
     private TextButton bringDown;
     private TextButton bringTop;
@@ -103,6 +105,8 @@ public class ToolPane extends Group
         this.splat = new Tool(editor, this, true, Tools.SPLAT);
         this.fence = new Tool(editor, this, true, Tools.FENCE);
         this.branch = new Tool(editor, this, true, Tools.BRANCH);
+        this.filledPolygons = new Tool(editor, this, true, Tools.FILLED);
+        this.groupPolygons = new Tool(editor, this, true, Tools.GROUP);
         this.bringUp = new TextButton("^", skin);
         this.bringDown = new TextButton("v", skin);
         this.bringTop = new TextButton("^^", skin);
@@ -154,7 +158,9 @@ public class ToolPane extends Group
         this.toolTable.add(this.selectAttachedSprites).padRight(1);
         this.toolTable.add(this.splat).padRight(1);
         this.toolTable.add(this.fence).padRight(1);
-        this.toolTable.add(this.branch).padRight(5);
+        this.toolTable.add(this.branch).padRight(1);
+        this.toolTable.add(this.filledPolygons).padRight(1);
+        this.toolTable.add(this.groupPolygons).padRight(5);
         this.toolTable.add(this.bringUp);
         this.toolTable.add(this.bringDown);
         this.toolTable.add(this.bringTop);
@@ -207,6 +213,8 @@ public class ToolPane extends Group
         this.splat.setSize(toolHeight, toolHeight);
         this.fence.setSize(toolHeight, toolHeight);
         this.branch.setSize(toolHeight, toolHeight);
+        this.filledPolygons.setSize(toolHeight, toolHeight);
+        this.groupPolygons.setSize(toolHeight, toolHeight);
 
         this.toolTable.getCell(this.brush).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.drawPoint).size(toolHeight, toolHeight);
@@ -230,6 +238,8 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.splat).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.fence).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.branch).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.groupPolygons).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.filledPolygons).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringUp).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringDown).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringTop).size(toolHeight, toolHeight);

@@ -97,6 +97,8 @@ public class MapPolygon extends MapObject
     public void draw()
     {
         polygon.setPosition(x - map.cameraX, y - map.cameraY);
+        if(!map.editor.fileMenu.toolPane.filledPolygons.selected)
+            return;
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
         if(mapSprites == null)
         {
