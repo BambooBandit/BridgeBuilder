@@ -91,6 +91,21 @@ public class MapPolygon extends MapObject
                 return;
             }
         }
+        propertyField = Utils.getPropertyField(properties, "dustAngle");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField angleProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float angle = (float) Math.toRadians(Float.parseFloat(angleProperty.getValue()));
+                drawCentroidAndAngle(angle);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
     }
 
     @Override
@@ -247,7 +262,7 @@ public class MapPolygon extends MapObject
     private void drawCentroidAndAngle(float angle)
     {
         map.editor.shapeRenderer.circle(centroidX - map.cameraX, centroidY - map.cameraY, .075f, 8);
-        map.editor.shapeRenderer.line(centroidX - map.cameraX, centroidY - map.cameraY, (float) (centroidX - map.cameraX + Math.cos(angle) * .4), (float) (centroidY - map.cameraY + Math.sin(angle) * .4));
+        map.editor.shapeRenderer.line(centroidX - map.cameraX, centroidY - map.cameraY, (float) (centroidX - map.cameraX + Math.cos(angle) * .75), (float) (centroidY - map.cameraY + Math.sin(angle) * .75));
     }
 
     @Override

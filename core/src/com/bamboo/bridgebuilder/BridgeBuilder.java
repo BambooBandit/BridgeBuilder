@@ -117,6 +117,58 @@ public class BridgeBuilder extends Game
 						activeMap.executeCommand(createLayer);
 					}
 				}
+				else if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && keycode == Input.Keys.LEFT)
+				{
+					if(activeMap != null)
+					{
+						if(activeMap.selectedLayer != null)
+						{
+							for(int i = 0; i < activeMap.selectedLayer.children.size; i ++)
+							{
+								LayerChild child = (LayerChild) activeMap.selectedLayer.children.get(i);
+								child.setPosition(child.x - 10, child.y);
+							}
+						}
+						else
+						{
+							for(int i = 0; i < activeMap.layers.size; i ++)
+							{
+								Layer layer = activeMap.layers.get(i);
+								for(int k = 0; k < layer.children.size; k ++)
+								{
+									LayerChild child = (LayerChild) layer.children.get(k);
+									child.setPosition(child.x - 10, child.y);
+								}
+							}
+						}
+					}
+				}
+				else if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && keycode == Input.Keys.RIGHT)
+				{
+					if(activeMap != null)
+					{
+						if(activeMap.selectedLayer != null)
+						{
+							for(int i = 0; i < activeMap.selectedLayer.children.size; i ++)
+							{
+								LayerChild child = (LayerChild) activeMap.selectedLayer.children.get(i);
+								child.setPosition(child.x + 10, child.y);
+							}
+						}
+						else
+						{
+							for(int i = 0; i < activeMap.layers.size; i ++)
+							{
+								Layer layer = activeMap.layers.get(i);
+								for(int k = 0; k < layer.children.size; k ++)
+								{
+									LayerChild child = (LayerChild) layer.children.get(k);
+									child.setPosition(child.x + 10, child.y);
+								}
+							}
+						}
+					}
+				}
 				else if(keycode == Input.Keys.LEFT)
 				{
 					if(activeMap != null && activeMap.getSpriteToolFromSelectedTools() != null && activeMap.getSpriteToolFromSelectedTools().previousTool != null)
@@ -278,58 +330,6 @@ public class BridgeBuilder extends Game
 								{
 									LayerChild child = (LayerChild) layer.children.get(k);
 									child.setPosition(child.x, child.y - 10);
-								}
-							}
-						}
-					}
-				}
-				else if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && keycode == Input.Keys.LEFT)
-				{
-					if(activeMap != null)
-					{
-						if(activeMap.selectedLayer != null)
-						{
-							for(int i = 0; i < activeMap.selectedLayer.children.size; i ++)
-							{
-								LayerChild child = (LayerChild) activeMap.selectedLayer.children.get(i);
-								child.setPosition(child.x - 10, child.y);
-							}
-						}
-						else
-						{
-							for(int i = 0; i < activeMap.layers.size; i ++)
-							{
-								Layer layer = activeMap.layers.get(i);
-								for(int k = 0; k < layer.children.size; k ++)
-								{
-									LayerChild child = (LayerChild) layer.children.get(k);
-									child.setPosition(child.x - 10, child.y);
-								}
-							}
-						}
-					}
-				}
-				else if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && keycode == Input.Keys.RIGHT)
-				{
-					if(activeMap != null)
-					{
-						if(activeMap.selectedLayer != null)
-						{
-							for(int i = 0; i < activeMap.selectedLayer.children.size; i ++)
-							{
-								LayerChild child = (LayerChild) activeMap.selectedLayer.children.get(i);
-								child.setPosition(child.x + 10, child.y);
-							}
-						}
-						else
-						{
-							for(int i = 0; i < activeMap.layers.size; i ++)
-							{
-								Layer layer = activeMap.layers.get(i);
-								for(int k = 0; k < layer.children.size; k ++)
-								{
-									LayerChild child = (LayerChild) layer.children.get(k);
-									child.setPosition(child.x + 10, child.y);
 								}
 							}
 						}
