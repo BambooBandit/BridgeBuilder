@@ -33,6 +33,22 @@ public class PasteItems implements Command
     @Override
     public void execute()
     {
+        if(cutItems.first() instanceof MapSprite)
+        {
+            for(int i = 0; i < cutItems.size; i ++)
+            {
+                MapSprite mapSprite = (MapSprite) cutItems.get(i);
+                if (mapSprite.attachedMapObjects != null)
+                {
+                    for (int k = 0; k < mapSprite.attachedMapObjects.size; k++)
+                    {
+                        MapObject mapObject = mapSprite.attachedMapObjects.get(k);
+                        mapObject.attachedMapObjectManager.attachedMapObjects.add(mapObject);
+                    }
+                }
+            }
+        }
+
         for(int i = 0; i < cutItems.size; i ++)
             this.toLayer.children.add(cutItems.get(i));
         if(this.toLayer instanceof ObjectLayer)
