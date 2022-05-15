@@ -661,6 +661,8 @@ public class Map implements Screen
 
     private void drawUnfinishedMapPolygon()
     {
+        if(selectedLayer == null)
+            return;
         if(!Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE))
             return;
         this.editor.shapeRenderer.setProjectionMatrix(selectedLayer.perspective.perspectiveCamera.combined);
@@ -696,6 +698,8 @@ public class Map implements Screen
 
     private void drawUnfinishedStairs()
     {
+        if(selectedLayer == null)
+            return;
         if(!Utils.isFileToolThisType(this.editor, Tools.STAIRS) )
             return;
         int oldIndex = 0;
@@ -762,6 +766,8 @@ public class Map implements Screen
 
     private void drawGradientLine()
     {
+        if(selectedLayer == null)
+            return;
         if(!this.editor.fileMenu.toolPane.gradient.selected || !this.input.draggingGradient)
             return;
         this.editor.shapeRenderer.setColor(Color.BLACK);
@@ -771,6 +777,8 @@ public class Map implements Screen
 
     private void drawVerticeSelect()
     {
+        if(selectedLayer == null)
+            return;
         for(int i = 0; i < this.selectedObjects.size; i ++)
         {
             MapObject mapObject = this.selectedObjects.get(i);
@@ -785,6 +793,8 @@ public class Map implements Screen
 
     private void drawBoxSelect()
     {
+        if(selectedLayer == null)
+            return;
         if(!Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) || !this.input.boxSelect.isDragging || this.selectedLayer == null)
             return;
 

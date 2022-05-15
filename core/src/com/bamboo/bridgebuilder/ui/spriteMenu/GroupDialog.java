@@ -156,6 +156,8 @@ public class GroupDialog extends Window
 
     public void close()
     {
+        if(!isVisible())
+            return;
         addCheckBox.setChecked(false);
         removeCheckBox.setChecked(false);
         createCheckBox.setChecked(false);
