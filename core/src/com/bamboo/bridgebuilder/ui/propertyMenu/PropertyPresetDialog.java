@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.commands.AddProperty;
 import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
@@ -31,6 +32,7 @@ public class PropertyPresetDialog extends Window
     private Table newAnimatedProperty;
     private Table newFadeLimitProperty;
     private Table newBlowableProperty;
+    private Array<Table> propertyGroups;
 
     private Table presetTable;
     private ScrollPane scrollPane;
@@ -44,6 +46,7 @@ public class PropertyPresetDialog extends Window
     public PropertyPresetDialog(Map map, Stage stage, Skin skin)
     {
         super("Property Presets", skin);
+        this.propertyGroups = new Array<>();
         this.skin = skin;
         this.map = map;
         this.presetTable = new Table();
@@ -90,10 +93,22 @@ public class PropertyPresetDialog extends Window
             }
             if(allPoints)
             {
+                for(int i = 0; i < propertyGroups.size; i ++)
+                {
+                    SelectionType[] selectionTypes = (SelectionType[]) propertyGroups.get(i).getUserObject();
+                    if(typesContains(SelectionType.POINT, selectionTypes))
+                        this.presetTable.add(propertyGroups.get(i)).pad(5);
+                }
                 this.presetTable.add(this.newLightProperty).pad(5);
             }
             else if(allPolygons)
             {
+                for(int i = 0; i < propertyGroups.size; i ++)
+                {
+                    SelectionType[] selectionTypes = (SelectionType[]) propertyGroups.get(i).getUserObject();
+                    if(typesContains(SelectionType.POLYGON, selectionTypes))
+                        this.presetTable.add(propertyGroups.get(i)).pad(5);
+                }
                 this.presetTable.add(this.newBlockedProperty).pad(5);
                 this.presetTable.add(this.newCollisionSortProperty).pad(5);
                 this.presetTable.add(this.newCollisionSortBackProperty).pad(5);
@@ -105,6 +120,13 @@ public class PropertyPresetDialog extends Window
         }
         else if(this.map.spriteMenu.selectedSpriteTools.size > 0)
         {
+            for(int i = 0; i < propertyGroups.size; i ++)
+            {
+                SelectionType[] selectionTypes = (SelectionType[]) propertyGroups.get(i).getUserObject();
+                if(typesContains(SelectionType.SPRITETOOL, selectionTypes))
+                    this.presetTable.add(propertyGroups.get(i)).pad(5);
+            }
+
             this.presetTable.add(this.newTopProperty).pad(5);
             this.presetTable.add(this.newAnimatedProperty).pad(5);
             this.presetTable.add(this.newFadeLimitProperty).pad(5);
@@ -112,9 +134,23 @@ public class PropertyPresetDialog extends Window
         else if(this.map.selectedLayer != null)
         {
             if(this.map.selectedLayer instanceof ObjectLayer)
+            {
+                for(int i = 0; i < propertyGroups.size; i ++)
+                {
+                    SelectionType[] selectionTypes = (SelectionType[]) propertyGroups.get(i).getUserObject();
+                    if(typesContains(SelectionType.OBJECTLAYER, selectionTypes))
+                        this.presetTable.add(propertyGroups.get(i)).pad(5);
+                }
                 this.presetTable.add(this.newRayhandlerProperty).pad(5);
+            }
             else if(this.map.selectedLayer instanceof SpriteLayer)
             {
+                for(int i = 0; i < propertyGroups.size; i ++)
+                {
+                    SelectionType[] selectionTypes = (SelectionType[]) propertyGroups.get(i).getUserObject();
+                    if(typesContains(SelectionType.SPRITELAYER, selectionTypes))
+                        this.presetTable.add(propertyGroups.get(i)).pad(5);
+                }
                 this.presetTable.add(this.newDisablePerspectiveProperty).pad(5);
                 this.presetTable.add(this.newPerspectiveProperty).pad(5);
                 this.presetTable.add(this.newGroundProperty).pad(5);
@@ -122,8 +158,24 @@ public class PropertyPresetDialog extends Window
         }
         else
         {
+            for(int i = 0; i < propertyGroups.size; i ++)
+            {
+                SelectionType[] selectionTypes = (SelectionType[]) propertyGroups.get(i).getUserObject();
+                if(typesContains(SelectionType.MAP, selectionTypes))
+                    this.presetTable.add(propertyGroups.get(i)).pad(5);
+            }
             this.presetTable.add(this.newPerspectiveProperty).pad(5);
         }
+    }
+
+    private boolean typesContains(SelectionType type, SelectionType[] selectionTypes)
+    {
+        for(int i = 0; i < selectionTypes.length; i ++)
+        {
+            if (selectionTypes[i] == type)
+                return true;
+        }
+        return false;
     }
 
     public void close()
@@ -152,6 +204,12 @@ public class PropertyPresetDialog extends Window
         this.createAnimated();
         this.createWind();
         this.createFadeLimit();
+        propertyGroups.add(this.createPropertyGroup("Optional Dialogue", new SelectionType[]{SelectionType.POLYGON},
+                new PropertyValue("PAHRI", "Bridge//playerAsksPahriAboutBridge"),
+                new PropertyValue("walkTrigger", ""),
+                new PropertyValue("eventLimit", "-1"),
+                new PropertyValue("eventLimitType", "POLYGONENTER")
+        ));
     }
 
     private void createTop()
@@ -734,5 +792,77 @@ public class PropertyPresetDialog extends Window
                 return false;
             }
         });
+    }
+
+    private Table createPropertyGroup(String title, SelectionType[] selectionTypes, PropertyValue... properties)
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        Table propertyTable = new Table();
+        propertyTable.setUserObject(selectionTypes);
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        propertyTable.background(spriteDrawable);
+        propertyTable.add(new Label(title, this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        for(int i = 0; i < properties.length; i ++)
+        {
+            fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField(properties[i].property, "...", this.skin, null, null, false);
+            fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+            fieldFieldPropertyValuePropertyField.clearListeners();
+            if(i < properties.length - 1)
+                table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad / 6).row();
+            else
+                table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        }
+        propertyTable.add(table);
+        propertyTable.setTouchable(Touchable.enabled);
+        propertyTable.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) propertyTable.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) propertyTable.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty chainedProperty;
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, properties[0].property, properties[0].value);
+
+                for(int i = 1; i < properties.length; i ++)
+                {
+                    chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, properties[i].property, properties[i].value);
+                    addProperty.addAddPropertyCommandToChain(chainedProperty);
+                }
+
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+        return propertyTable;
+    }
+
+    public class PropertyValue
+    {
+        public String property;
+        public String value;
+        public PropertyValue(String property, String value)
+        {
+            this.property = property;
+            this.value = value;
+        }
+    }
+
+    public enum SelectionType
+    {
+        POINT, POLYGON, SPRITE, SPRITETOOL, MAP, OBJECTLAYER, SPRITELAYER
     }
 }
