@@ -143,6 +143,29 @@ public class AttachedMapObjectManager implements Comparable<AttachedMapObjectMan
                 for (int k = 0; k < spriteLayer.children.size; k++)
                 {
                     MapSprite child = spriteLayer.children.get(k);
+                    if(child.attachedSprites != null)
+                    {
+                        attached:
+                        for(int s = 0; s < child.attachedSprites.children.size; s ++)
+                        {
+                            MapSprite attached = child.attachedSprites.children.get(s);
+                            if (attached == child || attached.tool != this.spriteTool)
+                                continue attached;
+
+                            for(int m = 0; m < attached.attachedMapObjects.size; m ++)
+                            {
+                                if(attached.attachedMapObjects.get(m).attachedId == mapObject.attachedId)
+                                {
+                                    MapObject attachedMapObject = attached.attachedMapObjects.get(m);
+                                    removeAttachedMapObject(attachedMapObject);
+                                    attached.attachedMapObjects.removeIndex(m);
+                                    m --;
+                                }
+                            }
+                        }
+                    }
+
+
                     if (child.tool != this.spriteTool)
                         continue;
 
@@ -284,6 +307,18 @@ public class AttachedMapObjectManager implements Comparable<AttachedMapObjectMan
                 for(int k = 0; k < spriteLayer.children.size; k ++)
                 {
                     MapSprite child = spriteLayer.children.get(k);
+                    if(child.attachedSprites != null)
+                    {
+                        attached:
+                        for(int s = 0; s < child.attachedSprites.children.size; s ++)
+                        {
+                            MapSprite attached = child.attachedSprites.children.get(s);
+                            if(attached == child || attached.tool != this.spriteTool)
+                                continue attached;
+                            else
+                                addCopyOfMapObjectToThisMapSprite(mapObject, attached);
+                        }
+                    }
                     if(child.tool != this.spriteTool)
                         continue;
                     else

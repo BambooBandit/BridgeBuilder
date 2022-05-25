@@ -1504,6 +1504,7 @@ public class Map implements Screen
                             spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.oX, mapObjectData.oY);
                             if (setDefaultsOnly)
                                 mapObject.attachedMapObjectManager.addCopyOfMapObjectToAllMapSpritesOfThisSpriteTool(mapObject);
+
                             // object properties
                             propSize = 0;
                             if(mapObjectData.p != null)
@@ -1868,9 +1869,38 @@ public class Map implements Screen
         }
         PropertyToolPane.apply(this);
         propertyMenu.mapPropertyPanel.apply();
+
         setIdCounter(mapData.idCounter);
 
         fixDuplicateIDs();
+    }
+
+    private MapSprite getMapSpriteByID(long id)
+    {
+        for(int i = 0; i < layers.size; i ++)
+        {
+            Layer layer = layers.get(i);
+            if(layer instanceof SpriteLayer)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                for(int k = 0; k < spriteLayer.children.size; k ++)
+                {
+                    MapSprite child = spriteLayer.children.get(k);
+                    if(child.id == id)
+                        return child;
+                    if(child.attachedSprites != null)
+                    {
+                        for(int s = 0; s < child.attachedSprites.children.size; s ++)
+                        {
+                            MapSprite attached = child.attachedSprites.children.get(s);
+                            if(attached.id == id)
+                                return attached;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public void loadMap(MapData mapData, String defaultSheet, String currentSheet)
