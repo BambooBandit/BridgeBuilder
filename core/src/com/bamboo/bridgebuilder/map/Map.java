@@ -1424,8 +1424,12 @@ public class Map implements Screen
                     {
                         for (int s = 0; s < spriteTool.attachedMapObjectManagers.size; s++)
                         {
-                            spriteTool.removeAttachedMapObject(spriteTool.attachedMapObjectManagers.get(s).attachedMapObjects.first());
-                            s --;
+                            float originalAttachedObjectID = spriteTool.attachedMapObjectManagers.get(s).attachedMapObjects.first().id;
+                            if(!mapData.spriteToolContainsOriginalAttachedObjectID(spriteTool, originalAttachedObjectID))
+                            {
+                                spriteTool.removeAttachedMapObject(spriteTool.attachedMapObjectManagers.get(s).attachedMapObjects.first());
+                                s--;
+                            }
                         }
                     }
                 }
@@ -1483,9 +1487,33 @@ public class Map implements Screen
                     if (toolData.o != null)
                     {
                         int objSize = toolData.o.size();
+                        objs:
                         for (int s = 0; s < objSize; s++)
                         {
                             MapObjectData mapObjectData = toolData.o.get(s);
+                            if(setDefaultsOnly && spriteToolContainsOriginalAttachedObjectID(spriteTool, mapObjectData.i))
+                            {
+                                // already exists so dont recreate it. instead, apply all the properties
+                                propSize = 0;
+                                if(mapObjectData.p != null)
+                                    propSize = mapObjectData.p.size();
+                                MapObject mapObject = spriteTool.getOriginalAttachedID(mapObjectData.i);
+                                if(mapObject != null)
+                                {
+                                    if (mapObject.attachedMapObjectManager != null)
+                                    {
+                                        if(Math.abs(mapObjectData.x - mapObject.x) > .001f || Math.abs(mapObjectData.y - mapObject.y) > .001f)
+                                            mapObject.attachedMapObjectManager.moveBy(mapObjectData.x - mapObject.x, mapObjectData.y - mapObject.y);
+                                    }
+                                    mapObject.properties.clear();
+                                    for (int p = 0; p < propSize; p++)
+                                    {
+                                        PropertyData propertyData = mapObjectData.p.get(p);
+                                        propertyMenu.newProperty(propertyData, mapObject.properties);
+                                    }
+                                }
+                                continue objs;
+                            }
                             MapObject mapObject;
                             if (mapObjectData instanceof MapPolygonData)
                             {
@@ -1499,7 +1527,7 @@ public class Map implements Screen
                                 mapObject = mapPoint;
                             }
                             mapObject.flickerId = mapObjectData.fId;
-                            mapObject.setID(mapObject.id);
+                            mapObject.setID(mapObjectData.i);
                             // attached manager
                             spriteTool.createAttachedMapObject(this, mapObject, mapObjectData.oX, mapObjectData.oY);
                             if (setDefaultsOnly)
@@ -1873,6 +1901,35 @@ public class Map implements Screen
         setIdCounter(mapData.idCounter);
 
         fixDuplicateIDs();
+    }
+
+    private boolean spriteToolContainsOriginalAttachedObjectID(SpriteTool spriteTool, long id)
+    {
+        for(int i = 0; i < spriteMenu.spriteSheets.size; i ++)
+        {
+            SpriteSheet sheet = spriteMenu.spriteSheets.get(i);
+            if(sheet.name.equals(spriteTool.sheet.name))
+            {
+                for(int k = 0; k < spriteMenu.spriteTable.getChildren().size; k ++)
+                {
+                    if(spriteMenu.spriteTable.getChildren().get(k) instanceof Table)
+                    {
+                        Table cellTable = (Table) spriteMenu.spriteTable.getChildren().get(k);
+                        SpriteTool tool = cellTable.findActor("spriteTool");
+                        if (tool.attachedMapObjectManagers != null)
+                        {
+                            for (int s = 0; s < tool.attachedMapObjectManagers.size; s++)
+                            {
+                                AttachedMapObjectManager object = tool.attachedMapObjectManagers.get(s);
+                                if (object.cookieCutter.id == id)
+                                    return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private MapSprite getMapSpriteByID(long id)

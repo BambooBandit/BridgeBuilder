@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
+import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 import java.util.ArrayList;
 
@@ -102,6 +103,31 @@ public class MapData
             if(this.groups != null)
                 this.groups.clear();
         }
+    }
+
+    public boolean spriteToolContainsOriginalAttachedObjectID(SpriteTool spriteTool, float originalAttachedObjectID)
+    {
+        for(int i = 0; i < sheets.size(); i ++)
+        {
+            SpriteSheetData sheet = sheets.get(i);
+            if(sheet.name.equals(spriteTool.sheet.name))
+            {
+                for(int k = 0; k < sheet.tools.size(); k ++)
+                {
+                    ToolData tool = sheet.tools.get(k);
+                    if(tool.o != null)
+                    {
+                        for (int s = 0; s < tool.o.size(); s++)
+                        {
+                            MapObjectData object = tool.o.get(s);
+                            if (object.i == originalAttachedObjectID)
+                                return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
 

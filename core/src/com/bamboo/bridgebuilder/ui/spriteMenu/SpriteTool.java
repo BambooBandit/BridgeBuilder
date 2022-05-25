@@ -202,4 +202,17 @@ public class SpriteTool extends SpriteMenuTool
             return true;
         return false;
     }
+
+    public MapObject getOriginalAttachedID(long id)
+    {
+        if(this.attachedMapObjectManagers == null)
+            return null;
+        for(int i = 0; i < this.attachedMapObjectManagers.size; i ++)
+        {
+            AttachedMapObjectManager objectManager = this.attachedMapObjectManagers.get(i);
+            if(objectManager.cookieCutter.id == id)
+                return objectManager.cookieCutter;
+        }
+        return null;
+    }
 }

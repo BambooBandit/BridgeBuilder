@@ -15,6 +15,13 @@ public abstract class LayerChildData
             this.fId = layerChild.toFlicker.id;
 
         this.i = layerChild.id;
+        // use this to convert from old maps to new
+//        if(this instanceof MapPointData || this instanceof MapPolygonData)
+//        {
+//            MapObject mapObject = (MapObject) layerChild;
+//            if(mapObject.attachedMapObjectManager != null && mapObject == mapObject.attachedMapObjectManager.cookieCutter)
+//                this.i = layerChild.map.getAndIncrementId();
+//        }
 
         this.x = layerChild.getX();
         this.y = layerChild.getY();
