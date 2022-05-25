@@ -210,6 +210,11 @@ public class PropertyPresetDialog extends Window
                 new PropertyValue("eventLimit", "-1"),
                 new PropertyValue("eventLimitType", "POLYGONENTER")
         ));
+        propertyGroups.add(this.createPropertyGroup("Cutscene Event", new SelectionType[]{SelectionType.POLYGON},
+                new PropertyValue("cutsceneEvent", "PAHRIFIRSTPEDESTAL"),
+                new PropertyValue("walkTrigger", ""),
+                new PropertyValue("eventLimit", "1")
+        ));
     }
 
     private void createTop()
