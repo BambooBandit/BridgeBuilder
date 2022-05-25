@@ -215,6 +215,11 @@ public class PropertyPresetDialog extends Window
                 new PropertyValue("walkTrigger", ""),
                 new PropertyValue("eventLimit", "1")
         ));
+        propertyGroups.add(this.createPropertyGroup("Flicker", new SelectionType[]{SelectionType.POINT},
+                new PropertyValue("flicker", ""),
+                new PropertyValue("minFlickerAlpha", ".5"),
+                new PropertyValue("flickerTimeMultiplier", ".25")
+        ));
     }
 
     private void createTop()
