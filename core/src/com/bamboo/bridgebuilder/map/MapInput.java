@@ -485,7 +485,7 @@ public class MapInput implements InputProcessor
                     }
                 }
             }
-            if (this.map.selectedLayer != null)
+            if ((this.map.secondarySelectedLayer == null || !Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) && this.map.selectedLayer != null)
             {
                 for (int i = this.map.selectedLayer.children.size - 1; i >= 0; i--)
                 {
