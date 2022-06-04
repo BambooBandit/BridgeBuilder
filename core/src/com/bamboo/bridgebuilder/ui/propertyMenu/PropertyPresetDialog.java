@@ -220,6 +220,12 @@ public class PropertyPresetDialog extends Window
                 new PropertyValue("minFlickerAlpha", ".5"),
                 new PropertyValue("flickerTimeMultiplier", ".25")
         ));
+        propertyGroups.add(this.createPropertyGroup("Spawn Active AI", new SelectionType[]{SelectionType.POLYGON},
+                new PropertyValue("spawn", ""),
+                new PropertyValue("min", "1"),
+                new PropertyValue("max", "5"),
+                new PropertyValue("characterType", "MONSTER")
+        ));
     }
 
     private void createTop()
