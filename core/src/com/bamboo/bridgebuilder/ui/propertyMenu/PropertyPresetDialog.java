@@ -226,6 +226,19 @@ public class PropertyPresetDialog extends Window
                 new PropertyValue("max", "5"),
                 new PropertyValue("characterType", "MONSTER")
         ));
+        propertyGroups.add(this.createPropertyGroup("Dust", new SelectionType[]{SelectionType.POLYGON},
+                new PropertyValue("dust", "BOUNDARY"),
+                new PropertyValue("dustDirection", "0"),
+                new PropertyValue("dustSpeed", "0"),
+                new PropertyValue("dustSize", "3"),
+                new PropertyValue("dustR", "1"),
+                new PropertyValue("dustG", "1"),
+                new PropertyValue("dustB", "1"),
+                new PropertyValue("dustAngle", "90"),
+                new PropertyValue("dustFrequencyMin", ".2"),
+                new PropertyValue("dustFrequencyMax", ".5"),
+                new PropertyValue("dustGroundPosition", "Value")
+        ));
     }
 
     private void createTop()
