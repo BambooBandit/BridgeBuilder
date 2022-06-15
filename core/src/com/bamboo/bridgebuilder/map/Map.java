@@ -2280,22 +2280,6 @@ public class Map implements Screen
         // Find collisions and use the idCounter to reset them
         HashSet<Long> hashSet = new HashSet<>();
 
-        for(int i = 0; i < spriteMenu.spriteSheets.size; i ++)
-        {
-            SpriteSheet sheet = spriteMenu.spriteSheets.get(i);
-            for(int k = 0; k < sheet.children.size; k ++)
-            {
-                SpriteTool spriteTool = (SpriteTool) sheet.children.get(k).getChild(0);
-                if(spriteTool.attachedMapObjectManagers != null)
-                {
-                    for (int s = 0; s < spriteTool.attachedMapObjectManagers.size; s++)
-                    {
-                        hashSet.add(spriteTool.attachedMapObjectManagers.get(s).cookieCutter.id);
-                    }
-                }
-            }
-        }
-
         for (int i = 0; i < layers.size; i++)
         {
             Layer layer = layers.get(i);
