@@ -239,6 +239,11 @@ public class PropertyPresetDialog extends Window
                 new PropertyValue("dustFrequencyMax", ".5"),
                 new PropertyValue("dustGroundPosition", "Value")
         ));
+        propertyGroups.add(this.createPropertyGroup("Interactable", new SelectionType[]{SelectionType.POLYGON},
+                new PropertyValue("interactable", "7"),
+                new PropertyValue("title", "Value"),
+                new PropertyValue("message", "Value")
+        ));
     }
 
     private void createTop()
