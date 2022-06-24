@@ -244,6 +244,15 @@ public class PropertyPresetDialog extends Window
                 new PropertyValue("title", "Value"),
                 new PropertyValue("message", "Value")
         ));
+        propertyGroups.add(this.createPropertyGroup("Change Map Beacon", new SelectionType[]{SelectionType.POLYGON},
+                new PropertyValue("x", "Value"),
+                new PropertyValue("y", "Value"),
+                new PropertyValue("showName", "Value"),
+                new PropertyValue("toFloor", "0"),
+                new PropertyValue("changeMap", "Value"),
+                new PropertyValue("angle", "Value"),
+                new PropertyValue("cameraAngle", "Value")
+        ));
     }
 
     private void createTop()
