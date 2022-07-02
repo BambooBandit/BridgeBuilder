@@ -206,13 +206,13 @@ public class PropertyPresetDialog extends Window
         this.createFadeLimit();
         propertyGroups.add(this.createPropertyGroup("Optional Dialogue", new SelectionType[]{SelectionType.POLYGON},
                 new PropertyValue("PAHRI", "Bridge//playerAsksPahriAboutBridge"),
-                new PropertyValue("walkTrigger", ""),
+                new PropertyValue("insideTrigger", ""),
                 new PropertyValue("eventLimit", "-1"),
                 new PropertyValue("eventLimitType", "POLYGONENTER")
         ));
         propertyGroups.add(this.createPropertyGroup("Cutscene Event", new SelectionType[]{SelectionType.POLYGON},
                 new PropertyValue("cutsceneEvent", "PAHRIFIRSTPEDESTAL"),
-                new PropertyValue("walkTrigger", ""),
+                new PropertyValue("insideTrigger", ""),
                 new PropertyValue("eventLimit", "1")
         ));
         propertyGroups.add(this.createPropertyGroup("Flicker", new SelectionType[]{SelectionType.POINT},
