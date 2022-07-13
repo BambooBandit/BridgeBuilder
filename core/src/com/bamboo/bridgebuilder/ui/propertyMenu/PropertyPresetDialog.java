@@ -24,7 +24,6 @@ public class PropertyPresetDialog extends Window
     private Table newBlockedProperty;
     private Table newRayhandlerProperty;
     private Table newDisablePerspectiveProperty;
-    private Table newPerspectiveProperty;
     private Table newGroundProperty;
     private Table newDustTypeProperty;
     private Table newCollisionSortProperty;
@@ -152,7 +151,6 @@ public class PropertyPresetDialog extends Window
                         this.presetTable.add(propertyGroups.get(i)).pad(5);
                 }
                 this.presetTable.add(this.newDisablePerspectiveProperty).pad(5);
-                this.presetTable.add(this.newPerspectiveProperty).pad(5);
                 this.presetTable.add(this.newGroundProperty).pad(5);
             }
         }
@@ -164,7 +162,6 @@ public class PropertyPresetDialog extends Window
                 if(typesContains(SelectionType.MAP, selectionTypes))
                     this.presetTable.add(propertyGroups.get(i)).pad(5);
             }
-            this.presetTable.add(this.newPerspectiveProperty).pad(5);
         }
     }
 
@@ -195,7 +192,6 @@ public class PropertyPresetDialog extends Window
         this.createLight();
         this.createBlocked();
         this.createRayhandler();
-        this.createPerspective();
         this.createDisablePerspective();
         this.createGround();
         this.createDustType();
@@ -703,53 +699,6 @@ public class PropertyPresetDialog extends Window
                 chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "blowResistTop", "17.5");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
                 chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "blowResist", "17.5");
-                addProperty.addAddPropertyCommandToChain(chainedProperty);
-                map.executeCommand(addProperty);
-                return false;
-            }
-        });
-    }
-
-    private void createPerspective()
-    {
-        SpriteDrawable spriteDrawable;
-        Table table;
-        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
-        float pad = Gdx.graphics.getHeight() / 35;
-
-        this.newPerspectiveProperty = new Table();
-        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
-        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
-        this.newPerspectiveProperty.background(spriteDrawable);
-        this.newPerspectiveProperty.add(new Label("Perspective", this.skin)).padTop(pad / 2).row();
-        table = new Table();
-        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("skew", "...", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
-        fieldFieldPropertyValuePropertyField.clearListeners();
-        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad / 6).row();
-        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("antiDepth", "...", this.skin, null, null, false);
-        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
-        fieldFieldPropertyValuePropertyField.clearListeners();
-        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 6).padBottom(pad).row();
-        this.newPerspectiveProperty.add(table);
-        this.newPerspectiveProperty.setTouchable(Touchable.enabled);
-        this.newPerspectiveProperty.addListener(new InputListener(){
-            @Override
-            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
-            {
-                ((SpriteDrawable) newPerspectiveProperty.getBackground()).getSprite().setColor(Color.FOREST);
-            }
-            @Override
-            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
-            {
-                ((SpriteDrawable) newPerspectiveProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
-            }
-            @Override
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
-            {
-                AddProperty chainedProperty;
-                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "skew", "0");
-                chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "antiDepth", "0");
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
                 map.executeCommand(addProperty);
                 return false;
