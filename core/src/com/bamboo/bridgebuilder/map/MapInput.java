@@ -698,15 +698,10 @@ public class MapInput implements InputProcessor
             if(!editor.fileMenu.toolPane.splat.selected)
             {
                 DrawMapSprite drawMapSprite;
-                if(Utils.doesLayerHavePerspective(this.map, this.map.selectedLayer))
-                {
-                    Perspective perspective = this.map.selectedLayer.perspective;
-                    Vector3 projector = Utils.project(map.camera, x - map.cameraX, y - map.cameraY);
-                    Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
-                    drawMapSprite = new DrawMapSprite(this.map, (SpriteLayer) this.map.selectedLayer, unprojector.x, unprojector.y);
-                }
-                else
-                    drawMapSprite = new DrawMapSprite(this.map, (SpriteLayer) this.map.selectedLayer, x, y);
+                Perspective perspective = this.map.selectedLayer.perspective;
+                Vector3 projector = Utils.project(map.camera, x - map.cameraX, y - map.cameraY);
+                Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
+                drawMapSprite = new DrawMapSprite(this.map, (SpriteLayer) this.map.selectedLayer, unprojector.x, unprojector.y);
                 this.map.executeCommand(drawMapSprite);
                 return true;
             }
@@ -887,14 +882,11 @@ public class MapInput implements InputProcessor
 
         float perspectiveX = x;
         float perspectiveY = y;
-        if(Utils.doesLayerHavePerspective(this.map, this.map.selectedLayer))
-        {
-            Perspective perspective = this.map.selectedLayer.perspective;
-            Vector3 projector = Utils.project(map.camera, x - map.cameraX, y - map.cameraY);
-            Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
-            perspectiveX = unprojector.x;
-            perspectiveY = unprojector.y;
-        }
+        Perspective perspective = this.map.selectedLayer.perspective;
+        Vector3 projector = Utils.project(map.camera, x - map.cameraX, y - map.cameraY);
+        Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
+        perspectiveX = unprojector.x;
+        perspectiveY = unprojector.y;
 
         if(Command.shouldExecute(map, DrawBranch.class))
         {
@@ -927,15 +919,10 @@ public class MapInput implements InputProcessor
             return false;
 
         DrawMapPolygonVertice drawMapPolygonVertice;
-        if(Utils.doesLayerHavePerspective(this.map, this.map.selectedLayer))
-        {
-            Perspective perspective = this.map.selectedLayer.perspective;
-            Vector3 projector = Utils.project(map.camera, x - map.cameraX, y - map.cameraY);
-            Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
-            drawMapPolygonVertice = new DrawMapPolygonVertice(this.map, unprojector.x, unprojector.y, this.objectVerticePosition.x, this.objectVerticePosition.y, Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE));
-        }
-        else
-            drawMapPolygonVertice = new DrawMapPolygonVertice(this.map, x, y, this.objectVerticePosition.x, this.objectVerticePosition.y, Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE));
+        Perspective perspective = this.map.selectedLayer.perspective;
+        Vector3 projector = Utils.project(map.camera, x - map.cameraX, y - map.cameraY);
+        Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
+        drawMapPolygonVertice = new DrawMapPolygonVertice(this.map, unprojector.x, unprojector.y, this.objectVerticePosition.x, this.objectVerticePosition.y, Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE));
 
         this.map.executeCommand(drawMapPolygonVertice);
         return true;
@@ -1105,51 +1092,46 @@ public class MapInput implements InputProcessor
         for(int i = 0; i < spriteTool.previewSprites.size; i ++)
         {
             TextureAtlas.AtlasSprite previewSprite = (TextureAtlas.AtlasSprite) spriteTool.previewSprites.get(i);
-            if(Utils.doesLayerHavePerspective(this.map, this.map.selectedLayer))
-            {
-                Perspective perspective = ((SpriteLayer) this.map.selectedLayer).perspective;
-                Vector3 projector = Utils.project(map.camera, x - map.cameraX, y - map.cameraY);
-                Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
-                float mapSpriteX = unprojector.x;
-                float mapSpriteY = unprojector.y;
-                float width = previewSprite.getWidth();
-                float height = previewSprite.getHeight();
-                mapSpriteX -= width / 2;
-                mapSpriteY -= height / 2;
+            Perspective perspective = ((SpriteLayer) this.map.selectedLayer).perspective;
+            Vector3 projector = Utils.project(map.camera, x - map.cameraX, y - map.cameraY);
+            Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
+            float mapSpriteX = unprojector.x;
+            float mapSpriteY = unprojector.y;
+            float width = previewSprite.getWidth();
+            float height = previewSprite.getHeight();
+            mapSpriteX -= width / 2;
+            mapSpriteY -= height / 2;
 
-                float scale = randomScale;
+            float scale = randomScale;
 
-                float spriteX = mapSpriteX - ((width * scale) - width) / 2f;
-                float spriteY = mapSpriteY - ((height * scale) - height) / 2f;
-                float trimX = spriteX;
-                float trimY = spriteY;
-                float trimHeight = (previewSprite.getAtlasRegion().getRegionHeight() / 64f);
+            float spriteX = mapSpriteX - ((width * scale) - width) / 2f;
+            float spriteY = mapSpriteY - ((height * scale) - height) / 2f;
+            float trimX = spriteX;
+            float trimY = spriteY;
+            float trimHeight = (previewSprite.getAtlasRegion().getRegionHeight() / 64f);
 
-                float yScaleDisplacement = 0;
-                float xScaleDisplacement = 0;
+            float yScaleDisplacement = 0;
+            float xScaleDisplacement = 0;
 
-                float projectX = trimX;
-                float projectY = trimY;
+            float projectX = trimX;
+            float projectY = trimY;
 
-                Vector3 p = perspective.projectWorldToPerspective(projectX, projectY);
-                projectX = p.x;
-                projectY = p.y;
+            Vector3 p = perspective.projectWorldToPerspective(projectX, projectY);
+            projectX = p.x;
+            projectY = p.y;
 
-                float perspectiveScale = perspective.getScaleFactor(trimY) * scale;
+            float perspectiveScale = perspective.getScaleFactor(trimY) * scale;
 
-                yScaleDisplacement += (((trimHeight * (perspectiveScale)) - trimHeight)) / 2f;
-                xScaleDisplacement += (((width) * (perspectiveScale)) - width) / 2f;
+            yScaleDisplacement += (((trimHeight * (perspectiveScale)) - trimHeight)) / 2f;
+            xScaleDisplacement += (((width) * (perspectiveScale)) - width) / 2f;
 
-                float perspectiveOffsetX = trimX - (projectX + (xScaleDisplacement));
-                float perspectiveOffsetY = trimY - (projectY + (yScaleDisplacement));
+            float perspectiveOffsetX = trimX - (projectX + (xScaleDisplacement));
+            float perspectiveOffsetY = trimY - (projectY + (yScaleDisplacement));
 
-                previewSprite.setPosition(spriteX - perspectiveOffsetX, spriteY - perspectiveOffsetY);
-                previewSprite.setOriginCenter();
-                previewSprite.setOrigin(width / 2f, previewSprite.getOriginY());
-                previewSprite.setScale(perspectiveScale);
-            }
-            else
-                previewSprite.setPosition(x - map.cameraX - previewSprite.getWidth() / 2, y - map.cameraY - previewSprite.getHeight() / 2);
+            previewSprite.setPosition(spriteX - perspectiveOffsetX, spriteY - perspectiveOffsetY);
+            previewSprite.setOriginCenter();
+            previewSprite.setOrigin(width / 2f, previewSprite.getOriginY());
+            previewSprite.setScale(perspectiveScale);
         }
         return false;
     }

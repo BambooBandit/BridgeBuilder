@@ -154,35 +154,6 @@ public class Utils
         return num1 >= num3 && num1 <= num4 && num2 >= num3 && num2 <= num4;
     }
 
-    public static boolean doesLayerHavePerspective(Map map, Layer layer)
-    {
-        Array<PropertyField> mapProperties = map.propertyMenu.mapPropertyPanel.properties;
-        PropertyField mapSkew = Utils.getPropertyField(mapProperties, "skew");
-        PropertyField mapAntiDepth = Utils.getPropertyField(mapProperties, "antiDepth");
-
-        PropertyField layerDisablePerspective = null;
-        PropertyField layerSkew = null;
-        PropertyField layerAntiDepth = null;
-
-        if(layer != null)
-        {
-            Array<PropertyField> layerProperties = layer.properties;
-            layerDisablePerspective = Utils.getPropertyField(layerProperties, "disablePerspective");
-            layerSkew = Utils.getPropertyField(layerProperties, "skew");
-            layerAntiDepth = Utils.getPropertyField(layerProperties, "antiDepth");
-        }
-
-        if(layerDisablePerspective != null)
-            return false;
-        if(mapSkew == null && mapAntiDepth == null)
-        {
-            if(layerSkew == null && layerAntiDepth == null)
-                return false;
-            return true;
-        }
-        return true;
-    }
-
     public static boolean isLayerGround(Layer layer)
     {
         if(layer == null)
