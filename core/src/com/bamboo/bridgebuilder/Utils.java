@@ -3,6 +3,7 @@ package com.bamboo.bridgebuilder;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -147,6 +148,26 @@ public class Utils
         unprojector.set(x, y, 0);
         camera.project(unprojector);
         return unprojector;
+    }
+
+    static Vector2 centerVector = new Vector2();
+    static Vector2 startVector = new Vector2();
+    static Vector2 endVector = new Vector2();
+    public static boolean overlaps(float[] vertices, float x, float y, float radius)
+    {
+        centerVector.set(x, y);
+        float squareRadius = radius * radius;
+        for (int i = 0; i < vertices.length; i += 2)
+        {
+            if (i == 0)
+                startVector.set(vertices[vertices.length - 2], vertices[vertices.length - 1]);
+            else
+                startVector.set(vertices[i - 2], vertices[i - 1]);
+            endVector.set(vertices[i], vertices[i + 1]);
+            if (Intersector.intersectSegmentCircle(startVector, endVector, centerVector, squareRadius))
+                return true;
+        }
+        return Intersector.isPointInPolygon(vertices, 0, vertices.length, x, y);
     }
 
     public static boolean areTwoNumbersWithinNumbers(float num1, float num2, float num3, float num4)

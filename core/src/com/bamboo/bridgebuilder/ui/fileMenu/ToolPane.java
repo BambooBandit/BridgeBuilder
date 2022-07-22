@@ -47,6 +47,7 @@ public class ToolPane extends Group
     public Tool selectedTool;
     public Tool filledPolygons;
     public Tool groupPolygons;
+    public Tool paint;
     private TextButton bringUp;
     private TextButton bringDown;
     private TextButton bringTop;
@@ -72,6 +73,9 @@ public class ToolPane extends Group
     private TextButton groupButton;
 
     private TextButton mergeButton;
+
+    public PaintDialog paintDialog;
+    private TextButton paintButton;
 
     private BridgeBuilder editor;
 
@@ -107,6 +111,7 @@ public class ToolPane extends Group
         this.branch = new Tool(editor, this, true, Tools.BRANCH);
         this.filledPolygons = new Tool(editor, this, true, Tools.FILLED);
         this.groupPolygons = new Tool(editor, this, true, Tools.GROUP);
+        this.paint = new Tool(editor, this, false, Tools.PAINT);
         this.bringUp = new TextButton("^", skin);
         this.bringDown = new TextButton("v", skin);
         this.bringTop = new TextButton("^^", skin);
@@ -132,6 +137,9 @@ public class ToolPane extends Group
         this.groupButton = new TextButton("Group", skin);
 
         this.mergeButton = new TextButton("Merge", skin);
+
+        this.paintDialog = new PaintDialog(editor.stage, skin);
+        this.paintButton = new TextButton("Paint", skin);
 
         this.fps = new Label("0", skin);
 
@@ -160,7 +168,8 @@ public class ToolPane extends Group
         this.toolTable.add(this.fence).padRight(1);
         this.toolTable.add(this.branch).padRight(1);
         this.toolTable.add(this.filledPolygons).padRight(1);
-        this.toolTable.add(this.groupPolygons).padRight(5);
+        this.toolTable.add(this.groupPolygons).padRight(1);
+        this.toolTable.add(this.paint).padRight(5);
         this.toolTable.add(this.bringUp);
         this.toolTable.add(this.bringDown);
         this.toolTable.add(this.bringTop);
@@ -173,6 +182,7 @@ public class ToolPane extends Group
         this.toolTable.add(this.branchButton).padRight(5);
         this.toolTable.add(this.groupButton).padRight(5);
         this.toolTable.add(this.mergeButton).padRight(5);
+        this.toolTable.add(this.paintButton).padRight(5);
         this.toolTable.add(this.fps).padRight(1);
 
         this.pane = new Stack();
@@ -215,6 +225,7 @@ public class ToolPane extends Group
         this.branch.setSize(toolHeight, toolHeight);
         this.filledPolygons.setSize(toolHeight, toolHeight);
         this.groupPolygons.setSize(toolHeight, toolHeight);
+        this.paint.setSize(toolHeight, toolHeight);
 
         this.toolTable.getCell(this.brush).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.drawPoint).size(toolHeight, toolHeight);
@@ -239,6 +250,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.fence).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.branch).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.groupPolygons).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.paint).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.filledPolygons).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringUp).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringDown).size(toolHeight, toolHeight);
@@ -252,6 +264,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.branchButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.groupButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.mergeButton).size(toolHeight * 2.3f, toolHeight);
+        this.toolTable.getCell(this.paintButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.fps).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();
 
@@ -618,6 +631,15 @@ public class ToolPane extends Group
                     mergeDialog.open();
 //                    editor.activeMap.mergePolygons();
                 }
+            }
+        });
+
+        this.paintButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                paintDialog.open();
             }
         });
     }

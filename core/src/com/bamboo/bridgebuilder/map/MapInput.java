@@ -147,6 +147,8 @@ public class MapInput implements InputProcessor
             this.dragOriginPos.set(coords.x, coords.y);
 
 
+            if(handleMapSpritePaint(coords.x, coords.y, button))
+                return false;
             if(handleMapSpriteCreation(coords.x, coords.y, button))
                 return false;
             if(handleManipulatorBoxMoveLayerChildTouchDown(coords.x, coords.y, button))
@@ -648,6 +650,50 @@ public class MapInput implements InputProcessor
 
         this.map.camera.rotate(-angle);
         this.map.camera.update();
+    }
+
+    private boolean handleMapSpritePaint(float x, float y, int button)
+    {
+        if(!Utils.isFileToolThisType(this.editor, Tools.PAINT) || this.map.selectedLayer == null || !(this.map.selectedLayer instanceof SpriteLayer) || button != Input.Buttons.LEFT)
+            return false;
+
+        if(Command.shouldExecute(map, PaintMapSprite.class))
+        {
+            SpriteLayer spriteLayer = (SpriteLayer) map.selectedLayer;
+            PaintMapSprite paintMapSprite = null;
+            for(int i = 0; i < spriteLayer.children.size; i ++)
+            {
+                MapSprite layerChild = spriteLayer.children.get(i);
+                if(layerChild.isHoveredOver(x, y, editor.fileMenu.toolPane.paintDialog.getRadius()))
+                {
+                    if(map.selectedSprites.size == 0 || layerChild.selected)
+                    {
+                        float r = (layerChild.sprite.getColor().r * (1 - editor.fileMenu.toolPane.paintDialog.getStrength())) + (editor.fileMenu.toolPane.paintDialog.getR() * editor.fileMenu.toolPane.paintDialog.getStrength());
+                        float g = (layerChild.sprite.getColor().g * (1 - editor.fileMenu.toolPane.paintDialog.getStrength())) + (editor.fileMenu.toolPane.paintDialog.getG() * editor.fileMenu.toolPane.paintDialog.getStrength());
+                        float b = (layerChild.sprite.getColor().b * (1 - editor.fileMenu.toolPane.paintDialog.getStrength())) + (editor.fileMenu.toolPane.paintDialog.getB() * editor.fileMenu.toolPane.paintDialog.getStrength());
+                        float a = (layerChild.sprite.getColor().a * (1 - editor.fileMenu.toolPane.paintDialog.getStrength())) + (editor.fileMenu.toolPane.paintDialog.getA() * editor.fileMenu.toolPane.paintDialog.getStrength());
+                        if(editor.fileMenu.toolPane.paintDialog.getR() == -1)
+                            r = layerChild.sprite.getColor().r;
+                        if(editor.fileMenu.toolPane.paintDialog.getG() == -1)
+                            g = layerChild.sprite.getColor().g;
+                        if(editor.fileMenu.toolPane.paintDialog.getB() == -1)
+                            b = layerChild.sprite.getColor().b;
+                        if(editor.fileMenu.toolPane.paintDialog.getA() == -1)
+                            a = layerChild.sprite.getColor().a;
+                        if(paintMapSprite == null)
+                            paintMapSprite = new PaintMapSprite(this.map, layerChild, r, g, b, a);
+                        else
+                            paintMapSprite.addCommandToChain(new PaintMapSprite(this.map, layerChild, r, g, b, a));
+                    }
+                }
+            }
+            if(paintMapSprite != null)
+            {
+                this.map.executeCommand(paintMapSprite);
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean handleMapSpriteCreation(float x, float y, int button)

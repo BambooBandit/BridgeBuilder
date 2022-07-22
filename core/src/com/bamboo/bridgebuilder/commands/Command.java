@@ -68,6 +68,10 @@ public interface Command
         {
             return !(map.editAttachedMapSprite != null && (map.selectedSprites.size != 1 || (map.selectedSprites.first().attachedSprites == null || !map.selectedSprites.first().attachedSprites.equals(map.selectedLayer))));
         }
+        else if(command == PaintMapSprite.class)
+        {
+            return map.selectedLayer != null && map.selectedLayer instanceof SpriteLayer;
+        }
         else if(command == DrawFence.class)
         {
             boolean selectedFencePost = false;

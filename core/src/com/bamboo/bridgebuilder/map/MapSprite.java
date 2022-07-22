@@ -976,6 +976,11 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
         return Intersector.overlapConvexPolygons(polygon.getTransformedVertices(), vertices, null);
     }
 
+    public boolean isHoveredOver(float x, float y, float radius)
+    {
+        return Utils.overlaps(polygon.getTransformedVertices(), x, y, radius);
+    }
+
     public void updatePerspective()
     {
         this.setPosition(getX(), getY());
