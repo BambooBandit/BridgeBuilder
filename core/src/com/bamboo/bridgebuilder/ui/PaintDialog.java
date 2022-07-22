@@ -16,6 +16,7 @@ public class PaintDialog extends Window
 
     private Table table;
     
+    private Label leftLabel;
     private Label leftRLabel;
     private TextField leftRField;
     private Label leftGLabel;
@@ -27,6 +28,7 @@ public class PaintDialog extends Window
     private Label leftStrengthLabel;
     private TextField leftStrengthField;
 
+    private Label rightLabel;
     private Label rightRLabel;
     private TextField rightRField;
     private Label rightGLabel;
@@ -48,6 +50,7 @@ public class PaintDialog extends Window
 
         this.table = new Table();
 
+        this.leftLabel = new Label("Left Mouse", skin);
         this.leftRLabel = new Label("R: ", skin);
         this.leftRField = new TextField("1", skin);
 
@@ -63,6 +66,7 @@ public class PaintDialog extends Window
         this.leftStrengthLabel = new Label("Strength: ", skin);
         this.leftStrengthField = new TextField(".5", skin);
 
+        this.rightLabel = new Label("Right Mouse", skin);
         this.rightRLabel = new Label("R: ", skin);
         this.rightRField = new TextField("1", skin);
 
@@ -92,6 +96,9 @@ public class PaintDialog extends Window
             }
         });
 
+        this.table.add(this.leftLabel).padBottom(15);
+        this.table.add();
+        this.table.add(this.rightLabel).padBottom(15).padBottom(15).row();
         this.table.add(this.leftRLabel).padBottom(15);
         this.table.add(this.leftRField).width(Gdx.graphics.getWidth() / 40f);
         this.table.add(this.rightRLabel).padBottom(15);
@@ -118,7 +125,7 @@ public class PaintDialog extends Window
 
         this.add(this.table);
 
-        setSize(Gdx.graphics.getWidth() / 7f, Gdx.graphics.getHeight() / 3f);
+        setSize(Gdx.graphics.getWidth() / 6.5f, Gdx.graphics.getHeight() / 2.75f);
         this.setPosition((stage.getWidth() / 2f), (stage.getHeight() / 2f), Align.center);
         stage.addActor(this);
         setVisible(false);
