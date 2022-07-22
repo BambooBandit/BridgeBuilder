@@ -84,6 +84,22 @@ public class BridgeBuilder extends Game
 			@Override
 			public boolean keyDown(int keycode)
 			{
+				if(keycode == Input.Keys.F3)
+				{
+					if(activeMap != null)
+					{
+						Layer layer = null;
+						if(activeMap.selectedLayer != null && activeMap.secondarySelectedLayer == null)
+							layer = activeMap.selectedLayer;
+						else if(activeMap.secondarySelectedLayer != null)
+							layer = activeMap.secondarySelectedLayer;
+						if(layer != null)
+						{
+							layer.layerField.visibleImg.setVisible(!layer.layerField.visibleImg.isVisible());
+							layer.layerField.notVisibleImg.setVisible(!layer.layerField.notVisibleImg.isVisible());
+						}
+					}
+				}
 				if(keycode == Input.Keys.N && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
 					fileMenu.newMap();
 				if(keycode == Input.Keys.S && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
