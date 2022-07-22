@@ -654,7 +654,7 @@ public class MapInput implements InputProcessor
 
     private boolean handleMapSpritePaint(float x, float y, int button)
     {
-        if(!Utils.isFileToolThisType(this.editor, Tools.PAINT) || this.map.selectedLayer == null || !(this.map.selectedLayer instanceof SpriteLayer) || button != Input.Buttons.LEFT)
+        if(!Utils.isFileToolThisType(this.editor, Tools.PAINT) || this.map.selectedLayer == null || !(this.map.selectedLayer instanceof SpriteLayer) || (button != Input.Buttons.LEFT && button != Input.Buttons.RIGHT))
             return false;
 
         if(Command.shouldExecute(map, PaintMapSprite.class))
@@ -668,17 +668,18 @@ public class MapInput implements InputProcessor
                 {
                     if(map.selectedSprites.size == 0 || layerChild.selected)
                     {
-                        float r = (layerChild.sprite.getColor().r * (1 - editor.fileMenu.toolPane.paintDialog.getStrength())) + (editor.fileMenu.toolPane.paintDialog.getR() * editor.fileMenu.toolPane.paintDialog.getStrength());
-                        float g = (layerChild.sprite.getColor().g * (1 - editor.fileMenu.toolPane.paintDialog.getStrength())) + (editor.fileMenu.toolPane.paintDialog.getG() * editor.fileMenu.toolPane.paintDialog.getStrength());
-                        float b = (layerChild.sprite.getColor().b * (1 - editor.fileMenu.toolPane.paintDialog.getStrength())) + (editor.fileMenu.toolPane.paintDialog.getB() * editor.fileMenu.toolPane.paintDialog.getStrength());
-                        float a = (layerChild.sprite.getColor().a * (1 - editor.fileMenu.toolPane.paintDialog.getStrength())) + (editor.fileMenu.toolPane.paintDialog.getA() * editor.fileMenu.toolPane.paintDialog.getStrength());
-                        if(editor.fileMenu.toolPane.paintDialog.getR() == -1)
+                        boolean left = button == Input.Buttons.LEFT;
+                        float r = (layerChild.sprite.getColor().r * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getR(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
+                        float g = (layerChild.sprite.getColor().g * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getG(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
+                        float b = (layerChild.sprite.getColor().b * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getB(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
+                        float a = (layerChild.sprite.getColor().a * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getA(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
+                        if(editor.fileMenu.toolPane.paintDialog.getR(left) == -1)
                             r = layerChild.sprite.getColor().r;
-                        if(editor.fileMenu.toolPane.paintDialog.getG() == -1)
+                        if(editor.fileMenu.toolPane.paintDialog.getG(left) == -1)
                             g = layerChild.sprite.getColor().g;
-                        if(editor.fileMenu.toolPane.paintDialog.getB() == -1)
+                        if(editor.fileMenu.toolPane.paintDialog.getB(left) == -1)
                             b = layerChild.sprite.getColor().b;
-                        if(editor.fileMenu.toolPane.paintDialog.getA() == -1)
+                        if(editor.fileMenu.toolPane.paintDialog.getA(left) == -1)
                             a = layerChild.sprite.getColor().a;
                         if(paintMapSprite == null)
                             paintMapSprite = new PaintMapSprite(this.map, layerChild, r, g, b, a);
