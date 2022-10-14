@@ -44,7 +44,7 @@ public class DrawFence implements Command
         if(this.mapSprite == null)
         {
             SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
-            this.mapSprite = new MapSprite(this.map, layer, spriteTool, this.x, this.y);
+            this.mapSprite = new MapSprite(this.map, layer, spriteTool, this.x, this.y, null);
             if(map.editor.fileMenu.toolPane.stairsDialog.shouldParentHeightBeCentered())
                 this.mapSprite.setPosition(this.mapSprite.x, this.mapSprite.y + (this.mapSprite.height / 2f));
             if(map.editor.fileMenu.toolPane.stairsDialog.shouldParentBeTransparent())
@@ -179,7 +179,7 @@ public class DrawFence implements Command
         }
 
         SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
-        MapSprite stackedPost = new MapSprite(this.map, post.attachedSprites, spriteTool, post.x + post.width / 2f, post.y + (post.height / 2f) + (post.height * stack * stackHeightMultiplier));
+        MapSprite stackedPost = new MapSprite(this.map, post.attachedSprites, spriteTool, post.x + post.width / 2f, post.y + (post.height / 2f) + (post.height * stack * stackHeightMultiplier), null);
         (post.attachedSprites).addMapSprite(stackedPost, -1);
         stackedPost.parentSprite = post;
         if(map.editor.fileMenu.toolPane.stairsDialog.shouldParentBeTransparent())
@@ -252,7 +252,7 @@ public class DrawFence implements Command
         }
         SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
 
-        MapSprite connector = new MapSprite(this.map, fromFence.attachedSprites, spriteTool, fromX, fromY);
+        MapSprite connector = new MapSprite(this.map, fromFence.attachedSprites, spriteTool, fromX, fromY, null);
         LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(connector.lockedProperties, "Fence");
         fenceProperty.value.setText("true");
         if(inFront)

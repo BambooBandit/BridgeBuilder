@@ -2113,7 +2113,7 @@ public class Map implements Screen
         SpriteTool spriteTool = spriteMenu.getSpriteTool(mapSpriteData.n, sheetName);
         if(spriteTool == null)
             return null;
-        MapSprite mapSprite = new MapSprite(this, layer, spriteTool, mapSpriteData.x, mapSpriteData.y);
+        MapSprite mapSprite = new MapSprite(this, layer, spriteTool, mapSpriteData.x, mapSpriteData.y, mapSpriteData);
         mapSprite.edgeId = mapSpriteData.e;
         mapSprite.flickerId = mapSpriteData.fId;
         mapSprite.setID(mapSpriteData.i);

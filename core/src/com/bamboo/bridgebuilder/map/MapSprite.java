@@ -15,6 +15,7 @@ import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.DisableAttachedSpriteEditMode;
 import com.bamboo.bridgebuilder.commands.EnableAttachedSpriteEditMode;
+import com.bamboo.bridgebuilder.data.MapSpriteData;
 import com.bamboo.bridgebuilder.ui.BBShapeRenderer;
 import com.bamboo.bridgebuilder.ui.manipulators.MoveBox;
 import com.bamboo.bridgebuilder.ui.manipulators.RotationBox;
@@ -36,6 +37,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     public TextureAtlas.AtlasSprite sprite;
     public SpriteTool tool;
     public float width, height;
+    private float newScale = 1;
 
     public int layerOverrideIndex; // Only used to keep the reloading simple. When the MapSprite is made, store the index of the override layer here and use it later to set the bottom variable once all layers are created. 0 means no override. Index starts at 1.
     public Layer layerOverride; // If this is not null, before drawing this sprite, draw that whole layer. Used to organize different layer heights
@@ -61,12 +63,18 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
 
     public Vector2 c1, c2;
 
-    public MapSprite(Map map, Layer layer, SpriteTool tool, float x, float y)
+    public MapSprite(Map map, Layer layer, SpriteTool tool, float x, float y, MapSpriteData mapSpriteData)
     {
         super(map, layer, x, y);
         this.instanceSpecificProperties = new Array<>();
         this.sprite = new TextureAtlas.AtlasSprite((TextureAtlas.AtlasRegion) tool.textureRegion);
-        this.sprite.setSize(sprite.getAtlasRegion().originalWidth / 64f, sprite.getAtlasRegion().originalHeight / 64f);
+        if(mapSpriteData == null)
+            this.sprite.setSize(sprite.getAtlasRegion().originalWidth / 64f, sprite.getAtlasRegion().originalHeight / 64f);
+        else
+        {
+            this.newScale = mapSpriteData.w / (sprite.getAtlasRegion().originalWidth / 64f);
+            this.sprite.setSize(mapSpriteData.w, mapSpriteData.h);
+        }
         this.width = this.sprite.getWidth();
         this.height = this.sprite.getHeight();
         this.sprite.setOrigin(width / 2, height / 2);
@@ -1054,7 +1062,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
         }
         float trimX = spriteX;
         float trimY = spriteY;
-        float trimHeight = (this.sprite.getAtlasRegion().getRegionHeight() / 64f);
+        float trimHeight = (this.sprite.getAtlasRegion().getRegionHeight() / 64f) * newScale;
 
 //        if(this.parentSprite != null)
 //        {
