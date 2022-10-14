@@ -2045,14 +2045,17 @@ public class Map implements Screen
                 spriteTool.properties.clear();
 
                 // properties
-                int propSize = toolData.p.size();
-                for (int s = 0; s < propSize; s++)
+                if(toolData.p != null)
                 {
-                    PropertyData propertyData = toolData.p.get(s);
-                    propertyMenu.newProperty(propertyData, spriteTool.properties);
+                    int propSize = toolData.p.size();
+                    for (int s = 0; s < propSize; s++)
+                    {
+                        PropertyData propertyData = toolData.p.get(s);
+                        propertyMenu.newProperty(propertyData, spriteTool.properties);
+                    }
                 }
                 // locked properties
-                propSize = toolData.lP.size();
+                int propSize = toolData.lP.size();
                 for (int s = 0; s < propSize; s++)
                 {
                     PropertyData propertyData = toolData.lP.get(s);
