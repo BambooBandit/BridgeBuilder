@@ -320,6 +320,27 @@ public class Utils
         return true;
     }
 
+    public static boolean hasPropertyFieldWithValue(Array<PropertyField> properties, String propertyName, String valueName)
+    {
+        for(int i = 0; i < properties.size; i ++)
+        {
+            PropertyField property = properties.get(i);
+            if(property instanceof FieldFieldPropertyValuePropertyField)
+            {
+                FieldFieldPropertyValuePropertyField fieldFieldProperty = (FieldFieldPropertyValuePropertyField) property;
+                if(fieldFieldProperty.getProperty() != null && fieldFieldProperty.getProperty().equals(propertyName) && fieldFieldProperty.getValue().equals(valueName))
+                    return true;
+            }
+            if(property instanceof LabelFieldPropertyValuePropertyField)
+            {
+                LabelFieldPropertyValuePropertyField labelFieldProperty = (LabelFieldPropertyValuePropertyField) property;
+                if(labelFieldProperty.getProperty() != null && labelFieldProperty.getProperty().equals(propertyName) && labelFieldProperty.getValue().equals(valueName))
+                    return true;
+            }
+        }
+        return false;
+    }
+
     public LightPropertyField getLockedLightField(Array<PropertyField> lockedProperties)
     {
         for(int i = 0; i < lockedProperties.size; i ++)

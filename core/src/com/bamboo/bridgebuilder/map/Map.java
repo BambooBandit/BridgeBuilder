@@ -1179,7 +1179,7 @@ public class Map implements Screen
         return this.spriteMenu.selectedSpriteTools.first();
     }
 
-    public void shuffleRandomSpriteTool(boolean ignoreFencePost, float stack)
+    public void shuffleRandomSpriteTool(boolean ignoreFencePost, int stack)
     {
         if(getSpriteToolFromSelectedTools() == null)
             return;
@@ -1247,12 +1247,14 @@ public class Map implements Screen
             FieldFieldPropertyValuePropertyField stackProperty;
             Array<SpriteTool> spriteTools = getAllSelectedSpriteTools();
 
+            System.out.println();
+
             boolean contains = false;
             for (int i = 0; i < spriteTools.size; i++)
             {
                 SpriteTool tool = spriteTools.get(i);
                 stackProperty = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(tool.properties, "stack");
-                if(stackProperty == null || Integer.parseInt(stackProperty.value.getText()) == stack)
+                if(stackProperty == null || Utils.hasPropertyFieldWithValue(tool.properties, "stack", stack + ""))
                     contains = true;
             }
             if(!contains)
@@ -1260,14 +1262,14 @@ public class Map implements Screen
 
             SpriteTool spriteTool = getSpriteToolFromSelectedTools();
             stackProperty = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(spriteTool.properties, "stack");
-            if(stackProperty == null || Integer.parseInt(stackProperty.value.getText()) == stack)
+            if(stackProperty == null || Utils.hasPropertyFieldWithValue(spriteTool.properties, "stack", stack + ""))
                 return;
 
             for (int i = 0; i < spriteTools.size; i++)
             {
                 SpriteTool tool = spriteTools.get(i);
                 stackProperty = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(tool.properties, "stack");
-                if(stackProperty != null && Integer.parseInt(stackProperty.value.getText()) == stack)
+                if(stackProperty != null && Utils.hasPropertyFieldWithValue(tool.properties, "stack", stack + ""))
                     shuffleRandomSpriteTool(ignoreFencePost, stack);
             }
         }

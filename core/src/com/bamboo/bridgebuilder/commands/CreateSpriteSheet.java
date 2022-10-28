@@ -91,7 +91,7 @@ public class CreateSpriteSheet implements Command
                 spriteTool.setSize(newWidth, newHeight);
                 checkerDark = !checkerDark;
                 this.map.spriteMenu.spriteTable.add(cellTable).center().grow();
-                if((i + 1) % 5 == 0)
+                if((i + 1) % 3 == 0)
                 {
                     rowOdd = !rowOdd;
                     checkerDark = !rowOdd;
@@ -110,7 +110,7 @@ public class CreateSpriteSheet implements Command
             {
                 Table child = this.spriteSheet.children.get(i);
                 this.map.spriteMenu.spriteTable.add(child).grow();
-                if((i + 1) % 5 == 0)
+                if((i + 1) % 3 == 0)
                     this.map.spriteMenu.spriteTable.row();
             }
             this.map.spriteMenu.spriteSheets.add(this.spriteSheet);

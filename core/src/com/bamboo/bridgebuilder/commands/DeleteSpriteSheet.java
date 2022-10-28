@@ -100,7 +100,7 @@ public class DeleteSpriteSheet implements Command
         {
             Table child = this.spriteSheet.children.get(i);
             this.map.spriteMenu.spriteTable.add(child).grow();
-            if((i + 1) % 5 == 0)
+            if((i + 1) % 3 == 0)
                 this.map.spriteMenu.spriteTable.row();
         }
         this.map.spriteMenu.spriteSheets.add(this.spriteSheet);
