@@ -1923,6 +1923,7 @@ public class Map implements Screen
                     }
                 }
                 groupPolygons.children.sort();
+                groupPolygons.children.reverse();
             }
 
 

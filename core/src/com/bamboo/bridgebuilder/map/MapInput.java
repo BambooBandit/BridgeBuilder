@@ -1019,6 +1019,7 @@ public class MapInput implements InputProcessor
                 this.map.executeCommand(addMapSpritesToGroup);
                 clearMapPolygonVertices(button);
                 this.map.groupPolygons.children.sort();
+                this.map.groupPolygons.children.reverse();
             }
             this.map.pushCommand(drawMapPolygon);
         }
