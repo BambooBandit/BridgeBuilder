@@ -246,7 +246,8 @@ public class PropertyPresetDialog extends Window
                 new PropertyValue("showName", "Value"),
                 new PropertyValue("toFloor", "0"),
                 new PropertyValue("changeMap", "Value"),
-                new PropertyValue("angle", "Value")
+                new PropertyValue("angle", "Value"),
+                new PropertyValue("cameraAngle", "Value")
         ));
     }
 
