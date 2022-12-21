@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -151,6 +153,8 @@ public class SpriteGrid
     }
 
     private static float[] rectangle = new float[8];
+    private static Polygon polygon1 = new Polygon();
+    private static Polygon polygon2 = new Polygon();
     public void checkAllCellsInPolygonBox(MapPolygon mapPolygon, int index)
     {
         float oldPolygonX = mapPolygon.polygon.getX();
@@ -199,7 +203,10 @@ public class SpriteGrid
                 rectangle[6] = x + bezelSize;
                 rectangle[7] = y + 1f - (bezelSize * 2f);
 
-                if(dT)
+                polygon1.setVertices(rectangle);
+                polygon2.setVertices(mapPolygon.polygon.getTransformedVertices());
+
+                if(dT && Intersector.overlapConvexPolygons(polygon1, polygon2))
                 {
                     cell.dustIndex = index;
                     cell.dustType = comparedDustType;
@@ -369,7 +376,8 @@ public class SpriteGrid
         switch (dustType)
         {
             case "dirt": return 0;
-            case "grass": return 1;
+            case "gravel": return 1;
+            case "grass": return 2;
             default: return -1;
         }
     }
