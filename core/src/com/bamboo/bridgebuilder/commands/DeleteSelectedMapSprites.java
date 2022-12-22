@@ -128,15 +128,15 @@ public class DeleteSelectedMapSprites implements Command
         this.selectedLayer.map.propertyMenu.rebuild();
         this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
 
+        if (this.chainedCommands != null)
+            for (int i = 0; i < this.chainedCommands.size; i++)
+                this.chainedCommands.get(i).undo();
+
         if(this.selectedLayer.map.editor.fileMenu.toolPane.depth.selected)
             this.selectedLayer.map.colorizeDepth();
 
         if(this.selectedLayer.map.editor.fileMenu.toolPane.spriteGridColors.selected)
             this.selectedLayer.map.updateLayerSpriteGrids();
-
-        if (this.chainedCommands != null)
-            for (int i = 0; i < this.chainedCommands.size; i++)
-                this.chainedCommands.get(i).undo();
     }
 
     public void addCommandToChain(LayerOverride command)

@@ -1286,6 +1286,7 @@ public class Map implements Screen
                 objectLayer.updateSpriteGrid();
             }
         }
+        setGridLayers();
     }
 
     public void executeCommand(Command command)
@@ -1710,6 +1711,7 @@ public class Map implements Screen
                     layer.children.sort();
                 }
             }
+            setGridLayers();
 
             // edge sprites and ID's
             for(int i = 0; i < layers.size; i ++)
@@ -1935,6 +1937,35 @@ public class Map implements Screen
         setIdCounter(mapData.idCounter);
 
         fixDuplicateIDs();
+    }
+
+    public void setGridLayers()
+    {
+        ObjectLayer currentGridLayer = null;
+        for(int i = 0; i < layers.size; i ++)
+        {
+            Layer layer = layers.get(i);
+            if(layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                if(objectLayer.spriteGrid != null)
+                {
+                    currentGridLayer = objectLayer;
+                    currentGridLayer.spriteGrid.objectLayers.clear();
+                    currentGridLayer.spriteGrid.spriteLayers.clear();
+                }
+                if(currentGridLayer != null)
+                    currentGridLayer.spriteGrid.objectLayers.add(objectLayer);
+            }
+            else if(layer instanceof SpriteLayer)
+            {
+                SpriteLayer spriteLayer = (SpriteLayer) layer;
+                if(currentGridLayer != null && Utils.containsProperty(spriteLayer.properties, "ground") && spriteLayer.z == 0)
+                {
+                    currentGridLayer.spriteGrid.spriteLayers.add(spriteLayer);
+                }
+            }
+        }
     }
 
     private boolean spriteToolContainsOriginalAttachedObjectID(SpriteTool spriteTool, long id)

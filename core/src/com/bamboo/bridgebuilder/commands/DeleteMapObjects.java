@@ -69,6 +69,8 @@ public class DeleteMapObjects implements Command
             this.selectedLayer.children.removeAll(this.selectedObjects, true);
             this.selectedLayer.map.propertyMenu.rebuild();
             this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
+            if(this.selectedLayer.map.editor.fileMenu.toolPane.spriteGridColors.selected)
+                this.selectedLayer.map.updateLayerSpriteGrids();
         }
     }
 
@@ -101,6 +103,9 @@ public class DeleteMapObjects implements Command
 
                 this.selectedLayer.map.propertyMenu.rebuild();
                 this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
+
+                if(this.selectedLayer.map.editor.fileMenu.toolPane.spriteGridColors.selected)
+                    this.selectedLayer.map.updateLayerSpriteGrids();
                 return;
             }
         }
@@ -127,5 +132,7 @@ public class DeleteMapObjects implements Command
         this.selectedLayer.map.propertyMenu.rebuild();
         this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
         this.selectedLayer.map.colorizeGroup();
+        if(this.selectedLayer.map.editor.fileMenu.toolPane.spriteGridColors.selected)
+            this.selectedLayer.map.updateLayerSpriteGrids();
     }
 }

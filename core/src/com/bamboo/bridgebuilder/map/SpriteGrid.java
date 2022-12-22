@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.BBShapeRenderer;
@@ -23,6 +24,8 @@ import static com.badlogic.gdx.graphics.GL20.*;
 public class SpriteGrid
 {
     public ObjectLayer objectLayer;
+    public Array<ObjectLayer> objectLayers;
+    public Array<SpriteLayer> spriteLayers;
     public Array<SpriteCell> grid; // Going from bottom left to top right. Every x amount of indices is x width of the layer and height of 1. False is not blocked, true is blocked.
 
     private FrameBuffer fbo;
@@ -30,6 +33,9 @@ public class SpriteGrid
     public SpriteGrid(ObjectLayer objectLayer)
     {
         this.objectLayer = objectLayer;
+
+        this.objectLayers = new Array<>();
+        this.spriteLayers = new Array<>();
 
         this.grid = new Array<>(this.objectLayer.width * this.objectLayer.height);
 
@@ -92,13 +98,30 @@ public class SpriteGrid
 
         updateColorGrid();
 
-        for(int i = 0; i < this.objectLayer.children.size; i ++)
+        int index = 0;
+        for(int k = 0; k < spriteLayers.size; k ++)
         {
-            MapObject mapObject = this.objectLayer.children.get(i);
-            if(mapObject instanceof MapPolygon)
+            for (int i = 0; i < spriteLayers.get(k).children.size; i++)
             {
-                MapPolygon mapPolygon = (MapPolygon) mapObject;
-                checkAllCellsInPolygonBox(mapPolygon, i);
+                MapSprite mapSprite = spriteLayers.get(k).children.get(i);
+                if (Utils.containsProperty(mapSprite.instanceSpecificProperties, "dustType") || Utils.containsProperty(mapSprite.tool.properties, "dustType"))
+                {
+                    checkAllCellsInPolygonBox(mapSprite, index);
+                    index ++;
+                }
+            }
+        }
+        for(int k = 0; k < objectLayers.size; k ++)
+        {
+            for (int i = 0; i < objectLayers.get(k).children.size; i++)
+            {
+                MapObject mapObject = objectLayers.get(k).children.get(i);
+                if (mapObject instanceof MapPolygon)
+                {
+                    MapPolygon mapPolygon = (MapPolygon) mapObject;
+                    checkAllCellsInPolygonBox(mapPolygon, index);
+                    index ++;
+                }
             }
         }
 
@@ -153,6 +176,7 @@ public class SpriteGrid
     }
 
     private static float[] rectangle = new float[8];
+    private static float[] triangle = new float[6];
     private static Polygon polygon1 = new Polygon();
     private static Polygon polygon2 = new Polygon();
     public void checkAllCellsInPolygonBox(MapPolygon mapPolygon, int index)
@@ -204,7 +228,91 @@ public class SpriteGrid
                 rectangle[7] = y + 1f - (bezelSize * 2f);
 
                 polygon1.setVertices(rectangle);
-                polygon2.setVertices(mapPolygon.polygon.getTransformedVertices());
+                FloatArray triangles = Utils.triangleFan(mapPolygon.polygon.getTransformedVertices());
+
+                if(dT)
+                {
+                    boolean intersects = false;
+
+                    triangles:
+                    for(int i = 0; i < triangles.size; i += 6)
+                    {
+                        triangle[0] = triangles.get(i);
+                        triangle[1] = triangles.get(i + 1);
+                        triangle[2] = triangles.get(i + 2);
+                        triangle[3] = triangles.get(i + 3);
+                        triangle[4] = triangles.get(i + 4);
+                        triangle[5] = triangles.get(i + 5);
+                        polygon2.setVertices(triangle);
+                        if(Intersector.overlapConvexPolygons(polygon1, polygon2))
+                        {
+                            intersects = true;
+                            break triangles;
+                        }
+                    }
+
+                    if(intersects)
+                    {
+                        cell.dustIndex = index;
+                        cell.dustType = comparedDustType;
+                    }
+                }
+            }
+        }
+        mapPolygon.polygon.setPosition(oldPolygonX, oldPolygonY);
+    }
+
+    public void checkAllCellsInPolygonBox(MapSprite mapSprite, int index)
+    {
+        float oldPolygonX = mapSprite.polygon.getX();
+        float oldPolygonY = mapSprite.polygon.getY();
+//        mapSprite.polygon.setPosition(oldPolygonX + mapSprite.map.cameraX, oldPolygonY + mapSprite.map.cameraY);
+
+        Rectangle polygonRectangle = mapSprite.polygon.getBoundingRectangle();
+
+        boolean dT = false;
+
+        FieldFieldPropertyValuePropertyField property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(mapSprite, "dustType");
+        String comparedDustType = null;
+        if(property != null && mapSprite.layer != null && !Utils.containsProperty(mapSprite.layer.properties, "ignoreDustType"))
+        {
+            comparedDustType = property.value.getText();
+            dT = true;
+        }
+
+        float shiftSize = 0f;
+        int rectX = (int) ((int) Math.floor(polygonRectangle.x) - 1 - shiftSize);
+        int rectY = (int) ((int) Math.floor(polygonRectangle.y) - 1 - shiftSize);
+        int rectWidth = (int) ((int) Math.ceil(polygonRectangle.width) + ((1 + shiftSize) * 2));
+        int rectHeight = (int) ((int) Math.ceil(polygonRectangle.height) + ((1 + shiftSize) * 2));
+
+        for(int y = rectY; y < rectY + rectHeight; y++)
+        {
+            for(int x = rectX; x < rectX + rectWidth; x ++)
+            {
+                SpriteCell cell = getCell(x, y);
+                if(cell == null)
+                    continue;
+
+                if(dT)
+                {
+//                    if (!doesDustTypeHavePriority(cell.dustType, cell.dustIndex, comparedDustType, index))
+//                        continue;
+                }
+
+                float bezelSize = 0f;
+                rectangle[0] = x + bezelSize;
+                rectangle[1] = y + bezelSize;
+                rectangle[2] = x + 1f - (bezelSize * 2f);
+                rectangle[3] = y + bezelSize;
+                rectangle[4] = x + 1f - (bezelSize * 2f);
+                rectangle[5] = y + 1f - (bezelSize * 2f);
+                rectangle[6] = x + bezelSize;
+                rectangle[7] = y + 1f - (bezelSize * 2f);
+
+                polygon1.setVertices(rectangle);
+                polygon2.setVertices(mapSprite.polygon.getTransformedVertices());
+//                FloatArray triangles = Utils.triangleFan(mapSprite.polygon.getTransformedVertices());
 
                 if(dT && Intersector.overlapConvexPolygons(polygon1, polygon2))
                 {
@@ -213,7 +321,7 @@ public class SpriteGrid
                 }
             }
         }
-        mapPolygon.polygon.setPosition(oldPolygonX, oldPolygonY);
+//        mapSprite.polygon.setPosition(oldPolygonX, oldPolygonY);
     }
 
     private static Color rgba8888ToColor = new Color();
@@ -376,8 +484,13 @@ public class SpriteGrid
         switch (dustType)
         {
             case "dirt": return 0;
-            case "gravel": return 1;
-            case "grass": return 2;
+            case "sand": return 1;
+            case "gravel": return 2;
+            case "stone": return 3;
+            case "grass": return 4;
+            case "stick": return 5;
+            case "leaves": return 6;
+            case "puddle": return 7;
             default: return -1;
         }
     }

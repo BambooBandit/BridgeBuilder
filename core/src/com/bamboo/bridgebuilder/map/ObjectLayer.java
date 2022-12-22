@@ -40,6 +40,7 @@ public class ObjectLayer extends Layer
     {
         if(this.spriteGrid == null)
             this.spriteGrid = new SpriteGrid(this);
+        map.setGridLayers();
     }
 
     public void removeGrid()

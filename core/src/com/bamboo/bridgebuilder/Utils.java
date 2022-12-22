@@ -16,8 +16,13 @@ import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteSheet;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
+import org.poly2tri.Poly2Tri;
+import org.poly2tri.geometry.polygon.PolygonPoint;
+import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Utils
 {
@@ -57,25 +62,74 @@ public class Utils
         return false;
     }
 
+//    public static FloatArray triangleFan(float[] polygon)
+//    {
+//        int start = 0;
+//        int curr = 2;
+//        int prev = polygon.length - 2;
+//        FloatArray out = triangles;
+//        out.clear();
+//
+//        while(start != curr)
+//        {
+//            out.add(polygon[start]);
+//            out.add(polygon[start + 1]);
+//            out.add(polygon[curr]);
+//            out.add(polygon[curr + 1]);
+//            out.add(polygon[prev]);
+//            out.add(polygon[prev + 1]);
+//            prev = curr;
+//            curr = curr + 2 == polygon.length ? 0 : curr + 2;
+//        }
+//
+//        return out;
+//    }
+
     public static FloatArray triangleFan(float[] polygon)
     {
-        int start = 0;
-        int curr = 2;
-        int prev = polygon.length - 2;
+        //Create the polygon passing a List of PolygonPoints
+        ArrayList<PolygonPoint> verts = new ArrayList<>();
+        for(int i = 0; i < polygon.length; i += 2)
+            verts.add(new PolygonPoint(polygon[i], polygon[i + 1]));
+        org.poly2tri.geometry.polygon.Polygon poly2TriPolygon = new org.poly2tri.geometry.polygon.Polygon(verts);
+        poly2TriPolygon.clearTriangulation();
+        //Next, proceed to calculate the triangulation of the polygon
+        Poly2Tri.triangulate(poly2TriPolygon);
+        //Finally, obtain the resulting triangles
+        List<DelaunayTriangle> poly2TriTriangles = poly2TriPolygon.getTriangles();
+
+
         FloatArray out = triangles;
         out.clear();
 
-        while(start != curr)
+        for(int i = 0; i < poly2TriTriangles.size(); i ++)
         {
-            out.add(polygon[start]);
-            out.add(polygon[start + 1]);
-            out.add(polygon[curr]);
-            out.add(polygon[curr + 1]);
-            out.add(polygon[prev]);
-            out.add(polygon[prev + 1]);
-            prev = curr;
-            curr = curr + 2 == polygon.length ? 0 : curr + 2;
+            DelaunayTriangle triangle = poly2TriTriangles.get(i);
+            for(int k = 0; k < triangle.points.length; k ++)
+            {
+                out.add(triangle.points[k].getXf());
+                out.add(triangle.points[k].getYf());
+            }
         }
+
+
+//        int start = 0;
+//        int curr = 2;
+//        int prev = polygon.length - 2;
+//        FloatArray out = triangles;
+//        out.clear();
+//
+//        while(start != curr)
+//        {
+//            out.add(polygon[start]);
+//            out.add(polygon[start + 1]);
+//            out.add(polygon[curr]);
+//            out.add(polygon[curr + 1]);
+//            out.add(polygon[prev]);
+//            out.add(polygon[prev + 1]);
+//            prev = curr;
+//            curr = curr + 2 == polygon.length ? 0 : curr + 2;
+//        }
 
         return out;
     }
@@ -510,6 +564,13 @@ public class Utils
             }
         }
         return null;
+    }
+
+    public static PropertyField getPropertyField(MapSprite mapSprite, String propertyName)
+    {
+        if(Utils.containsProperty(mapSprite.instanceSpecificProperties, propertyName))
+            return Utils.getPropertyField(mapSprite.instanceSpecificProperties, propertyName);
+        return getPropertyField(mapSprite.tool.properties, propertyName);
     }
 
     public static String capitalize(String name) {
