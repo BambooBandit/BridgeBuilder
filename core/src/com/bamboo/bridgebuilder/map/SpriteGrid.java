@@ -274,7 +274,9 @@ public class SpriteGrid
 
         FieldFieldPropertyValuePropertyField property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(mapSprite, "dustType");
         String comparedDustType = null;
-        if(property != null && mapSprite.layer != null && !Utils.containsProperty(mapSprite.layer.properties, "ignoreDustType"))
+        ColorPropertyField colorProperty = Utils.getLockedColorField("Tint", mapSprite.lockedProperties);
+        float alpha = Float.parseFloat(colorProperty.aValue.getText());
+        if(property != null && mapSprite.layer != null && !Utils.containsProperty(mapSprite.layer.properties, "ignoreDustType") && alpha > .2f)
         {
             comparedDustType = property.value.getText();
             dT = true;
