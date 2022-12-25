@@ -492,7 +492,8 @@ public class SpriteGrid
             case "grass": return 4;
             case "stick": return 5;
             case "leaves": return 6;
-            case "puddle": return 7;
+            case "wood": return 7;
+            case "puddle": return 8;
             default: return -1;
         }
     }
