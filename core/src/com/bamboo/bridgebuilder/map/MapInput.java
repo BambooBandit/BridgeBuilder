@@ -272,6 +272,11 @@ public class MapInput implements InputProcessor
             {
                 this.moveMapSprites = new MoveMapSprites(x, y, this.map.selectedSprites);
                 this.map.pushCommand(this.moveMapSprites);
+                if(this.map.selectedObjects.size > 0)
+                {
+                    this.moveMapObjects = new MoveMapObjects(this.map.selectedObjects);
+                    this.map.pushCommand(this.moveMapObjects);
+                }
                 return true;
             }
             else if(selectedSprite.rotationBox.contains(x, y))
@@ -322,6 +327,12 @@ public class MapInput implements InputProcessor
             {
                 this.moveMapObjects = new MoveMapObjects(this.map.selectedObjects);
                 this.map.pushCommand(this.moveMapObjects);
+
+                if(this.map.selectedSprites.size > 0)
+                {
+                    this.moveMapSprites = new MoveMapSprites(x, y, this.map.selectedSprites);
+                    this.map.pushCommand(this.moveMapSprites);
+                }
                 return true;
             }
         }
@@ -367,7 +378,7 @@ public class MapInput implements InputProcessor
     {
         if(this.moveMapSprites != null)
             this.moveMapSprites.update(dragCurrentPos.x, dragCurrentPos.y);
-        else if(this.moveMapObjects != null)
+        if(this.moveMapObjects != null)
         {
             MapSprite parent = this.moveMapObjects.originalMapObjectPosition.iterator().next().key.attachedSprite;
             if(parent != null)

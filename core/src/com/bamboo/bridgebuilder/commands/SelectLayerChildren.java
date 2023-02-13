@@ -1,5 +1,7 @@
 package com.bamboo.bridgebuilder.commands;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.*;
@@ -32,14 +34,34 @@ public class SelectLayerChildren implements Command
         this.hoveredChildren = new Array<>();
 
         this.areAllHoveredAreSelected = true;
-        for(int i = 0; i < map.selectedLayer.children.size; i ++)
+        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
         {
-            LayerChild layerChild = (LayerChild) map.selectedLayer.children.get(i);
-            if(layerChild.isHoveredOver(Utils.boxSelectCommandVertices))
+            for (int i = 0; i < map.layers.size; i++)
             {
-                this.hoveredChildren.add(layerChild);
-                if(!layerChild.selected)
-                    this.areAllHoveredAreSelected = false;
+                Layer layer = map.layers.get(i);
+                for(int k = 0; k < layer.children.size; k ++)
+                {
+                    LayerChild layerChild = (LayerChild) layer.children.get(k);
+                    if (layerChild.isHoveredOver(Utils.boxSelectCommandVertices))
+                    {
+                        this.hoveredChildren.add(layerChild);
+                        if (!layerChild.selected)
+                            this.areAllHoveredAreSelected = false;
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < map.selectedLayer.children.size; i++)
+            {
+                LayerChild layerChild = (LayerChild) map.selectedLayer.children.get(i);
+                if (layerChild.isHoveredOver(Utils.boxSelectCommandVertices))
+                {
+                    this.hoveredChildren.add(layerChild);
+                    if (!layerChild.selected)
+                        this.areAllHoveredAreSelected = false;
+                }
             }
         }
 

@@ -249,6 +249,14 @@ public class PropertyPresetDialog extends Window
                 new PropertyValue("angle", "Value"),
                 new PropertyValue("cameraAngle", "Value")
         ));
+        propertyGroups.add(this.createPropertyGroup("ambience", new SelectionType[]{SelectionType.POLYGON},
+                new PropertyValue("ambientDampenEvent", "Value"),
+                new PropertyValue("dampener", "0"),
+                new PropertyValue("insideTrigger", "Value"),
+                new PropertyValue("eventLimit", "-1"),
+                new PropertyValue("eventLimitType", "POLYGONENTER"),
+                new PropertyValue("roomAmbience", "WOODENINDOORS")
+        ));
     }
 
     private void createTop()

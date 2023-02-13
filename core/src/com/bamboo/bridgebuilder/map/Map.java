@@ -2,6 +2,7 @@ package com.bamboo.bridgebuilder.map;
 
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -829,15 +830,36 @@ public class Map implements Screen
         if(!Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) || !this.input.boxSelect.isDragging || this.selectedLayer == null)
             return;
 
-        for(int i = 0; i < this.selectedLayer.children.size; i ++)
+        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
         {
-            LayerChild layerChild = (LayerChild) this.selectedLayer.children.get(i);
-            if(layerChild.isHoveredOver(this.input.boxSelect.getVertices()))
+            for (int i = 0; i < this.layers.size; i++)
             {
-                if(layerChild.selected)
-                    layerChild.drawSelectedHoveredOutline();
-                else
-                    layerChild.drawHoverOutline();
+                Layer layer = this.layers.get(i);
+                for(int k = 0; k < layer.children.size; k ++)
+                {
+                    LayerChild layerChild = (LayerChild) layer.children.get(k);
+                    if (layerChild.isHoveredOver(this.input.boxSelect.getVertices()))
+                    {
+                        if (layerChild.selected)
+                            layerChild.drawSelectedHoveredOutline();
+                        else
+                            layerChild.drawHoverOutline();
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < this.selectedLayer.children.size; i++)
+            {
+                LayerChild layerChild = (LayerChild) this.selectedLayer.children.get(i);
+                if (layerChild.isHoveredOver(this.input.boxSelect.getVertices()))
+                {
+                    if (layerChild.selected)
+                        layerChild.drawSelectedHoveredOutline();
+                    else
+                        layerChild.drawHoverOutline();
+                }
             }
         }
         if(editor.fileMenu.toolPane.selectAttachedSprites.selected && this.selectedLayer instanceof SpriteLayer)
@@ -1352,14 +1374,14 @@ public class Map implements Screen
         {
             if(this.selectedObjects.size > 0)
             {
-                DeleteMapObjects deleteMapObjects = new DeleteMapObjects(this.selectedObjects, this.selectedLayer);
+                DeleteMapObjects deleteMapObjects = new DeleteMapObjects(this.selectedObjects, this.selectedObjects.first().layer);
                 executeCommand(deleteMapObjects);
             }
-            else if(this.selectedSprites.size > 0)
+            if(this.selectedSprites.size > 0)
             {
                 if (Command.shouldExecute(this, DeleteSelectedMapSprites.class))
                 {
-                    DeleteSelectedMapSprites deleteSelectedMapSprites = new DeleteSelectedMapSprites(this.selectedSprites, (SpriteLayer) this.selectedLayer);
+                    DeleteSelectedMapSprites deleteSelectedMapSprites = new DeleteSelectedMapSprites(this.selectedSprites, (SpriteLayer) this.selectedSprites.first().layer);
                     executeCommand(deleteSelectedMapSprites);
                 }
             }
