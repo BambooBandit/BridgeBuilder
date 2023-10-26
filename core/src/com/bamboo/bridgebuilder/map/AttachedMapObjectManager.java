@@ -358,6 +358,8 @@ public class AttachedMapObjectManager implements Comparable<AttachedMapObjectMan
 
     @Override
     public int compareTo(AttachedMapObjectManager o) {
+        if(this.attachedMapObjects.size == 0 || o.attachedMapObjects.size == 0)
+            return 0;
         return this.attachedMapObjects.first().compareTo(o.attachedMapObjects.first());
     }
 }

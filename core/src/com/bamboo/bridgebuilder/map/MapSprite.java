@@ -1269,6 +1269,9 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     @Override
     public int compareTo(MapSprite other)
     {
+
+        if(1==1)
+            return Float.compare(other.y, this.y);
         int thisCPresent = 1;
         int otherCPresent = 1;
         if(c1 == null)

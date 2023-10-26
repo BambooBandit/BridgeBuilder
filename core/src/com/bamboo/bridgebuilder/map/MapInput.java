@@ -675,6 +675,36 @@ public class MapInput implements InputProcessor
             for(int i = 0; i < spriteLayer.children.size; i ++)
             {
                 MapSprite layerChild = spriteLayer.children.get(i);
+                if(layerChild.attachedSprites != null)
+                {
+                    for(int k = 0; k < layerChild.attachedSprites.children.size; k ++)
+                    {
+                        MapSprite attachedSprite = layerChild.attachedSprites.children.get(k);
+                        if(attachedSprite.isHoveredOver(x, y, editor.fileMenu.toolPane.paintDialog.getRadius()))
+                        {
+                            if(map.selectedSprites.size == 0 || attachedSprite.selected)
+                            {
+                                boolean left = button == Input.Buttons.LEFT;
+                                float r = (attachedSprite.sprite.getColor().r * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getR(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
+                                float g = (attachedSprite.sprite.getColor().g * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getG(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
+                                float b = (attachedSprite.sprite.getColor().b * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getB(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
+                                float a = (attachedSprite.sprite.getColor().a * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getA(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
+                                if(editor.fileMenu.toolPane.paintDialog.getR(left) == -1)
+                                    r = attachedSprite.sprite.getColor().r;
+                                if(editor.fileMenu.toolPane.paintDialog.getG(left) == -1)
+                                    g = attachedSprite.sprite.getColor().g;
+                                if(editor.fileMenu.toolPane.paintDialog.getB(left) == -1)
+                                    b = attachedSprite.sprite.getColor().b;
+                                if(editor.fileMenu.toolPane.paintDialog.getA(left) == -1)
+                                    a = attachedSprite.sprite.getColor().a;
+                                if(paintMapSprite == null)
+                                    paintMapSprite = new PaintMapSprite(this.map, attachedSprite, r, g, b, a);
+                                else
+                                    paintMapSprite.addCommandToChain(new PaintMapSprite(this.map, attachedSprite, r, g, b, a));
+                            }
+                        }
+                    }
+                }
                 if(layerChild.isHoveredOver(x, y, editor.fileMenu.toolPane.paintDialog.getRadius()))
                 {
                     if(map.selectedSprites.size == 0 || layerChild.selected)
