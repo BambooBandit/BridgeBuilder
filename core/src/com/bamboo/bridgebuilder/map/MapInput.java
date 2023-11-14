@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.bamboo.bridgebuilder.BoxSelect;
 import com.bamboo.bridgebuilder.BridgeBuilder;
@@ -148,6 +149,8 @@ public class MapInput implements InputProcessor
 
 
             if(handleMapSpritePaint(coords.x, coords.y, button))
+                return false;
+            if(handleMapSpriteThin(coords.x, coords.y, button))
                 return false;
             if(handleMapSpriteCreation(coords.x, coords.y, button))
                 return false;
@@ -732,6 +735,58 @@ public class MapInput implements InputProcessor
             if(paintMapSprite != null)
             {
                 this.map.executeCommand(paintMapSprite);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean handleMapSpriteThin(float x, float y, int button)
+    {
+        if(!Utils.isFileToolThisType(this.editor, Tools.THIN) || this.map.selectedLayer == null || !(this.map.selectedLayer instanceof SpriteLayer) || (button != Input.Buttons.LEFT && button != Input.Buttons.RIGHT))
+            return false;
+
+        if(Command.shouldExecute(map, DeleteSelectedMapSprites.class))
+        {
+            SpriteLayer spriteLayer = (SpriteLayer) map.selectedLayer;
+            DeleteSelectedMapSprites deleteMapSprites;
+            Array<MapSprite> mapSpritesToDelete = new Array<>();
+            Array<DeleteSelectedMapSprites> deleteCommands = new Array<>();
+            for(int i = 0; i < spriteLayer.children.size; i ++)
+            {
+                MapSprite layerChild = spriteLayer.children.get(i);
+                if(layerChild.attachedSprites != null)
+                {
+                    Array<MapSprite> mapSpritesToDelete2 = new Array<>();
+                    for(int k = 0; k < layerChild.attachedSprites.children.size; k ++)
+                    {
+                        MapSprite attachedSprite = layerChild.attachedSprites.children.get(k);
+                        if(attachedSprite.isHoveredOver(x, y, editor.fileMenu.toolPane.thinDialog.getRadius()) && Utils.randomChance(editor.fileMenu.toolPane.thinDialog.getDeleteChance()))
+                        {
+                            if(map.selectedSprites.size == 0 || attachedSprite.selected)
+                            {
+                                mapSpritesToDelete2.add(attachedSprite);
+                            }
+                        }
+                    }
+                    DeleteSelectedMapSprites deleteCommand = new DeleteSelectedMapSprites(mapSpritesToDelete, spriteLayer);
+                    deleteCommands.add(deleteCommand);
+                }
+                if(layerChild.isHoveredOver(x, y, editor.fileMenu.toolPane.thinDialog.getRadius()) && Utils.randomChance(editor.fileMenu.toolPane.thinDialog.getDeleteChance()))
+                {
+                    if(map.selectedSprites.size == 0 || layerChild.selected)
+                    {
+                        mapSpritesToDelete.add(layerChild);
+                    }
+                }
+            }
+            deleteMapSprites = new DeleteSelectedMapSprites(mapSpritesToDelete, spriteLayer);
+            for(int i = 0; i < deleteCommands.size; i ++)
+                deleteMapSprites.addCommandToChain(deleteCommands.get(i));
+
+            if(deleteMapSprites != null)
+            {
+                this.map.executeCommand(deleteMapSprites);
                 return true;
             }
         }

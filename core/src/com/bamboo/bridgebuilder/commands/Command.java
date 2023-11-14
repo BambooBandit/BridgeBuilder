@@ -62,7 +62,7 @@ public interface Command
                     }
                 }
             }
-            return !attachedParentSelected;
+            return !attachedParentSelected || map.editor.fileMenu.toolPane.thin.selected;
         }
         else if(command == DrawMapSprite.class)
         {

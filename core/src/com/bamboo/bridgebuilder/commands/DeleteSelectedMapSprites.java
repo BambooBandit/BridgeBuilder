@@ -15,11 +15,11 @@ public class DeleteSelectedMapSprites implements Command
     private IntMap<MapSprite> deletedSprites;
     private SpriteLayer selectedLayer;
 
-    private Array<LayerOverride> chainedCommands; // Used for keeping track of layer overrides
+    private Array<Command> chainedCommands; // Used for keeping track of layer overrides
 
     public DeleteSelectedMapSprites(Array<MapSprite> selectedMapSprites, SpriteLayer selectedLayer)
     {
-        if(selectedMapSprites.size > 0)
+//        if(selectedMapSprites.size > 0)
             this.selectedSprites = new Array<>(selectedMapSprites);
         this.selectedLayer = selectedLayer;
         this.deletedSprites = new IntMap();
@@ -139,7 +139,7 @@ public class DeleteSelectedMapSprites implements Command
             this.selectedLayer.map.updateLayerSpriteGrids();
     }
 
-    public void addCommandToChain(LayerOverride command)
+    public void addCommandToChain(Command command)
     {
         if (this.chainedCommands == null)
             this.chainedCommands = new Array<>();

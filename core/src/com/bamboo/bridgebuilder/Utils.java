@@ -85,6 +85,12 @@ public class Utils
 //        return out;
 //    }
 
+    public static boolean randomChance(float randomChance)
+    {
+        float random = randomFloat(0, 1);
+        return random < randomChance;
+    }
+
     public static FloatArray triangleFan(float[] polygon)
     {
         //Create the polygon passing a List of PolygonPoints

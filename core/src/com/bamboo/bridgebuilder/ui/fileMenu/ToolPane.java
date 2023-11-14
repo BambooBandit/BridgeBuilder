@@ -48,6 +48,7 @@ public class ToolPane extends Group
     public Tool filledPolygons;
     public Tool groupPolygons;
     public Tool paint;
+    public Tool thin;
     private TextButton bringUp;
     private TextButton bringDown;
     private TextButton bringTop;
@@ -76,6 +77,9 @@ public class ToolPane extends Group
 
     public PaintDialog paintDialog;
     private TextButton paintButton;
+
+    public ThinDialog thinDialog;
+    private TextButton thinButton;
 
     private BridgeBuilder editor;
 
@@ -112,6 +116,7 @@ public class ToolPane extends Group
         this.filledPolygons = new Tool(editor, this, true, Tools.FILLED);
         this.groupPolygons = new Tool(editor, this, true, Tools.GROUP);
         this.paint = new Tool(editor, this, false, Tools.PAINT);
+        this.thin = new Tool(editor, this, false, Tools.THIN);
         this.bringUp = new TextButton("^", skin);
         this.bringDown = new TextButton("v", skin);
         this.bringTop = new TextButton("^^", skin);
@@ -141,6 +146,9 @@ public class ToolPane extends Group
         this.paintDialog = new PaintDialog(editor.stage, skin);
         this.paintButton = new TextButton("Paint", skin);
 
+        this.thinDialog = new ThinDialog(editor.stage, skin);
+        this.thinButton = new TextButton("Thin", skin);
+
         this.fps = new Label("0", skin);
 
         setListeners();
@@ -169,7 +177,8 @@ public class ToolPane extends Group
         this.toolTable.add(this.branch).padRight(1);
         this.toolTable.add(this.filledPolygons).padRight(1);
         this.toolTable.add(this.groupPolygons).padRight(1);
-        this.toolTable.add(this.paint).padRight(5);
+        this.toolTable.add(this.paint).padRight(1);
+        this.toolTable.add(this.thin).padRight(5);
         this.toolTable.add(this.bringUp);
         this.toolTable.add(this.bringDown);
         this.toolTable.add(this.bringTop);
@@ -183,6 +192,7 @@ public class ToolPane extends Group
         this.toolTable.add(this.groupButton).padRight(5);
         this.toolTable.add(this.mergeButton).padRight(5);
         this.toolTable.add(this.paintButton).padRight(5);
+        this.toolTable.add(this.thinButton).padRight(5);
         this.toolTable.add(this.fps).padRight(1);
 
         this.pane = new Stack();
@@ -226,6 +236,7 @@ public class ToolPane extends Group
         this.filledPolygons.setSize(toolHeight, toolHeight);
         this.groupPolygons.setSize(toolHeight, toolHeight);
         this.paint.setSize(toolHeight, toolHeight);
+        this.thin.setSize(toolHeight, toolHeight);
 
         this.toolTable.getCell(this.brush).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.drawPoint).size(toolHeight, toolHeight);
@@ -251,6 +262,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.branch).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.groupPolygons).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.paint).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.thin).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.filledPolygons).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringUp).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringDown).size(toolHeight, toolHeight);
@@ -265,6 +277,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.groupButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.mergeButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.paintButton).size(toolHeight * 2.3f, toolHeight);
+        this.toolTable.getCell(this.thinButton).size(toolHeight * 2.3f, toolHeight);
         this.toolTable.getCell(this.fps).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();
 
@@ -640,6 +653,15 @@ public class ToolPane extends Group
             public void clicked(InputEvent event, float x, float y)
             {
                 paintDialog.open();
+            }
+        });
+
+        this.thinButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                thinDialog.open();
             }
         });
     }
