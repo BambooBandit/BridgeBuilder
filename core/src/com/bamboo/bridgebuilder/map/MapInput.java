@@ -1315,7 +1315,7 @@ public class MapInput implements InputProcessor
 
     private boolean handleCameraDrag()
     {
-        if(!Utils.isFileToolThisType(this.editor, Tools.GRAB))
+        if(!Utils.isFileToolThisType(this.editor, Tools.GRAB) && !Gdx.input.isButtonPressed(Input.Buttons.FORWARD))
             return false;
         this.map.cameraX -= this.dragDifferencePos.x;
         this.map.cameraY -= this.dragDifferencePos.y;
