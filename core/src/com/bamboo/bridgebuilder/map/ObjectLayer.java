@@ -2,6 +2,7 @@ package com.bamboo.bridgebuilder.map;
 
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.BridgeBuilder;
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerField;
 import com.bamboo.bridgebuilder.ui.layerMenu.LayerTypes;
 
@@ -38,6 +39,8 @@ public class ObjectLayer extends Layer
 
     public void createGrid()
     {
+        if(Utils.containsProperty(map.propertyMenu.mapPropertyPanel.properties, "preventGrid"))
+            return;
         if(this.spriteGrid == null)
             this.spriteGrid = new SpriteGrid(this);
         map.setGridLayers();

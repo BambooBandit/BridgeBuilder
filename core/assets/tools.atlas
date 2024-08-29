@@ -1,13 +1,20 @@
 
 tools.png
-size: 64,256
+size: 256,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 arrow
   rotate: false
-  xy: 2, 2
+  xy: 94, 60
   size: 45, 141
   orig: 45, 141
+  offset: 0, 0
+  index: -1
+playerSizeReference
+  rotate: false
+  xy: 2, 2
+  size: 90, 199
+  orig: 90, 199
   offset: 0, 0
   index: -1

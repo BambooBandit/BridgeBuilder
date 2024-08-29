@@ -209,7 +209,10 @@ public class Map implements Screen
 
 //        if(Gdx.input.isKeyJustPressed(Input.Keys.Q))
 //        {
-//            mergedPolygons = mergePolygons();
+//            for(int i = 0; i < selectedSprites.size; i ++)
+//                selectedSprites.get(i).setPosition(selectedSprites.get(i).getX(), selectedSprites.get(i).getY() - 5);
+//            for(int i = 0; i < selectedObjects.size; i ++)
+//                selectedObjects.get(i).setPosition(selectedObjects.get(i).getX(), selectedObjects.get(i).getY() - 5);
 //        }
 
         this.world.step(delta, 1, 1);
@@ -1300,8 +1303,6 @@ public class Map implements Screen
             FieldFieldPropertyValuePropertyField stackProperty;
             Array<SpriteTool> spriteTools = getAllSelectedSpriteTools();
 
-            System.out.println();
-
             boolean contains = false;
             for (int i = 0; i < spriteTools.size; i++)
             {
@@ -1323,7 +1324,10 @@ public class Map implements Screen
                 SpriteTool tool = spriteTools.get(i);
                 stackProperty = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(tool.properties, "stack");
                 if(stackProperty != null && Utils.hasPropertyFieldWithValue(tool.properties, "stack", stack + ""))
+                {
                     shuffleRandomSpriteTool(ignoreFencePost, stack);
+                    break;
+                }
             }
         }
     }

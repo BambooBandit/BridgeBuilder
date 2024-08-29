@@ -81,6 +81,9 @@ public class ToolPane extends Group
     public ThinDialog thinDialog;
     private TextButton thinButton;
 
+    public ShadeDialog shadeDialog;
+    private TextButton shadeButton;
+
     private BridgeBuilder editor;
 
     public Label fps;
@@ -149,6 +152,9 @@ public class ToolPane extends Group
         this.thinDialog = new ThinDialog(editor.stage, skin);
         this.thinButton = new TextButton("Thin", skin);
 
+        this.shadeDialog = new ShadeDialog(editor.stage, skin, editor);
+        this.shadeButton = new TextButton("Shade", skin);
+
         this.fps = new Label("0", skin);
 
         setListeners();
@@ -193,6 +199,7 @@ public class ToolPane extends Group
         this.toolTable.add(this.mergeButton).padRight(5);
         this.toolTable.add(this.paintButton).padRight(5);
         this.toolTable.add(this.thinButton).padRight(5);
+        this.toolTable.add(this.shadeButton).padRight(5);
         this.toolTable.add(this.fps).padRight(1);
 
         this.pane = new Stack();
@@ -264,20 +271,21 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.paint).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.thin).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.filledPolygons).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.bringUp).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.bringDown).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.bringTop).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.bringBottom).size(toolHeight, toolHeight);
-        this.toolTable.getCell(this.sort).size(toolHeight * 2.3f, toolHeight);
-        this.toolTable.getCell(this.gradientButton).size(toolHeight * 2.3f, toolHeight);
-        this.toolTable.getCell(this.splatButton).size(toolHeight * 2.3f, toolHeight);
-        this.toolTable.getCell(this.minMaxButton).size(toolHeight * 2.3f, toolHeight);
-        this.toolTable.getCell(this.stairsButton).size(toolHeight * 2.3f, toolHeight);
-        this.toolTable.getCell(this.branchButton).size(toolHeight * 2.3f, toolHeight);
-        this.toolTable.getCell(this.groupButton).size(toolHeight * 2.3f, toolHeight);
-        this.toolTable.getCell(this.mergeButton).size(toolHeight * 2.3f, toolHeight);
-        this.toolTable.getCell(this.paintButton).size(toolHeight * 2.3f, toolHeight);
-        this.toolTable.getCell(this.thinButton).size(toolHeight * 2.3f, toolHeight);
+        this.toolTable.getCell(this.bringUp).size(toolHeight / 2f, toolHeight);
+        this.toolTable.getCell(this.bringDown).size(toolHeight / 2f, toolHeight);
+        this.toolTable.getCell(this.bringTop).size(toolHeight / 2f, toolHeight);
+        this.toolTable.getCell(this.bringBottom).size(toolHeight / 2f, toolHeight);
+        this.toolTable.getCell(this.sort).size(toolHeight * 2.1f, toolHeight);
+        this.toolTable.getCell(this.gradientButton).size(toolHeight * 2.1f, toolHeight);
+        this.toolTable.getCell(this.splatButton).size(toolHeight * 2.1f, toolHeight);
+        this.toolTable.getCell(this.minMaxButton).size(toolHeight * 2.1f, toolHeight);
+        this.toolTable.getCell(this.stairsButton).size(toolHeight * 2.1f, toolHeight);
+        this.toolTable.getCell(this.branchButton).size(toolHeight * 2.1f, toolHeight);
+        this.toolTable.getCell(this.groupButton).size(toolHeight * 2.1f, toolHeight);
+        this.toolTable.getCell(this.mergeButton).size(toolHeight * 2.1f, toolHeight);
+        this.toolTable.getCell(this.paintButton).size(toolHeight * 2.1f, toolHeight);
+        this.toolTable.getCell(this.thinButton).size(toolHeight * 2.1f, toolHeight);
+        this.toolTable.getCell(this.shadeButton).size(toolHeight * 2.1f, toolHeight);
         this.toolTable.getCell(this.fps).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();
 
@@ -662,6 +670,15 @@ public class ToolPane extends Group
             public void clicked(InputEvent event, float x, float y)
             {
                 thinDialog.open();
+            }
+        });
+
+        this.shadeButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                shadeDialog.open();
             }
         });
     }

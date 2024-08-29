@@ -465,6 +465,23 @@ public class Utils
         return false;
     }
 
+    public static float matchAngles(float angle1, float angle2) {
+        // Normalize angles to the range [0, 360)
+        angle1 = (angle1 % 360 + 360) % 360;
+        angle2 = (angle2 % 360 + 360) % 360;
+
+        // Calculate the absolute difference
+        float difference = Math.abs(angle1 - angle2);
+
+        // Normalize the difference to the range [0, 180]
+        if (difference > 180) {
+            difference = 360 - difference;
+        }
+
+        // Convert the difference to a value between 0 and 1
+        return 1 - (difference / 180f);
+    }
+
     public static float getAngleDegree(float originX, float originY, float targetX, float targetY)
     {
         return Utils.degreeAngleFix((float) Math.toDegrees((float) Math.atan2((targetY - originY), (targetX - originX))));

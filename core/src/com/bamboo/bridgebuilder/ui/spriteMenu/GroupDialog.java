@@ -61,7 +61,7 @@ public class GroupDialog extends Window
                         if(editor.activeMap.groupPolygons != null && editor.activeMap.selectedLayer != editor.activeMap.groupPolygons)
                         {
                             editor.activeMap.selectedLayerPriorToGroupMode = editor.activeMap.selectedLayer;
-                            if(editor.activeMap.selectedLayer != null)
+                            if(editor.activeMap.selectedLayer != null && editor.activeMap.selectedLayer.layerField != null)
                                 editor.activeMap.selectedLayer.layerField.unselect();
                             editor.activeMap.selectedLayer = editor.activeMap.groupPolygons;
                         }
@@ -166,7 +166,7 @@ public class GroupDialog extends Window
         if(editor.activeMap != null)
         {
             editor.activeMap.selectedLayer = editor.activeMap.selectedLayerPriorToGroupMode;
-            if (editor.activeMap.selectedLayer != null)
+            if (editor.activeMap.selectedLayer != null && editor.activeMap.selectedLayer.layerField != null)
                 editor.activeMap.selectedLayer.layerField.select();
             if (editor.activeMap.groupPolygons != null)
             {

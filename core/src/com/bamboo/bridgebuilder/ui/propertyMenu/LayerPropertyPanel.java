@@ -74,6 +74,12 @@ public class LayerPropertyPanel extends Group
             {
                 ResizeLayer resizeLayer = new ResizeLayer(menu.map.selectedLayer, menu.map.selectedLayer.width, menu.map.selectedLayer.height, menu.map.selectedLayer.z, Integer.parseInt(layerWidthProperty.value.getText()), Integer.parseInt(layerHeightProperty.value.getText()), Float.parseFloat(layerZProperty.value.getText()), down.isChecked(), right.isChecked());
                 menu.map.executeCommand(resizeLayer);
+
+//                for(int i = 0; i < menu.map.layers.size; i ++)
+//                {
+//                    resizeLayer = new ResizeLayer(menu.map.layers.get(i), menu.map.layers.get(i).width, menu.map.layers.get(i).height, menu.map.layers.get(i).z, menu.map.layers.get(i).width, menu.map.layers.get(i).height, menu.map.layers.get(i).z - 4.32f, down.isChecked(), right.isChecked());
+//                    menu.map.executeCommand(resizeLayer);
+//                }
             }
         });
 

@@ -69,7 +69,7 @@ public class StairsDialog extends Window
         this.heightField = new TextField("0", skin);
         this.stackAmountField = new TextField("1", skin);
         this.stackHeightMultiplierField = new TextField("1", skin);
-        this.connectorWidthOvershootField = new TextField("1.005", skin);
+        this.connectorWidthOvershootField = new TextField("1.01", skin);
         this.parentCenterHeightCheckBox = new CheckBox("", skin);
         this.parentCenterHeightCheckBox.setChecked(false);
         this.connectorCenterHeightCheckBox = new CheckBox("", skin);
@@ -140,7 +140,7 @@ public class StairsDialog extends Window
 
     public float getConnectorWidthOvershoot()
     {
-        float num = 1.005f;
+        float num = 1.01f;
         try { num = Float.parseFloat(this.connectorWidthOvershootField.getText()); } catch (NumberFormatException e){}
         return num;
     }
