@@ -284,6 +284,7 @@ public class Map implements Screen
         drawUnfinishedStairs();
         drawPaintTool();
         drawThinTool();
+        drawPathTool();
         drawGradientLine();
         drawVerticeSelect();
         drawBoxSelect();
@@ -449,6 +450,36 @@ public class Map implements Screen
 
         editor.shapeRenderer.setColor(Color.GOLD);
         editor.shapeRenderer.circle(input.currentPos.x - cameraX, input.currentPos.y - cameraY, editor.fileMenu.toolPane.paintDialog.getRadius(), 20);
+    }
+
+    private void drawPathTool()
+    {
+        if(selectedLayer == null || !editor.fileMenu.toolPane.path.selected)
+            return;
+
+        if(!(selectedLayer instanceof SpriteLayer))
+            return;
+
+        SpriteLayer spriteLayer = (SpriteLayer) selectedLayer;
+        for(int i = 0; i < spriteLayer.children.size; i ++)
+        {
+            MapSprite layerChild = spriteLayer.children.get(i);
+            if(layerChild.selected)
+                layerChild.drawHoverOutline();
+            if(layerChild.isHoveredOver(input.currentPos.x, input.currentPos.y, editor.fileMenu.toolPane.pathDialog.getRadius()))
+            {
+                if(selectedSprites.size == 0)
+                    layerChild.drawSelectedHoveredOutline();
+                else
+                {
+                    if(layerChild.selected)
+                        layerChild.drawSelectedHoveredOutline();
+                }
+            }
+        }
+
+        editor.shapeRenderer.setColor(Color.GOLD);
+        editor.shapeRenderer.circle(input.currentPos.x - cameraX, input.currentPos.y - cameraY, editor.fileMenu.toolPane.pathDialog.getRadius(), 20);
     }
 
     private void drawThinTool()

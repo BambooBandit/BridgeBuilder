@@ -49,6 +49,7 @@ public class ToolPane extends Group
     public Tool groupPolygons;
     public Tool paint;
     public Tool thin;
+    public Tool path;
     private TextButton bringUp;
     private TextButton bringDown;
     private TextButton bringTop;
@@ -83,6 +84,9 @@ public class ToolPane extends Group
 
     public ShadeDialog shadeDialog;
     private TextButton shadeButton;
+
+    public PathDialog pathDialog;
+    private TextButton pathButton;
 
     private BridgeBuilder editor;
 
@@ -120,6 +124,7 @@ public class ToolPane extends Group
         this.groupPolygons = new Tool(editor, this, true, Tools.GROUP);
         this.paint = new Tool(editor, this, false, Tools.PAINT);
         this.thin = new Tool(editor, this, false, Tools.THIN);
+        this.path = new Tool(editor, this, false, Tools.PATH);
         this.bringUp = new TextButton("^", skin);
         this.bringDown = new TextButton("v", skin);
         this.bringTop = new TextButton("^^", skin);
@@ -155,6 +160,9 @@ public class ToolPane extends Group
         this.shadeDialog = new ShadeDialog(editor.stage, skin, editor);
         this.shadeButton = new TextButton("Shade", skin);
 
+        this.pathDialog = new PathDialog(editor.stage, skin);
+        this.pathButton = new TextButton("Path", skin);
+
         this.fps = new Label("0", skin);
 
         setListeners();
@@ -184,22 +192,24 @@ public class ToolPane extends Group
         this.toolTable.add(this.filledPolygons).padRight(1);
         this.toolTable.add(this.groupPolygons).padRight(1);
         this.toolTable.add(this.paint).padRight(1);
-        this.toolTable.add(this.thin).padRight(5);
+        this.toolTable.add(this.thin).padRight(1);
+        this.toolTable.add(this.path).padRight(4);
         this.toolTable.add(this.bringUp);
         this.toolTable.add(this.bringDown);
         this.toolTable.add(this.bringTop);
-        this.toolTable.add(this.bringBottom).padRight(5);
-        this.toolTable.add(this.sort).padRight(5);
-        this.toolTable.add(this.gradientButton).padRight(5);
-        this.toolTable.add(this.splatButton).padRight(5);
-        this.toolTable.add(this.minMaxButton).padRight(5);
-        this.toolTable.add(this.stairsButton).padRight(5);
-        this.toolTable.add(this.branchButton).padRight(5);
-        this.toolTable.add(this.groupButton).padRight(5);
-        this.toolTable.add(this.mergeButton).padRight(5);
-        this.toolTable.add(this.paintButton).padRight(5);
-        this.toolTable.add(this.thinButton).padRight(5);
-        this.toolTable.add(this.shadeButton).padRight(5);
+        this.toolTable.add(this.bringBottom).padRight(4);
+        this.toolTable.add(this.sort).padRight(4);
+        this.toolTable.add(this.gradientButton).padRight(4);
+        this.toolTable.add(this.splatButton).padRight(4);
+        this.toolTable.add(this.minMaxButton).padRight(4);
+        this.toolTable.add(this.stairsButton).padRight(4);
+        this.toolTable.add(this.branchButton).padRight(4);
+        this.toolTable.add(this.groupButton).padRight(4);
+        this.toolTable.add(this.mergeButton).padRight(4);
+        this.toolTable.add(this.paintButton).padRight(4);
+        this.toolTable.add(this.thinButton).padRight(4);
+        this.toolTable.add(this.shadeButton).padRight(4);
+        this.toolTable.add(this.pathButton).padRight(4);
         this.toolTable.add(this.fps).padRight(1);
 
         this.pane = new Stack();
@@ -244,6 +254,7 @@ public class ToolPane extends Group
         this.groupPolygons.setSize(toolHeight, toolHeight);
         this.paint.setSize(toolHeight, toolHeight);
         this.thin.setSize(toolHeight, toolHeight);
+        this.path.setSize(toolHeight, toolHeight);
 
         this.toolTable.getCell(this.brush).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.drawPoint).size(toolHeight, toolHeight);
@@ -270,22 +281,24 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.groupPolygons).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.paint).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.thin).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.path).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.filledPolygons).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.bringUp).size(toolHeight / 2f, toolHeight);
         this.toolTable.getCell(this.bringDown).size(toolHeight / 2f, toolHeight);
         this.toolTable.getCell(this.bringTop).size(toolHeight / 2f, toolHeight);
         this.toolTable.getCell(this.bringBottom).size(toolHeight / 2f, toolHeight);
-        this.toolTable.getCell(this.sort).size(toolHeight * 2.1f, toolHeight);
-        this.toolTable.getCell(this.gradientButton).size(toolHeight * 2.1f, toolHeight);
-        this.toolTable.getCell(this.splatButton).size(toolHeight * 2.1f, toolHeight);
-        this.toolTable.getCell(this.minMaxButton).size(toolHeight * 2.1f, toolHeight);
-        this.toolTable.getCell(this.stairsButton).size(toolHeight * 2.1f, toolHeight);
-        this.toolTable.getCell(this.branchButton).size(toolHeight * 2.1f, toolHeight);
-        this.toolTable.getCell(this.groupButton).size(toolHeight * 2.1f, toolHeight);
-        this.toolTable.getCell(this.mergeButton).size(toolHeight * 2.1f, toolHeight);
-        this.toolTable.getCell(this.paintButton).size(toolHeight * 2.1f, toolHeight);
-        this.toolTable.getCell(this.thinButton).size(toolHeight * 2.1f, toolHeight);
-        this.toolTable.getCell(this.shadeButton).size(toolHeight * 2.1f, toolHeight);
+        this.toolTable.getCell(this.sort).size(toolHeight * 1.9f, toolHeight);
+        this.toolTable.getCell(this.gradientButton).size(toolHeight * 1.9f, toolHeight);
+        this.toolTable.getCell(this.splatButton).size(toolHeight * 1.9f, toolHeight);
+        this.toolTable.getCell(this.minMaxButton).size(toolHeight * 1.9f, toolHeight);
+        this.toolTable.getCell(this.stairsButton).size(toolHeight * 1.9f, toolHeight);
+        this.toolTable.getCell(this.branchButton).size(toolHeight * 1.9f, toolHeight);
+        this.toolTable.getCell(this.groupButton).size(toolHeight * 1.9f, toolHeight);
+        this.toolTable.getCell(this.mergeButton).size(toolHeight * 1.9f, toolHeight);
+        this.toolTable.getCell(this.paintButton).size(toolHeight * 1.9f, toolHeight);
+        this.toolTable.getCell(this.thinButton).size(toolHeight * 1.9f, toolHeight);
+        this.toolTable.getCell(this.shadeButton).size(toolHeight * 1.9f, toolHeight);
+        this.toolTable.getCell(this.pathButton).size(toolHeight * 1.9f, toolHeight);
         this.toolTable.getCell(this.fps).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();
 
@@ -679,6 +692,15 @@ public class ToolPane extends Group
             public void clicked(InputEvent event, float x, float y)
             {
                 shadeDialog.open();
+            }
+        });
+
+        this.pathButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                pathDialog.open();
             }
         });
     }

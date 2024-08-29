@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -42,6 +43,7 @@ public class MapInput implements InputProcessor
     public ScaleMapSprites scaleMapSprites;
     public MoveMapObjects moveMapObjects;
     public MovePolygonVertice movePolygonVertice;
+    public DrawPath paths;
 
     public float gradientX, gradientY; // Used for gradient placement
     public boolean draggingGradient = false;
@@ -193,6 +195,7 @@ public class MapInput implements InputProcessor
         {
             handleManipulatorBoxTouchUp();
             handleBoxSelectTouchUp();
+            paths = null;
         } catch(Exception e){
             this.editor.crashRecovery(e);
         }
@@ -215,6 +218,7 @@ public class MapInput implements InputProcessor
             handleManipulatorBoxDrag(this.dragDifferencePos, this.currentPos);
             handleBoxSelectDrag(coords.x, coords.y);
             handleCameraDrag();
+            handlePath(coords.x, coords.y, editor.fileMenu.toolPane.pathDialog.getRadius());
             this.dragOriginPos.set(coords.x - dragDifferencePos.x, coords.y - dragDifferencePos.y);
 
         } catch(Exception e){
@@ -259,6 +263,133 @@ public class MapInput implements InputProcessor
             handleCameraZoom(amount);
         } catch(Exception e){
             this.editor.crashRecovery(e);
+        }
+        return false;
+    }
+
+    private FloatArray floatArray1 = new FloatArray();
+    private FloatArray floatArray2 = new FloatArray();
+    // Main function to handle brush stroke and add sprites
+    public boolean handlePath(float mouseX, float mouseY, float brushRadius) {
+
+        if(!Utils.isFileToolThisType(this.editor, Tools.PATH) || !Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+            return false;
+        if(!(map.selectedLayer instanceof SpriteLayer))
+            return false;
+        if(map.getAllSelectedSpriteTools() == null || map.getAllSelectedSpriteTools().size == 0)
+            return false;
+
+        SpriteLayer spriteLayer = (SpriteLayer) map.selectedLayer;
+
+        // Iterate over the brush area defined by brushRadius
+        for(int iterate = 0; iterate < 3; iterate ++)
+        {
+            for (float x = mouseX - brushRadius + Utils.randomFloat(0, brushRadius / 2f); x <= mouseX + brushRadius; x += Utils.randomFloat(0, brushRadius / 2f))
+            {
+                for (float y = mouseY - brushRadius + Utils.randomFloat(0, brushRadius / 2f); y <= mouseY + brushRadius; y += Utils.randomFloat(0, brushRadius / 2f))
+                {
+
+                    // Create a new sprite
+                    this.map.shuffleRandomSpriteTool(false, -1);
+                    SpriteTool newSpriteTool = this.map.getSpriteToolFromSelectedTools();
+                    float size = this.editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
+
+                    boolean intersects = false;
+
+                    // Check if the new sprite's MapPolygons intersect with existing ones
+                    outer:
+                    for (int i = 0; i < spriteLayer.children.size; i++)
+                    {
+                        MapSprite sprite = spriteLayer.children.get(i);
+
+                        if (sprite.attachedMapObjects == null)
+                            continue;
+
+                        float distanceLimit = (brushRadius * 4 * size) + 2;
+                        if(Math.abs(sprite.x - mouseX) > distanceLimit || Math.abs(sprite.y - mouseY) > distanceLimit)
+                            continue;
+
+                        for (int k = 0; k < sprite.attachedMapObjects.size; k++)
+                        {
+                            MapObject mapObject = sprite.attachedMapObjects.get(k);
+                            if (mapObject instanceof MapPolygon)
+                            {
+                                MapPolygon mapPolygon = (MapPolygon) mapObject;
+
+
+                                for (int s = 0; s < newSpriteTool.attachedMapObjectManagers.size; s++)
+                                {
+                                    AttachedMapObjectManager newManager = newSpriteTool.attachedMapObjectManagers.get(s);
+                                    if (newManager.cookieCutter instanceof MapPolygon)
+                                    {
+                                        MapPolygon newMapPolygon = (MapPolygon) newManager.cookieCutter;
+                                        floatArray1.clear();
+                                        floatArray1.addAll(mapPolygon.polygon.getScaledVertices());
+                                        FloatArray poly1 = floatArray1;
+                                        float oldScale = newMapPolygon.polygon.getScaleX();
+                                        float oldOriginX = newMapPolygon.polygon.getOriginX();
+                                        float oldOriginY = newMapPolygon.polygon.getOriginY();
+
+                                        float xOffset = newMapPolygon.attachedMapObjectManager.offsetX;
+                                        float yOffset = newMapPolygon.attachedMapObjectManager.offsetY;
+                                        float width = newSpriteTool.textureRegion.getRegionWidth() / 64f;
+                                        float height = newSpriteTool.textureRegion.getRegionHeight() / 64f;
+
+
+                                        newMapPolygon.polygon.setOrigin(((-xOffset) + width / 2), ((-yOffset) + height / 2));
+                                        newMapPolygon.polygon.setScale(size, size);
+                                        floatArray2.clear();
+                                        floatArray2.addAll(newMapPolygon.polygon.getScaledVertices());
+                                        FloatArray poly2 = floatArray2;
+                                        newMapPolygon.polygon.setScale(oldScale, oldScale);
+                                        newMapPolygon.polygon.setOrigin(oldOriginX, oldOriginY);
+                                        for (int p = 0; p < poly1.size; p += 2)
+                                        {
+                                            poly1.incr(p, mapPolygon.attachedSprite.x);
+                                            poly1.incr(p, mapPolygon.attachedMapObjectManager.offsetX);
+                                            poly1.incr(p + 1, mapPolygon.attachedSprite.y);
+                                            poly1.incr(p + 1, mapPolygon.attachedMapObjectManager.offsetY);
+                                        }
+                                        for (int p = 0; p < poly2.size; p += 2)
+                                        {
+                                            poly2.incr(p, x);
+                                            poly2.incr(p, newManager.offsetX);
+                                            poly2.incr(p, (-(newSpriteTool.textureRegion.getRegionWidth() / 64f) / 2f) * 1);
+                                            poly2.incr(p + 1, y);
+                                            poly2.incr(p + 1, newManager.offsetY);
+                                            poly2.incr(p + 1, (-(newSpriteTool.textureRegion.getRegionHeight() / 64f) / 2f) * 1);
+                                        }
+                                        if (Intersector.intersectPolygons(poly1, poly2))
+                                        {
+                                            intersects = true;
+                                            break outer;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // If no intersections are detected, add the new sprite to the scene
+                    if (!intersects)
+                    {
+
+                        if(paths == null)
+                        {
+                            paths = new DrawPath(this.map, newSpriteTool, (SpriteLayer) this.map.selectedLayer, x, y);
+                            map.pushCommand(paths);
+                        }
+                        else
+                        {
+                            DrawPath path = new DrawPath(this.map, newSpriteTool, (SpriteLayer) this.map.selectedLayer, x, y);
+                            path.execute();
+                            paths.addCommandToChain(path);
+
+                        }
+//                        ((SpriteLayer) this.map.selectedLayer).addMapSprite(mapSprite, -1);
+                    }
+                }
+            }
         }
         return false;
     }
