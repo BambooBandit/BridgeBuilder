@@ -146,6 +146,25 @@ public class MapInput implements InputProcessor
             Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
             coords.x += map.cameraX;
             coords.y += map.cameraY;
+
+            LayerChild snapObject = Utils.snapObject(coords.x, coords.y, this.map);
+            if(snapObject != null)
+            {
+                coords.x = snapObject.x;
+                coords.y = snapObject.y;
+                if(snapObject instanceof MapSprite)
+                {
+                    MapSprite snapSprite = (MapSprite) snapObject;
+                    coords.x += snapSprite.width / 2f;
+                    coords.y += snapSprite.height / 2f;
+                }
+            }
+
+            float coordsX2 = Utils.perpendicularCoordX(coords.x, coords.y, this.map);
+            float coordsY2 = Utils.perpendicularCoordY(coords.x, coords.y, this.map);
+            coords.x = coordsX2;
+            coords.y = coordsY2;
+
             this.currentPos.set(coords.x, coords.y);
             this.dragOriginPos.set(coords.x, coords.y);
 
@@ -235,6 +254,23 @@ public class MapInput implements InputProcessor
             Vector3 coords = Utils.unproject(this.map.camera, screenX, screenY);
             float coordsX = coords.x + map.cameraX;
             float coordsY = coords.y + map.cameraY;
+            LayerChild snapObject = Utils.snapObject(coordsX, coordsY, this.map);
+            if(snapObject != null)
+            {
+                coordsX = snapObject.x;
+                coordsY = snapObject.y;
+                if(snapObject instanceof MapSprite)
+                {
+                    MapSprite snapSprite = (MapSprite) snapObject;
+                    coordsX += snapSprite.width / 2f;
+                    coordsY += snapSprite.height / 2f;
+                }
+            }
+            float coordsX2 = Utils.perpendicularCoordX(coordsX, coordsY, this.map);
+            float coordsY2 = Utils.perpendicularCoordY(coordsX, coordsY, this.map);
+            coordsX = coordsX2;
+            coordsY = coordsY2;
+
             String xCoord = String.format("%.2f", coordsX);
             String yCoord = String.format("%.2f", coordsY);
             editor.mouseCoordTooltip.label.setText("(" + xCoord + ", " + yCoord  +")   (" + screenX + ", " + screenY + ")");

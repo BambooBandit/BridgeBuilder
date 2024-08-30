@@ -20,6 +20,7 @@ public class DrawFence implements Command
     private float y;
     private MapSprite lastFencePlacedOld;
     private float lastFenceDistanceOld;
+    private float lastFenceAngleOld;
 
     private Array<DrawFence> chainedCommands; // Used for adding multiple mapsprites in one execution
 
@@ -77,7 +78,9 @@ public class DrawFence implements Command
         if(lastFencePlacedOld != null)
         {
             lastFenceDistanceOld = map.lastFencePlacedDistance;
+            lastFenceAngleOld = map.lastFencePlacedAngle;
             map.lastFencePlacedDistance = Utils.getDistance(map.lastFencePlaced.x, lastFencePlacedOld.x, map.lastFencePlaced.y, lastFencePlacedOld.y);
+            map.lastFencePlacedAngle = Utils.getAngleDegree(lastFencePlacedOld.x, lastFencePlacedOld.y, map.lastFencePlaced.x, map.lastFencePlaced.y);
             map.editor.fenceDistanceTooltip.label.setText("(Fence Distance) last: " + (Math.round(map.lastFencePlacedDistance * 100.0) / 100.0) + ". current: 0");
         }
 
@@ -102,6 +105,7 @@ public class DrawFence implements Command
         }
         this.map.lastFencePlaced = this.lastFencePlacedOld;
         map.lastFencePlacedDistance = lastFenceDistanceOld;
+        map.lastFencePlacedAngle = lastFenceAngleOld;
         map.editor.fenceDistanceTooltip.label.setText("(Fence Distance) last: " + (Math.round(map.lastFencePlacedDistance * 100.0) / 100.0) + ". current: 0");
 
         if(this.map.editor.fileMenu.toolPane.depth.selected)

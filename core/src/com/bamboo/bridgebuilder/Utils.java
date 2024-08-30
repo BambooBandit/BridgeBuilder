@@ -1,12 +1,11 @@
 package com.bamboo.bridgebuilder;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.RandomXS128;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
@@ -399,6 +398,118 @@ public class Utils
             }
         }
         return false;
+    }
+
+    public static LayerChild snapObject(float coordsX, float coordsY, Map map)
+    {
+        if(!Gdx.input.isKeyPressed(Input.Keys.S))
+            return null;
+
+        float smallestDistance = Float.MAX_VALUE;
+        LayerChild closestChild = null;
+        float snapDistance = 5;
+        for(int i = 0; i < map.layers.size; i ++)
+        {
+            Layer layer = map.layers.get(i);
+            for(int k = 0; k < layer.children.size; k ++)
+            {
+                LayerChild child = (LayerChild) layer.children.get(k);
+                float distance = Utils.getDistance(coordsX, child.x, coordsY, child.y);
+                if(distance < snapDistance)
+                {
+                    if(distance < smallestDistance)
+                    {
+                        closestChild = child;
+                        smallestDistance = distance;
+                    }
+                }
+            }
+        }
+        return closestChild;
+    }
+
+    public static float perpendicularCoordX(float coordsX, float coordsY, Map map)
+    {
+        if(!Gdx.input.isKeyPressed(Input.Keys.A))
+            return coordsX;
+        float lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
+        float lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
+        float lastAngle = MathUtils.degreesToRadians * map.lastFencePlacedAngle;
+
+        // Direction vector of the last placed segment
+        float dirX = (float) Math.cos(lastAngle);
+        float dirY = (float) Math.sin(lastAngle);
+
+        // Perpendicular vector to the direction (90 degrees rotation)
+        float perpX = -dirY;
+        float perpY = dirX;
+
+        // Vector from last placed point to current point
+        float vecX = coordsX - lastPlacedX;
+        float vecY = coordsY - lastPlacedY;
+
+        // Projection onto the perpendicular direction
+        float dotProductPerpendicular = vecX * perpX + vecY * perpY;
+        float closestPerpX = lastPlacedX + dotProductPerpendicular * perpX;
+        float closestPerpY = lastPlacedY + dotProductPerpendicular * perpY;
+
+        // Projection onto the parallel direction (0° or 180°)
+        float dotProductParallel = vecX * dirX + vecY * dirY;
+        float closestParallelX = lastPlacedX + dotProductParallel * dirX;
+        float closestParallelY = lastPlacedY + dotProductParallel * dirY;
+
+        // Calculate the distances to the current point
+        float distancePerpendicular = getDistance(coordsX, closestPerpX, coordsY, closestPerpY);
+        float distanceParallel = getDistance(coordsX, closestParallelX, coordsY, closestParallelY);
+
+        // Return the X coordinate of the closest point
+        if (distancePerpendicular < distanceParallel) {
+            return closestPerpX;
+        } else {
+            return closestParallelX;
+        }
+    }
+
+    public static float perpendicularCoordY(float coordsX, float coordsY, Map map)
+    {
+        if(!Gdx.input.isKeyPressed(Input.Keys.A))
+            return coordsY;
+        float lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
+        float lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
+        float lastAngle = MathUtils.degreesToRadians * map.lastFencePlacedAngle;
+
+        // Direction vector of the last placed segment
+        float dirX = (float) Math.cos(lastAngle);
+        float dirY = (float) Math.sin(lastAngle);
+
+        // Perpendicular vector to the direction (90 degrees rotation)
+        float perpX = -dirY;
+        float perpY = dirX;
+
+        // Vector from last placed point to current point
+        float vecX = coordsX - lastPlacedX;
+        float vecY = coordsY - lastPlacedY;
+
+        // Projection onto the perpendicular direction
+        float dotProductPerpendicular = vecX * perpX + vecY * perpY;
+        float closestPerpX = lastPlacedX + dotProductPerpendicular * perpX;
+        float closestPerpY = lastPlacedY + dotProductPerpendicular * perpY;
+
+        // Projection onto the parallel direction (0° or 180°)
+        float dotProductParallel = vecX * dirX + vecY * dirY;
+        float closestParallelX = lastPlacedX + dotProductParallel * dirX;
+        float closestParallelY = lastPlacedY + dotProductParallel * dirY;
+
+        // Calculate the distances to the current point
+        float distancePerpendicular = getDistance(coordsX, closestPerpX, coordsY, closestPerpY);
+        float distanceParallel = getDistance(coordsX, closestParallelX, coordsY, closestParallelY);
+
+        // Return the X coordinate of the closest point
+        if (distancePerpendicular < distanceParallel) {
+            return closestPerpY;
+        } else {
+            return closestParallelY;
+        }
     }
 
     public LightPropertyField getLockedLightField(Array<PropertyField> lockedProperties)
