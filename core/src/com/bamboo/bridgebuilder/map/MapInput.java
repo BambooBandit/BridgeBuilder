@@ -162,8 +162,10 @@ public class MapInput implements InputProcessor
 
             float coordsX2 = Utils.perpendicularCoordX(coords.x, coords.y, this.map);
             float coordsY2 = Utils.perpendicularCoordY(coords.x, coords.y, this.map);
-            coords.x = coordsX2;
-            coords.y = coordsY2;
+            float coordsX3 = Utils.distanceCoordX(coordsX2, coordsY2, this.map);
+            float coordsY3 = Utils.distanceCoordY(coordsX2, coordsY2, this.map);
+            coords.x = coordsX3;
+            coords.y = coordsY3;
 
             this.currentPos.set(coords.x, coords.y);
             this.dragOriginPos.set(coords.x, coords.y);
@@ -268,8 +270,10 @@ public class MapInput implements InputProcessor
             }
             float coordsX2 = Utils.perpendicularCoordX(coordsX, coordsY, this.map);
             float coordsY2 = Utils.perpendicularCoordY(coordsX, coordsY, this.map);
-            coordsX = coordsX2;
-            coordsY = coordsY2;
+            float coordsX3 = Utils.distanceCoordX(coordsX2, coordsY2, this.map);
+            float coordsY3 = Utils.distanceCoordY(coordsX2, coordsY2, this.map);
+            coordsX = coordsX3;
+            coordsY = coordsY3;
 
             String xCoord = String.format("%.2f", coordsX);
             String yCoord = String.format("%.2f", coordsY);

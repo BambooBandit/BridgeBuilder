@@ -512,6 +512,32 @@ public class Utils
         }
     }
 
+    public static float distanceCoordX(float coordsX, float coordsY, Map map)
+    {
+        if (!Gdx.input.isKeyPressed(Input.Keys.W))
+            return coordsX;
+
+        float lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
+        float lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
+        float angle = MathUtils.degreesToRadians * Utils.getAngleDegree(lastPlacedX, lastPlacedY, coordsX, coordsY);
+        float lastDistance = map.lastFencePlacedDistance;
+
+        return lastPlacedX + (MathUtils.cos(angle) * lastDistance);
+    }
+
+    public static float distanceCoordY(float coordsX, float coordsY, Map map)
+    {
+        if (!Gdx.input.isKeyPressed(Input.Keys.W))
+            return coordsY;
+
+        float lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
+        float lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
+        float angle = MathUtils.degreesToRadians * Utils.getAngleDegree(lastPlacedX, lastPlacedY, coordsX, coordsY);
+        float lastDistance = map.lastFencePlacedDistance;
+
+        return lastPlacedY + (MathUtils.sin(angle) * lastDistance);
+    }
+
     public LightPropertyField getLockedLightField(Array<PropertyField> lockedProperties)
     {
         for(int i = 0; i < lockedProperties.size; i ++)
