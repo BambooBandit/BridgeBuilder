@@ -432,6 +432,8 @@ public class Utils
     {
         if(!Gdx.input.isKeyPressed(Input.Keys.A))
             return coordsX;
+        if(map.lastFencePlaced == null)
+            return coordsX;
         float lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
         float lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
         float lastAngle = MathUtils.degreesToRadians * map.lastFencePlacedAngle;
@@ -473,6 +475,8 @@ public class Utils
     public static float perpendicularCoordY(float coordsX, float coordsY, Map map)
     {
         if(!Gdx.input.isKeyPressed(Input.Keys.A))
+            return coordsY;
+        if(map.lastFencePlaced == null)
             return coordsY;
         float lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
         float lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
@@ -516,6 +520,8 @@ public class Utils
     {
         if (!Gdx.input.isKeyPressed(Input.Keys.W))
             return coordsX;
+        if(map.lastFencePlaced == null)
+            return coordsX;
 
         float lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
         float lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
@@ -528,6 +534,8 @@ public class Utils
     public static float distanceCoordY(float coordsX, float coordsY, Map map)
     {
         if (!Gdx.input.isKeyPressed(Input.Keys.W))
+            return coordsY;
+        if(map.lastFencePlaced == null)
             return coordsY;
 
         float lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
