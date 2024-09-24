@@ -24,14 +24,14 @@ public class ApplyGradient implements Command
     {
         this.map = map;
         this.selectedSprites = new Array<>(map.selectedSprites);
-        this.fromR = map.editor.fileMenu.toolPane.gradientDialog.getFromR();
-        this.fromG = map.editor.fileMenu.toolPane.gradientDialog.getFromG();
-        this.fromB = map.editor.fileMenu.toolPane.gradientDialog.getFromB();
-        this.fromA = map.editor.fileMenu.toolPane.gradientDialog.getFromA();
-        this.toR = map.editor.fileMenu.toolPane.gradientDialog.getToR();
-        this.toG = map.editor.fileMenu.toolPane.gradientDialog.getToG();
-        this.toB = map.editor.fileMenu.toolPane.gradientDialog.getToB();
-        this.toA = map.editor.fileMenu.toolPane.gradientDialog.getToA();
+        this.fromR = map.editor.fileMenu.buttonPane.gradientDialog.getFromR();
+        this.fromG = map.editor.fileMenu.buttonPane.gradientDialog.getFromG();
+        this.fromB = map.editor.fileMenu.buttonPane.gradientDialog.getFromB();
+        this.fromA = map.editor.fileMenu.buttonPane.gradientDialog.getFromA();
+        this.toR = map.editor.fileMenu.buttonPane.gradientDialog.getToR();
+        this.toG = map.editor.fileMenu.buttonPane.gradientDialog.getToG();
+        this.toB = map.editor.fileMenu.buttonPane.gradientDialog.getToB();
+        this.toA = map.editor.fileMenu.buttonPane.gradientDialog.getToA();
         this.fromX = fromX;
         this.fromY = fromY;
         this.toX = toX;

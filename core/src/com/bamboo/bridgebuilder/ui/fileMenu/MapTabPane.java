@@ -97,7 +97,7 @@ public class MapTabPane extends Group
                         {
                             if(editor.fileMenu.toolPane.attachedSprites.selected)
                                 editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.attachedSprites);
-                            editor.fileMenu.toolPane.groupDialog.close();
+                            editor.fileMenu.buttonPane.groupDialog.close();
                             map.editor.fileMenu.save(map, true, false);
                         }
 
@@ -106,7 +106,7 @@ public class MapTabPane extends Group
                         {
                             if(editor.fileMenu.toolPane.attachedSprites.selected)
                                 editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.attachedSprites);
-                            editor.fileMenu.toolPane.groupDialog.close();
+                            editor.fileMenu.buttonPane.groupDialog.close();
                             removeMap(map);
                         }
                     };
@@ -115,7 +115,7 @@ public class MapTabPane extends Group
                 {
                     if(editor.fileMenu.toolPane.attachedSprites.selected)
                         editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.attachedSprites);
-                    editor.fileMenu.toolPane.groupDialog.close();
+                    editor.fileMenu.buttonPane.groupDialog.close();
                     removeMap(map);
                 }
             }
@@ -176,8 +176,8 @@ public class MapTabPane extends Group
 
         if(editor.fileMenu.toolPane.attachedSprites.selected)
             editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.attachedSprites);
-        if(editor.fileMenu.toolPane.groupDialog != null)
-            editor.fileMenu.toolPane.groupDialog.close();
+        if(editor.fileMenu.buttonPane.groupDialog != null)
+            editor.fileMenu.buttonPane.groupDialog.close();
 
         this.editor.activeMap = map;
         this.editor.setScreen(map);

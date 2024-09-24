@@ -9,7 +9,7 @@ import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 public class DrawMapSprite implements Command {
     private Map map;
     private SpriteLayer layer;
-    private MapSprite mapSprite = null;
+    public MapSprite mapSprite = null;
     private float x;
     private float y;
 

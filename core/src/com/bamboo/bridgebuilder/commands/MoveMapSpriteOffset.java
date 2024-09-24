@@ -50,8 +50,6 @@ public class MoveMapSpriteOffset implements Command
             float[] spriteVertices = selectedMapSprite.sprite.getVertices();
             float originalX = 0, originalY = 0;
 
-            System.out.println(snapX + ", " + snapY);
-
             // Determine the original vertex position based on the current location
             if (location == ONE) {
                 originalX = spriteVertices[SpriteBatch.X2] + selectedMapSprite.map.cameraX + originalOffsetPosition.x;

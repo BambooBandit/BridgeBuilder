@@ -29,9 +29,9 @@ public class CreateStairs implements Command
         this.vertices = new FloatArray(vertices);
         this.stairX = stairX;
         this.stairY = stairY;
-        this.initialHeight = map.editor.fileMenu.toolPane.stairsDialog.getInitialHeight();
-        this.finalHeight = map.editor.fileMenu.toolPane.stairsDialog.getFinalHeight();
-        this.stairAmountPerMeter = map.editor.fileMenu.toolPane.stairsDialog.getStairAmount();
+        this.initialHeight = map.editor.fileMenu.buttonPane.stairsDialog.getInitialHeight();
+        this.finalHeight = map.editor.fileMenu.buttonPane.stairsDialog.getFinalHeight();
+        this.stairAmountPerMeter = map.editor.fileMenu.buttonPane.stairsDialog.getStairAmount();
     }
 
     @Override
@@ -51,10 +51,10 @@ public class CreateStairs implements Command
             int stairAmount = (int) (stairAmountPerMeter * distance);
             if(stairAmount == 0)
                 stairAmount = 1;
-            float thickness = map.editor.fileMenu.toolPane.stairsDialog.getThickness();
+            float thickness = map.editor.fileMenu.buttonPane.stairsDialog.getThickness();
             float progress = (1f / (stairAmount - 1f)) * thickness;
             float height = ((finalHeight - initialHeight) * progress);
-            float heightOffset = map.editor.fileMenu.toolPane.stairsDialog.getHeightOffset();
+            float heightOffset = map.editor.fileMenu.buttonPane.stairsDialog.getHeightOffset();
             float fromXStepSize = ((x1 - stairX) * (1f - progress)) + ((x2 - stairX) * progress);
             float fromYStepSize = ((y1 - stairY) * (1f - progress)) + (((y2 + height) - stairY) * progress);
             float toXStepSize = ((x4 - stairX - (x4 - stairX)) * (1f - progress)) + ((x3 - stairX - (x4 - stairX)) * progress);
@@ -80,7 +80,7 @@ public class CreateStairs implements Command
                     connector.y3Offset += height;
                     connector.y4Offset += height;
 
-                    if(map.editor.fileMenu.toolPane.stairsDialog.shouldSnap())
+                    if(map.editor.fileMenu.buttonPane.stairsDialog.shouldSnap())
                     {
                         connector.x1Offset += fromXStepSize / 2f;
                         connector.y1Offset += fromYStepSize / 2f;

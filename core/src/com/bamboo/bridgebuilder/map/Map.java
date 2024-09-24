@@ -437,7 +437,7 @@ public class Map implements Screen
             MapSprite layerChild = spriteLayer.children.get(i);
             if(layerChild.selected)
                 layerChild.drawHoverOutline();
-            if(layerChild.isHoveredOver(input.currentPos.x, input.currentPos.y, editor.fileMenu.toolPane.paintDialog.getRadius()))
+            if(layerChild.isHoveredOver(input.currentPos.x, input.currentPos.y, editor.fileMenu.buttonPane.paintDialog.getRadius()))
             {
                 if(selectedSprites.size == 0)
                     layerChild.drawSelectedHoveredOutline();
@@ -450,7 +450,7 @@ public class Map implements Screen
         }
 
         editor.shapeRenderer.setColor(Color.GOLD);
-        editor.shapeRenderer.circle(input.currentPos.x - cameraX, input.currentPos.y - cameraY, editor.fileMenu.toolPane.paintDialog.getRadius(), 20);
+        editor.shapeRenderer.circle(input.currentPos.x - cameraX, input.currentPos.y - cameraY, editor.fileMenu.buttonPane.paintDialog.getRadius(), 20);
     }
 
     private void drawPathTool()
@@ -467,7 +467,7 @@ public class Map implements Screen
             MapSprite layerChild = spriteLayer.children.get(i);
             if(layerChild.selected)
                 layerChild.drawHoverOutline();
-            if(layerChild.isHoveredOver(input.currentPos.x, input.currentPos.y, editor.fileMenu.toolPane.pathDialog.getRadius()))
+            if(layerChild.isHoveredOver(input.currentPos.x, input.currentPos.y, editor.fileMenu.buttonPane.pathDialog.getRadius()))
             {
                 if(selectedSprites.size == 0)
                     layerChild.drawSelectedHoveredOutline();
@@ -480,7 +480,7 @@ public class Map implements Screen
         }
 
         editor.shapeRenderer.setColor(Color.GOLD);
-        editor.shapeRenderer.circle(input.currentPos.x - cameraX, input.currentPos.y - cameraY, editor.fileMenu.toolPane.pathDialog.getRadius(), 20);
+        editor.shapeRenderer.circle(input.currentPos.x - cameraX, input.currentPos.y - cameraY, editor.fileMenu.buttonPane.pathDialog.getRadius(), 20);
     }
 
     private void drawThinTool()
@@ -497,7 +497,7 @@ public class Map implements Screen
             MapSprite layerChild = spriteLayer.children.get(i);
             if(layerChild.selected)
                 layerChild.drawHoverOutline();
-            if(layerChild.isHoveredOver(input.currentPos.x, input.currentPos.y, editor.fileMenu.toolPane.thinDialog.getRadius()))
+            if(layerChild.isHoveredOver(input.currentPos.x, input.currentPos.y, editor.fileMenu.buttonPane.thinDialog.getRadius()))
             {
                 if(selectedSprites.size == 0)
                     layerChild.drawSelectedHoveredOutline();
@@ -510,7 +510,7 @@ public class Map implements Screen
         }
 
         editor.shapeRenderer.setColor(Color.GOLD);
-        editor.shapeRenderer.circle(input.currentPos.x - cameraX, input.currentPos.y - cameraY, editor.fileMenu.toolPane.thinDialog.getRadius(), 20);
+        editor.shapeRenderer.circle(input.currentPos.x - cameraX, input.currentPos.y - cameraY, editor.fileMenu.buttonPane.thinDialog.getRadius(), 20);
     }
 
     private void drawSnap()
@@ -726,7 +726,7 @@ public class Map implements Screen
 
     private void drawSelectedOutlines()
     {
-        if(!Utils.isFileToolThisType(this.editor, Tools.SELECT) && !Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) && !Utils.isFileToolThisType(this.editor, Tools.OBJECTVERTICESELECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWPOINT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE) && !Utils.isFileToolThisType(this.editor, Tools.GRADIENT))
+        if(!Utils.isFileToolThisType(this.editor, Tools.SELECT) && !Utils.isFileToolThisType(this.editor, Tools.STAPLE) && !Utils.isFileToolThisType(this.editor, Tools.BOXSELECT) && !Utils.isFileToolThisType(this.editor, Tools.OBJECTVERTICESELECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWPOINT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) && !Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE) && !Utils.isFileToolThisType(this.editor, Tools.GRADIENT))
             return;
         if(Utils.isFileToolThisType(this.editor, Tools.DRAWPOINT) || Utils.isFileToolThisType(this.editor, Tools.DRAWOBJECT) || Utils.isFileToolThisType(this.editor, Tools.DRAWRECTANGLE))
         {
@@ -801,8 +801,8 @@ public class Map implements Screen
         if(!Utils.isFileToolThisType(this.editor, Tools.STAIRS) )
             return;
         int oldIndex = 0;
-        float finalheight = editor.fileMenu.toolPane.stairsDialog.getFinalHeight();
-        float initialheight = editor.fileMenu.toolPane.stairsDialog.getInitialHeight();
+        float finalheight = editor.fileMenu.buttonPane.stairsDialog.getFinalHeight();
+        float initialheight = editor.fileMenu.buttonPane.stairsDialog.getInitialHeight();
         if (this.input.stairVertices.size >= 2)
         {
             this.editor.shapeRenderer.circle(this.input.stairVertices.get(0) + this.input.stairVerticePosition.x - cameraX, this.input.stairVertices.get(1) + this.input.stairVerticePosition.y - cameraY, .1f, 7);
@@ -983,7 +983,7 @@ public class Map implements Screen
                 }
             }
         }
-        if(!Utils.isFileToolThisType(editor, Tools.SELECT))
+        if(!Utils.isFileToolThisType(editor, Tools.SELECT) && !Utils.isFileToolThisType(editor, Tools.STAPLE))
             return;
 
         if(this.hoveredChild == null)
@@ -1291,18 +1291,18 @@ public class Map implements Screen
                 break;
             }
         }
-        this.editor.fileMenu.toolPane.minMaxDialog.generateRandomValues();
+        this.editor.fileMenu.buttonPane.minMaxDialog.generateRandomValues();
         if(getSpriteToolFromSelectedTools() != null)
         {
             SpriteTool spriteTool = getSpriteToolFromSelectedTools();
             Vector3 coords = Utils.unproject(this.camera, Gdx.input.getX(), Gdx.input.getY());
             for (int i = 0; i < getSpriteToolFromSelectedTools().previewSprites.size; i++)
             {
-                float randomRotation = this.editor.fileMenu.toolPane.minMaxDialog.randomRotationValue;
-                float randomR = this.editor.fileMenu.toolPane.minMaxDialog.randomRValue;
-                float randomG = this.editor.fileMenu.toolPane.minMaxDialog.randomGValue;
-                float randomB = this.editor.fileMenu.toolPane.minMaxDialog.randomBValue;
-                float randomA = this.editor.fileMenu.toolPane.minMaxDialog.randomAValue;
+                float randomRotation = this.editor.fileMenu.buttonPane.minMaxDialog.randomRotationValue;
+                float randomR = this.editor.fileMenu.buttonPane.minMaxDialog.randomRValue;
+                float randomG = this.editor.fileMenu.buttonPane.minMaxDialog.randomGValue;
+                float randomB = this.editor.fileMenu.buttonPane.minMaxDialog.randomBValue;
+                float randomA = this.editor.fileMenu.buttonPane.minMaxDialog.randomAValue;
                 TextureAtlas.AtlasSprite previewSprite = (TextureAtlas.AtlasSprite) spriteTool.previewSprites.get(i);
                 previewSprite.setRotation(randomRotation);
                 previewSprite.setColor(randomR, randomG, randomB, randomA);

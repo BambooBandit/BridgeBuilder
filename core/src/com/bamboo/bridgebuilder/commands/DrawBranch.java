@@ -26,7 +26,7 @@ public class DrawBranch implements Command
         this.y = y;
         this.lastBranchPlacedOld = map.lastBranchPlaced;
 
-        if(map.editor.fileMenu.toolPane.branchDialog.isDoubleLinked())
+        if(map.editor.fileMenu.buttonPane.branchDialog.isDoubleLinked())
             doubleLinked = true;
     }
 

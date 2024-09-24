@@ -17,7 +17,7 @@ public class CloseGroupDialog implements Command
     public CloseGroupDialog(Map map)
     {
         this.map = map;
-        GroupDialog groupDialog = map.editor.fileMenu.toolPane.groupDialog;
+        GroupDialog groupDialog = map.editor.fileMenu.buttonPane.groupDialog;
         if(groupDialog.shouldAdd())
             this.selectedCheckBox = groupDialog.addCheckBox;
         else if(groupDialog.shouldCreate())
@@ -41,14 +41,14 @@ public class CloseGroupDialog implements Command
     @Override
     public void execute()
     {
-        this.map.editor.fileMenu.toolPane.groupDialog.close();
+        this.map.editor.fileMenu.buttonPane.groupDialog.close();
         map.colorizeGroup();
     }
 
     @Override
     public void undo()
     {
-        this.map.editor.fileMenu.toolPane.groupDialog.open();
+        this.map.editor.fileMenu.buttonPane.groupDialog.open();
         this.selectedCheckBox.setChecked(true);
         for(int i = 0; i < this.selectedLayerChildren.size; i ++)
             this.selectedLayerChildren.get(i).select();

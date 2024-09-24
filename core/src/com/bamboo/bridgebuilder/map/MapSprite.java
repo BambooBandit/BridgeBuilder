@@ -196,12 +196,12 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
                 attachedMapObjectManager.addCopyOfMapObjectToThisMapSprite(this);
             }
         }
-        float randomScale = this.map.editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
-        float randomRotation = this.map.editor.fileMenu.toolPane.minMaxDialog.randomRotationValue;
-        float randomR = this.map.editor.fileMenu.toolPane.minMaxDialog.randomRValue;
-        float randomG = this.map.editor.fileMenu.toolPane.minMaxDialog.randomGValue;
-        float randomB = this.map.editor.fileMenu.toolPane.minMaxDialog.randomBValue;
-        float randomA = this.map.editor.fileMenu.toolPane.minMaxDialog.randomAValue;
+        float randomScale = this.map.editor.fileMenu.buttonPane.minMaxDialog.randomSizeValue;
+        float randomRotation = this.map.editor.fileMenu.buttonPane.minMaxDialog.randomRotationValue;
+        float randomR = this.map.editor.fileMenu.buttonPane.minMaxDialog.randomRValue;
+        float randomG = this.map.editor.fileMenu.buttonPane.minMaxDialog.randomGValue;
+        float randomB = this.map.editor.fileMenu.buttonPane.minMaxDialog.randomBValue;
+        float randomA = this.map.editor.fileMenu.buttonPane.minMaxDialog.randomAValue;
         this.setScale(randomScale);
         this.setRotation(randomRotation);
         this.setColor(randomR, randomG, randomB, randomA);
@@ -1014,6 +1014,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
 
     public void updateBounds()
     {
+        this.polygon.setOffset(x1Offset, x2Offset, x3Offset, x4Offset, y1Offset, y2Offset, y3Offset, y4Offset);
         if(attachedSprites == null)
             return;
 
@@ -1044,6 +1045,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
 
         float[] vertices = {lowestX, lowestY, highestX, lowestY, highestX, highestY, lowestX, highestY};
         this.polygon.setVertices(vertices);
+
     }
     
     private void updatePerspectiveTall()

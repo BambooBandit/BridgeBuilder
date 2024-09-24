@@ -37,6 +37,7 @@ public class FileMenu extends Group
     private Table fileMenuTable;
     private Table buttonTable;
     public MapTabPane mapTabPane;
+    public ButtonPane buttonPane;
     public ToolPane toolPane;
 
     private TextButton newButton;
@@ -238,11 +239,13 @@ public class FileMenu extends Group
         this.buttonTable.add(this.redoButton);
 
         this.mapTabPane = new MapTabPane(this.editor, skin);
+        this.buttonPane = new ButtonPane(this.editor, skin);
         this.toolPane = new ToolPane(this.editor, skin);
 
         this.fileMenuTable = new Table();
         this.fileMenuTable.add(this.buttonTable).row();
         this.fileMenuTable.add(this.mapTabPane).row();
+        this.fileMenuTable.add(this.buttonPane).row();
         this.fileMenuTable.add(this.toolPane);
         this.addActor(this.fileMenuTable);
     }
@@ -517,11 +520,12 @@ public class FileMenu extends Group
         this.buttonTable.invalidateHierarchy();
 
         this.mapTabPane.setSize(width, tabHeight);
+        this.buttonPane.setSize(width, toolHeight * .75f);
         this.toolPane.setSize(width, toolHeight);
 
         this.fileMenuTable.invalidateHierarchy();
 
-        super.setSize(width, buttonHeight + this.mapTabPane.getHeight() + this.toolPane.getHeight());
+        super.setSize(width, buttonHeight + this.mapTabPane.getHeight() + this.toolPane.getHeight() + this.buttonPane.getHeight());
 
     }
 

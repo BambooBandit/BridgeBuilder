@@ -35,7 +35,7 @@ public class DrawFence implements Command
         this.connectors = new Array<>();
         this.lastFencePlacedOld = map.lastFencePlaced;
 
-        if(map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorBeInFront())
+        if(map.editor.fileMenu.buttonPane.stairsDialog.shouldConnectorBeInFront())
             inFront = true;
     }
 
@@ -46,16 +46,16 @@ public class DrawFence implements Command
         {
             SpriteTool spriteTool = this.map.getSpriteToolFromSelectedTools();
             this.mapSprite = new MapSprite(this.map, layer, spriteTool, this.x, this.y, null);
-            if(map.editor.fileMenu.toolPane.stairsDialog.shouldParentHeightBeCentered())
+            if(map.editor.fileMenu.buttonPane.stairsDialog.shouldParentHeightBeCentered())
                 this.mapSprite.setPosition(this.mapSprite.x, this.mapSprite.y + (this.mapSprite.height / 2f));
-            if(map.editor.fileMenu.toolPane.stairsDialog.shouldParentBeTransparent())
+            if(map.editor.fileMenu.buttonPane.stairsDialog.shouldParentBeTransparent())
             {
                 Color color = mapSprite.sprite.getColor();
                 mapSprite.setColor(color.r, color.g, color.b, 0);
             }
             this.map.shuffleRandomSpriteTool(false, -1);
 
-            for(int stack = 1; stack < map.editor.fileMenu.toolPane.stairsDialog.getStackAmount(); stack ++)
+            for(int stack = 1; stack < map.editor.fileMenu.buttonPane.stairsDialog.getStackAmount(); stack ++)
                 createStackedPost(this.mapSprite, stack);
         }
         if(this.map.lastFencePlaced != null)
@@ -131,7 +131,7 @@ public class DrawFence implements Command
         MapSprite fromFence = this.map.lastFencePlaced;
         MapSprite toFence = this.mapSprite;
 
-        for(int stack = 0; stack < map.editor.fileMenu.toolPane.stairsDialog.getStackAmount(); stack ++)
+        for(int stack = 0; stack < map.editor.fileMenu.buttonPane.stairsDialog.getStackAmount(); stack ++)
         {
             int fenceID = 1;
             while (1 == 1)
@@ -149,7 +149,7 @@ public class DrawFence implements Command
 
     }
 
-    private MapPoint getAttachedMapPointWithPropertyValue(MapSprite fence, String propertyString, int value)
+    public static MapPoint getAttachedMapPointWithPropertyValue(MapSprite fence, String propertyString, int value)
     {
         for(int i = 0; i < fence.attachedMapObjects.size; i ++)
         {
@@ -174,7 +174,7 @@ public class DrawFence implements Command
 
     private void createStackedPost(MapSprite post, int stack)
     {
-        float stackHeightMultiplier = map.editor.fileMenu.toolPane.stairsDialog.getStackHeightMultiplier();
+        float stackHeightMultiplier = map.editor.fileMenu.buttonPane.stairsDialog.getStackHeightMultiplier();
         if (post.attachedSprites == null)
         {
             post.attachedSprites = new SpriteLayer(map.editor, map, null);
@@ -186,7 +186,7 @@ public class DrawFence implements Command
         MapSprite stackedPost = new MapSprite(this.map, post.attachedSprites, spriteTool, post.x + post.width / 2f, post.y + (post.height / 2f) + (post.height * stack * stackHeightMultiplier), null);
         (post.attachedSprites).addMapSprite(stackedPost, -1);
         stackedPost.parentSprite = post;
-        if(map.editor.fileMenu.toolPane.stairsDialog.shouldParentBeTransparent())
+        if(map.editor.fileMenu.buttonPane.stairsDialog.shouldParentBeTransparent())
         {
             Color color = stackedPost.sprite.getColor();
             stackedPost.setColor(color.r, color.g, color.b, 0);
@@ -265,11 +265,11 @@ public class DrawFence implements Command
             (fromFence.attachedSprites).addMapSprite(connector, stack);
         fromX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
         toX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
-        float stackHeightMultiplier = map.editor.fileMenu.toolPane.stairsDialog.getStackHeightMultiplier();
+        float stackHeightMultiplier = map.editor.fileMenu.buttonPane.stairsDialog.getStackHeightMultiplier();
         fromY += fromFence.height * (stack * stackHeightMultiplier);
         toY += fromFence.height * (stack * stackHeightMultiplier);
 
-        float overshoot = map.editor.fileMenu.toolPane.stairsDialog.getConnectorWidthOvershoot();
+        float overshoot = map.editor.fileMenu.buttonPane.stairsDialog.getConnectorWidthOvershoot();
         float midX = (fromX + toX) / 2f;
         float xDiff = (toX - midX) * overshoot;
         fromX = midX - xDiff;
@@ -279,20 +279,20 @@ public class DrawFence implements Command
         fromY = midY - yDiff;
         toY = midY + yDiff;
 
-        float heightOffset = map.editor.fileMenu.toolPane.stairsDialog.getHeightOffset();
+        float heightOffset = map.editor.fileMenu.buttonPane.stairsDialog.getHeightOffset();
 
-        if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
+        if (map.editor.fileMenu.buttonPane.stairsDialog.shouldConnectorHeightBeCentered())
             connector.setPosition(fromX, fromY - connector.height / 2f);
         else
             connector.setPosition(fromX, fromY);
         connector.y1Offset += heightOffset;
         connector.x2Offset = toX - (connector.x + connector.width * connector.scale);
-        if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
+        if (map.editor.fileMenu.buttonPane.stairsDialog.shouldConnectorHeightBeCentered())
             connector.y2Offset = toY - (connector.y + connector.height / 2f) + heightOffset;
         else
             connector.y2Offset = toY - connector.y + heightOffset;
         connector.x3Offset = connector.x2Offset;
-        if (map.editor.fileMenu.toolPane.stairsDialog.shouldConnectorHeightBeCentered())
+        if (map.editor.fileMenu.buttonPane.stairsDialog.shouldConnectorHeightBeCentered())
             connector.y3Offset = toY - (connector.y + connector.height / 2f);
         else
             connector.y3Offset = toY - connector.y;

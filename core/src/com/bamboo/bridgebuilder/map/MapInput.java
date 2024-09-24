@@ -3,6 +3,7 @@ package com.bamboo.bridgebuilder.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
@@ -18,6 +19,7 @@ import com.bamboo.bridgebuilder.ui.InstanceOrSpriteToolDialog;
 import com.bamboo.bridgebuilder.ui.SnapSpriteDialog;
 import com.bamboo.bridgebuilder.ui.fileMenu.Tools;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.spriteMenu.LayerOverrideDialog;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
@@ -177,6 +179,8 @@ public class MapInput implements InputProcessor
                 return false;
             if(handleMapSpriteCreation(coords.x, coords.y, button))
                 return false;
+            if(handleStaple(button))
+                return false;
             if(handleManipulatorBoxMoveLayerChildTouchDown(coords.x, coords.y, button))
                 return false;
             if(handleManipulatorBoxMoveVerticeTouchDown(coords.x, coords.y, button))
@@ -239,7 +243,7 @@ public class MapInput implements InputProcessor
             handleManipulatorBoxDrag(this.dragDifferencePos, this.currentPos);
             handleBoxSelectDrag(coords.x, coords.y);
             handleCameraDrag();
-            handlePath(coords.x, coords.y, editor.fileMenu.toolPane.pathDialog.getRadius());
+            handlePath(coords.x, coords.y, editor.fileMenu.buttonPane.pathDialog.getRadius());
             this.dragOriginPos.set(coords.x - dragDifferencePos.x, coords.y - dragDifferencePos.y);
 
         } catch(Exception e){
@@ -310,8 +314,8 @@ public class MapInput implements InputProcessor
     private FloatArray floatArray1 = new FloatArray();
     private FloatArray floatArray2 = new FloatArray();
     // Main function to handle brush stroke and add sprites
-    public boolean handlePath(float mouseX, float mouseY, float brushRadius) {
-
+    public boolean handlePath(float mouseX, float mouseY, float brushRadius)
+    {
         if(!Utils.isFileToolThisType(this.editor, Tools.PATH) || !Gdx.input.isButtonPressed(Input.Buttons.LEFT))
             return false;
         if(!(map.selectedLayer instanceof SpriteLayer))
@@ -332,7 +336,7 @@ public class MapInput implements InputProcessor
                     // Create a new sprite
                     this.map.shuffleRandomSpriteTool(false, -1);
                     SpriteTool newSpriteTool = this.map.getSpriteToolFromSelectedTools();
-                    float size = this.editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
+                    float size = this.editor.fileMenu.buttonPane.minMaxDialog.randomSizeValue;
 
                     boolean intersects = false;
 
@@ -660,7 +664,7 @@ public class MapInput implements InputProcessor
 
     private boolean handleHoveredLayerChildUpdate(float x, float y)
     {
-        if(Utils.isFileToolThisType(this.editor, Tools.SELECT))
+        if(Utils.isFileToolThisType(this.editor, Tools.SELECT) || Utils.isFileToolThisType(this.editor, Tools.STAPLE))
         {
             for (int i = 0; i < map.selectedSprites.size; i++)
             {
@@ -799,14 +803,14 @@ public class MapInput implements InputProcessor
     {
         if(!draggingGradient)
             return;
-        float fromR = map.editor.fileMenu.toolPane.gradientDialog.getFromR();
-        float fromG = map.editor.fileMenu.toolPane.gradientDialog.getFromG();
-        float fromB = map.editor.fileMenu.toolPane.gradientDialog.getFromB();
-        float fromA = map.editor.fileMenu.toolPane.gradientDialog.getFromA();
-        float toR = map.editor.fileMenu.toolPane.gradientDialog.getToR();
-        float toG = map.editor.fileMenu.toolPane.gradientDialog.getToG();
-        float toB = map.editor.fileMenu.toolPane.gradientDialog.getToB();
-        float toA = map.editor.fileMenu.toolPane.gradientDialog.getToA();
+        float fromR = map.editor.fileMenu.buttonPane.gradientDialog.getFromR();
+        float fromG = map.editor.fileMenu.buttonPane.gradientDialog.getFromG();
+        float fromB = map.editor.fileMenu.buttonPane.gradientDialog.getFromB();
+        float fromA = map.editor.fileMenu.buttonPane.gradientDialog.getFromA();
+        float toR = map.editor.fileMenu.buttonPane.gradientDialog.getToR();
+        float toG = map.editor.fileMenu.buttonPane.gradientDialog.getToG();
+        float toB = map.editor.fileMenu.buttonPane.gradientDialog.getToB();
+        float toA = map.editor.fileMenu.buttonPane.gradientDialog.getToA();
         float fromX = this.gradientX;
         float fromY = this.gradientY;
 
@@ -860,22 +864,22 @@ public class MapInput implements InputProcessor
                     for(int k = 0; k < layerChild.attachedSprites.children.size; k ++)
                     {
                         MapSprite attachedSprite = layerChild.attachedSprites.children.get(k);
-                        if(attachedSprite.isHoveredOver(x, y, editor.fileMenu.toolPane.paintDialog.getRadius()))
+                        if(attachedSprite.isHoveredOver(x, y, editor.fileMenu.buttonPane.paintDialog.getRadius()))
                         {
                             if(map.selectedSprites.size == 0 || attachedSprite.selected)
                             {
                                 boolean left = button == Input.Buttons.LEFT;
-                                float r = (attachedSprite.sprite.getColor().r * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getR(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
-                                float g = (attachedSprite.sprite.getColor().g * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getG(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
-                                float b = (attachedSprite.sprite.getColor().b * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getB(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
-                                float a = (attachedSprite.sprite.getColor().a * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getA(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
-                                if(editor.fileMenu.toolPane.paintDialog.getR(left) == -1)
+                                float r = (attachedSprite.sprite.getColor().r * (1 - editor.fileMenu.buttonPane.paintDialog.getStrength(left))) + (editor.fileMenu.buttonPane.paintDialog.getR(left) * editor.fileMenu.buttonPane.paintDialog.getStrength(left));
+                                float g = (attachedSprite.sprite.getColor().g * (1 - editor.fileMenu.buttonPane.paintDialog.getStrength(left))) + (editor.fileMenu.buttonPane.paintDialog.getG(left) * editor.fileMenu.buttonPane.paintDialog.getStrength(left));
+                                float b = (attachedSprite.sprite.getColor().b * (1 - editor.fileMenu.buttonPane.paintDialog.getStrength(left))) + (editor.fileMenu.buttonPane.paintDialog.getB(left) * editor.fileMenu.buttonPane.paintDialog.getStrength(left));
+                                float a = (attachedSprite.sprite.getColor().a * (1 - editor.fileMenu.buttonPane.paintDialog.getStrength(left))) + (editor.fileMenu.buttonPane.paintDialog.getA(left) * editor.fileMenu.buttonPane.paintDialog.getStrength(left));
+                                if(editor.fileMenu.buttonPane.paintDialog.getR(left) == -1)
                                     r = attachedSprite.sprite.getColor().r;
-                                if(editor.fileMenu.toolPane.paintDialog.getG(left) == -1)
+                                if(editor.fileMenu.buttonPane.paintDialog.getG(left) == -1)
                                     g = attachedSprite.sprite.getColor().g;
-                                if(editor.fileMenu.toolPane.paintDialog.getB(left) == -1)
+                                if(editor.fileMenu.buttonPane.paintDialog.getB(left) == -1)
                                     b = attachedSprite.sprite.getColor().b;
-                                if(editor.fileMenu.toolPane.paintDialog.getA(left) == -1)
+                                if(editor.fileMenu.buttonPane.paintDialog.getA(left) == -1)
                                     a = attachedSprite.sprite.getColor().a;
                                 if(paintMapSprite == null)
                                     paintMapSprite = new PaintMapSprite(this.map, attachedSprite, r, g, b, a);
@@ -885,22 +889,22 @@ public class MapInput implements InputProcessor
                         }
                     }
                 }
-                if(layerChild.isHoveredOver(x, y, editor.fileMenu.toolPane.paintDialog.getRadius()))
+                if(layerChild.isHoveredOver(x, y, editor.fileMenu.buttonPane.paintDialog.getRadius()))
                 {
                     if(map.selectedSprites.size == 0 || layerChild.selected)
                     {
                         boolean left = button == Input.Buttons.LEFT;
-                        float r = (layerChild.sprite.getColor().r * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getR(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
-                        float g = (layerChild.sprite.getColor().g * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getG(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
-                        float b = (layerChild.sprite.getColor().b * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getB(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
-                        float a = (layerChild.sprite.getColor().a * (1 - editor.fileMenu.toolPane.paintDialog.getStrength(left))) + (editor.fileMenu.toolPane.paintDialog.getA(left) * editor.fileMenu.toolPane.paintDialog.getStrength(left));
-                        if(editor.fileMenu.toolPane.paintDialog.getR(left) == -1)
+                        float r = (layerChild.sprite.getColor().r * (1 - editor.fileMenu.buttonPane.paintDialog.getStrength(left))) + (editor.fileMenu.buttonPane.paintDialog.getR(left) * editor.fileMenu.buttonPane.paintDialog.getStrength(left));
+                        float g = (layerChild.sprite.getColor().g * (1 - editor.fileMenu.buttonPane.paintDialog.getStrength(left))) + (editor.fileMenu.buttonPane.paintDialog.getG(left) * editor.fileMenu.buttonPane.paintDialog.getStrength(left));
+                        float b = (layerChild.sprite.getColor().b * (1 - editor.fileMenu.buttonPane.paintDialog.getStrength(left))) + (editor.fileMenu.buttonPane.paintDialog.getB(left) * editor.fileMenu.buttonPane.paintDialog.getStrength(left));
+                        float a = (layerChild.sprite.getColor().a * (1 - editor.fileMenu.buttonPane.paintDialog.getStrength(left))) + (editor.fileMenu.buttonPane.paintDialog.getA(left) * editor.fileMenu.buttonPane.paintDialog.getStrength(left));
+                        if(editor.fileMenu.buttonPane.paintDialog.getR(left) == -1)
                             r = layerChild.sprite.getColor().r;
-                        if(editor.fileMenu.toolPane.paintDialog.getG(left) == -1)
+                        if(editor.fileMenu.buttonPane.paintDialog.getG(left) == -1)
                             g = layerChild.sprite.getColor().g;
-                        if(editor.fileMenu.toolPane.paintDialog.getB(left) == -1)
+                        if(editor.fileMenu.buttonPane.paintDialog.getB(left) == -1)
                             b = layerChild.sprite.getColor().b;
-                        if(editor.fileMenu.toolPane.paintDialog.getA(left) == -1)
+                        if(editor.fileMenu.buttonPane.paintDialog.getA(left) == -1)
                             a = layerChild.sprite.getColor().a;
                         if(paintMapSprite == null)
                             paintMapSprite = new PaintMapSprite(this.map, layerChild, r, g, b, a);
@@ -938,7 +942,7 @@ public class MapInput implements InputProcessor
                     for(int k = 0; k < layerChild.attachedSprites.children.size; k ++)
                     {
                         MapSprite attachedSprite = layerChild.attachedSprites.children.get(k);
-                        if(attachedSprite.isHoveredOver(x, y, editor.fileMenu.toolPane.thinDialog.getRadius()) && Utils.randomChance(editor.fileMenu.toolPane.thinDialog.getDeleteChance()))
+                        if(attachedSprite.isHoveredOver(x, y, editor.fileMenu.buttonPane.thinDialog.getRadius()) && Utils.randomChance(editor.fileMenu.buttonPane.thinDialog.getDeleteChance()))
                         {
                             if(map.selectedSprites.size == 0 || attachedSprite.selected)
                             {
@@ -949,7 +953,7 @@ public class MapInput implements InputProcessor
                     DeleteSelectedMapSprites deleteCommand = new DeleteSelectedMapSprites(mapSpritesToDelete, spriteLayer);
                     deleteCommands.add(deleteCommand);
                 }
-                if(layerChild.isHoveredOver(x, y, editor.fileMenu.toolPane.thinDialog.getRadius()) && Utils.randomChance(editor.fileMenu.toolPane.thinDialog.getDeleteChance()))
+                if(layerChild.isHoveredOver(x, y, editor.fileMenu.buttonPane.thinDialog.getRadius()) && Utils.randomChance(editor.fileMenu.buttonPane.thinDialog.getDeleteChance()))
                 {
                     if(map.selectedSprites.size == 0 || layerChild.selected)
                     {
@@ -995,12 +999,12 @@ public class MapInput implements InputProcessor
             }
             else
             {
-                int randomSpawnAmount = Utils.randomInt(editor.fileMenu.toolPane.splatDialog.getMinSpawn(), editor.fileMenu.toolPane.splatDialog.getMaxSpawn());
+                int randomSpawnAmount = Utils.randomInt(editor.fileMenu.buttonPane.splatDialog.getMinSpawn(), editor.fileMenu.buttonPane.splatDialog.getMaxSpawn());
                 DrawFence drawFence = null;
                 for(int i = 0; i < randomSpawnAmount; i ++)
                 {
-                    float randomX = Utils.randomFloat(x - editor.fileMenu.toolPane.splatDialog.getMaxXDisplacement(), x + editor.fileMenu.toolPane.splatDialog.getMaxXDisplacement());
-                    float randomY = Utils.randomFloat(y - editor.fileMenu.toolPane.splatDialog.getMaxYDisplacement(), y + editor.fileMenu.toolPane.splatDialog.getMaxYDisplacement());
+                    float randomX = Utils.randomFloat(x - editor.fileMenu.buttonPane.splatDialog.getMaxXDisplacement(), x + editor.fileMenu.buttonPane.splatDialog.getMaxXDisplacement());
+                    float randomY = Utils.randomFloat(y - editor.fileMenu.buttonPane.splatDialog.getMaxYDisplacement(), y + editor.fileMenu.buttonPane.splatDialog.getMaxYDisplacement());
                     if(i == 0)
                         drawFence = new DrawFence(this.map, (SpriteLayer) this.map.selectedLayer, randomX, randomY);
                     else
@@ -1027,12 +1031,12 @@ public class MapInput implements InputProcessor
             }
             else
             {
-                int randomSpawnAmount = Utils.randomInt(editor.fileMenu.toolPane.splatDialog.getMinSpawn(), editor.fileMenu.toolPane.splatDialog.getMaxSpawn());
+                int randomSpawnAmount = Utils.randomInt(editor.fileMenu.buttonPane.splatDialog.getMinSpawn(), editor.fileMenu.buttonPane.splatDialog.getMaxSpawn());
                 DrawMapSprite drawMapSprite = null;
                 for(int i = 0; i < randomSpawnAmount; i ++)
                 {
-                    float randomX = Utils.randomFloat(x - editor.fileMenu.toolPane.splatDialog.getMaxXDisplacement(), x + editor.fileMenu.toolPane.splatDialog.getMaxXDisplacement());
-                    float randomY = Utils.randomFloat(y - editor.fileMenu.toolPane.splatDialog.getMaxYDisplacement(), y + editor.fileMenu.toolPane.splatDialog.getMaxYDisplacement());
+                    float randomX = Utils.randomFloat(x - editor.fileMenu.buttonPane.splatDialog.getMaxXDisplacement(), x + editor.fileMenu.buttonPane.splatDialog.getMaxXDisplacement());
+                    float randomY = Utils.randomFloat(y - editor.fileMenu.buttonPane.splatDialog.getMaxYDisplacement(), y + editor.fileMenu.buttonPane.splatDialog.getMaxYDisplacement());
                     if(i == 0)
                         drawMapSprite = new DrawMapSprite(this.map, (SpriteLayer) this.map.selectedLayer, randomX, randomY);
                     else
@@ -1046,6 +1050,128 @@ public class MapInput implements InputProcessor
             }
         }
         return false;
+    }
+
+    private boolean handleStaple(int button)
+    {
+        if(!Utils.isFileToolThisType(this.editor, Tools.STAPLE) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
+            return false;
+        if(this.map.selectedLayer instanceof ObjectLayer)
+            return false;
+        if(this.map.hoveredChild == null || !(this.map.hoveredChild instanceof MapSprite))
+            return false;
+        if(((MapSprite)this.map.hoveredChild).parentSprite == null)
+            return false;
+        if(((MapSprite)this.map.hoveredChild).attachedSprites != null)
+            return false;
+        if(map.spriteMenu.selectedSpriteTools.size == 0)
+            return false;
+
+        MapSprite hoveredChild = ((MapSprite) this.map.hoveredChild);
+        DrawMapSprite drawMapSprite = new DrawMapSprite(map, hoveredChild.parentSprite.attachedSprites, hoveredChild.parentSprite.x + (hoveredChild.parentSprite.width / 2f), hoveredChild.parentSprite.y);
+        map.executeCommand(drawMapSprite);
+//        drawMapSprite.mapSprite.setPosition(drawMapSprite.mapSprite.x + drawMapSprite.mapSprite.width / 2f, drawMapSprite.mapSprite.y + drawMapSprite.mapSprite.height / 2f);
+
+//        float[] drawMapSpriteVertices = drawMapSprite.mapSprite.sprite.getVertices();
+//        float drawMapSpriteX1 = drawMapSpriteVertices[SpriteBatch.X2] + map.cameraX;
+//        float drawMapSpriteX2 = drawMapSpriteVertices[SpriteBatch.X3] + map.cameraX;
+//        float drawMapSpriteX3 = drawMapSpriteVertices[SpriteBatch.X4] + map.cameraX;
+//        float drawMapSpriteX4 = drawMapSpriteVertices[SpriteBatch.X1] + map.cameraX;
+//        float drawMapSpriteY1 = drawMapSpriteVertices[SpriteBatch.Y2] + map.cameraY;
+//        float drawMapSpriteY2 = drawMapSpriteVertices[SpriteBatch.Y3] + map.cameraY;
+//        float drawMapSpriteY3 = drawMapSpriteVertices[SpriteBatch.Y4] + map.cameraY;
+//        float drawMapSpriteY4 = drawMapSpriteVertices[SpriteBatch.Y1] + map.cameraY;
+//
+//        float[] exampleSpriteVertices = hoveredChild.sprite.getVertices();
+//        float exampleSpriteX1 = exampleSpriteVertices[SpriteBatch.X2] + map.cameraX + hoveredChild.x1Offset;
+//        float exampleSpriteX2 = exampleSpriteVertices[SpriteBatch.X3] + map.cameraX + hoveredChild.x2Offset;
+//        float exampleSpriteX3 = exampleSpriteVertices[SpriteBatch.X4] + map.cameraX + hoveredChild.x3Offset;
+//        float exampleSpriteX4 = exampleSpriteVertices[SpriteBatch.X1] + map.cameraX + hoveredChild.x4Offset;
+//        float exampleSpriteY1 = exampleSpriteVertices[SpriteBatch.Y2] + map.cameraY + hoveredChild.y1Offset;
+//        float exampleSpriteY2 = exampleSpriteVertices[SpriteBatch.Y3] + map.cameraY + hoveredChild.y2Offset;
+//        float exampleSpriteY3 = exampleSpriteVertices[SpriteBatch.Y4] + map.cameraY + hoveredChild.y3Offset;
+//        float exampleSpriteY4 = exampleSpriteVertices[SpriteBatch.Y1] + map.cameraY + hoveredChild.y4Offset;
+
+//        float dropAmount = (exampleSpriteY1 - drawMapSpriteY1) - ((exampleSpriteY1 - drawMapSpriteY1) - hoveredChild.height);
+//        drawMapSprite.mapSprite.x1Offset = (exampleSpriteX1 - drawMapSpriteX1) + (hoveredChild.parentSprite.width / 2f);
+//        drawMapSprite.mapSprite.x2Offset = (exampleSpriteX2 - drawMapSpriteX2) + (hoveredChild.parentSprite.width / 2f);
+//        drawMapSprite.mapSprite.x3Offset = (exampleSpriteX3 - drawMapSpriteX3) + (hoveredChild.parentSprite.width / 2f);
+//        drawMapSprite.mapSprite.x4Offset = (exampleSpriteX4 - drawMapSpriteX4) + (hoveredChild.parentSprite.width / 2f);
+//        drawMapSprite.mapSprite.y1Offset = (exampleSpriteY1 - drawMapSpriteY1) - dropAmount;
+//        drawMapSprite.mapSprite.y2Offset = (exampleSpriteY2 - drawMapSpriteY2) - dropAmount;
+//        drawMapSprite.mapSprite.y3Offset = (exampleSpriteY3 - drawMapSpriteY3);
+//        drawMapSprite.mapSprite.y4Offset = (exampleSpriteY4 - drawMapSpriteY4);
+//        float overshootX = drawMapSprite.mapSprite.x1Offset - ex;
+//        float overshootY = 0;
+
+
+
+
+
+
+        MapSprite connector = drawMapSprite.mapSprite;
+        MapSprite fromFence = hoveredChild.parentSprite;
+        MapSprite toFence = hoveredChild.parentSprite.toEdgeSprite;
+        LabelFieldPropertyValuePropertyField fenceProperty = Utils.getLockedPropertyField(connector.lockedProperties, "Fence");
+        fenceProperty.value.setText("true");
+        MapPoint fromPoint = DrawFence.getAttachedMapPointWithPropertyValue(fromFence, "fenceStart", 1);
+        MapPoint toPoint = DrawFence.getAttachedMapPointWithPropertyValue(toFence, "fenceEnd", 1);
+        float fromX = fromPoint.x;
+        float fromY = fromPoint.y;
+        float toX = toPoint.x;
+        float toY = toPoint.y;
+        fromX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
+        toX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
+//        float stackHeightMultiplier = map.editor.fileMenu.buttonPane.stairsDialog.getStackHeightMultiplier();
+//        fromY += fromFence.height * (stack * stackHeightMultiplier);
+//        toY += fromFence.height * (stack * stackHeightMultiplier);
+
+        float overshoot = map.editor.fileMenu.buttonPane.stairsDialog.getConnectorWidthOvershoot();
+        float midX = (fromX + toX) / 2f;
+        float xDiff = (toX - midX) * overshoot;
+        fromX = midX - xDiff;
+        toX = midX + xDiff;
+        float midY = (fromY + toY) / 2f;
+        float yDiff = (toY - midY) * overshoot;
+        fromY = midY - yDiff;
+        toY = midY + yDiff;
+
+        float heightOffset = map.editor.fileMenu.buttonPane.stairsDialog.getHeightOffset();
+
+        if (map.editor.fileMenu.buttonPane.stairsDialog.shouldConnectorHeightBeCentered())
+            connector.setPosition(fromX, fromY - connector.height / 2f);
+        else
+            connector.setPosition(fromX, fromY);
+        connector.y1Offset += heightOffset;
+        connector.x2Offset = toX - (connector.x + connector.width * connector.scale);
+        if (map.editor.fileMenu.buttonPane.stairsDialog.shouldConnectorHeightBeCentered())
+            connector.y2Offset = toY - (connector.y + connector.height / 2f) + heightOffset;
+        else
+            connector.y2Offset = toY - connector.y + heightOffset;
+        connector.x3Offset = connector.x2Offset;
+        if (map.editor.fileMenu.buttonPane.stairsDialog.shouldConnectorHeightBeCentered())
+            connector.y3Offset = toY - (connector.y + connector.height / 2f);
+        else
+            connector.y3Offset = toY - connector.y;
+        float[] spriteVertices = connector.sprite.getVertices();
+        connector.offsetMovebox1.setPosition(spriteVertices[SpriteBatch.X2] + map.cameraX + connector.x1Offset - (connector.offsetMovebox1.scale * connector.offsetMovebox1.width / 2f), spriteVertices[SpriteBatch.Y2] + map.cameraY + connector.y1Offset - (connector.offsetMovebox1.scale * connector.offsetMovebox1.height / 2f));
+        connector.offsetMovebox2.setPosition(spriteVertices[SpriteBatch.X3] + map.cameraX + connector.x2Offset - (connector.offsetMovebox2.scale * connector.offsetMovebox2.width / 2f), spriteVertices[SpriteBatch.Y3] + map.cameraY + connector.y2Offset - (connector.offsetMovebox2.scale * connector.offsetMovebox2.height / 2f));
+        connector.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + map.cameraX + connector.x3Offset - (connector.offsetMovebox3.scale * connector.offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + map.cameraY + connector.y3Offset - (connector.offsetMovebox3.scale * connector.offsetMovebox3.height / 2f));
+        connector.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + map.cameraX + connector.x4Offset - (connector.offsetMovebox4.scale * connector.offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + map.cameraY + connector.y4Offset - (connector.offsetMovebox4.scale * connector.offsetMovebox4.height / 2f));
+        connector.polygon.setOffset(connector.x1Offset, connector.x2Offset, connector.x3Offset, connector.x4Offset, connector.y1Offset, connector.y2Offset, connector.y3Offset, connector.y4Offset);
+//        connectors.add(connector);
+        connector.parentSprite = fromFence;
+
+
+
+
+
+
+
+        connector.updateBounds();
+        connector.updatePerspective();
+
+        return true;
     }
 
     private boolean handleSelect(int button)
@@ -1076,12 +1202,12 @@ public class MapInput implements InputProcessor
         if(this.map.hoveredChild == null)
             return false;
 
-        if(map.hoveredChild instanceof MapPolygon && editor.fileMenu.toolPane.groupDialog.shouldAdd())
+        if(map.hoveredChild instanceof MapPolygon && editor.fileMenu.buttonPane.groupDialog.shouldAdd())
         {
             AddMapSpritesToGroup addMapSpritesToGroup = new AddMapSpritesToGroup(map, (MapPolygon) map.hoveredChild);
             this.map.executeCommand(addMapSpritesToGroup);
         }
-        else if(map.hoveredChild instanceof MapPolygon && editor.fileMenu.toolPane.groupDialog.shouldRemove())
+        else if(map.hoveredChild instanceof MapPolygon && editor.fileMenu.buttonPane.groupDialog.shouldRemove())
         {
             RemoveMapSpritesFromGroup removeMapSpritesFromGroup = new RemoveMapSpritesFromGroup(map, (MapPolygon) map.hoveredChild);
             this.map.executeCommand(removeMapSpritesFromGroup);
@@ -1286,7 +1412,7 @@ public class MapInput implements InputProcessor
             DrawMapPolygon drawMapPolygon = new DrawMapPolygon(this.map, (ObjectLayer) this.map.selectedLayer, this.map.input.mapPolygonVertices, this.objectVerticePosition.x, this.objectVerticePosition.y);
             clearMapPolygonVertices(button);
             drawMapPolygon.execute();
-            if(editor.fileMenu.toolPane.groupDialog.shouldCreate())
+            if(editor.fileMenu.buttonPane.groupDialog.shouldCreate())
             {
                 AddMapSpritesToGroup addMapSpritesToGroup = new AddMapSpritesToGroup(map, drawMapPolygon.mapPolygon);
                 this.map.executeCommand(addMapSpritesToGroup);
@@ -1408,7 +1534,7 @@ public class MapInput implements InputProcessor
         if(spriteTool == null)
             return false;
 
-        float randomScale = this.editor.fileMenu.toolPane.minMaxDialog.randomSizeValue;
+        float randomScale = this.editor.fileMenu.buttonPane.minMaxDialog.randomSizeValue;
 
         for(int i = 0; i < spriteTool.previewSprites.size; i ++)
         {
