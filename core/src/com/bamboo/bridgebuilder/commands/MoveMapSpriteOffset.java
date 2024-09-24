@@ -1,7 +1,11 @@
 package com.bamboo.bridgebuilder.commands;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.MapSprite;
 
 import static com.bamboo.bridgebuilder.commands.MoveMapSpriteOffset.Location.*;
@@ -35,6 +39,42 @@ public class MoveMapSpriteOffset implements Command
     {
         this.resultingOffsetX = currentDragX;
         this.resultingOffsetY = currentDragY;
+
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            Vector3 coords = Utils.unproject(selectedMapSprite.map.camera, Gdx.input.getX(), Gdx.input.getY());
+            coords.x += selectedMapSprite.map.cameraX;
+            coords.y += selectedMapSprite.map.cameraY;
+            float snapX = Utils.snapSpriteVerticeX(coords.x, coords.y, selectedMapSprite.map);
+            float snapY = Utils.snapSpriteVerticeY(coords.x, coords.y, selectedMapSprite.map);
+
+            float[] spriteVertices = selectedMapSprite.sprite.getVertices();
+            float originalX = 0, originalY = 0;
+
+            System.out.println(snapX + ", " + snapY);
+
+            // Determine the original vertex position based on the current location
+            if (location == ONE) {
+                originalX = spriteVertices[SpriteBatch.X2] + selectedMapSprite.map.cameraX + originalOffsetPosition.x;
+                originalY = spriteVertices[SpriteBatch.Y2] + selectedMapSprite.map.cameraY + originalOffsetPosition.y;
+            } else if (location == TWO) {
+                originalX = spriteVertices[SpriteBatch.X3] + selectedMapSprite.map.cameraX + originalOffsetPosition.x;
+                originalY = spriteVertices[SpriteBatch.Y3] + selectedMapSprite.map.cameraY + originalOffsetPosition.y;
+            } else if (location == THREE) {
+                originalX = spriteVertices[SpriteBatch.X4] + selectedMapSprite.map.cameraX + originalOffsetPosition.x;
+                originalY = spriteVertices[SpriteBatch.Y4] + selectedMapSprite.map.cameraY + originalOffsetPosition.y;
+            } else if (location == FOUR) {
+                originalX = spriteVertices[SpriteBatch.X1] + selectedMapSprite.map.cameraX + originalOffsetPosition.x;
+                originalY = spriteVertices[SpriteBatch.Y1] + selectedMapSprite.map.cameraY + originalOffsetPosition.y;
+            }
+
+            // Calculate the offset needed to snap to the new position
+            float offsetX = snapX - originalX;
+            float offsetY = snapY - originalY;
+
+            // Set resultingOffsetX and resultingOffsetY based on the calculated offsets
+            this.resultingOffsetX = offsetX;
+            this.resultingOffsetY = offsetY;
+        }
 
         if(location == ONE)
         {

@@ -400,6 +400,116 @@ public class Utils
         return false;
     }
 
+    public static float snapSpriteVerticeX(float coordsX, float coordsY, Map map)
+    {
+        if(!Gdx.input.isKeyPressed(Input.Keys.S))
+            return coordsX;
+        if(map.selectedLayer == null)
+            return coordsX;
+        if(!(map.selectedLayer instanceof SpriteLayer))
+            return coordsX;
+
+        float smallestDistance = Float.MAX_VALUE;
+        float snapDistance = 5;
+        SpriteLayer layer = (SpriteLayer) map.selectedLayer;
+        float closestX = coordsX;
+        for(int k = 0; k < layer.children.size; k ++)
+        {
+            MapSprite child = layer.children.get(k);
+
+            float[] spriteVertices = child.sprite.getVertices();
+            float x1 = spriteVertices[SpriteBatch.X2] + map.cameraX + child.x1Offset;
+            float x2 = spriteVertices[SpriteBatch.X3] + map.cameraX + child.x2Offset;
+            float x3 = spriteVertices[SpriteBatch.X4] + map.cameraX + child.x3Offset;
+            float x4 = spriteVertices[SpriteBatch.X1] + map.cameraX + child.x4Offset;
+            float y1 = spriteVertices[SpriteBatch.Y2] + map.cameraY + child.y1Offset;
+            float y2 = spriteVertices[SpriteBatch.Y3] + map.cameraY + child.y2Offset;
+            float y3 = spriteVertices[SpriteBatch.Y4] + map.cameraY + child.y3Offset;
+            float y4 = spriteVertices[SpriteBatch.Y1] + map.cameraY + child.y4Offset;
+
+            float distance1 = Utils.getDistance(coordsX, x1, coordsY, y1);
+            float distance2 = Utils.getDistance(coordsX, x2, coordsY, y2);
+            float distance3 = Utils.getDistance(coordsX, x3, coordsY, y3);
+            float distance4 = Utils.getDistance(coordsX, x4, coordsY, y4);
+            if(distance1 < snapDistance && distance1 < smallestDistance)
+            {
+                closestX = x1;
+                smallestDistance = distance1;
+            }
+            if(distance2 < snapDistance && distance2 < smallestDistance)
+            {
+                closestX = x2;
+                smallestDistance = distance2;
+            }
+            if(distance3 < snapDistance && distance3 < smallestDistance)
+            {
+                closestX = x3;
+                smallestDistance = distance3;
+            }
+            if(distance4 < snapDistance && distance4 < smallestDistance)
+            {
+                closestX = x4;
+                smallestDistance = distance4;
+            }
+        }
+        return closestX;
+    }
+
+    public static float snapSpriteVerticeY(float coordsX, float coordsY, Map map)
+    {
+        if(!Gdx.input.isKeyPressed(Input.Keys.S))
+            return coordsY;
+        if(map.selectedLayer == null)
+            return coordsY;
+        if(!(map.selectedLayer instanceof SpriteLayer))
+            return coordsY;
+
+        float smallestDistance = Float.MAX_VALUE;
+        float snapDistance = 5;
+        SpriteLayer layer = (SpriteLayer) map.selectedLayer;
+        float closestY = coordsY;
+        for(int k = 0; k < layer.children.size; k ++)
+        {
+            MapSprite child = layer.children.get(k);
+
+            float[] spriteVertices = child.sprite.getVertices();
+            float x1 = spriteVertices[SpriteBatch.X2] + map.cameraX + child.x1Offset;
+            float x2 = spriteVertices[SpriteBatch.X3] + map.cameraX + child.x2Offset;
+            float x3 = spriteVertices[SpriteBatch.X4] + map.cameraX + child.x3Offset;
+            float x4 = spriteVertices[SpriteBatch.X1] + map.cameraX + child.x4Offset;
+            float y1 = spriteVertices[SpriteBatch.Y2] + map.cameraY + child.y1Offset;
+            float y2 = spriteVertices[SpriteBatch.Y3] + map.cameraY + child.y2Offset;
+            float y3 = spriteVertices[SpriteBatch.Y4] + map.cameraY + child.y3Offset;
+            float y4 = spriteVertices[SpriteBatch.Y1] + map.cameraY + child.y4Offset;
+
+            float distance1 = Utils.getDistance(coordsX, x1, coordsY, y1);
+            float distance2 = Utils.getDistance(coordsX, x2, coordsY, y2);
+            float distance3 = Utils.getDistance(coordsX, x3, coordsY, y3);
+            float distance4 = Utils.getDistance(coordsX, x4, coordsY, y4);
+            if(distance1 < snapDistance && distance1 < smallestDistance)
+            {
+                closestY = y1;
+                smallestDistance = distance1;
+            }
+            if(distance2 < snapDistance && distance2 < smallestDistance)
+            {
+                closestY = y2;
+                smallestDistance = distance2;
+            }
+            if(distance3 < snapDistance && distance3 < smallestDistance)
+            {
+                closestY = y3;
+                smallestDistance = distance3;
+            }
+            if(distance4 < snapDistance && distance4 < smallestDistance)
+            {
+                closestY = y4;
+                smallestDistance = distance4;
+            }
+        }
+        return closestY;
+    }
+
     public static LayerChild snapObject(float coordsX, float coordsY, Map map)
     {
         if(!Gdx.input.isKeyPressed(Input.Keys.S))

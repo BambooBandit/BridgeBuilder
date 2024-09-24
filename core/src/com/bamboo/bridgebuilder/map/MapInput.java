@@ -349,20 +349,26 @@ public class MapInput implements InputProcessor
                         if(Math.abs(sprite.x - mouseX) > distanceLimit || Math.abs(sprite.y - mouseY) > distanceLimit)
                             continue;
 
+                        inner:
                         for (int k = 0; k < sprite.attachedMapObjects.size; k++)
                         {
                             MapObject mapObject = sprite.attachedMapObjects.get(k);
                             if (mapObject instanceof MapPolygon)
                             {
                                 MapPolygon mapPolygon = (MapPolygon) mapObject;
+                                if(!Utils.containsProperty(mapPolygon.properties, "path"))
+                                    continue inner;
 
 
+                                innerinner:
                                 for (int s = 0; s < newSpriteTool.attachedMapObjectManagers.size; s++)
                                 {
                                     AttachedMapObjectManager newManager = newSpriteTool.attachedMapObjectManagers.get(s);
                                     if (newManager.cookieCutter instanceof MapPolygon)
                                     {
                                         MapPolygon newMapPolygon = (MapPolygon) newManager.cookieCutter;
+                                        if(!Utils.containsProperty(newManager.properties, "path"))
+                                            continue innerinner;
                                         floatArray1.clear();
                                         floatArray1.addAll(mapPolygon.polygon.getScaledVertices());
                                         FloatArray poly1 = floatArray1;
