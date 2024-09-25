@@ -271,12 +271,14 @@ public class BridgeBuilder extends Game
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.drawObject);
 				else if(keycode == Input.Keys.P)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.drawPoint);
-				else if(keycode == Input.Keys.I)
+				else if(keycode == Input.Keys.R)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.objectVerticeSelect);
 				else if(keycode == Input.Keys.L)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.parallax);
 				else if(keycode == Input.Keys.N)
 					fileMenu.toolPane.selectTool(fileMenu.toolPane.lines);
+				else if(keycode == Input.Keys.I)
+					fileMenu.toolPane.selectTool(fileMenu.toolPane.eyedropper);
 				else if(keycode == Input.Keys.DEL || keycode == Input.Keys.FORWARD_DEL)
 				{
 					if(activeMap == null)
