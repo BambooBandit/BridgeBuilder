@@ -44,6 +44,7 @@ public class ToolPane extends Group
     public Tool thin;
     public Tool path;
     public Tool staple;
+    public Tool eyedropper;
 
     private BridgeBuilder editor;
 
@@ -83,6 +84,7 @@ public class ToolPane extends Group
         this.thin = new Tool(editor, this, false, Tools.THIN);
         this.path = new Tool(editor, this, false, Tools.PATH);
         this.staple = new Tool(editor, this, false, Tools.STAPLE);
+        this.eyedropper = new Tool(editor, this, false, Tools.EYEDROPPER);
 
         this.fps = new Label("0", skin);
 
@@ -114,7 +116,8 @@ public class ToolPane extends Group
         this.toolTable.add(this.paint).padRight(1);
         this.toolTable.add(this.thin).padRight(1);
         this.toolTable.add(this.path).padRight(1);
-        this.toolTable.add(this.staple).padRight(4);
+        this.toolTable.add(this.staple).padRight(1);
+        this.toolTable.add(this.eyedropper).padRight(4);
         this.toolTable.add(this.fps).padRight(1);
 
         this.pane = new Stack();
@@ -161,6 +164,7 @@ public class ToolPane extends Group
         this.thin.setSize(toolHeight, toolHeight);
         this.path.setSize(toolHeight, toolHeight);
         this.staple.setSize(toolHeight, toolHeight);
+        this.eyedropper.setSize(toolHeight, toolHeight);
 
         this.toolTable.getCell(this.brush).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.drawPoint).size(toolHeight, toolHeight);
@@ -189,6 +193,7 @@ public class ToolPane extends Group
         this.toolTable.getCell(this.thin).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.path).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.staple).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.eyedropper).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.filledPolygons).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.fps).size(toolHeight, toolHeight);
         this.toolTable.invalidateHierarchy();

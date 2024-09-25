@@ -379,6 +379,9 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
         if(layerOverride != null && layerOverride.layerField.visibleImg.isVisible())
             layerOverride.draw();
 
+        if(!map.editor.fileMenu.toolPane.top.selected && tool.name.equals("arrow"))
+            return;
+
         if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
             sprite.setAlpha(sprite.getColor().a / 3.5f);
 

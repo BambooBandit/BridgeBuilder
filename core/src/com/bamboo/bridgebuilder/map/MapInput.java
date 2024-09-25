@@ -179,6 +179,8 @@ public class MapInput implements InputProcessor
                 return false;
             if(handleMapSpriteCreation(coords.x, coords.y, button))
                 return false;
+            if(handleEyeDropper(button))
+                return false;
             if(handleStaple(button))
                 return false;
             if(handleManipulatorBoxMoveLayerChildTouchDown(coords.x, coords.y, button))
@@ -664,7 +666,7 @@ public class MapInput implements InputProcessor
 
     private boolean handleHoveredLayerChildUpdate(float x, float y)
     {
-        if(Utils.isFileToolThisType(this.editor, Tools.SELECT) || Utils.isFileToolThisType(this.editor, Tools.STAPLE))
+        if(Utils.isFileToolThisType(this.editor, Tools.SELECT) || Utils.isFileToolThisType(this.editor, Tools.STAPLE) || Utils.isFileToolThisType(this.editor, Tools.EYEDROPPER))
         {
             for (int i = 0; i < map.selectedSprites.size; i++)
             {
@@ -1052,6 +1054,21 @@ public class MapInput implements InputProcessor
         return false;
     }
 
+    private boolean handleEyeDropper(int button)
+    {
+        if(!Utils.isFileToolThisType(this.editor, Tools.EYEDROPPER) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
+            return false;
+        if(this.map.selectedLayer instanceof ObjectLayer)
+            return false;
+        if(this.map.hoveredChild == null || !(this.map.hoveredChild instanceof MapSprite))
+            return false;
+
+        SelectSpriteTool selectSpriteTool = new SelectSpriteTool(map, ((MapSprite) this.map.hoveredChild).tool, false);
+        map.executeCommand(selectSpriteTool);
+
+        return true;
+    }
+
     private boolean handleStaple(int button)
     {
         if(!Utils.isFileToolThisType(this.editor, Tools.STAPLE) || this.map.selectedLayer == null || button != Input.Buttons.LEFT)
@@ -1070,44 +1087,6 @@ public class MapInput implements InputProcessor
         MapSprite hoveredChild = ((MapSprite) this.map.hoveredChild);
         DrawMapSprite drawMapSprite = new DrawMapSprite(map, hoveredChild.parentSprite.attachedSprites, hoveredChild.parentSprite.x + (hoveredChild.parentSprite.width / 2f), hoveredChild.parentSprite.y);
         map.executeCommand(drawMapSprite);
-//        drawMapSprite.mapSprite.setPosition(drawMapSprite.mapSprite.x + drawMapSprite.mapSprite.width / 2f, drawMapSprite.mapSprite.y + drawMapSprite.mapSprite.height / 2f);
-
-//        float[] drawMapSpriteVertices = drawMapSprite.mapSprite.sprite.getVertices();
-//        float drawMapSpriteX1 = drawMapSpriteVertices[SpriteBatch.X2] + map.cameraX;
-//        float drawMapSpriteX2 = drawMapSpriteVertices[SpriteBatch.X3] + map.cameraX;
-//        float drawMapSpriteX3 = drawMapSpriteVertices[SpriteBatch.X4] + map.cameraX;
-//        float drawMapSpriteX4 = drawMapSpriteVertices[SpriteBatch.X1] + map.cameraX;
-//        float drawMapSpriteY1 = drawMapSpriteVertices[SpriteBatch.Y2] + map.cameraY;
-//        float drawMapSpriteY2 = drawMapSpriteVertices[SpriteBatch.Y3] + map.cameraY;
-//        float drawMapSpriteY3 = drawMapSpriteVertices[SpriteBatch.Y4] + map.cameraY;
-//        float drawMapSpriteY4 = drawMapSpriteVertices[SpriteBatch.Y1] + map.cameraY;
-//
-//        float[] exampleSpriteVertices = hoveredChild.sprite.getVertices();
-//        float exampleSpriteX1 = exampleSpriteVertices[SpriteBatch.X2] + map.cameraX + hoveredChild.x1Offset;
-//        float exampleSpriteX2 = exampleSpriteVertices[SpriteBatch.X3] + map.cameraX + hoveredChild.x2Offset;
-//        float exampleSpriteX3 = exampleSpriteVertices[SpriteBatch.X4] + map.cameraX + hoveredChild.x3Offset;
-//        float exampleSpriteX4 = exampleSpriteVertices[SpriteBatch.X1] + map.cameraX + hoveredChild.x4Offset;
-//        float exampleSpriteY1 = exampleSpriteVertices[SpriteBatch.Y2] + map.cameraY + hoveredChild.y1Offset;
-//        float exampleSpriteY2 = exampleSpriteVertices[SpriteBatch.Y3] + map.cameraY + hoveredChild.y2Offset;
-//        float exampleSpriteY3 = exampleSpriteVertices[SpriteBatch.Y4] + map.cameraY + hoveredChild.y3Offset;
-//        float exampleSpriteY4 = exampleSpriteVertices[SpriteBatch.Y1] + map.cameraY + hoveredChild.y4Offset;
-
-//        float dropAmount = (exampleSpriteY1 - drawMapSpriteY1) - ((exampleSpriteY1 - drawMapSpriteY1) - hoveredChild.height);
-//        drawMapSprite.mapSprite.x1Offset = (exampleSpriteX1 - drawMapSpriteX1) + (hoveredChild.parentSprite.width / 2f);
-//        drawMapSprite.mapSprite.x2Offset = (exampleSpriteX2 - drawMapSpriteX2) + (hoveredChild.parentSprite.width / 2f);
-//        drawMapSprite.mapSprite.x3Offset = (exampleSpriteX3 - drawMapSpriteX3) + (hoveredChild.parentSprite.width / 2f);
-//        drawMapSprite.mapSprite.x4Offset = (exampleSpriteX4 - drawMapSpriteX4) + (hoveredChild.parentSprite.width / 2f);
-//        drawMapSprite.mapSprite.y1Offset = (exampleSpriteY1 - drawMapSpriteY1) - dropAmount;
-//        drawMapSprite.mapSprite.y2Offset = (exampleSpriteY2 - drawMapSpriteY2) - dropAmount;
-//        drawMapSprite.mapSprite.y3Offset = (exampleSpriteY3 - drawMapSpriteY3);
-//        drawMapSprite.mapSprite.y4Offset = (exampleSpriteY4 - drawMapSpriteY4);
-//        float overshootX = drawMapSprite.mapSprite.x1Offset - ex;
-//        float overshootY = 0;
-
-
-
-
-
 
         MapSprite connector = drawMapSprite.mapSprite;
         MapSprite fromFence = hoveredChild.parentSprite;
@@ -1122,9 +1101,6 @@ public class MapInput implements InputProcessor
         float toY = toPoint.y;
         fromX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
         toX -= (connector.width / 2f) - (connector.width * connector.scale) / 2f;
-//        float stackHeightMultiplier = map.editor.fileMenu.buttonPane.stairsDialog.getStackHeightMultiplier();
-//        fromY += fromFence.height * (stack * stackHeightMultiplier);
-//        toY += fromFence.height * (stack * stackHeightMultiplier);
 
         float overshoot = map.editor.fileMenu.buttonPane.stairsDialog.getConnectorWidthOvershoot();
         float midX = (fromX + toX) / 2f;
@@ -1159,14 +1135,7 @@ public class MapInput implements InputProcessor
         connector.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + map.cameraX + connector.x3Offset - (connector.offsetMovebox3.scale * connector.offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + map.cameraY + connector.y3Offset - (connector.offsetMovebox3.scale * connector.offsetMovebox3.height / 2f));
         connector.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + map.cameraX + connector.x4Offset - (connector.offsetMovebox4.scale * connector.offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + map.cameraY + connector.y4Offset - (connector.offsetMovebox4.scale * connector.offsetMovebox4.height / 2f));
         connector.polygon.setOffset(connector.x1Offset, connector.x2Offset, connector.x3Offset, connector.x4Offset, connector.y1Offset, connector.y2Offset, connector.y3Offset, connector.y4Offset);
-//        connectors.add(connector);
         connector.parentSprite = fromFence;
-
-
-
-
-
-
 
         connector.updateBounds();
         connector.updatePerspective();
