@@ -25,6 +25,8 @@ public class BridgeBuilder extends Game
 	public static int tabHeight = 25;
 	public static int toolHeight = 35;
 
+	public static BridgeBuilder bridgeBuilder;
+
 	public Array<Map> maps; // All maps open in the program.
 	public Map activeMap; // Map currently being viewed
 
@@ -47,12 +49,17 @@ public class BridgeBuilder extends Game
 	private boolean crashed = false;
 
 	public Array<LayerChild> copiedItems = new Array<>();
+	public static float copyColorR = -1;
+	public static float copyColorG = -1;
+	public static float copyColorB = -1;
+	public static float copyColorA = -1;
 
 	@Override
 	public void create ()
 	{
 		EditorAssets.get();
 
+		bridgeBuilder = this;
 		this.inputMultiplexer = new InputMultiplexer();
 
 		this.maps = new Array<>();
@@ -499,29 +506,37 @@ public class BridgeBuilder extends Game
 		for(int i = 0; i < this.maps.size; i ++)
         {
             final int finalI = i;
-            new YesNoDialog("Editor crashed. Save before closing " + this.maps.get(finalI).name + "?", this.maps.get(finalI).editor.stage, "", EditorAssets.getUISkin(), false)
-            {
-                @Override
-                public void yes()
-                {
-                    boolean closeApplicationAfterSaving = (maps.size == 1);
-                    fileMenu.saveAs(maps.get(finalI), true, closeApplicationAfterSaving);
-                }
+            new YesNoDialog("Editor encountered error. Save before closing " + this.maps.get(finalI).name + "?", this.maps.get(finalI).editor.stage, "", EditorAssets.getUISkin(), true)
+			{
+				@Override
+				public void yes()
+				{
+					boolean closeApplicationAfterSaving = (maps.size == 1);
+					fileMenu.saveAs(maps.get(finalI), true, closeApplicationAfterSaving);
+				}
 
-                @Override
-                public void no()
-                {
-                    fileMenu.mapTabPane.removeMap(maps.get(finalI));
-                    if (maps.size == 0)
-                    {
-                        Gdx.app.exit();
-                        System.exit(0);
-                    }
-                }
+				@Override
+				public void no()
+				{
+					fileMenu.mapTabPane.removeMap(maps.get(finalI));
+					if (maps.size == 0)
+					{
+						Gdx.app.exit();
+						System.exit(0);
+					}
+				}
             };
         }
 
 		this.stage.act();
 		this.stage.draw();
     }
+
+	public void copyColor(float r, float g, float b, float a)
+	{
+		copyColorR = r;
+		copyColorG = g;
+		copyColorB = b;
+		copyColorA = a;
+	}
 }

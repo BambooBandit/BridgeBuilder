@@ -1,10 +1,13 @@
 package com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.RemoveProperty;
 import com.bamboo.bridgebuilder.map.Map;
@@ -28,6 +31,9 @@ public class ColorPropertyField extends OpaqueColorPropertyField
         };
 
         this.property = new Label(property, skin);
+        this.copy = new TextButton("C", skin);
+        this.paste = new TextButton("P", skin);
+        setCopyPasteListeners();
         this.rValue = new TextField(Float.toString(r), skin);
         this.gValue = new TextField(Float.toString(g), skin);
         this.bValue = new TextField(Float.toString(b), skin);
@@ -43,6 +49,8 @@ public class ColorPropertyField extends OpaqueColorPropertyField
         this.table = new Table();
         this.table.bottom().left();
         this.table.add(this.property);
+        this.table.add(this.copy);
+        this.table.add(this.paste);
         this.table.add(this.rValue);
         this.table.add(this.gValue);
         this.table.add(this.bValue);
@@ -650,6 +658,9 @@ public class ColorPropertyField extends OpaqueColorPropertyField
         if(this.removeable)
             removeable = height;
         float valueWidth = ((width - removeable) / 5);
+        this.table.getCell(this.property).size((valueWidth / 5f) * 3, height);
+        this.table.getCell(this.copy).size(valueWidth / 5f, height);
+        this.table.getCell(this.paste).size(valueWidth / 5f, height);
         this.table.getCell(this.rValue).size(valueWidth, height);
         this.table.getCell(this.gValue).size(valueWidth, height);
         this.table.getCell(this.bValue).size(valueWidth, height);
@@ -683,5 +694,27 @@ public class ColorPropertyField extends OpaqueColorPropertyField
             return equals;
         }
         return false;
+    }
+
+    @Override
+    public void setCopyPasteListeners()
+    {
+        this.copy.addListener(new ChangeListener()
+        {
+            @Override
+            public void changed(ChangeEvent event, Actor actor)
+            {
+                BridgeBuilder.bridgeBuilder.copyColor(getR(), getG(), getB(), getA());
+            }
+        });
+
+        this.paste.addListener(new ChangeListener()
+        {
+            @Override
+            public void changed(ChangeEvent event, Actor actor)
+            {
+                setRGBA(BridgeBuilder.bridgeBuilder.copyColorR == -1 ? getR() : BridgeBuilder.bridgeBuilder.copyColorR, BridgeBuilder.bridgeBuilder.copyColorG == -1 ? getG() : BridgeBuilder.bridgeBuilder.copyColorG, BridgeBuilder.bridgeBuilder.copyColorB == -1 ? getB() : BridgeBuilder.bridgeBuilder.copyColorB, BridgeBuilder.bridgeBuilder.copyColorA == -1 ? getA() : BridgeBuilder.bridgeBuilder.copyColorA);
+            }
+        });
     }
 }
