@@ -1074,7 +1074,11 @@ public class Map implements Screen
             if(layer != null && layer.perspective != null)
             {
                 Perspective perspective = layer.perspective;
+                perspective.perspectiveCamera.position.set(cameraX, cameraY, 0);
+                perspective.perspectiveCamera.update();
                 this.rayHandler.setCombinedMatrix(perspective.perspectiveCamera.combined, perspective.perspectiveCamera.position.x, perspective.perspectiveCamera.position.y, perspective.perspectiveCamera.viewportWidth * perspective.perspectiveCamera.zoom * 2f, perspective.perspectiveCamera.viewportHeight * perspective.perspectiveCamera.zoom * 2f);
+                perspective.perspectiveCamera.position.set(0, 0, 0);
+                perspective.perspectiveCamera.update();
             }
             else
             {
