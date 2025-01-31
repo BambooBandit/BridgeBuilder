@@ -12,6 +12,9 @@ public class CellData
     public CellData(SpriteGrid.SpriteCell spriteCell)
     {
         this.t = spriteCell.dustType;
-        this.c = Color.rgb888(spriteCell.r, spriteCell.g, spriteCell.b) - defaultCValue;
+        if(this.t == null)
+            this.c = 0;
+        else
+            this.c = Color.rgb888(spriteCell.r, spriteCell.g, spriteCell.b) - defaultCValue;
     }
 }
