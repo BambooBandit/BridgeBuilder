@@ -254,7 +254,8 @@ public class SpriteGrid
                     if(intersects)
                     {
                         cell.dustIndex = index;
-                        cell.dustType = comparedDustType;
+                        if(cell.a > 0)
+                            cell.dustType = comparedDustType;
                     }
                 }
             }
@@ -319,7 +320,8 @@ public class SpriteGrid
                 if(dT && Intersector.overlapConvexPolygons(polygon1, polygon2))
                 {
                     cell.dustIndex = index;
-                    cell.dustType = comparedDustType;
+                    if(cell.a > 0)
+                        cell.dustType = comparedDustType;
                 }
             }
         }
@@ -365,7 +367,10 @@ public class SpriteGrid
         this.objectLayer.map.cameraY = this.objectLayer.map.camera.viewportHeight * this.objectLayer.map.camera.zoom / 2f;
         this.objectLayer.map.camera.update();
 
-        Gdx.gl.glClearColor(this.objectLayer.map.r, this.objectLayer.map.g, this.objectLayer.map.b, 1);
+        float bgAlpha = 1;
+        if(Utils.containsProperty(this.objectLayer.map.propertyMenu.mapPropertyPanel.properties, "suspended"))
+            bgAlpha = 0;
+        Gdx.gl.glClearColor(this.objectLayer.map.r, this.objectLayer.map.g, this.objectLayer.map.b, bgAlpha);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
         this.objectLayer.map.editor.batch.begin();
@@ -416,6 +421,8 @@ public class SpriteGrid
             cell.g = rgba8888ToColor.g;
             cell.b = rgba8888ToColor.b;
             cell.a = rgba8888ToColor.a;
+            if(cell.a == 0)
+                cell.dustType = null;
             cell.spriteGrid = this;
         }
 
