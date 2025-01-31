@@ -15,6 +15,10 @@ public class CellData
         if(this.t == null)
             this.c = 0;
         else
+        {
             this.c = Color.rgb888(spriteCell.r, spriteCell.g, spriteCell.b) - defaultCValue;
+            if(this.c < 260)
+                this.c = 0;
+        }
     }
 }
