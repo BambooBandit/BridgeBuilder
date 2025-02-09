@@ -31,8 +31,30 @@ public class ObjectLayerData extends LayerData
         {
             if(objectLayer.spriteGrid.grid.size > 0)
                 this.grid = new ArrayList<>(objectLayer.spriteGrid.grid.size);
+
+
             for(int i = 0; i < objectLayer.spriteGrid.grid.size; i ++)
                 this.grid.add(new CellData(objectLayer.spriteGrid.grid.get(i)));
+
+            CellData lastCell = null;
+            for(int i = 0; i < grid.size(); i ++)
+            {
+                CellData cell = grid.get(i);
+                if(cell.skip == 0 && cell.t == 0 && cell.c == 0)
+                {
+                    if(lastCell == null)
+                        lastCell = cell;
+                    else
+                    {
+                        grid.remove(i);
+                        i--;
+                    }
+                    lastCell.skip ++;
+
+                }
+                else
+                    lastCell = cell;
+            }
         }
     }
 }

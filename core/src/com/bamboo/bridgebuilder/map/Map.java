@@ -45,6 +45,7 @@ import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteSheet;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Stack;
 
@@ -121,6 +122,8 @@ public class Map implements Screen
     private Array<FloatArray> mergedPolygons;
 
     public SpriteTool nextPreviousTool = null;
+
+    public ArrayList<String> gridCellTypes = new ArrayList<>();
 
     public Map(BridgeBuilder editor, String name)
     {
@@ -1518,6 +1521,8 @@ public class Map implements Screen
         if(!setDefaultsOnly)
         {
             this.name = mapData.name;
+//            gridCellTypes.clear();
+//            gridCellTypes.addAll(mapData.cellTypes);
 
             // map properties
             if(mapData.props != null)
@@ -2502,5 +2507,44 @@ public class Map implements Screen
                     mapObject.setID(getAndIncrementId());
             }
         }
+    }
+
+    public int getCellTypeID(String dustType)
+    {
+        if(dustType == null)
+            return 0;
+        for(int i = 0; i < gridCellTypes.size(); i ++)
+        {
+            if(gridCellTypes.get(i).equals(dustType))
+                return i + 1;
+        }
+        return 0;
+    }
+
+    public ArrayList<String> updateGridCellTypes()
+    {
+        gridCellTypes.clear();
+
+        for(int i = 0; i < layers.size; i ++)
+        {
+            Layer layer = layers.get(i);
+            if(layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                if(objectLayer.spriteGrid != null)
+                {
+                    for(int k = 0; k < objectLayer.spriteGrid.grid.size; k ++)
+                    {
+                        SpriteGrid.SpriteCell cell = objectLayer.spriteGrid.grid.get(k);
+                        if(cell.dustType != null && !gridCellTypes.contains(cell.dustType))
+                        {
+                            gridCellTypes.add(cell.dustType);
+                        }
+                    }
+                }
+            }
+        }
+
+        return gridCellTypes;
     }
 }

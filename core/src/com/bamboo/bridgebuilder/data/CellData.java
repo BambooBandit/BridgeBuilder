@@ -6,13 +6,14 @@ import com.bamboo.bridgebuilder.map.SpriteGrid;
 public class CellData
 {
     public static int defaultCValue;
-    public String t; // dust type
+    public int t; // dust type
     public int c; // color, rgb
+    public int skip; // skip
     public CellData(){}
     public CellData(SpriteGrid.SpriteCell spriteCell)
     {
-        this.t = spriteCell.dustType;
-        if(this.t == null)
+        this.t = spriteCell.spriteGrid.objectLayer.map.getCellTypeID(spriteCell.dustType);
+        if(this.t == 0)
             this.c = 0;
         else
         {

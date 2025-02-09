@@ -16,6 +16,7 @@ public class MapData
     public ArrayList<PropertyData> lProps;
     public ArrayList<PropertyData> props;
     public ArrayList<GroupMapPolygonData> groups;
+    public ArrayList<String> cellTypes;
     public long idCounter;
 
     public MapData(){}
@@ -38,9 +39,7 @@ public class MapData
             this.props = new ArrayList<>();
 
         OpaqueColorPropertyField backgroundColor = Utils.getLockedOpaqueColorField("Background", map.propertyMenu.mapPropertyPanel.lockedProperties);
-        System.out.println("sheeiiit " + backgroundColor.getR() + ", " + backgroundColor.getG() +", " +  backgroundColor.getB());
         CellData.defaultCValue = Color.rgb888(backgroundColor.getR(), backgroundColor.getG(), backgroundColor.getB());
-        System.out.println(CellData.defaultCValue);
 
         for(int i = 0; i < map.propertyMenu.mapPropertyPanel.lockedProperties.size; i ++)
         {
@@ -70,6 +69,7 @@ public class MapData
         }
         this.sheets = new ArrayList<>(4);
 
+        cellTypes = map.updateGridCellTypes();
         this.layers = new ArrayList<>();
         for(int i = 0; i < map.layers.size; i ++)
         {
