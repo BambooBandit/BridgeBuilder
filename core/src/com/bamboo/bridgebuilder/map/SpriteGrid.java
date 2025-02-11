@@ -74,7 +74,7 @@ public class SpriteGrid
             if(spriteCell.dustType != null)
             {
                 Vector3 project = Utils.project(objectLayer.map.camera, x + .5f - objectLayer.map.cameraX, y + .5f - objectLayer.map.cameraY);
-                Utils.centerPrint(objectLayer.map.editor.batch, spriteCell.dustType, project.x, project.y);
+                Utils.centerPrint(objectLayer.map.editor.batch, spriteCell.footprint == 1 ? spriteCell.dustType + "/f" : spriteCell.dustType, project.x, project.y);
             }
         }
 
@@ -88,6 +88,7 @@ public class SpriteGrid
         {
             SpriteCell cell = this.grid.get(i);
             cell.dustType = null;
+            cell.footprint = 0;
             cell.dustIndex = -1;
             cell.r = 0;
             cell.g = 0;
@@ -188,6 +189,7 @@ public class SpriteGrid
         Rectangle polygonRectangle = mapPolygon.polygon.getBoundingRectangle();
 
         boolean dT = false;
+        boolean fp = false;
 
         FieldFieldPropertyValuePropertyField property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(mapPolygon.properties, "dustType");
         String comparedDustType = null;
@@ -196,6 +198,9 @@ public class SpriteGrid
             comparedDustType = property.value.getText();
             dT = true;
         }
+        property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(mapPolygon.properties, "footprint");
+        if(property != null)
+            fp = true;
 
         float shiftSize = 0f;
         int rectX = (int) ((int) Math.floor(polygonRectangle.x) - 1 - shiftSize);
@@ -211,7 +216,7 @@ public class SpriteGrid
                 if(cell == null)
                     continue;
 
-                if(dT)
+                if(dT || fp)
                 {
                     if (!doesDustTypeHavePriority(cell.dustType, cell.dustIndex, comparedDustType, index))
                         continue;
@@ -230,7 +235,7 @@ public class SpriteGrid
                 polygon1.setVertices(rectangle);
                 FloatArray triangles = Utils.triangleFan(mapPolygon.polygon.getTransformedVertices());
 
-                if(dT)
+                if(dT || fp)
                 {
                     boolean intersects = false;
 
@@ -255,7 +260,11 @@ public class SpriteGrid
                     {
                         cell.dustIndex = index;
                         if(cell.a > 0)
-                            cell.dustType = comparedDustType;
+                        {
+                            if(dT)
+                                cell.dustType = comparedDustType;
+                            cell.footprint = fp ? 1 : 0;
+                        }
                     }
                 }
             }
@@ -272,6 +281,7 @@ public class SpriteGrid
         Rectangle polygonRectangle = mapSprite.polygon.getBoundingRectangle();
 
         boolean dT = false;
+        boolean fp = false;
 
         FieldFieldPropertyValuePropertyField property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(mapSprite, "dustType");
         String comparedDustType = null;
@@ -282,6 +292,11 @@ public class SpriteGrid
             comparedDustType = property.value.getText();
             dT = true;
         }
+        property = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(mapSprite, "footprint");
+        if(property != null && mapSprite.layer != null && !Utils.containsProperty(mapSprite.layer.properties, "ignoreFootprint") && alpha > .2f)
+            fp = true;
+        else
+            fp = false;
 
         float shiftSize = 0f;
         int rectX = (int) ((int) Math.floor(polygonRectangle.x) - 1 - shiftSize);
@@ -317,11 +332,15 @@ public class SpriteGrid
                 polygon2.setVertices(mapSprite.polygon.getTransformedVertices());
 //                FloatArray triangles = Utils.triangleFan(mapSprite.polygon.getTransformedVertices());
 
-                if(dT && Intersector.overlapConvexPolygons(polygon1, polygon2))
+                if((dT || fp) && Intersector.overlapConvexPolygons(polygon1, polygon2))
                 {
                     cell.dustIndex = index;
-                    if(cell.a > 0)
-                        cell.dustType = comparedDustType;
+                    if (cell.a > 0)
+                    {
+                        if(dT)
+                            cell.dustType = comparedDustType;
+                        cell.footprint = fp ? 1 : 0;
+                    }
                 }
             }
         }
@@ -422,7 +441,10 @@ public class SpriteGrid
             cell.b = rgba8888ToColor.b;
             cell.a = rgba8888ToColor.a;
             if(cell.a == 0)
+            {
                 cell.dustType = null;
+                cell.footprint = 0;
+            }
             cell.spriteGrid = this;
         }
 
@@ -468,6 +490,7 @@ public class SpriteGrid
         public int dustIndex = -1;
         public String dustType = null;
         public float r, g, b, a;
+        public int footprint;
         public SpriteGrid spriteGrid;
     }
 
@@ -497,10 +520,11 @@ public class SpriteGrid
             case "gravel": return 2;
             case "stone": return 3;
             case "grass": return 4;
-            case "stick": return 5;
-            case "leaves": return 6;
-            case "wood": return 7;
-            case "puddle": return 8;
+            case "snow": return 5;
+            case "stick": return 6;
+            case "leaves": return 7;
+            case "wood": return 8;
+            case "puddle": return 9;
             default: return -1;
         }
     }

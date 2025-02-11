@@ -40,7 +40,7 @@ public class ObjectLayerData extends LayerData
             for(int i = 0; i < grid.size(); i ++)
             {
                 CellData cell = grid.get(i);
-                if(cell.skip == 0 && cell.t == 0 && cell.c == 0)
+                if(cell.skip == 0 && cell.t == 0 && cell.c == 0 && cell.f == 0)
                 {
                     if(lastCell == null)
                         lastCell = cell;
