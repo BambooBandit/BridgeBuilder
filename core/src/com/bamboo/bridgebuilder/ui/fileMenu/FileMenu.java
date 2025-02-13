@@ -345,11 +345,16 @@ public class FileMenu extends Group
             return;
         }
         boolean depthSelected = editor.fileMenu.toolPane.depth.selected;
+        boolean parallaxSelected = editor.fileMenu.toolPane.parallax.selected;
         if(depthSelected)
             editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.depth);
+        if(parallaxSelected)
+            editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.parallax);
         MapData mapData = new MapData(map, false);
         if(depthSelected)
             editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.depth);
+        if(parallaxSelected)
+            editor.fileMenu.toolPane.selectTool(editor.fileMenu.toolPane.parallax);
 
         Json json = createJson();
 

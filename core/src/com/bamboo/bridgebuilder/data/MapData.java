@@ -17,6 +17,7 @@ public class MapData
     public ArrayList<PropertyData> props;
     public ArrayList<GroupMapPolygonData> groups;
     public ArrayList<String> cellTypes;
+    public boolean footstepHeavy;
     public long idCounter;
 
     public MapData(){}
@@ -40,6 +41,7 @@ public class MapData
 
         OpaqueColorPropertyField backgroundColor = Utils.getLockedOpaqueColorField("Background", map.propertyMenu.mapPropertyPanel.lockedProperties);
         CellData.defaultCValue = Color.rgb888(backgroundColor.getR(), backgroundColor.getG(), backgroundColor.getB());
+        CellData.defaultColorValue = new Color(backgroundColor.getR(), backgroundColor.getG(), backgroundColor.getB(), 1);
 
         for(int i = 0; i < map.propertyMenu.mapPropertyPanel.lockedProperties.size; i ++)
         {
@@ -71,13 +73,41 @@ public class MapData
 
         cellTypes = map.updateGridCellTypes();
         this.layers = new ArrayList<>();
+        int footstepCount = 0;
+        int cellCount = 0;
+        for(int i = 0; i < map.layers.size; i ++)
+        {
+            Layer layer = map.layers.get(i);
+            if(layer instanceof ObjectLayer)
+            {
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                if(objectLayer.spriteGrid != null)
+                {
+                    for(int k = 0; k < objectLayer.spriteGrid.grid.size; k ++)
+                    {
+                        SpriteGrid.SpriteCell cell = objectLayer.spriteGrid.grid.get(k);
+                        if(cell.dustType != null)
+                        {
+                            cellCount ++;
+                            if(cell.footprint > 0)
+                                footstepCount ++;
+                        }
+                    }
+
+                }
+            }
+            if(footstepCount > cellCount / 2)
+                this.footstepHeavy = true;
+            System.out.println(this.footstepHeavy + ", " + footstepCount + ", " + (cellCount / 2));
+        }
+
         for(int i = 0; i < map.layers.size; i ++)
         {
             Layer layer = map.layers.get(i);
             if(layer instanceof SpriteLayer)
                 this.layers.add(new SpriteLayerData((SpriteLayer) layer));
             else if(layer instanceof ObjectLayer)
-                this.layers.add(new ObjectLayerData((ObjectLayer) layer));
+                this.layers.add(new ObjectLayerData((ObjectLayer) layer, this));
         }
         FieldFieldPropertyValuePropertyField sky = (FieldFieldPropertyValuePropertyField) Utils.getPropertyField(map.propertyMenu.mapPropertyPanel.properties, "sky");
         if(sky != null)

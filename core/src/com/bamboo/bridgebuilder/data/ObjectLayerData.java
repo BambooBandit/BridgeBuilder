@@ -12,7 +12,7 @@ public class ObjectLayerData extends LayerData
     public ArrayList<MapObjectData> children;
     public ArrayList<CellData> grid;
     public ObjectLayerData(){}
-    public ObjectLayerData(ObjectLayer layer)
+    public ObjectLayerData(ObjectLayer layer, MapData mapData)
     {
         super(layer);
         if(layer.children.size > 0)
@@ -34,13 +34,13 @@ public class ObjectLayerData extends LayerData
 
 
             for(int i = 0; i < objectLayer.spriteGrid.grid.size; i ++)
-                this.grid.add(new CellData(objectLayer.spriteGrid.grid.get(i)));
+                this.grid.add(new CellData(objectLayer.spriteGrid.grid.get(i), mapData));
 
             CellData lastCell = null;
             for(int i = 0; i < grid.size(); i ++)
             {
                 CellData cell = grid.get(i);
-                if(cell.skip == 0 && cell.t == 0 && cell.c == 0 && cell.f == 0)
+                if(cell.skip == 0 && cell.t == -1 && cell.c == 0 && ((cell.f == 0 && !mapData.footstepHeavy) || (cell.f == 1 && mapData.footstepHeavy)))
                 {
                     if(lastCell == null)
                         lastCell = cell;

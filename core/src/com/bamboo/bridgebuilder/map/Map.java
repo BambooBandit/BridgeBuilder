@@ -718,7 +718,7 @@ public class Map implements Screen
 
         if(this.selectedLayer == null)
             return;
-        if(editor.fileMenu.toolPane.parallax.selected)
+        if(editor.fileMenu.toolPane.parallax.selected && !editor.fileMenu.toolPane.spriteGridColors.selected)
         {
             this.camera.zoom = this.zoom;
             this.camera.update();
@@ -1021,7 +1021,7 @@ public class Map implements Screen
         }
         if(!renderedRayhandler)
         {
-            if(editor.fileMenu.toolPane.parallax.selected && this.layers.size > 0)
+            if(editor.fileMenu.toolPane.parallax.selected && this.layers.size > 0 && !editor.fileMenu.toolPane.spriteGridColors.selected)
             {
                 this.camera.zoom = this.zoom;
                 this.camera.update();
@@ -2058,7 +2058,7 @@ public class Map implements Screen
             else if(layer instanceof SpriteLayer)
             {
                 SpriteLayer spriteLayer = (SpriteLayer) layer;
-                if(currentGridLayer != null && Utils.containsProperty(spriteLayer.properties, "ground") && spriteLayer.z == 0)
+                if(currentGridLayer != null && Utils.containsProperty(spriteLayer.properties, "ground") && spriteLayer.z == currentGridLayer.z)
                 {
                     currentGridLayer.spriteGrid.spriteLayers.add(spriteLayer);
                 }
@@ -2512,13 +2512,13 @@ public class Map implements Screen
     public int getCellTypeID(String dustType)
     {
         if(dustType == null)
-            return 0;
+            return -1;
         for(int i = 0; i < gridCellTypes.size(); i ++)
         {
             if(gridCellTypes.get(i).equals(dustType))
-                return i + 1;
+                return i;
         }
-        return 0;
+        return -1;
     }
 
     public ArrayList<String> updateGridCellTypes()

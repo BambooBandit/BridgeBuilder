@@ -228,7 +228,14 @@ public class ToolPane extends Group
                 if(selectedTool == this.depth && this.editor.activeMap != null)
                     this.editor.activeMap.colorizeDepth();
                 else if(selectedTool == this.spriteGridColors && this.editor.activeMap != null)
+                {
+                    boolean parallaxed = parallax.selected;
+                    if(parallaxed)
+                        selectTool(parallax);
                     this.editor.activeMap.updateLayerSpriteGrids();
+                    if(parallaxed)
+                        selectTool(parallax);
+                }
                 else if(selectedTool == this.fence)
                     this.random.select();
                 selectedTool.select();

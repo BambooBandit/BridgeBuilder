@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -73,8 +72,8 @@ public class SpriteGrid
             SpriteCell spriteCell = this.grid.get(i);
             if(spriteCell.dustType != null)
             {
-                Vector3 project = Utils.project(objectLayer.map.camera, x + .5f - objectLayer.map.cameraX, y + .5f - objectLayer.map.cameraY);
-                Utils.centerPrint(objectLayer.map.editor.batch, spriteCell.footprint == 1 ? spriteCell.dustType + "/f" : spriteCell.dustType, project.x, project.y);
+//                Vector3 project = Utils.project(objectLayer.map.camera, x + .5f - objectLayer.map.cameraX, y + .5f - objectLayer.map.cameraY);
+//                Utils.centerPrint(objectLayer.map.editor.batch, spriteCell.footprint == 1 ? spriteCell.dustType + "/f" : spriteCell.dustType, project.x, project.y);
             }
         }
 
@@ -100,8 +99,10 @@ public class SpriteGrid
         updateColorGrid();
 
         int index = 0;
+        System.out.println("eek");
         for(int k = 0; k < spriteLayers.size; k ++)
         {
+            System.out.println(spriteLayers.get(k).layerField.layerName.getText() + " ?g");
             for (int i = 0; i < spriteLayers.get(k).children.size; i++)
             {
                 MapSprite mapSprite = spriteLayers.get(k).children.get(i);
@@ -277,6 +278,9 @@ public class SpriteGrid
         float oldPolygonX = mapSprite.polygon.getX();
         float oldPolygonY = mapSprite.polygon.getY();
 //        mapSprite.polygon.setPosition(oldPolygonX + mapSprite.map.cameraX, oldPolygonY + mapSprite.map.cameraY);
+
+        if(mapSprite.layer.floor > 0)
+            System.out.println(mapSprite.layer.layerField.layerName.getText());
 
         Rectangle polygonRectangle = mapSprite.polygon.getBoundingRectangle();
 

@@ -125,7 +125,7 @@ public abstract class Layer<T extends LayerChild>
     {
         if(1 == 1)
             return;
-        if(editor.fileMenu.toolPane.parallax.selected)
+        if(editor.fileMenu.toolPane.parallax.selected && !editor.fileMenu.toolPane.spriteGridColors.selected)
         {
             this.map.camera.zoom = this.map.zoom;
             this.map.camera.update();
@@ -145,7 +145,7 @@ public abstract class Layer<T extends LayerChild>
     {
         if(this.map.selectedLayer == null)
             return;
-        if(editor.fileMenu.toolPane.parallax.selected)
+        if(editor.fileMenu.toolPane.parallax.selected && !editor.fileMenu.toolPane.spriteGridColors.selected)
         {
             this.map.camera.zoom = this.map.zoom;
             this.map.camera.update();
