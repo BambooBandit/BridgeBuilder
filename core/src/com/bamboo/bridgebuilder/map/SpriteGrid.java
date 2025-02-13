@@ -99,10 +99,8 @@ public class SpriteGrid
         updateColorGrid();
 
         int index = 0;
-        System.out.println("eek");
         for(int k = 0; k < spriteLayers.size; k ++)
         {
-            System.out.println(spriteLayers.get(k).layerField.layerName.getText() + " ?g");
             for (int i = 0; i < spriteLayers.get(k).children.size; i++)
             {
                 MapSprite mapSprite = spriteLayers.get(k).children.get(i);
@@ -278,9 +276,6 @@ public class SpriteGrid
         float oldPolygonX = mapSprite.polygon.getX();
         float oldPolygonY = mapSprite.polygon.getY();
 //        mapSprite.polygon.setPosition(oldPolygonX + mapSprite.map.cameraX, oldPolygonY + mapSprite.map.cameraY);
-
-        if(mapSprite.layer.floor > 0)
-            System.out.println(mapSprite.layer.layerField.layerName.getText());
 
         Rectangle polygonRectangle = mapSprite.polygon.getBoundingRectangle();
 

@@ -98,7 +98,6 @@ public class MapData
             }
             if(footstepCount > cellCount / 2)
                 this.footstepHeavy = true;
-            System.out.println(this.footstepHeavy + ", " + footstepCount + ", " + (cellCount / 2));
         }
 
         for(int i = 0; i < map.layers.size; i ++)
