@@ -654,7 +654,17 @@ public class MapInput implements InputProcessor
             this.movePolygonVertice.update(dragCurrentPos.x, dragCurrentPos.y);
         }
         else if(this.rotateMapSprites != null)
-            this.rotateMapSprites.update((this.dragOriginPos.angle(dragCurrentPos) / map.camera.zoom) * 10);
+        {
+            float dx = dragCurrentPos.x - dragOriginPos.x;
+            float dy = dragCurrentPos.y - dragOriginPos.y;
+            float distance2 = dx * dx + dy * dy;
+
+            float angle = MathUtils.atan2(dy, dx) * MathUtils.radiansToDegrees;
+            if (distance2 < 1f)
+                angle *= distance2;
+
+            this.rotateMapSprites.update((angle / map.camera.zoom));
+        }
         else if(this.scaleMapSprites != null)
         {
             float amountUp = dragCurrentPos.y - this.dragOriginPos.y;
