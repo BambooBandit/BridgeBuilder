@@ -337,7 +337,7 @@ public class PropertyPresetDialog extends Window
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
-                AddProperty addProperty = new AddProperty(map, PropertyTools.NEWLIGHT, map.selectedLayer, map.selectedSprites, map.spriteMenu.selectedSpriteTools, map.selectedObjects);
+                AddProperty addProperty = new AddProperty(1, 1, 1, 1, 5, 25, map, PropertyTools.NEWLIGHT, map.selectedLayer, map.selectedSprites, map.spriteMenu.selectedSpriteTools, map.selectedObjects);
                 map.executeCommand(addProperty);
                 return false;
             }

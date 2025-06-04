@@ -22,8 +22,26 @@ public class AddProperty implements Command
     private Array<PropertyField> propertyFields; // If this has already been executed, and you had 3 MapObjects selected for example, this array would be 3 long, tracking those new property objects.
 
     private String property, value;
+    private float r = 1, g = 1, b = 1, a = 1, distance = 5;
+    private int rayAmount = 25;
 
     private Array<AddProperty> chainedAddPropertyCommands; // Used for adding multiple properties in one execution
+
+    public AddProperty(float r, float g, float b, float a, float distance, int rayAmount, Map map, PropertyTools tool, Layer selectedLayer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
+    {
+        this.map = map;
+        this.tool = tool;
+        this.selectedLayer = selectedLayer;
+        this.selectedSprites = new Array(selectedSprites);
+        this.selectedSpriteTools = new Array(selectedSpriteTools);
+        this.selectedMapObjects = new Array(selectedMapObjects);
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+        this.distance = distance;
+        this.rayAmount = rayAmount;
+    }
 
     public AddProperty(Map map, PropertyTools tool, Layer selectedLayer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
     {
@@ -55,12 +73,12 @@ public class AddProperty implements Command
             if (tool == PropertyTools.NEW)
             {
                 if(property == null)
-                    map.propertyMenu.newProperty(false, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObjects);
+                    map.propertyMenu.newProperty(selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObjects);
                 else
                     map.propertyMenu.newProperty(property, value, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObjects);
             }
             else
-                map.propertyMenu.newProperty(true, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObjects);
+                map.propertyMenu.newProperty(r, g, b, a, distance, rayAmount, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObjects);
 
             // Track the property fields
             if(selectedMapObjects.size > 0)

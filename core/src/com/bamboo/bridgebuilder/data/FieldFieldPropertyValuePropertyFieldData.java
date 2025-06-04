@@ -7,7 +7,7 @@ public class FieldFieldPropertyValuePropertyFieldData extends PropertyData
     public String p; // prop
     public String v; // val
     FieldFieldPropertyValuePropertyFieldData(){}
-    FieldFieldPropertyValuePropertyFieldData(FieldFieldPropertyValuePropertyField property)
+    public FieldFieldPropertyValuePropertyFieldData(FieldFieldPropertyValuePropertyField property)
     {
         super(property);
         this.p = property.getProperty();

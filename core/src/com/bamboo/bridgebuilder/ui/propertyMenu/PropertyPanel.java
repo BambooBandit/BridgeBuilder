@@ -70,38 +70,62 @@ public class PropertyPanel extends Group
         super.setSize(width, height);
     }
 
-    public void newProperty(boolean light, Layer selectedLayer, Array<MapSprite> selectedMapSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
+
+    public void newProperty(float r, float g, float b, float a, float distance, int rayAmount, Layer selectedLayer, Array<MapSprite> selectedMapSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
     {
         if(selectedMapObjects.size > 0)
         {
             for (int i = 0; i < selectedMapObjects.size; i++)
-                addPropertyToList(light, selectedMapObjects.get(i).properties);
+                addPropertyToList(r, g, b, a, distance, rayAmount, selectedMapObjects.get(i).properties);
         }
         else if(selectedSpriteTools.size > 0)
         {
             for (int i = 0; i < selectedSpriteTools.size; i++)
-                addPropertyToList(light, selectedSpriteTools.get(i).properties);
+                addPropertyToList(r, g, b, a, distance, rayAmount, selectedSpriteTools.get(i).properties);
         }
         else if(selectedMapSprites.size > 0)
         {
             for (int i = 0; i < selectedMapSprites.size; i++)
-                addPropertyToList(light, selectedMapSprites.get(i).instanceSpecificProperties);
+                addPropertyToList(r, g, b, a, distance, rayAmount, selectedMapSprites.get(i).instanceSpecificProperties);
         }
         else if(selectedLayer != null)
-            addPropertyToList(light, selectedLayer.properties);
+            addPropertyToList(r, g, b, a, distance, rayAmount, selectedLayer.properties);
         else
-            addPropertyToList(light, this.map.propertyMenu.mapPropertyPanel.properties);
+            addPropertyToList(r, g, b, a, distance, rayAmount, this.map.propertyMenu.mapPropertyPanel.properties);
     }
 
-    private void addPropertyToList(boolean light, Array<PropertyField> properties)
+    public void newProperty(Layer selectedLayer, Array<MapSprite> selectedMapSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
     {
-        if(light)
+        if(selectedMapObjects.size > 0)
         {
-            if(Utils.getLightField(properties) == null) // An object can only have maximum one light.
-                properties.add(new LightPropertyField(this.skin, menu, properties, true, 1, 1, 1, 1, 5, 25));
+            for (int i = 0; i < selectedMapObjects.size; i++)
+                addPropertyToList(selectedMapObjects.get(i).properties);
         }
+        else if(selectedSpriteTools.size > 0)
+        {
+            for (int i = 0; i < selectedSpriteTools.size; i++)
+                addPropertyToList(selectedSpriteTools.get(i).properties);
+        }
+        else if(selectedMapSprites.size > 0)
+        {
+            for (int i = 0; i < selectedMapSprites.size; i++)
+                addPropertyToList(selectedMapSprites.get(i).instanceSpecificProperties);
+        }
+        else if(selectedLayer != null)
+            addPropertyToList(selectedLayer.properties);
         else
-            properties.add(new FieldFieldPropertyValuePropertyField("Property", "Value", this.skin, menu, properties, true));
+            addPropertyToList(this.map.propertyMenu.mapPropertyPanel.properties);
+    }
+
+    private void addPropertyToList(float r, float g, float b, float a, float distance, int rayAmount, Array<PropertyField> properties)
+    {
+        if(Utils.getLightField(properties) == null) // An object can only have maximum one light.
+            properties.add(new LightPropertyField(this.skin, menu, properties, true, r, g, b, a, distance, rayAmount));
+    }
+
+    private void addPropertyToList(Array<PropertyField> properties)
+    {
+        properties.add(new FieldFieldPropertyValuePropertyField("Property", "Value", this.skin, menu, properties, true));
     }
 
     public void newProperty(String property, String value, Layer layer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)

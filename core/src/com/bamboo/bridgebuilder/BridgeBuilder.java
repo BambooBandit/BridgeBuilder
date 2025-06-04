@@ -11,6 +11,7 @@ import com.bamboo.bridgebuilder.commands.Command;
 import com.bamboo.bridgebuilder.commands.CreateLayer;
 import com.bamboo.bridgebuilder.commands.MoveMapSpriteIndex;
 import com.bamboo.bridgebuilder.commands.SelectLayer;
+import com.bamboo.bridgebuilder.data.PropertyData;
 import com.bamboo.bridgebuilder.map.*;
 import com.bamboo.bridgebuilder.ui.BBShapeRenderer;
 import com.bamboo.bridgebuilder.ui.fileMenu.FileMenu;
@@ -49,6 +50,7 @@ public class BridgeBuilder extends Game
 	private boolean crashed = false;
 
 	public Array<LayerChild> copiedItems = new Array<>();
+	public Array<PropertyData> copiedProperties = new Array<>();
 	public static float copyColorR = -1;
 	public static float copyColorG = -1;
 	public static float copyColorB = -1;

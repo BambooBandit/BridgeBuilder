@@ -28,7 +28,7 @@ public class PropertyMenu extends Group
     public LayerPropertyPanel layerPropertyPanel;
     public RemoveablePropertyPanel spritePropertyPanel;
     public Label propertyTypeLabel;
-    private PropertyPanel propertyPanel; // Custom properties
+    public PropertyPanel propertyPanel; // Custom properties
     public PropertyToolPane toolPane;
 
     private Stack stack;
@@ -99,9 +99,15 @@ public class PropertyMenu extends Group
         super.setSize(width, height);
     }
 
-    public void newProperty(boolean light, Layer selectedLayer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObject)
+    public void newProperty(float r, float g, float b, float a, float distance, int rayAmount, Layer selectedLayer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObject)
     {
-        this.propertyPanel.newProperty(light, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObject);
+        this.propertyPanel.newProperty(r, g, b, a, distance, rayAmount, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObject);
+        rebuild();
+    }
+
+    public void newProperty(Layer selectedLayer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObject)
+    {
+        this.propertyPanel.newProperty(selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObject);
         rebuild();
     }
 

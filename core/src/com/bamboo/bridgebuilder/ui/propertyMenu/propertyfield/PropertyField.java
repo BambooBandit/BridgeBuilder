@@ -11,7 +11,7 @@ public abstract class PropertyField extends Group
 {
     protected Table table;
     protected TextButton remove; // Null if removeable is false
-    protected boolean removeable;
+    public boolean removeable;
     protected PropertyMenu menu;
     protected Array<PropertyField> properties; // properties of the object holding this property field. Null if locked properties
 

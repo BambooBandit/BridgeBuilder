@@ -1,5 +1,6 @@
 package com.bamboo.bridgebuilder.ui.propertyMenu;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -8,10 +9,9 @@ import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.AddProperty;
+import com.bamboo.bridgebuilder.data.*;
 import com.bamboo.bridgebuilder.map.*;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.*;
 import com.bamboo.bridgebuilder.ui.spriteMenu.SpriteTool;
 
 import static com.bamboo.bridgebuilder.BridgeBuilder.toolHeight;
@@ -28,6 +28,8 @@ public class PropertyToolPane extends Group
     private PropertyPresetDialog propertyPresetDialog;
     private TextButton more;
     private TextButton apply;
+    private TextButton copy;
+    private TextButton paste;
 
     public PropertyMenu menu;
 
@@ -58,11 +60,17 @@ public class PropertyToolPane extends Group
         });
 
         this.apply = new TextButton("Apply", skin);
+        this.copy = new TextButton("Copy", skin);
+        this.paste = new TextButton("Paste", skin);
         setApplyListener();
+        setCopyListener();
+        setPasteListener();
         this.toolTable.left();
         this.toolTable.add(this.newProperty).padRight(1);
         this.toolTable.add(this.more).padRight(1);
-        this.toolTable.add(this.apply);
+        this.toolTable.add(this.apply).padRight(1);
+        this.toolTable.add(this.copy).padRight(1);
+        this.toolTable.add(this.paste);
 
         this.editor = editor;
         this.skin = skin;
@@ -86,6 +94,8 @@ public class PropertyToolPane extends Group
         this.toolTable.getCell(this.newProperty).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.more).size(toolHeight * 2, toolHeight);
         this.toolTable.getCell(this.apply).size(toolHeight * 2, toolHeight);
+        this.toolTable.getCell(this.copy).size(toolHeight * 2, toolHeight);
+        this.toolTable.getCell(this.paste).size(toolHeight * 2, toolHeight);
         this.toolTable.invalidateHierarchy();
 
         this.pane.invalidateHierarchy();
@@ -103,6 +113,82 @@ public class PropertyToolPane extends Group
                 apply(menu.map);
             }
         });
+    }
+
+    public void setCopyListener()
+    {
+        this.copy.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                copyProperties(menu.map);
+            }
+        });
+    }
+
+    public void setPasteListener()
+    {
+        this.paste.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                pasteProperties(menu.map);
+            }
+        });
+    }
+
+    public static void copyProperties(Map map)
+    {
+        map.editor.copiedProperties.clear();
+        for(int i = 0; i < map.propertyMenu.propertyPanel.table.getChildren().size; i ++)
+        {
+            Actor actor = map.propertyMenu.propertyPanel.table.getChildren().get(i);
+            if(!(actor instanceof PropertyField))
+                continue;
+            PropertyField propertyField = (PropertyField) actor;
+            if(propertyField.removeable)
+            {
+                PropertyData propertyData = null;
+                if(propertyField instanceof ColorPropertyField)
+                    propertyData = new ColorPropertyFieldData((ColorPropertyField) propertyField);
+                else if(propertyField instanceof LightPropertyField)
+                    propertyData = new LightPropertyFieldData((LightPropertyField) propertyField);
+                else if(propertyField instanceof FieldFieldPropertyValuePropertyField)
+                    propertyData = new FieldFieldPropertyValuePropertyFieldData((FieldFieldPropertyValuePropertyField) propertyField);
+                else if(propertyField instanceof LabelFieldPropertyValuePropertyField)
+                    propertyData = new LabelFieldPropertyValuePropertyFieldData((LabelFieldPropertyValuePropertyField) propertyField);
+                if(propertyData != null)
+                    map.editor.copiedProperties.add(propertyData);
+            }
+        }
+    }
+
+    public static void pasteProperties(Map map)
+    {
+        AddProperty addProperty = null;
+        for(int i = 0; i < map.editor.copiedProperties.size; i ++)
+        {
+            PropertyData property = map.editor.copiedProperties.get(i);
+            AddProperty copiedProperty;
+            if(property instanceof LightPropertyFieldData)
+            {
+                LightPropertyFieldData lightPropertyFieldData = (LightPropertyFieldData) property;
+                copiedProperty = new AddProperty(lightPropertyFieldData.r, lightPropertyFieldData.g, lightPropertyFieldData.b, lightPropertyFieldData.a, lightPropertyFieldData.d, lightPropertyFieldData.ra, map, PropertyTools.NEW, map.selectedLayer, map.selectedSprites, map.spriteMenu.selectedSpriteTools, map.selectedObjects);
+            }
+            else
+            {
+                FieldFieldPropertyValuePropertyFieldData fieldFieldPropertyValuePropertyFieldData = (FieldFieldPropertyValuePropertyFieldData) property;
+                copiedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, fieldFieldPropertyValuePropertyFieldData.p, fieldFieldPropertyValuePropertyFieldData.v);
+            }
+            if(addProperty == null)
+                addProperty = copiedProperty;
+            else
+                addProperty.addAddPropertyCommandToChain(copiedProperty);
+        }
+        if(addProperty != null)
+            map.executeCommand(addProperty);
     }
 
     public static void apply(Map map)
