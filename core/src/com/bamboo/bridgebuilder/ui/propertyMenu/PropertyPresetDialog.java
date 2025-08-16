@@ -25,6 +25,8 @@ public class PropertyPresetDialog extends Window
     private Table newRayhandlerProperty;
     private Table newDisablePerspectiveProperty;
     private Table newGroundProperty;
+    private Table newShadowsProperty;
+    private Table newIgnoreDustTypeProperty;
     private Table newDustTypeProperty;
     private Table newCollisionSortProperty;
     private Table newCollisionSortBackProperty;
@@ -152,6 +154,8 @@ public class PropertyPresetDialog extends Window
                 }
                 this.presetTable.add(this.newDisablePerspectiveProperty).pad(5);
                 this.presetTable.add(this.newGroundProperty).pad(5);
+                this.presetTable.add(this.newShadowsProperty).pad(5);
+                this.presetTable.add(this.newIgnoreDustTypeProperty).pad(5);
             }
         }
         else
@@ -194,6 +198,8 @@ public class PropertyPresetDialog extends Window
         this.createRayhandler();
         this.createDisablePerspective();
         this.createGround();
+        this.createShadows();
+        this.createIgnoreDustType();
         this.createDustType();
         this.createCollisionSort();
         this.createCollisionSortBack();
@@ -748,6 +754,86 @@ public class PropertyPresetDialog extends Window
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
             {
                 AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "ground", "");
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
+    public void createShadows()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newShadowsProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newShadowsProperty.background(spriteDrawable);
+        this.newShadowsProperty.add(new Label("Shadows", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("shadows", "", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        this.newShadowsProperty.add(table);
+        this.newShadowsProperty.setTouchable(Touchable.enabled);
+        this.newShadowsProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newShadowsProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newShadowsProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "shadows", "");
+                map.executeCommand(addProperty);
+                return false;
+            }
+        });
+    }
+
+    public void createIgnoreDustType()
+    {
+        SpriteDrawable spriteDrawable;
+        Table table;
+        FieldFieldPropertyValuePropertyField fieldFieldPropertyValuePropertyField;
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        this.newIgnoreDustTypeProperty = new Table();
+        spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        this.newIgnoreDustTypeProperty.background(spriteDrawable);
+        this.newIgnoreDustTypeProperty.add(new Label("Ignore Dust Type", this.skin)).padTop(pad / 2).row();
+        table = new Table();
+        fieldFieldPropertyValuePropertyField = new FieldFieldPropertyValuePropertyField("ignoreDustType", "", this.skin, null, null, false);
+        fieldFieldPropertyValuePropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        fieldFieldPropertyValuePropertyField.clearListeners();
+        table.add(fieldFieldPropertyValuePropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        this.newIgnoreDustTypeProperty.add(table);
+        this.newIgnoreDustTypeProperty.setTouchable(Touchable.enabled);
+        this.newIgnoreDustTypeProperty.addListener(new InputListener(){
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newIgnoreDustTypeProperty.getBackground()).getSprite().setColor(Color.FOREST);
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, Actor fromActor)
+            {
+                ((SpriteDrawable) newIgnoreDustTypeProperty.getBackground()).getSprite().setColor(Color.DARK_GRAY);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button)
+            {
+                AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, "ignoreDustType", "");
                 map.executeCommand(addProperty);
                 return false;
             }
