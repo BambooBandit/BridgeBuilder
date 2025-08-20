@@ -85,6 +85,61 @@ public class MapPoint extends MapObject
     @Override
     public void draw()
     {
+        if(!map.editor.fileMenu.toolPane.filledPolygons.selected)
+            return;
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
+        map.editor.shapeRenderer.setColor(0f, 1f, 1f, .3f);
+
+        float x = this.point.getTransformedX() - map.cameraX;
+        float y = this.point.getTransformedY() - map.cameraY;
+        pointShape[0] = x + 0;
+        pointShape[1] = y + 0;
+        pointShape[2] = x - .1333f;
+        pointShape[3] = y + .2666f;
+        pointShape[4] = x - .0333f;
+        pointShape[5] = y + .3666f;
+        pointShape[6] = x + .0333f;
+        pointShape[7] = y + .3666f;
+        pointShape[8] = x + .1333f;
+        pointShape[9] = y + .2666f;
+        map.editor.shapeRenderer.polygon(pointShape);
+
+        PropertyField propertyField = Utils.getPropertyField(properties, "angle");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField angleProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float angle = (float) Math.toRadians(Float.parseFloat(angleProperty.getValue()));
+                drawAngle(angle);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
+
+        propertyField = Utils.getPropertyField(properties, "radius");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField radiusProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float radius = Float.parseFloat(radiusProperty.getValue());
+                drawRadius(radius);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void drawOutline()
+    {
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.CYAN);
 
@@ -117,11 +172,37 @@ public class MapPoint extends MapObject
                 return;
             }
         }
+
+        propertyField = Utils.getPropertyField(properties, "radius");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField radiusProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float radius = Float.parseFloat(radiusProperty.getValue());
+                drawRadius(radius);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
     }
 
     private void drawAngle(float angle)
     {
-        map.editor.shapeRenderer.line(x - map.cameraX, y - map.cameraY, (float) (x - map.cameraX + Math.cos(angle) * .4), (float) (y - map.cameraY + Math.sin(angle) * .4));
+        float x = this.point.getTransformedX() - map.cameraX;
+        float y = this.point.getTransformedY() - map.cameraY;
+        map.editor.shapeRenderer.line(x, y, (float) (x + Math.cos(angle) * .4), (float) (y + Math.sin(angle) * .4));
+    }
+
+    private void drawRadius(float radius)
+    {
+        float scale = this.attachedSprite == null ? 1 : this.attachedSprite.scale;
+        float x = this.point.getTransformedX() - map.cameraX;
+        float y = this.point.getTransformedY() - map.cameraY;
+        map.editor.shapeRenderer.circle(x, y, radius * scale, 18);
     }
 
     @Override
@@ -159,6 +240,21 @@ public class MapPoint extends MapObject
                 return;
             }
         }
+        propertyField = Utils.getPropertyField(properties, "radius");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField radiusProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float radius = Float.parseFloat(radiusProperty.getValue());
+                drawRadius(radius);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
 
         setPosition(getX() - xOffset, getY() - yOffset);
 
@@ -182,6 +278,37 @@ public class MapPoint extends MapObject
         pointShape[8] = x + .1333f;
         pointShape[9] = y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
+
+        PropertyField propertyField = Utils.getPropertyField(properties, "angle");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField angleProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float angle = (float) Math.toRadians(Float.parseFloat(angleProperty.getValue()));
+                drawAngle(angle);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
+        propertyField = Utils.getPropertyField(properties, "radius");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField radiusProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float radius = Float.parseFloat(radiusProperty.getValue());
+                drawRadius(radius);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
     }
 
     @Override
@@ -202,6 +329,37 @@ public class MapPoint extends MapObject
         pointShape[8] = x + .1333f;
         pointShape[9] = y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
+
+        PropertyField propertyField = Utils.getPropertyField(properties, "angle");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField angleProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float angle = (float) Math.toRadians(Float.parseFloat(angleProperty.getValue()));
+                drawAngle(angle);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
+        propertyField = Utils.getPropertyField(properties, "radius");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField radiusProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float radius = Float.parseFloat(radiusProperty.getValue());
+                drawRadius(radius);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
     }
 
     @Override
@@ -222,6 +380,37 @@ public class MapPoint extends MapObject
         pointShape[8] = x + .1333f;
         pointShape[9] = y + .2666f;
         map.editor.shapeRenderer.polygon(pointShape);
+
+        PropertyField propertyField = Utils.getPropertyField(properties, "angle");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField angleProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float angle = (float) Math.toRadians(Float.parseFloat(angleProperty.getValue()));
+                drawAngle(angle);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
+        propertyField = Utils.getPropertyField(properties, "radius");
+        if (propertyField != null)
+        {
+            FieldFieldPropertyValuePropertyField radiusProperty = (FieldFieldPropertyValuePropertyField) propertyField;
+            try
+            {
+                float radius = Float.parseFloat(radiusProperty.getValue());
+                drawRadius(radius);
+                return;
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
+        }
     }
 
     @Override

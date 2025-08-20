@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.bamboo.bridgebuilder.commands.AddProperty;
 import com.bamboo.bridgebuilder.map.*;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LightPropertyField;
 
@@ -139,8 +140,11 @@ public class PropertyPresetDialog extends Window
     private void registerPropertyPresets()
     {
         // Special preset with custom UI (Point Light)
-        addCustomPreset("Point Light", new SelectionType[]{SelectionType.POINT},
-                this::createLightPresetTable, this::createLightAction);
+        addCustomPreset(new SelectionType[]{SelectionType.POINT},
+                createLightPresetTable("Point Light"), this::createLightAction);
+
+        addCustomPreset(new SelectionType[]{SelectionType.OBJECTLAYER},
+                createColorPresetTable("Rayhandler Ambience Override"), createColorAction("Ambient Override"));
 
         // Simple property presets
 
@@ -260,13 +264,13 @@ public class PropertyPresetDialog extends Window
     // Convenience method for single property presets with custom action
     private void addSimplePreset(String title, SelectionType[] selectionTypes, Runnable action)
     {
-        presets.add(new PropertyPreset(title, selectionTypes, createPresetTable(title, new PropertyValue[0]), action));
+        presets.add(new PropertyPreset(selectionTypes, createPresetTable(title, new PropertyValue[0]), action));
     }
 
     // Method for presets with custom UI and action
-    private void addCustomPreset(String title, SelectionType[] selectionTypes, java.util.function.Supplier<Table> tableSupplier, Runnable action)
+    private void addCustomPreset(SelectionType[] selectionTypes, Table table, Runnable action)
     {
-        presets.add(new PropertyPreset(title, selectionTypes, tableSupplier.get(), action));
+        presets.add(new PropertyPreset(selectionTypes, table, action));
     }
 
     // Main method for adding multi-property presets
@@ -292,7 +296,7 @@ public class PropertyPresetDialog extends Window
             map.executeCommand(addProperty);
         };
 
-        presets.add(new PropertyPreset(title, selectionTypes, presetTable, action));
+        presets.add(new PropertyPreset(selectionTypes, presetTable, action));
     }
 
     private Table createPresetTable(String title, PropertyValue[] properties)
@@ -327,7 +331,7 @@ public class PropertyPresetDialog extends Window
         return presetTable;
     }
 
-    // Special action for light preset (maintains existing light functionality)
+    // Special action for light preset
     private void createLightAction()
     {
         AddProperty addProperty = new AddProperty(1, 1, 1, 1, 5, 25, map, PropertyTools.NEWLIGHT,
@@ -335,8 +339,8 @@ public class PropertyPresetDialog extends Window
         map.executeCommand(addProperty);
     }
 
-    // Special table creation for light preset (maintains existing light UI)
-    private Table createLightPresetTable()
+    // Special table creation for light preset
+    private Table createLightPresetTable(String title)
     {
         float pad = Gdx.graphics.getHeight() / 35;
 
@@ -344,7 +348,7 @@ public class PropertyPresetDialog extends Window
         SpriteDrawable spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
         spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
         presetTable.background(spriteDrawable);
-        presetTable.add(new Label("Point Light", this.skin)).padTop(pad / 2).row();
+        presetTable.add(new Label(title, this.skin)).padTop(pad / 2).row();
 
         Table fieldsTable = new Table();
         LightPropertyField lightPropertyField = new LightPropertyField(this.skin, null, null, false, 1, 1, 1, 1, 5, 25);
@@ -357,18 +361,53 @@ public class PropertyPresetDialog extends Window
         return presetTable;
     }
 
+    // Special action for color preset
+    private Runnable createColorAction(String property)
+    {
+        Runnable runnable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                AddProperty addProperty = new AddProperty(property, 1, 1, 1, 1, map, PropertyTools.NEWCOLOR,
+                        map.selectedLayer, map.selectedSprites, map.spriteMenu.selectedSpriteTools, map.selectedObjects);
+                map.executeCommand(addProperty);
+            }
+        };
+        return runnable;
+    }
+
+    private Table createColorPresetTable(String title)
+    {
+        float pad = Gdx.graphics.getHeight() / 35;
+
+        Table presetTable = new Table();
+        SpriteDrawable spriteDrawable = new SpriteDrawable(new Sprite(new Texture("ui/whitePixel.png")));
+        spriteDrawable.getSprite().setColor(Color.DARK_GRAY);
+        presetTable.background(spriteDrawable);
+        presetTable.add(new Label(title, this.skin)).padTop(pad / 2).row();
+
+        Table fieldsTable = new Table();
+        ColorPropertyField ColorPropertyField = new ColorPropertyField(this.skin, null, null, false, "Ambient Override", 1, 1, 1, 1);
+        ColorPropertyField.setSize(Gdx.graphics.getWidth() / 6f, toolHeight);
+        ColorPropertyField.clearListeners();
+        fieldsTable.add(ColorPropertyField).padLeft(pad).padRight(pad).padTop(pad / 2).padBottom(pad).row();
+        presetTable.add(fieldsTable);
+
+        presetTable.setTouchable(Touchable.enabled);
+        return presetTable;
+    }
+
     // ==== HELPER CLASSES ====
 
     private static class PropertyPreset
     {
-        private final String title;
         private final SelectionType[] selectionTypes;
         private final Table table;
         private final Runnable action;
 
-        public PropertyPreset(String title, SelectionType[] selectionTypes, Table table, Runnable action)
+        public PropertyPreset(SelectionType[] selectionTypes, Table table, Runnable action)
         {
-            this.title = title;
             this.selectionTypes = selectionTypes;
             this.table = table;
             this.action = action;
@@ -407,11 +446,6 @@ public class PropertyPresetDialog extends Window
         public Table getTable()
         {
             return table;
-        }
-
-        public String getTitle()
-        {
-            return title;
         }
     }
 

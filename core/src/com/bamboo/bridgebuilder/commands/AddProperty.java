@@ -43,6 +43,21 @@ public class AddProperty implements Command
         this.rayAmount = rayAmount;
     }
 
+    public AddProperty(String property, float r, float g, float b, float a, Map map, PropertyTools tool, Layer selectedLayer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
+    {
+        this.map = map;
+        this.tool = tool;
+        this.selectedLayer = selectedLayer;
+        this.selectedSprites = new Array(selectedSprites);
+        this.selectedSpriteTools = new Array(selectedSpriteTools);
+        this.selectedMapObjects = new Array(selectedMapObjects);
+        this.property = property;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+    }
+
     public AddProperty(Map map, PropertyTools tool, Layer selectedLayer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
     {
         this.map = map;
@@ -77,8 +92,10 @@ public class AddProperty implements Command
                 else
                     map.propertyMenu.newProperty(property, value, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObjects);
             }
-            else
+            else if(tool == PropertyTools.NEWLIGHT)
                 map.propertyMenu.newProperty(r, g, b, a, distance, rayAmount, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObjects);
+            else
+                map.propertyMenu.newProperty(property, r, g, b, a, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObjects);
 
             // Track the property fields
             if(selectedMapObjects.size > 0)

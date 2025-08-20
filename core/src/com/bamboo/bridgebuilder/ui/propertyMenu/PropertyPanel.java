@@ -10,6 +10,7 @@ import com.bamboo.bridgebuilder.map.Layer;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapObject;
 import com.bamboo.bridgebuilder.map.MapSprite;
+import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LightPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
@@ -94,6 +95,29 @@ public class PropertyPanel extends Group
             addPropertyToList(r, g, b, a, distance, rayAmount, this.map.propertyMenu.mapPropertyPanel.properties);
     }
 
+    public void newProperty(String property, float r, float g, float b, float a, Layer selectedLayer, Array<MapSprite> selectedMapSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
+    {
+        if(selectedMapObjects.size > 0)
+        {
+            for (int i = 0; i < selectedMapObjects.size; i++)
+                addPropertyToList(property, r, g, b, a, selectedMapObjects.get(i).properties);
+        }
+        else if(selectedSpriteTools.size > 0)
+        {
+            for (int i = 0; i < selectedSpriteTools.size; i++)
+                addPropertyToList(property, r, g, b, a, selectedSpriteTools.get(i).properties);
+        }
+        else if(selectedMapSprites.size > 0)
+        {
+            for (int i = 0; i < selectedMapSprites.size; i++)
+                addPropertyToList(property, r, g, b, a, selectedMapSprites.get(i).instanceSpecificProperties);
+        }
+        else if(selectedLayer != null)
+            addPropertyToList(property, r, g, b, a, selectedLayer.properties);
+        else
+            addPropertyToList(property, r, g, b, a, this.map.propertyMenu.mapPropertyPanel.properties);
+    }
+
     public void newProperty(Layer selectedLayer, Array<MapSprite> selectedMapSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects)
     {
         if(selectedMapObjects.size > 0)
@@ -121,6 +145,12 @@ public class PropertyPanel extends Group
     {
         if(Utils.getLightField(properties) == null) // An object can only have maximum one light.
             properties.add(new LightPropertyField(this.skin, menu, properties, true, r, g, b, a, distance, rayAmount));
+    }
+
+    private void addPropertyToList(String property, float r, float g, float b, float a, Array<PropertyField> properties)
+    {
+        if(Utils.getLightField(properties) == null) // An object can only have maximum one light.
+            properties.add(new ColorPropertyField(this.skin, menu, properties, true, property, r, g, b, a));
     }
 
     private void addPropertyToList(Array<PropertyField> properties)

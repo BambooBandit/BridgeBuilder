@@ -105,6 +105,12 @@ public class PropertyMenu extends Group
         rebuild();
     }
 
+    public void newProperty(String property, float r, float g, float b, float a, Layer selectedLayer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObject)
+    {
+        this.propertyPanel.newProperty(property, r, g, b, a, selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObject);
+        rebuild();
+    }
+
     public void newProperty(Layer selectedLayer, Array<MapSprite> selectedSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObject)
     {
         this.propertyPanel.newProperty(selectedLayer, selectedSprites, selectedSpriteTools, selectedMapObject);
