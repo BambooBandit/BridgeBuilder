@@ -87,11 +87,17 @@ public class SpriteMenu extends Group
 
     public void increaseTableSize(Cell cell, Table table, int amount)
     {
-        table.setSize(cell.getMaxWidth(), cell.getMaxHeight());
-
         SpriteTool spriteTool = table.findActor("spriteTool");
-        spriteTool.image.setSize(spriteTool.image.getWidth() - (spriteTool.image.getWidth() / (amount * 3f)), spriteTool.image.getHeight() - (spriteTool.image.getHeight() / (amount * 3f)));
-        spriteTool.setSize(spriteTool.image.getWidth(), spriteTool.image.getHeight());
+
+        spriteTool.width = spriteTool.width * (1 - 1f / (amount * 3f));
+        spriteTool.height = spriteTool.height * (1 - 1f / (amount * 3f));
+
+        if(!table.isVisible())
+            return;
+
+        table.setSize(cell.getMaxWidth(), cell.getMaxHeight());
+        spriteTool.image.setSize(spriteTool.width, spriteTool.height);
+        spriteTool.setSize(spriteTool.width, spriteTool.height);
 
         cell.grow();
 
@@ -219,5 +225,42 @@ public class SpriteMenu extends Group
                 return true;
         }
         return false;
+    }
+
+    public void setSearchFilter(String searchFilter)
+    {
+        for(int i = 0; i < spriteTable.getChildren().size; i++)
+        {
+            if(spriteTable.getChildren().get(i) instanceof Table)
+            {
+                Table cellTable = (Table) spriteTable.getChildren().get(i);
+
+                SpriteTool spriteTool = cellTable.findActor("spriteTool");
+                if (searchFilter.length() == 0 || spriteTool.name.toLowerCase().contains(searchFilter.toLowerCase()))
+                {
+                    // unhide
+                    cellTable.setVisible(true);
+
+                    spriteTool.image.setSize(spriteTool.width, spriteTool.height);
+                    spriteTool.setSize(spriteTool.width, spriteTool.height);
+
+                    spriteTable.getCell(cellTable).grow();
+                    cellTable.invalidateHierarchy();
+                    cellTable.pack();
+                }
+                else
+                {
+                    // hide
+                    cellTable.setVisible(false);
+
+                    spriteTool.image.setSize(0, 0);
+                    spriteTool.setSize(0, 0);
+
+                    spriteTable.getCell(cellTable).grow();
+                    cellTable.invalidateHierarchy();
+                    cellTable.pack();
+                }
+            }
+        }
     }
 }

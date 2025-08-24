@@ -2,11 +2,10 @@ package com.bamboo.bridgebuilder.ui.spriteMenu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.commands.SelectSpriteTool;
@@ -32,6 +31,7 @@ public class SpriteMenuToolPane extends Group
     public SpriteMenuTool darkMode;
     public SpriteMenuTool newSpritesheet;
     public SpriteMenuTool removeSpriteSheet;
+    public TextField searchTextField;
 
     public NewSpriteSheetDialog newSpriteSheetDialog;
 
@@ -47,12 +47,24 @@ public class SpriteMenuToolPane extends Group
         this.darkMode = new SpriteMenuTool(SpriteMenuTools.DARK_MODE, this, skin);
         this.newSpritesheet = new SpriteMenuTool(SpriteMenuTools.NEW_SPRITESHEET, this, skin);
         this.removeSpriteSheet = new SpriteMenuTool(SpriteMenuTools.REMOVE_SPRITESHEET, this, skin);
+        this.searchTextField = new TextField("", skin);
+        this.searchTextField.setMessageText("Search Filter");
         this.toolTable.left();
         this.toolTable.add(this.sprites).padRight(1);
         this.toolTable.add(this.lines).padRight(1);
         this.toolTable.add(this.darkMode).padRight(1);
         this.toolTable.add(this.newSpritesheet).padRight(1);
         this.toolTable.add(this.removeSpriteSheet).padRight(1);
+        this.toolTable.add(this.searchTextField).padRight(1);
+
+        this.searchTextField.addListener(new ChangeListener()
+        {
+            @Override
+            public void changed(ChangeEvent event, Actor actor)
+            {
+                map.spriteMenu.setSearchFilter(searchTextField.getText());
+            }
+        });
 
         this.sprites.select();
 
@@ -81,12 +93,14 @@ public class SpriteMenuToolPane extends Group
         this.darkMode.setSize(toolHeight, toolHeight);
         this.newSpritesheet.setSize(toolHeight, toolHeight);
         this.removeSpriteSheet.setSize(toolHeight, toolHeight);
+        this.searchTextField.setSize(toolHeight * 4, toolHeight);
 
         this.toolTable.getCell(this.sprites).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.lines).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.darkMode).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.newSpritesheet).size(toolHeight, toolHeight);
         this.toolTable.getCell(this.removeSpriteSheet).size(toolHeight, toolHeight);
+        this.toolTable.getCell(this.searchTextField).size(toolHeight * 4, toolHeight);
         this.toolTable.invalidateHierarchy();
 
         this.pane.invalidateHierarchy();

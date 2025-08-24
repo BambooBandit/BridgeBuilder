@@ -40,6 +40,8 @@ public class SpriteTool extends SpriteMenuTool
 
     public SpriteTool nextTool;
     public SpriteTool previousTool;
+    public float width;
+    public float height;
 
     public SpriteTool(SpriteMenuTools tool, SpriteSheet sheet, Image image, TextureRegion textureRegion, String name, int x, int y, SpriteMenuToolPane spriteMenuToolPane, Skin skin)
     {
@@ -60,6 +62,20 @@ public class SpriteTool extends SpriteMenuTool
         this.name = name;
         this.x = x;
         this.y = y;
+
+        float minimumArea = 3000;
+        float maximumArea = 4500;
+        float newWidth = image.getWidth() / 25;
+        float newHeight = image.getHeight() / 25;
+        float multiplier = 1;
+        if(newWidth * newHeight < minimumArea)
+            multiplier = (float) Math.sqrt(minimumArea / (newWidth * newHeight));
+        else if(newWidth * newHeight > maximumArea)
+            multiplier = (float) Math.sqrt(maximumArea/ (newWidth * newHeight));
+        newWidth *= multiplier;
+        newHeight *= multiplier;
+        width = newWidth;
+        height = newHeight;
 
         this.toolNameLabel = new Label(name, skin);
         this.toolNameLabel.setHeight(toolHeight);
