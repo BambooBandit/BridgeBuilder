@@ -76,8 +76,8 @@ public class CreateSpriteSheet implements Command
                 cellTable.add(spriteTool).grow();
                 this.spriteSheet.children.add(cellTable);
 
-                float minimumArea = 300;
-                float maximumArea = 1000;
+                float minimumArea = 3000;
+                float maximumArea = 4500;
                 float newWidth = spriteTool.image.getWidth() / 25;
                 float newHeight = spriteTool.image.getHeight() / 25;
                 float multiplier = 1;

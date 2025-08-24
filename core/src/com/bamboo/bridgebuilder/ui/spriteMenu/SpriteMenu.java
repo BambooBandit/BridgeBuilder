@@ -61,23 +61,13 @@ public class SpriteMenu extends Group
                 Table table = (Table) spriteScrollPane.getWidget();
                 for(int i = 0; i < table.getCells().size; i ++)
                 {
-                    if(table.getCells().get(i).getActor() == null)
+                    Cell cell = table.getCells().get(i);
+                    if(cell.getActor() == null)
                         continue;
-                    if(table.getCells().get(i).getActor() instanceof Table)
-                    {
-                        table.getCells().get(i).getActor().setSize(table.getCells().get(i).getMaxWidth(), table.getCells().get(i).getMaxHeight());
-
-                        SpriteTool spriteTool = ((Table) table.getCells().get(i).getActor()).findActor("spriteTool");
-                        spriteTool.image.setSize(spriteTool.image.getWidth() - (spriteTool.image.getWidth() / (amount * 3f)), spriteTool.image.getHeight() - (spriteTool.image.getHeight() / (amount * 3f)));
-                        spriteTool.setSize(spriteTool.image.getWidth(), spriteTool.image.getHeight());
-
-                        table.getCells().get(i).grow();
-
-                        table.invalidateHierarchy();
-                        table.pack();
-                    }
+                    if(cell.getActor() instanceof Table)
+                        increaseTableSize(cell, (Table) cell.getActor(), amount);
                     else
-                        table.getCells().get(i).getActor().setZIndex(200);
+                        cell.getActor().setZIndex(200);
                 }
                 return true;
             }
@@ -93,6 +83,20 @@ public class SpriteMenu extends Group
 
         this.addActor(this.stack);
         this.addActor(this.toolPane);
+    }
+
+    public void increaseTableSize(Cell cell, Table table, int amount)
+    {
+        table.setSize(cell.getMaxWidth(), cell.getMaxHeight());
+
+        SpriteTool spriteTool = table.findActor("spriteTool");
+        spriteTool.image.setSize(spriteTool.image.getWidth() - (spriteTool.image.getWidth() / (amount * 3f)), spriteTool.image.getHeight() - (spriteTool.image.getHeight() / (amount * 3f)));
+        spriteTool.setSize(spriteTool.image.getWidth(), spriteTool.image.getHeight());
+
+        cell.grow();
+
+        table.invalidateHierarchy();
+        table.pack();
     }
 
     public boolean createSpriteSheet(String name)
