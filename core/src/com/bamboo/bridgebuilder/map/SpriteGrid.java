@@ -407,7 +407,8 @@ public class SpriteGrid
                 SpriteLayer spriteLayer = (SpriteLayer) layer;
                 if(iterationFloor != currentFloor || Utils.getPropertyField(spriteLayer.properties, "ground") == null)
                     continue;
-                spriteLayer.draw();
+                if(Utils.getPropertyField(spriteLayer.properties, "shadows") == null)
+                    spriteLayer.draw();
             }
         }
         this.objectLayer.map.editor.batch.end();

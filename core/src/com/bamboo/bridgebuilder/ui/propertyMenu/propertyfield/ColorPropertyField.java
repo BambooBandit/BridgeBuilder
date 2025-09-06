@@ -12,6 +12,7 @@ import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.RemoveProperty;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
+import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyToolPane;
 
 public class ColorPropertyField extends OpaqueColorPropertyField
 {
@@ -714,6 +715,7 @@ public class ColorPropertyField extends OpaqueColorPropertyField
             public void changed(ChangeEvent event, Actor actor)
             {
                 setRGBA(BridgeBuilder.bridgeBuilder.copyColorR == -1 ? getR() : BridgeBuilder.bridgeBuilder.copyColorR, BridgeBuilder.bridgeBuilder.copyColorG == -1 ? getG() : BridgeBuilder.bridgeBuilder.copyColorG, BridgeBuilder.bridgeBuilder.copyColorB == -1 ? getB() : BridgeBuilder.bridgeBuilder.copyColorB, BridgeBuilder.bridgeBuilder.copyColorA == -1 ? getA() : BridgeBuilder.bridgeBuilder.copyColorA);
+                PropertyToolPane.apply(BridgeBuilder.bridgeBuilder.activeMap);
             }
         });
     }
