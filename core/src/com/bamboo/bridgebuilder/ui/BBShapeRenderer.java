@@ -144,6 +144,15 @@ public class BBShapeRenderer implements Disposable {
     /** Sets the projection matrix to be used for rendering. Usually this will be set to {@link Camera#combined}.
      * @param matrix */
     public void setProjectionMatrix (Matrix4 matrix) {
+        float[] va = this.projectionMatrix.val;
+        float[] vb = matrix.val;
+        boolean equal = true;
+        for (int i = 0; i < 16; i++) {
+            if (va[i] != vb[i]) equal = false;
+        }
+        if(equal)
+            return;
+
         projectionMatrix.set(matrix);
         matrixDirty = true;
     }
