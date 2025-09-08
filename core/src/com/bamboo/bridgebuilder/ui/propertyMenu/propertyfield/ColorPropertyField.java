@@ -714,7 +714,8 @@ public class ColorPropertyField extends OpaqueColorPropertyField
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
-                setRGBA(BridgeBuilder.bridgeBuilder.copyColorR == -1 ? getR() : BridgeBuilder.bridgeBuilder.copyColorR, BridgeBuilder.bridgeBuilder.copyColorG == -1 ? getG() : BridgeBuilder.bridgeBuilder.copyColorG, BridgeBuilder.bridgeBuilder.copyColorB == -1 ? getB() : BridgeBuilder.bridgeBuilder.copyColorB, BridgeBuilder.bridgeBuilder.copyColorA == -1 ? getA() : BridgeBuilder.bridgeBuilder.copyColorA);
+                for(int i = 0; i < BridgeBuilder.bridgeBuilder.activeMap.selectedSprites.size; i ++)
+                    BridgeBuilder.bridgeBuilder.activeMap.selectedSprites.get(i).setColor((BridgeBuilder.bridgeBuilder.copyColorR == -1 ? getR() : BridgeBuilder.bridgeBuilder.copyColorR), (BridgeBuilder.bridgeBuilder.copyColorG == -1 ? getG() : BridgeBuilder.bridgeBuilder.copyColorG), (BridgeBuilder.bridgeBuilder.copyColorB == -1 ? getB() : BridgeBuilder.bridgeBuilder.copyColorB), (BridgeBuilder.bridgeBuilder.copyColorA == -1 ? getA() : BridgeBuilder.bridgeBuilder.copyColorA));
                 PropertyToolPane.apply(BridgeBuilder.bridgeBuilder.activeMap);
             }
         });
