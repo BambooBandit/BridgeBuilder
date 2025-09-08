@@ -1542,6 +1542,9 @@ public class MapInput implements InputProcessor
             float projectX = trimX;
             float projectY = trimY;
 
+            if(Utils.isLayerGround(map.selectedLayer))
+                projectY -= (perspective.cameraHeight + Perspective.getExtraMatchingHeight(perspective.cameraHeight));
+
             Vector3 p = perspective.projectWorldToPerspective(projectX, projectY);
             projectX = p.x;
             projectY = p.y;
@@ -1554,10 +1557,15 @@ public class MapInput implements InputProcessor
             float perspectiveOffsetX = trimX - (projectX + (xScaleDisplacement));
             float perspectiveOffsetY = trimY - (projectY + (yScaleDisplacement));
 
-            previewSprite.setPosition(spriteX - perspectiveOffsetX, spriteY - perspectiveOffsetY);
+            if(!Utils.isLayerGround(map.selectedLayer))
+                previewSprite.setPosition(spriteX - perspectiveOffsetX, spriteY - perspectiveOffsetY);
+            else
+                previewSprite.setPosition(spriteX - map.cameraX, spriteY - map.cameraY);
+
             previewSprite.setOriginCenter();
             previewSprite.setOrigin(width / 2f, previewSprite.getOriginY());
-            previewSprite.setScale(perspectiveScale);
+            if(!Utils.isLayerGround(map.selectedLayer))
+                previewSprite.setScale(perspectiveScale);
         }
         return false;
     }

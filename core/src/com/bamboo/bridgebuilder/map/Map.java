@@ -740,10 +740,6 @@ public class Map implements Screen
         for(int i = 0; i < this.selectedSprites.size; i ++)
         {
             MapSprite selectedSprite = this.selectedSprites.get(i);
-            if(Utils.isLayerGround(selectedSprite.layer))
-                this.editor.shapeRenderer.setProjectionMatrix(selectedSprite.layer.perspective.perspectiveCamera.combined);
-            else
-                this.editor.shapeRenderer.setProjectionMatrix(selectedSprite.layer.perspective.camera.combined);
             if(selectedSprite == this.hoveredChild)
                 selectedSprite.drawSelectedHoveredOutline();
             else
@@ -954,6 +950,8 @@ public class Map implements Screen
             }
         }
 
+
+        editor.shapeRenderer.setProjectionMatrix(selectedLayer.perspective.camera.combined);
         this.editor.shapeRenderer.setColor(Color.CYAN);
         this.editor.shapeRenderer.rect(this.input.boxSelect.rectangle.x - cameraX, this.input.boxSelect.rectangle.y - cameraY, this.input.boxSelect.rectangle.width, this.input.boxSelect.rectangle.height);
     }

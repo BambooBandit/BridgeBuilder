@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorPolygon;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.DisableAttachedSpriteEditMode;
@@ -657,6 +658,10 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     @Override
     public void drawHoverOutline()
     {
+        if(Utils.isLayerGround(layer))
+            this.map.editor.shapeRenderer.setProjectionMatrix(layer.perspective.perspectiveCamera.combined);
+        else
+            this.map.editor.shapeRenderer.setProjectionMatrix(layer.perspective.camera.combined);
         polygon.setPosition(x - map.cameraX, y - map.cameraY);
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.ORANGE);
@@ -667,6 +672,10 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     @Override
     public void drawSelectedOutline()
     {
+        if(Utils.isLayerGround(layer))
+            this.map.editor.shapeRenderer.setProjectionMatrix(layer.perspective.perspectiveCamera.combined);
+        else
+            this.map.editor.shapeRenderer.setProjectionMatrix(layer.perspective.camera.combined);
         polygon.setPosition(x - map.cameraX, y - map.cameraY);
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.GREEN);
@@ -677,6 +686,10 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     @Override
     public void drawSelectedHoveredOutline()
     {
+        if(Utils.isLayerGround(layer))
+            this.map.editor.shapeRenderer.setProjectionMatrix(layer.perspective.perspectiveCamera.combined);
+        else
+            this.map.editor.shapeRenderer.setProjectionMatrix(layer.perspective.camera.combined);
         polygon.setPosition(x - map.cameraX, y - map.cameraY);
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.YELLOW);
@@ -688,8 +701,10 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     {
         if(selected && map.editor.fileMenu.toolPane.select.selected)
         {
+            float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight);
+
             rotationBox.setScale(map.zoom);
-            rotationBox.sprite.setPosition(rotationBox.x + (rotationBox.width * rotationBox.scale) - map.cameraX, rotationBox.y - map.cameraY);
+            rotationBox.sprite.setPosition(rotationBox.x + (rotationBox.width * rotationBox.scale) - map.cameraX, rotationBox.y - map.cameraY + cameraHeight);
             rotationBox.sprite.draw(map.editor.batch);
         }
     }
@@ -698,7 +713,8 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
         if(selected && map.editor.fileMenu.toolPane.select.selected)
         {
             moveBox.setScale(map.zoom);
-            moveBox.sprite.setPosition(moveBox.x - map.cameraX, moveBox.y - map.cameraY);
+            float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight);
+            moveBox.sprite.setPosition(moveBox.x - map.cameraX, moveBox.y - map.cameraY + cameraHeight);
             moveBox.sprite.draw(map.editor.batch);
 
             if(map.selectedSprites.size == 1)
@@ -708,10 +724,10 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
                 offsetMovebox3.setScale(map.zoom);
                 offsetMovebox4.setScale(map.zoom);
 
-                offsetMovebox1.sprite.setPosition(offsetMovebox1.x - map.cameraX, offsetMovebox1.y - map.cameraY);
-                offsetMovebox2.sprite.setPosition(offsetMovebox2.x - map.cameraX, offsetMovebox2.y - map.cameraY);
-                offsetMovebox3.sprite.setPosition(offsetMovebox3.x - map.cameraX, offsetMovebox3.y - map.cameraY);
-                offsetMovebox4.sprite.setPosition(offsetMovebox4.x - map.cameraX, offsetMovebox4.y - map.cameraY);
+                offsetMovebox1.sprite.setPosition(offsetMovebox1.x - map.cameraX, offsetMovebox1.y - map.cameraY + cameraHeight);
+                offsetMovebox2.sprite.setPosition(offsetMovebox2.x - map.cameraX, offsetMovebox2.y - map.cameraY + cameraHeight);
+                offsetMovebox3.sprite.setPosition(offsetMovebox3.x - map.cameraX, offsetMovebox3.y - map.cameraY + cameraHeight);
+                offsetMovebox4.sprite.setPosition(offsetMovebox4.x - map.cameraX, offsetMovebox4.y - map.cameraY + cameraHeight);
 
                 offsetMovebox1.sprite.draw(map.editor.batch);
                 offsetMovebox2.sprite.draw(map.editor.batch);
@@ -724,8 +740,9 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     {
         if(selected && map.editor.fileMenu.toolPane.select.selected)
         {
+            float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight);
             scaleBox.setScale(map.zoom);
-            scaleBox.sprite.setPosition(scaleBox.x + (2f * scaleBox.width * scaleBox.scale) - map.cameraX, scaleBox.y - map.cameraY);
+            scaleBox.sprite.setPosition(scaleBox.x + (2f * scaleBox.width * scaleBox.scale) - map.cameraX, scaleBox.y - map.cameraY + cameraHeight);
             scaleBox.sprite.draw(map.editor.batch);
         }
     }
@@ -978,18 +995,25 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     @Override
     public boolean isHoveredOver(float x, float y)
     {
-        return this.polygon.contains(x, y);
+        float cameraHeight = map.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(map.selectedLayer.perspective.cameraHeight);
+        return this.polygon.contains(x, y - cameraHeight);
     }
 
     @Override
     public boolean isHoveredOver(float[] vertices)
     {
-        return Intersector.overlapConvexPolygons(polygon.getTransformedVertices(), vertices, null);
+        float cameraHeight = map.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(map.selectedLayer.perspective.cameraHeight);
+
+        polygon.setPosition(x, y + cameraHeight);
+        boolean isHovered = Intersector.overlapConvexPolygons(polygon.getTransformedVertices(), vertices, null);
+        polygon.setPosition(x, y);
+        return isHovered;
     }
 
     public boolean isHoveredOver(float x, float y, float radius)
     {
-        return Utils.overlaps(polygon.getTransformedVertices(), x, y, radius);
+        float cameraHeight = map.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(map.selectedLayer.perspective.cameraHeight);
+        return Utils.overlaps(polygon.getTransformedVertices(), x, y - cameraHeight, radius);
     }
 
     public void updatePerspective()

@@ -293,4 +293,9 @@ public class Perspective
         float y = (unprojector.x * l_mat[Matrix4.M10] + unprojector.y * l_mat[Matrix4.M11] + l_mat[Matrix4.M13]) * l_w;
         return unprojector.set(x, y, 0);
     }
+
+    public static double getExtraMatchingHeight(float height)
+    {
+        return (((height / 8f) / ((Math.pow(0, 1.25f) * 24.9f) + 1)) / 1) * 2;
+    }
 }
