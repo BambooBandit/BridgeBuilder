@@ -701,7 +701,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     {
         if(selected && map.editor.fileMenu.toolPane.select.selected)
         {
-            float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
+            float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap != null && BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
 
             rotationBox.setScale(map.zoom);
             rotationBox.sprite.setPosition(rotationBox.x + (rotationBox.width * rotationBox.scale) - map.cameraX, rotationBox.y - map.cameraY + cameraHeight);
@@ -713,7 +713,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
         if(selected && map.editor.fileMenu.toolPane.select.selected)
         {
             moveBox.setScale(map.zoom);
-            float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
+            float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap != null && BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
             moveBox.sprite.setPosition(moveBox.x - map.cameraX, moveBox.y - map.cameraY + cameraHeight);
             moveBox.sprite.draw(map.editor.batch);
 
@@ -740,7 +740,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     {
         if(selected && map.editor.fileMenu.toolPane.select.selected)
         {
-            float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
+            float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap != null && BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
             scaleBox.setScale(map.zoom);
             scaleBox.sprite.setPosition(scaleBox.x + (2f * scaleBox.width * scaleBox.scale) - map.cameraX, scaleBox.y - map.cameraY + cameraHeight);
             scaleBox.sprite.draw(map.editor.batch);
@@ -995,14 +995,14 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
     @Override
     public boolean isHoveredOver(float x, float y)
     {
-        float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
+        float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap != null && BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
         return this.polygon.contains(x, y - cameraHeight);
     }
 
     @Override
     public boolean isHoveredOver(float[] vertices)
     {
-        float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
+        float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap != null && BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
 
         polygon.setPosition(x, y + cameraHeight);
         boolean isHovered = Intersector.overlapConvexPolygons(polygon.getTransformedVertices(), vertices, null);
@@ -1012,7 +1012,7 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
 
     public boolean isHoveredOver(float x, float y, float radius)
     {
-        float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
+        float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap != null && BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
         return Utils.overlaps(polygon.getTransformedVertices(), x, y - cameraHeight, radius);
     }
 

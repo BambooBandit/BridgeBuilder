@@ -9,7 +9,6 @@ public class DeleteMapObjects implements Command
     private Array<MapObject> selectedObjects;
     private Array<MapObject> deletedObjects;
     private Layer selectedLayer;
-    private boolean attached;
 
     public DeleteMapObjects(Array<MapObject> selectedMapObjects, Layer selectedLayer)
     {
@@ -17,18 +16,6 @@ public class DeleteMapObjects implements Command
             this.selectedObjects = new Array<>(selectedMapObjects);
         this.selectedLayer = selectedLayer;
         this.deletedObjects = new Array<>();
-        if(this.selectedLayer instanceof SpriteLayer)
-        {
-            attached = true;
-            for (int i = 0; i < selectedMapObjects.size; i++)
-            {
-                if (selectedMapObjects.get(i).layer != selectedLayer)
-                {
-                    attached = false;
-                    return;
-                }
-            }
-        }
     }
 
     @Override
@@ -37,7 +24,7 @@ public class DeleteMapObjects implements Command
         if(this.selectedLayer != null)
         {
             this.deletedObjects.clear();
-            if(attached)
+            if(this.selectedLayer instanceof SpriteLayer)
             {
                 if(this.selectedObjects.size > 0)
                 {
@@ -92,7 +79,7 @@ public class DeleteMapObjects implements Command
     {
         if(this.selectedLayer != null)
         {
-            if (attached)
+            if (this.selectedLayer instanceof SpriteLayer)
             {
                 for(int i = 0; i < this.selectedObjects.size; i ++)
                 {
