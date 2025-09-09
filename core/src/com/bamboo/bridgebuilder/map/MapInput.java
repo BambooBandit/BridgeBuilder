@@ -995,7 +995,12 @@ public class MapInput implements InputProcessor
 //                    drawFence = new DrawFence(this.map, (SpriteLayer) this.map.selectedLayer, project.x, project.y);
 //                }
 //                else
-                    drawFence = new DrawFence(this.map, (SpriteLayer) this.map.selectedLayer, x, y);
+
+                Perspective perspective = this.map.selectedLayer.perspective;
+                Vector3 projector = Utils.project(map.camera, x - map.cameraX, y - map.cameraY);
+                Vector3 unprojector = perspective.projectScreenToPerspective(projector.x, Gdx.graphics.getHeight() - projector.y);
+
+                drawFence = new DrawFence(this.map, (SpriteLayer) this.map.selectedLayer, unprojector.x, unprojector.y);
                 this.map.executeCommand(drawFence);
                 return true;
             }
