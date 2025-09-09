@@ -22,7 +22,7 @@ public abstract class ManipulatorBox
 
     public void setPosition(float x, float y)
     {
-        float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight);
+        float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
         this.x = x;
         this.y = y;
         this.sprite.setPosition(x, y + cameraHeight);
