@@ -1,12 +1,15 @@
 package com.bamboo.bridgebuilder.map;
 
 import box2dLight.PointLight;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.LongArray;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.bamboo.bridgebuilder.EditorPoint;
 import com.bamboo.bridgebuilder.Utils;
+import com.bamboo.bridgebuilder.commands.SelectLayerChildren;
 import com.bamboo.bridgebuilder.ui.BBShapeRenderer;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.FieldFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LightPropertyField;
@@ -529,5 +532,48 @@ public class MapPoint extends MapObject
             return;
         this.light.remove();
         this.light = null;
+    }
+
+    @Override
+    public void doubleClick()
+    {
+        if(toBranchPoints == null && fromBranchPoints == null)
+            return;
+        if((toBranchPoints == null || toBranchPoints.size == 0) && (fromBranchPoints == null || fromBranchPoints.size == 0))
+            return;
+        Gdx.app.postRunnable(()->
+        {
+            Array<LayerChild> layerChildren = new Array<>();
+            Array<MapPoint> stack = new Array<>();
+            ObjectSet<MapPoint> visited = new ObjectSet<>();
+
+            stack.add(this);
+            visited.add(this);
+
+            while (stack.size > 0) {
+                MapPoint p = stack.pop();
+                layerChildren.add(p);
+
+                if (p.fromBranchPoints != null) {
+                    for (MapPoint bp : p.fromBranchPoints) {
+                        if (bp != null && !visited.contains(bp)) {
+                            visited.add(bp);
+                            stack.add(bp);
+                        }
+                    }
+                }
+
+                if (p.toBranchPoints != null) {
+                    for (MapPoint bp : p.toBranchPoints) {
+                        if (bp != null && !visited.contains(bp)) {
+                            visited.add(bp);
+                            stack.add(bp);
+                        }
+                    }
+                }
+            }
+            SelectLayerChildren selectLayerChildren = new SelectLayerChildren(layerChildren, this.map);
+            this.map.executeCommand(selectLayerChildren);
+        });
     }
 }

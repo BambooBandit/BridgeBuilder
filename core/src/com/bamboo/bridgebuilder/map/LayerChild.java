@@ -58,6 +58,8 @@ public abstract class LayerChild
         this.id = id;
     }
 
+    public void doubleClick(){}
+
     public abstract void update();
     public abstract void draw();
     public abstract void drawHoverOutline();

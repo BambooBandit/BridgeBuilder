@@ -15,6 +15,12 @@ public class SelectLayerChildren implements Command
 
     private boolean areAllHoveredAreSelected;
 
+    public SelectLayerChildren(Array<LayerChild> layerChildren, Map map)
+    {
+        this.map = map;
+        this.hoveredChildren = new Array<>(layerChildren);
+    }
+
     public SelectLayerChildren(Map map, float dragStartX, float dragStartY, float dragCurrentX, float dragCurrentY, boolean shiftHeld)
     {
         this.map = map;

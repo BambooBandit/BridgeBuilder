@@ -151,6 +151,16 @@ public class PropertyPresetDialog extends Window
         addSimplePreset("Blocked Polygon", new SelectionType[]{SelectionType.POLYGON},
                 new PropertyValue("blocked", ""));
 
+        addSimplePreset("Blocked Line", new SelectionType[]{SelectionType.POINT},
+                new PropertyValue("blocked", ""));
+
+        addMultiPropertyPreset("Double Sided Blocked Line", new SelectionType[]{SelectionType.POINT},
+                new PropertyValue("blocked", ""),
+                new PropertyValue("doubleSided", ""));
+
+        addSimplePreset("Phaseable", new SelectionType[]{SelectionType.POINT},
+                new PropertyValue("phaseable", ""));
+
         addSimplePreset("Rayhandler", new SelectionType[]{SelectionType.OBJECTLAYER},
                 new PropertyValue("rayhandler", ""));
 

@@ -15,6 +15,8 @@ public class SelectLayerChild implements Command
     private Array<MapSprite> oldSelectedSprites;
     private Array<MapObject> oldSelectedObjects;
 
+    private boolean doubleClickEligible = true;
+
     public SelectLayerChild(Map map, LayerChild hoveredChild, boolean shiftHeld)
     {
         this.map = map;
@@ -25,6 +27,20 @@ public class SelectLayerChild implements Command
     @Override
     public void execute()
     {
+        if(doubleClickEligible)
+        {
+            doubleClickEligible = false;
+            if (hoveredChild != map.doubleClickCandidate)
+            {
+                map.doubleClickCandidate = hoveredChild;
+                map.doubleClickTimer = 0;
+            } else if (map.doubleClickCandidate != null)
+            {
+                map.doubleClickCandidate = null;
+                hoveredChild.doubleClick();
+            }
+        }
+
         if(hoveredChild instanceof MapSprite)
         {
             if(this.oldSelectedSprites == null)

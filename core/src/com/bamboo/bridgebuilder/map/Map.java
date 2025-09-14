@@ -124,6 +124,10 @@ public class Map implements Screen
 
     public ArrayList<String> gridCellTypes = new ArrayList<>();
 
+    public LayerChild doubleClickCandidate;
+    public float doubleClickTimer;
+    public final float doubleClickTimerThreshold = .25f;
+
     public Map(BridgeBuilder editor, String name)
     {
         this.editor = editor;
@@ -209,6 +213,13 @@ public class Map implements Screen
     {
         Gdx.gl.glClearColor(this.r, this.g, this.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if(doubleClickCandidate != null)
+        {
+            doubleClickTimer += delta;
+            if(doubleClickTimer >= doubleClickTimerThreshold)
+                doubleClickCandidate = null;
+        }
 
 //        if(Gdx.input.isKeyJustPressed(Input.Keys.Q))
 //        {
@@ -637,18 +648,42 @@ public class Map implements Screen
         if((from.toBranchPoints == null))
             return;
 
+        MapPoint first = mapPoint;
+        while(first.fromBranchPoints != null && first.fromBranchPoints.size > 0)
+            first = first.fromBranchPoints.first();
+        boolean blocked = Utils.containsProperty(first.properties, "blocked");
+        boolean doubleSided = Utils.containsProperty(first.properties, "doubleSided");
+
         editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
         for(int i = 0; i < from.toBranchPoints.size; i ++)
         {
-            editor.shapeRenderer.setColor(Color.ROYAL);
             MapPoint to = from.toBranchPoints.get(i);
-            editor.shapeRenderer.rectLine(from.x - cameraX,
-                    from.y - cameraY,
-                    to.x - cameraX,
-                    to.y - cameraY,
-                    camera.zoom * .1f);
+            if(blocked)
+            {
+                editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
 
-            editor.shapeRenderer.setColor(Color.NAVY);
+                editor.shapeRenderer.setColor(Color.RED);
+                editor.shapeRenderer.line(from.x - cameraX,
+                        from.y - cameraY,
+                        to.x - cameraX,
+                        to.y - cameraY);
+                editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
+
+            }
+            else
+            {
+                editor.shapeRenderer.setColor(Color.ROYAL);
+                editor.shapeRenderer.rectLine(from.x - cameraX,
+                        from.y - cameraY,
+                        to.x - cameraX,
+                        to.y - cameraY,
+                        camera.zoom * .1f);
+            }
+
+            if(blocked)
+                editor.shapeRenderer.setColor(Color.FIREBRICK);
+            else
+                editor.shapeRenderer.setColor(Color.NAVY);
             double dy = to.y - from.y;
             double dx = to.x - from.x;
             double theta = Math.atan2(dy, dx);
@@ -667,8 +702,53 @@ public class Map implements Screen
                         camera.zoom * .1f);
                 rho = theta - phi;
             }
+
+            if(blocked) // draw mid blocked arrow
+            {
+                editor.shapeRenderer.setColor(Color.RED);
+                drawBlockedArrow(from, to, MathUtils.PI / 2f, doubleSided);
+                if(doubleSided)
+                    drawBlockedArrow(from, to, -MathUtils.PI / 2f, doubleSided);
+            }
         }
         editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
+    }
+
+    private void drawBlockedArrow(MapPoint from, MapPoint to, float angle, boolean doubleSided)
+    {
+        float dy = to.y - from.y;
+        float dx = to.x - from.x;
+        float theta = MathUtils.atan2(dy, dx) + angle;
+        float barb = (.6f + (.6f * camera.zoom)) / 2f;
+        float phi = MathUtils.degreesToRadians * 20;
+        if(doubleSided)
+        {
+            barb /= 2.75f;
+            phi *= 2.5f;
+        }
+        float midX = (from.x + to.x) / 2f;
+        float midY = (from.y + to.y) / 2f;
+        if(!doubleSided)
+        {
+            midX += (Math.cos(theta) * barb) / 2f;
+            midY += (Math.sin(theta) * barb) / 2f;
+        }
+        float rho = theta + phi;
+        for (int j = 0; j < 2; j++)
+        {
+            float x = midX - barb * MathUtils.cos(rho);
+            float y = midY - barb * MathUtils.sin(rho);
+
+            editor.shapeRenderer.rectLine(
+                    midX - cameraX,
+                    midY - cameraY,
+                    x - cameraX,
+                    y - cameraY,
+                    camera.zoom * .1f
+            );
+
+            rho = theta - phi;
+        }
     }
 
     private void drawAttachedObjects()

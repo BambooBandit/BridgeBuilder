@@ -2,6 +2,7 @@ package com.bamboo.bridgebuilder.commands;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.LongArray;
 import com.bamboo.bridgebuilder.map.*;
 
 public class DeleteMapObjects implements Command
@@ -41,19 +42,43 @@ public class DeleteMapObjects implements Command
                     return;
                 }
             }
+
             this.deletedObjects.addAll(this.selectedObjects);
+
             for(int i = 0; i < this.selectedObjects.size; i ++)
             {
                 MapObject mapObject = this.selectedObjects.get(i);
+
                 if(mapObject instanceof MapPoint)
                 {
-                    MapPoint mapPoint = (MapPoint) mapObject;
-                    mapPoint.destroyLight();
+                    MapPoint mp = (MapPoint) mapObject;
+                    mp.destroyLight();
 
-                    if(mapPoint.fromBranchPoints != null)
+                    if(mp.fromBranchPoints != null)
                     {
-                        for (int k = 0; k < mapPoint.fromBranchPoints.size; k++)
-                            mapPoint.fromBranchPoints.get(k).toBranchPoints.removeValue(mapPoint, true);
+                        for (int k = 0; k < mp.fromBranchPoints.size; k++)
+                        {
+                            MapPoint from = mp.fromBranchPoints.get(k);
+                            if(from == null) continue;
+                            if(from.toBranchPoints != null)
+                                from.toBranchPoints.removeValue(mp, true);
+                            if(from.toBranchIds != null)
+                            {
+                                int idx = from.toBranchIds.indexOf(mp.id);
+                                if(idx >= 0) from.toBranchIds.removeIndex(idx);
+                            }
+                        }
+                    }
+
+                    if(mp.toBranchPoints != null)
+                    {
+                        for (int k = 0; k < mp.toBranchPoints.size; k++)
+                        {
+                            MapPoint to = mp.toBranchPoints.get(k);
+                            if(to == null) continue;
+                            if(to.fromBranchPoints != null)
+                                to.fromBranchPoints.removeValue(mp, true);
+                        }
                     }
                 }
                 else if(mapObject instanceof MapPolygon)
@@ -61,8 +86,10 @@ public class DeleteMapObjects implements Command
                     MapPolygon mapPolygon = (MapPolygon) mapObject;
                     mapPolygon.destroyBody();
                 }
+
                 mapObject.unselect();
             }
+
             this.selectedLayer.map.editor.selectedCountTooltip.label.setText((selectedLayer.map.selectedObjects.size + selectedLayer.map.selectedSprites.size) + " selected");
 
             this.selectedLayer.map.colorizeGroup();
@@ -109,26 +136,54 @@ public class DeleteMapObjects implements Command
                 return;
             }
         }
+
         for(int i = 0; i < this.deletedObjects.size; i ++)
         {
             MapObject mapObject = this.deletedObjects.get(i);
-            if(selectedLayer instanceof ObjectLayer)
-            {
-                if(mapObject instanceof MapPoint)
-                {
-                    MapPoint mapPoint = (MapPoint) mapObject;
-                    if(mapPoint.fromBranchPoints != null)
-                    {
-                        for (int k = 0; k < mapPoint.fromBranchPoints.size; k++)
-                            mapPoint.fromBranchPoints.get(k).toBranchPoints.add(mapPoint);
-                    }
-                }
-            }
             this.selectedLayer.children.add(mapObject);
             mapObject.select();
         }
-        this.selectedLayer.map.editor.selectedCountTooltip.label.setText((selectedLayer.map.selectedObjects.size + selectedLayer.map.selectedSprites.size) + " selected");
 
+        if(this.selectedLayer instanceof ObjectLayer)
+        {
+            for(int i = 0; i < this.deletedObjects.size; i ++)
+            {
+                MapObject mapObject = this.deletedObjects.get(i);
+                if(mapObject instanceof MapPoint)
+                {
+                    MapPoint mp = (MapPoint) mapObject;
+
+                    if(mp.fromBranchPoints != null)
+                    {
+                        for (int k = 0; k < mp.fromBranchPoints.size; k++)
+                        {
+                            MapPoint from = mp.fromBranchPoints.get(k);
+                            if(from == null) continue;
+                            if(from.toBranchPoints == null) from.toBranchPoints = new Array<>();
+                            if(from.toBranchIds == null) from.toBranchIds = new LongArray();
+                            if(!from.toBranchPoints.contains(mp, true))
+                                from.toBranchPoints.add(mp);
+                            if(!from.toBranchIds.contains(mp.id))
+                                from.toBranchIds.add(mp.id);
+                        }
+                    }
+
+                    if(mp.toBranchPoints != null)
+                    {
+                        for (int k = 0; k < mp.toBranchPoints.size; k++)
+                        {
+                            MapPoint to = mp.toBranchPoints.get(k);
+                            if(to == null) continue;
+                            if(to.fromBranchPoints == null) to.fromBranchPoints = new Array<>();
+                            if(!to.fromBranchPoints.contains(mp, true))
+                                to.fromBranchPoints.add(mp);
+                        }
+                    }
+                }
+            }
+        }
+
+        this.selectedLayer.map.editor.selectedCountTooltip.label.setText((selectedLayer.map.selectedObjects.size + selectedLayer.map.selectedSprites.size) + " selected");
         this.selectedLayer.map.propertyMenu.rebuild();
         this.selectedLayer.map.input.mouseMoved(Gdx.input.getX(), Gdx.input.getY());
         this.selectedLayer.map.colorizeGroup();
