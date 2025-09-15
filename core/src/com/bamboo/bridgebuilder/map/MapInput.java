@@ -1537,14 +1537,22 @@ public class MapInput implements InputProcessor
             float projectX = trimX;
             float projectY = trimY;
 
-            if(Utils.isLayerGround(map.selectedLayer))
-                projectY -= (perspective.cameraHeight + Perspective.getExtraMatchingHeight(perspective.cameraHeight));
+//            if(Utils.isLayerGround(map.selectedLayer))
+//                projectY -= (perspective.cameraHeight + Perspective.getExtraMatchingHeight(perspective.cameraHeight));
 
-            Vector3 p = perspective.projectWorldToPerspective(projectX, projectY);
-            projectX = p.x;
-            projectY = p.y;
+            if(!Utils.isLayerGround(map.selectedLayer))
+            {
+                Vector3 p = perspective.projectWorldToPerspective(projectX, projectY);
+                projectX = p.x;
+                projectY = p.y;
+            }
+            else
+            {
+                projectX -= map.cameraX;
+                projectY -= map.cameraY;
+            }
 
-            float perspectiveScale = perspective.getScaleFactor(trimY) * scale;
+            float perspectiveScale = scale * (!Utils.isLayerGround(map.selectedLayer) ? perspective.getScaleFactor(trimY) : 1);
 
             yScaleDisplacement += (((trimHeight * (perspectiveScale)) - trimHeight)) / 2f;
             xScaleDisplacement += (((width) * (perspectiveScale)) - width) / 2f;
@@ -1552,15 +1560,11 @@ public class MapInput implements InputProcessor
             float perspectiveOffsetX = trimX - (projectX + (xScaleDisplacement));
             float perspectiveOffsetY = trimY - (projectY + (yScaleDisplacement));
 
-            if(!Utils.isLayerGround(map.selectedLayer))
-                previewSprite.setPosition(spriteX - perspectiveOffsetX, spriteY - perspectiveOffsetY);
-            else
-                previewSprite.setPosition(spriteX - map.cameraX, spriteY - map.cameraY);
+            previewSprite.setPosition(spriteX - perspectiveOffsetX, spriteY - perspectiveOffsetY);
 
             previewSprite.setOriginCenter();
             previewSprite.setOrigin(width / 2f, previewSprite.getOriginY());
-            if(!Utils.isLayerGround(map.selectedLayer))
-                previewSprite.setScale(perspectiveScale);
+            previewSprite.setScale(perspectiveScale);
         }
         return false;
     }
