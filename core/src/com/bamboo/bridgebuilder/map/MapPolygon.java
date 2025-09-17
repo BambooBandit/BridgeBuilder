@@ -249,6 +249,8 @@ public class MapPolygon extends MapObject
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.GREEN);
         map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
+
+        drawGradientNodes();
     }
 
     @Override
@@ -257,7 +259,33 @@ public class MapPolygon extends MapObject
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.YELLOW);
         map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
+
+        drawGradientNodes();
     }
+
+    private void drawGradientNodes()
+    {
+        if(Utils.containsProperty(properties, "dustGradientNodeSize"))
+        {
+            map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
+            float distance = 2;
+            try
+            {
+                distance = Float.parseFloat(((FieldFieldPropertyValuePropertyField) Utils.getPropertyField(properties, "dustGradientNodeSize")).getValue());
+            }catch (Exception e){}
+            Rectangle rectangle = polygon.getBoundingRectangle();
+            for(float x = rectangle.x; x < rectangle.x + rectangle.width; x += distance)
+            {
+                for(float y = rectangle.y; y < rectangle.y + rectangle.height; y += distance)
+                {
+                    if(polygon.contains(x, y))
+                        map.editor.shapeRenderer.circle(x, y, .5f, 20);
+                }
+            }
+            map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
+        }
+    }
+
 
     private void drawCentroidAndAngle(float angle)
     {
