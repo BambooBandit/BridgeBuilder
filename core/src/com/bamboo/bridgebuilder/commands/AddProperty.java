@@ -68,12 +68,13 @@ public class AddProperty implements Command
         this.selectedMapObjects = new Array(selectedMapObjects);
     }
 
-    public AddProperty(Map map, PropertyTools tool, Layer selectedLayer, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects, String property, String value)
+    public AddProperty(Map map, PropertyTools tool, Layer selectedLayer, Array<MapSprite> selectedMapSprites, Array<SpriteTool> selectedSpriteTools, Array<MapObject> selectedMapObjects, String property, String value)
     {
         this.map = map;
         this.tool = tool;
         this.selectedLayer = selectedLayer;
         this.selectedSpriteTools = new Array(selectedSpriteTools);
+        this.selectedSprites = new Array(selectedMapSprites);
         this.selectedMapObjects = new Array(selectedMapObjects);
         this.property = property;
         this.value = value;

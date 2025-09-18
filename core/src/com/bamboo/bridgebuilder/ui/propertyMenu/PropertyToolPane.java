@@ -180,7 +180,7 @@ public class PropertyToolPane extends Group
             else
             {
                 FieldFieldPropertyValuePropertyFieldData fieldFieldPropertyValuePropertyFieldData = (FieldFieldPropertyValuePropertyFieldData) property;
-                copiedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.spriteMenu.selectedSpriteTools, map.selectedObjects, fieldFieldPropertyValuePropertyFieldData.p, fieldFieldPropertyValuePropertyFieldData.v);
+                copiedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer, map.selectedSprites, map.spriteMenu.selectedSpriteTools, map.selectedObjects, fieldFieldPropertyValuePropertyFieldData.p, fieldFieldPropertyValuePropertyFieldData.v);
             }
             if(addProperty == null)
                 addProperty = copiedProperty;

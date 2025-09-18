@@ -292,13 +292,13 @@ public class PropertyPresetDialog extends Window
             if(properties.length == 0) return;
 
             AddProperty addProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer,
-                    map.spriteMenu.selectedSpriteTools, map.selectedObjects,
+                    map.selectedSprites, map.spriteMenu.selectedSpriteTools, map.selectedObjects,
                     properties[0].property, properties[0].value);
 
             for(int i = 1; i < properties.length; i++)
             {
                 AddProperty chainedProperty = new AddProperty(map, PropertyTools.NEW, map.selectedLayer,
-                        map.spriteMenu.selectedSpriteTools, map.selectedObjects,
+                        map.selectedSprites, map.spriteMenu.selectedSpriteTools, map.selectedObjects,
                         properties[i].property, properties[i].value);
                 addProperty.addAddPropertyCommandToChain(chainedProperty);
             }
