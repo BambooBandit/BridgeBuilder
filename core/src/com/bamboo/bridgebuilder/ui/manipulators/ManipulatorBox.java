@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.bamboo.bridgebuilder.BBColors;
 import com.bamboo.bridgebuilder.BridgeBuilder;
-import com.bamboo.bridgebuilder.map.Perspective;
 
 public abstract class ManipulatorBox
 {
@@ -22,11 +21,10 @@ public abstract class ManipulatorBox
 
     public void setPosition(float x, float y)
     {
-        float cameraHeight = BridgeBuilder.bridgeBuilder.activeMap != null && BridgeBuilder.bridgeBuilder.activeMap.selectedLayer != null ? BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight + (float) Perspective.getExtraMatchingHeight(BridgeBuilder.bridgeBuilder.activeMap.selectedLayer.perspective.cameraHeight) : 0;
         this.x = x;
         this.y = y;
-        this.sprite.setPosition(x, y + cameraHeight);
-        this.rectangle.setPosition(x, y + cameraHeight);
+        this.sprite.setPosition(x, y);
+        this.rectangle.setPosition(x, y);
     }
 
     public void setScale(float scale)
@@ -39,6 +37,7 @@ public abstract class ManipulatorBox
 
     public boolean contains(float x, float y)
     {
+        this.rectangle.setPosition(sprite.getX() + BridgeBuilder.bridgeBuilder.activeMap.cameraX, sprite.getY() + BridgeBuilder.bridgeBuilder.activeMap.cameraY);
         return this.rectangle.contains(x, y);
     }
 

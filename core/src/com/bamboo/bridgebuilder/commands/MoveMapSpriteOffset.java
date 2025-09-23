@@ -167,5 +167,7 @@ public class MoveMapSpriteOffset implements Command
         selectedMapSprite.offsetMovebox3.setPosition(spriteVertices[SpriteBatch.X4] + selectedMapSprite.map.cameraX + selectedMapSprite.x3Offset - (selectedMapSprite.offsetMovebox3.scale * selectedMapSprite.offsetMovebox3.width / 2f), spriteVertices[SpriteBatch.Y4] + selectedMapSprite.map.cameraY + selectedMapSprite.y3Offset - (selectedMapSprite.offsetMovebox3.scale * selectedMapSprite.offsetMovebox3.height / 2f));
         selectedMapSprite.offsetMovebox4.setPosition(spriteVertices[SpriteBatch.X1] + selectedMapSprite.map.cameraX + selectedMapSprite.x4Offset - (selectedMapSprite.offsetMovebox4.scale * selectedMapSprite.offsetMovebox4.width / 2f), spriteVertices[SpriteBatch.Y1] + selectedMapSprite.map.cameraY + selectedMapSprite.y4Offset - (selectedMapSprite.offsetMovebox4.scale * selectedMapSprite.offsetMovebox4.height / 2f));
         selectedMapSprite.polygon.setOffset(selectedMapSprite.x1Offset, selectedMapSprite.x2Offset, selectedMapSprite.x3Offset, selectedMapSprite.x4Offset, selectedMapSprite.y1Offset, selectedMapSprite.y2Offset, selectedMapSprite.y3Offset, selectedMapSprite.y4Offset);
+
+        selectedMapSprite.setPosition(selectedMapSprite.x, selectedMapSprite.y);
     }
 }
