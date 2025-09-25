@@ -90,11 +90,17 @@ public class MapPoint extends MapObject
     {
         if(!map.editor.fileMenu.toolPane.filledPolygons.selected)
             return;
-        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
-        map.editor.shapeRenderer.setColor(0f, 1f, 1f, .3f);
 
         float x = this.point.getTransformedX() - map.cameraX;
         float y = this.point.getTransformedY() - map.cameraY;
+
+        boolean isInScreen = isInScreen(x, y);
+        if(!isInScreen)
+            return;
+
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
+        map.editor.shapeRenderer.setColor(0f, 1f, 1f, .3f);
+
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -143,11 +149,16 @@ public class MapPoint extends MapObject
     @Override
     public void drawOutline()
     {
+        float x = this.point.getTransformedX() - map.cameraX;
+        float y = this.point.getTransformedY() - map.cameraY;
+
+        boolean isInScreen = isInScreen(x, y);
+        if(!isInScreen)
+            return;
+
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.CYAN);
 
-        float x = this.point.getTransformedX() - map.cameraX;
-        float y = this.point.getTransformedY() - map.cameraY;
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -191,6 +202,34 @@ public class MapPoint extends MapObject
                 return;
             }
         }
+    }
+
+    private boolean isInScreen(float x, float y)
+    {
+        boolean isGround = Utils.isLayerGround(layer);
+        Perspective perspective = (this.layer).perspective;
+        boolean overlaps = isGround && perspective.skew > 0;
+        if(!overlaps)
+        {
+            float camHeight = isGround ? (float) (perspective.cameraHeight + Perspective.getExtraMatchingHeight(perspective.cameraHeight)) : 0;
+            // camera rectangle
+            float halfWidth = map.camera.viewportWidth * map.camera.zoom / 2f;
+            float halfHeight = map.camera.viewportHeight * map.camera.zoom / 2f;
+            float camX = map.camera.position.x;
+            float camY = (map.camera.position.y - camHeight);
+
+            float camLeft = camX - halfWidth;
+            float camRight = camX + halfWidth;
+            float camBottom = camY - halfHeight;
+            float camTop = camY + halfHeight;
+
+            // AABB overlap
+            overlaps = x >= camLeft &&
+                    x <= camRight &&
+                    y >= camBottom &&
+                    y <= camTop;
+        }
+        return overlaps;
     }
 
     private void drawAngle(float angle)
@@ -266,10 +305,15 @@ public class MapPoint extends MapObject
     @Override
     public void drawHoverOutline()
     {
-        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
-        map.editor.shapeRenderer.setColor(Color.ORANGE);
         float x = this.point.getTransformedX() - map.cameraX;
         float y = this.point.getTransformedY() - map.cameraY;
+
+        boolean isInScreen = isInScreen(x, y);
+        if(!isInScreen)
+            return;
+
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.ORANGE);
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -317,10 +361,15 @@ public class MapPoint extends MapObject
     @Override
     public void drawSelectedOutline()
     {
-        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
-        map.editor.shapeRenderer.setColor(Color.GREEN);
         float x = this.point.getTransformedX() - map.cameraX;
         float y = this.point.getTransformedY() - map.cameraY;
+
+        boolean isInScreen = isInScreen(x, y);
+        if(!isInScreen)
+            return;
+
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.GREEN);
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;
@@ -368,10 +417,15 @@ public class MapPoint extends MapObject
     @Override
     public void drawSelectedHoveredOutline()
     {
-        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
-        map.editor.shapeRenderer.setColor(Color.YELLOW);
         float x = this.point.getTransformedX() - map.cameraX;
         float y = this.point.getTransformedY() - map.cameraY;
+
+        boolean isInScreen = isInScreen(x, y);
+        if(!isInScreen)
+            return;
+
+        map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
+        map.editor.shapeRenderer.setColor(Color.YELLOW);
         pointShape[0] = x + 0;
         pointShape[1] = y + 0;
         pointShape[2] = x - .1333f;

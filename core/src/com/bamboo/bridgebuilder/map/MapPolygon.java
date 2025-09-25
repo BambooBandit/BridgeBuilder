@@ -59,6 +59,10 @@ public class MapPolygon extends MapObject
     public void drawOutline()
     {
         polygon.setPosition(x - map.cameraX, y - map.cameraY);
+        float[] verts = this.polygon.getTransformedVertices();
+        boolean isInScreen = isInScreen(verts);
+        if(!isInScreen)
+            return;
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         if(mapSprites == null)
             map.editor.shapeRenderer.setColor(Color.CYAN);
@@ -74,7 +78,8 @@ public class MapPolygon extends MapObject
                 }
             }
         }
-        map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
+
+        map.editor.shapeRenderer.polygon(verts);
 
         PropertyField propertyField = Utils.getPropertyField(properties, "angle");
         if (propertyField != null)
@@ -114,6 +119,11 @@ public class MapPolygon extends MapObject
         polygon.setPosition(x - map.cameraX, y - map.cameraY);
         if(!map.editor.fileMenu.toolPane.filledPolygons.selected)
             return;
+
+        float[] verts = this.polygon.getTransformedVertices();
+        boolean isInScreen = isInScreen(verts);
+        if(!isInScreen)
+            return;
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
         if(mapSprites == null)
         {
@@ -135,7 +145,7 @@ public class MapPolygon extends MapObject
             }
         }
 
-        map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
+        map.editor.shapeRenderer.polygon(verts);
 
     }
 
@@ -143,9 +153,15 @@ public class MapPolygon extends MapObject
     public void draw(float xOffset, float yOffset)
     {
         setPosition(getX() + xOffset, getY() + yOffset);
+
+        float[] verts = this.polygon.getTransformedVertices();
+        boolean isInScreen = isInScreen(verts);
+        if(!isInScreen)
+            return;
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.CYAN);
-        map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
+
+        map.editor.shapeRenderer.polygon(verts);
 
         PropertyField propertyField = Utils.getPropertyField(properties, "angle");
         if (propertyField != null)
@@ -240,7 +256,11 @@ public class MapPolygon extends MapObject
     {
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.ORANGE);
-        map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
+        float[] verts = this.polygon.getTransformedVertices();
+        boolean isInScreen = isInScreen(verts);
+        if(!isInScreen)
+            return;
+        map.editor.shapeRenderer.polygon(verts);
     }
 
     @Override
@@ -248,7 +268,12 @@ public class MapPolygon extends MapObject
     {
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.GREEN);
-        map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
+
+        float[] verts = this.polygon.getTransformedVertices();
+        boolean isInScreen = isInScreen(verts);
+        if(!isInScreen)
+            return;
+        map.editor.shapeRenderer.polygon(verts);
 
         drawGradientNodes();
     }
@@ -258,9 +283,54 @@ public class MapPolygon extends MapObject
     {
         map.editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
         map.editor.shapeRenderer.setColor(Color.YELLOW);
-        map.editor.shapeRenderer.polygon(this.polygon.getTransformedVertices());
 
+        float[] verts = this.polygon.getTransformedVertices();
+        boolean isInScreen = isInScreen(verts);
+        if(!isInScreen)
+            return;
+        map.editor.shapeRenderer.polygon(verts);
         drawGradientNodes();
+    }
+
+    private boolean isInScreen(float[] verts)
+    {
+        boolean isGround = Utils.isLayerGround(layer);
+        Perspective perspective = (this.layer).perspective;
+        float camHeight = isGround ? (float) (perspective.cameraHeight + Perspective.getExtraMatchingHeight(perspective.cameraHeight)) : 0;
+        boolean overlaps = isGround && perspective.skew > 0;
+        if(!overlaps)
+        {
+            float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE;
+            float maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
+
+            for (int i = 0; i < verts.length; i += 5)
+            {
+                float x = verts[i];
+                float y = verts[i + 1];
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+            }
+
+            // camera rectangle
+            float halfWidth = map.camera.viewportWidth * map.camera.zoom / 2f;
+            float halfHeight = map.camera.viewportHeight * map.camera.zoom / 2f;
+            float camX = map.camera.position.x;
+            float camY = (map.camera.position.y - camHeight);
+
+            float camLeft = camX - halfWidth;
+            float camRight = camX + halfWidth;
+            float camBottom = camY - halfHeight;
+            float camTop = camY + halfHeight;
+
+            // AABB overlap
+            overlaps = maxX >= camLeft &&
+                    minX <= camRight &&
+                    maxY >= camBottom &&
+                    minY <= camTop;
+        }
+        return overlaps;
     }
 
     private void drawGradientNodes()

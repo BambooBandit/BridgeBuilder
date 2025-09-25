@@ -578,7 +578,50 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
             }
         }
 
-        map.editor.batch.draw(sprite.getTexture(), verts, 0, verts.length);
+
+        //culling
+        boolean isGround = Utils.isLayerGround(layer);
+        Perspective perspective = (this.layer).perspective;
+        float camHeight = isGround ? (float) (perspective.cameraHeight + Perspective.getExtraMatchingHeight(perspective.cameraHeight)) : 0;
+        boolean overlaps = isGround && perspective.skew > 0;
+        if(!overlaps)
+        {
+            float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE;
+            float maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
+
+            for (int i = 0; i < verts.length; i += 5)
+            {
+                float x = verts[i];
+                float y = verts[i + 1];
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+            }
+
+            // camera rectangle
+            float halfWidth = map.camera.viewportWidth * map.camera.zoom / 2f;
+            float halfHeight = map.camera.viewportHeight * map.camera.zoom / 2f;
+            float camX = map.camera.position.x;
+            float camY = (map.camera.position.y - camHeight);
+
+            float camLeft = camX - halfWidth;
+            float camRight = camX + halfWidth;
+            float camBottom = camY - halfHeight;
+            float camTop = camY + halfHeight;
+
+            // AABB overlap
+            overlaps = maxX >= camLeft &&
+                    minX <= camRight &&
+                    maxY >= camBottom &&
+                    minY <= camTop;
+        }
+
+        if (overlaps) {
+            map.editor.batch.draw(sprite.getTexture(), verts, 0, verts.length);
+        }
+
+
 
         if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
             sprite.setAlpha(sprite.getColor().a * 3.5f);
@@ -646,7 +689,46 @@ public class MapSprite extends LayerChild implements Comparable<MapSprite>
                     verts[18] = u;
                     verts[19] = v2;
 
-                    map.editor.batch.draw(topsprite.getTexture(), verts, 0, verts.length);
+                    //culling
+                    if(!overlaps)
+                    {
+                        float minX = Float.MAX_VALUE;
+                        float minY = Float.MAX_VALUE;
+                        float maxX = -Float.MAX_VALUE;
+                        float maxY = -Float.MAX_VALUE;
+
+                        for (int k = 0; k < verts.length; k += 5)
+                        {
+                            float x = verts[k];
+                            float y = verts[k + 1];
+                            if (x < minX) minX = x;
+                            if (x > maxX) maxX = x;
+                            if (y < minY) minY = y;
+                            if (y > maxY) maxY = y;
+                        }
+
+                        // camera rectangle
+                        float halfWidth = map.camera.viewportWidth * map.camera.zoom / 2f;
+                        float halfHeight = map.camera.viewportHeight * map.camera.zoom / 2f;
+                        float camX = map.camera.position.x;
+                        float camY = (map.camera.position.y - camHeight);
+
+                        float camLeft = camX - halfWidth;
+                        float camRight = camX + halfWidth;
+                        float camBottom = camY - halfHeight;
+                        float camTop = camY + halfHeight;
+
+// AABB overlap
+                        overlaps = maxX >= camLeft &&
+                                minX <= camRight &&
+                                maxY >= camBottom &&
+                                minY <= camTop;
+                    }
+
+                    if (overlaps) {
+                        map.editor.batch.draw(topsprite.getTexture(), verts, 0, verts.length);
+                    }
+
 
                     if(map.editAttachedMapSprite != null && !selected && (attachedSprites == null || map.selectedLayer != attachedSprites) && (parentSprite == null || map.selectedLayer != parentSprite.attachedSprites))
                         topsprite.setAlpha(topsprite.getColor().a * 3.5f);
