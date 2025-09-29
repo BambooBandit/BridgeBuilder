@@ -25,6 +25,7 @@ public class MapPoint extends MapObject
     public LongArray toBranchIds;
     public Array<MapPoint> toBranchPoints;
     public Array<MapPoint> fromBranchPoints;
+    public boolean visited;
 
     public MapPoint(Map map, Layer layer, float x, float y)
     {

@@ -303,7 +303,7 @@ public class MapPolygon extends MapObject
             float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE;
             float maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
 
-            for (int i = 0; i < verts.length; i += 5)
+            for (int i = 0; i < verts.length; i += 2)
             {
                 float x = verts[i];
                 float y = verts[i + 1];

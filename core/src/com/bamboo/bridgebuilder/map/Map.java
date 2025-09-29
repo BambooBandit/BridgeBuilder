@@ -548,6 +548,13 @@ public class Map implements Screen
                 objects:
                 for(int k = 0; k < objectLayer.children.size; k ++)
                 {
+                    MapObject from = objectLayer.children.get(k);
+                    if(from instanceof MapPoint)
+                        ((MapPoint) from).visited = false;
+                }
+                objects:
+                for(int k = 0; k < objectLayer.children.size; k ++)
+                {
                     if(!objectLayer.layerField.visibleImg.isVisible())
                         continue objects;
                     MapObject from = objectLayer.children.get(k);
@@ -651,7 +658,12 @@ public class Map implements Screen
 
         MapPoint first = mapPoint;
         while(first.fromBranchPoints != null && first.fromBranchPoints.size > 0)
+        {
+            if(first.visited)
+                break;
+            first.visited = true;
             first = first.fromBranchPoints.first();
+        }
         boolean blocked = Utils.containsProperty(first.properties, "blocked");
         boolean doubleSided = Utils.containsProperty(first.properties, "doubleSided");
 
