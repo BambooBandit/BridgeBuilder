@@ -65,6 +65,7 @@ public class RemoveLayer implements Command
         }
         this.map.layerMenu.removeLayer(this.layer.layerField);
         this.map.propertyMenu.rebuild();
+        this.map.updateLayerZColor();
     }
 
     @Override
@@ -86,6 +87,7 @@ public class RemoveLayer implements Command
         if (this.chainedCommands != null)
             for (int i = 0; i < this.chainedCommands.size; i++)
                 this.chainedCommands.get(i).undo();
+        this.map.updateLayerZColor();
     }
 
     public void addCommandToChain(LayerOverride command)

@@ -164,6 +164,12 @@ public class PropertyPresetDialog extends Window
         addSimplePreset("Rayhandler", new SelectionType[]{SelectionType.OBJECTLAYER},
                 new PropertyValue("rayhandler", ""));
 
+        addSimplePreset("Playable Floor", new SelectionType[]{SelectionType.OBJECTLAYER},
+                new PropertyValue("playableFloor", ""));
+
+        addSimplePreset("Change Floor", new SelectionType[]{SelectionType.OBJECTLAYER},
+                new PropertyValue("changeFloor", ""));
+
         addSimplePreset("Disable Perspective", new SelectionType[]{SelectionType.SPRITELAYER},
                 new PropertyValue("disablePerspective", ""));
 

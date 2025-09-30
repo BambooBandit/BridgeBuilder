@@ -119,6 +119,7 @@ public abstract class Layer<T extends LayerChild>
     public void setZ(float z)
     {
         this.z = z;
+        map.updateLayerZColor();
     }
 
     public void setCameraZoomToThisLayer()

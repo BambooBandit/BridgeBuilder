@@ -18,11 +18,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.LongArray;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.bamboo.bridgebuilder.BBColors;
 import com.bamboo.bridgebuilder.BridgeBuilder;
 import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
@@ -761,6 +763,46 @@ public class Map implements Screen
             );
 
             rho = theta - phi;
+        }
+    }
+
+    private static Color cacheColor = new Color();
+    /** Colors layers labels in accordance to their Z.*/
+    public void updateLayerZColor()
+    {
+        float lowestZ = Float.MAX_VALUE;
+        float highestZ = Float.MIN_VALUE;
+        for(int i = 0; i < layers.size; i ++)
+        {
+            Layer layer = layers.get(i);
+            if(layer.z < lowestZ)
+                lowestZ = layer.z;
+            if(layer.z > highestZ)
+                highestZ = layer.z;
+        }
+
+        for(int i = 0; i < layers.size; i ++)
+        {
+            Layer layer = layers.get(i);
+            float progress;
+            Color color;
+            if(layer.z > 0) // higher, tint red
+            {
+                progress = MathUtils.norm(0, highestZ, layer.z);
+                color = Color.SCARLET;
+            }
+            else // lower, tint blue
+            {
+                progress = MathUtils.norm(0, lowestZ, layer.z);
+                color = BBColors.TEALCYAN;
+            }
+            cacheColor.set(Color.WHITE);
+            cacheColor.lerp(color, progress);
+
+            // Clone the style
+            TextField.TextFieldStyle style = new TextField.TextFieldStyle(layer.layerField.layerName.getStyle());
+            style.fontColor.set(cacheColor);
+            layer.layerField.layerName.setStyle(style);
         }
     }
 
@@ -2104,6 +2146,8 @@ public class Map implements Screen
         setIdCounter(mapData.idCounter);
 
         fixDuplicateIDs();
+
+        updateLayerZColor();
     }
 
     public void setGridLayers()
