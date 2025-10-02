@@ -796,6 +796,8 @@ public class Map implements Screen
                 progress = MathUtils.norm(0, lowestZ, layer.z);
                 color = BBColors.TEALCYAN;
             }
+            if(progress != progress)
+                progress = 0;
             cacheColor.set(Color.WHITE);
             cacheColor.lerp(color, progress);
 

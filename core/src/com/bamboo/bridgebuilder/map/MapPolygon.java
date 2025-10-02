@@ -294,6 +294,8 @@ public class MapPolygon extends MapObject
 
     private boolean isInScreen(float[] verts)
     {
+        if(layer == null)
+            return true;
         boolean isGround = Utils.isLayerGround(layer);
         Perspective perspective = (this.layer).perspective;
         float camHeight = isGround ? (float) (perspective.cameraHeight + Perspective.getExtraMatchingHeight(perspective.cameraHeight)) : 0;
