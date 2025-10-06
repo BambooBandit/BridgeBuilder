@@ -207,6 +207,8 @@ public class MapPoint extends MapObject
 
     private boolean isInScreen(float x, float y)
     {
+        if(this.layer == null)
+            return true;
         boolean isGround = Utils.isLayerGround(layer);
         Perspective perspective = (this.layer).perspective;
         boolean overlaps = isGround && perspective.skew > 0;

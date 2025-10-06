@@ -37,6 +37,8 @@ public abstract class ManipulatorBox
 
     public boolean contains(float x, float y)
     {
+        if(BridgeBuilder.bridgeBuilder.activeMap == null)
+            return false;
         this.rectangle.setPosition(sprite.getX() + BridgeBuilder.bridgeBuilder.activeMap.cameraX, sprite.getY() + BridgeBuilder.bridgeBuilder.activeMap.cameraY);
         return this.rectangle.contains(x, y);
     }
