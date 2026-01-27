@@ -2514,6 +2514,16 @@ public class Map implements Screen
                 for (int s = 0; s < spriteLayer.children.size; s++)
                 {
                     MapSprite mapSprite = spriteLayer.children.get(s);
+
+                    if(mapSprite.tool.attachedMapObjectManagers != null)
+                    {
+                        for(int k = 0; k < mapSprite.tool.attachedMapObjectManagers.size; k ++)
+                        {
+                            if(mapSprite.tool.attachedMapObjectManagers.get(k).getMapObjectByParent(mapSprite).id > largestID)
+                                largestID = mapSprite.tool.attachedMapObjectManagers.get(k).getMapObjectByParent(mapSprite).id;
+                        }
+                    }
+
                     if (mapSprite.id > largestID)
                         largestID = mapSprite.id;
                     if(mapSprite.attachedMapObjects != null)
@@ -2530,6 +2540,14 @@ public class Map implements Screen
                         for(int k = 0; k < mapSprite.attachedSprites.children.size; k ++)
                         {
                             MapSprite attachedSprite = mapSprite.attachedSprites.children.get(k);
+                            if(attachedSprite.tool.attachedMapObjectManagers != null)
+                            {
+                                for(int d = 0; d < attachedSprite.tool.attachedMapObjectManagers.size; d ++)
+                                {
+                                    if(attachedSprite.tool.attachedMapObjectManagers.get(d).getMapObjectByParent(attachedSprite).id > largestID)
+                                        largestID = attachedSprite.tool.attachedMapObjectManagers.get(d).getMapObjectByParent(attachedSprite).id;
+                                }
+                            }
                             if(attachedSprite.id > largestID)
                                 largestID = attachedSprite.id;
                         }
@@ -2557,8 +2575,6 @@ public class Map implements Screen
         }
         this.idCounter = largestID + 1;
 
-
-
         // Find collisions and use the idCounter to reset them
         HashSet<Long> hashSet = new HashSet<>();
 
@@ -2571,6 +2587,17 @@ public class Map implements Screen
                 for (int s = 0; s < spriteLayer.children.size; s++)
                 {
                     MapSprite mapSprite = spriteLayer.children.get(s);
+
+                    if(mapSprite.tool.attachedMapObjectManagers != null)
+                    {
+                        for(int k = 0; k < mapSprite.tool.attachedMapObjectManagers.size; k ++)
+                        {
+                            MapObject mapObject = mapSprite.tool.attachedMapObjectManagers.get(k).getMapObjectByParent(mapSprite);
+                            if(!hashSet.add(mapObject.id))
+                                mapObject.setID(getAndIncrementId());
+                        }
+                    }
+
                     if(!hashSet.add(mapSprite.id))
                         mapSprite.setID(getAndIncrementId());
                     if(mapSprite.attachedMapObjects != null)
@@ -2589,6 +2616,15 @@ public class Map implements Screen
                             MapSprite attachedSprite = mapSprite.attachedSprites.children.get(k);
                             if(attachedSprite == mapSprite)
                                 continue;
+                            if(attachedSprite.tool.attachedMapObjectManagers != null)
+                            {
+                                for(int d = 0; d < attachedSprite.tool.attachedMapObjectManagers.size; d ++)
+                                {
+                                    MapObject mapObject = attachedSprite.tool.attachedMapObjectManagers.get(d).getMapObjectByParent(attachedSprite);
+                                    if(!hashSet.add(mapObject.id))
+                                        mapObject.setID(getAndIncrementId());
+                                }
+                            }
                             if(!hashSet.add(attachedSprite.id))
                                 attachedSprite.setID(getAndIncrementId());
                             if(attachedSprite.attachedMapObjects != null)

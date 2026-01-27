@@ -74,47 +74,25 @@ public abstract class Layer<T extends LayerChild>
     {
         int oldWidth = this.width;
         int oldHeight = this.height;
+
         this.width = width;
         this.height = height;
-        if(width > oldWidth) // grow horizontal
+
+        float dx = (!right) ? (width - oldWidth) : 0f;
+        float dy = (down) ? (height - oldHeight) : 0f;
+
+        if(dx != 0 || dy != 0)
         {
-            if(!right) // grow left
+            for(int i = 0; i < children.size; i++)
             {
-                float widthIncrease = (width - oldWidth);
-                for(int i = 0; i < children.size; i ++)
-                    children.get(i).setPosition(children.get(i).getX() + widthIncrease, children.get(i).getY());
-            }
-        }
-        else // shrink horizontal
-        {
-            if(!right) // shrink left
-            {
-                float widthShrink = (oldWidth - width);
-                for(int i = 0; i < children.size; i ++)
-                    children.get(i).setPosition(children.get(i).getX() - widthShrink, children.get(i).getY());
+                LayerChild c = children.get(i);
+                c.setPosition(c.getX() + dx, c.getY() + dy);
             }
         }
 
-        if(height > oldHeight) // grow vertical
-        {
-            if(down) // grow down
-            {
-                float heightIncrease = (height - oldHeight);
-                for(int i = 0; i < children.size; i ++)
-                    children.get(i).setPosition(children.get(i).getX(), children.get(i).getY() + heightIncrease);
-            }
-        }
-        else // shrink vertical
-        {
-            if(down) // shrink down
-            {
-                float heightShrink = (oldHeight - height);
-                for(int i = 0; i < children.size; i ++)
-                    children.get(i).setPosition(children.get(i).getX(), children.get(i).getY() - heightShrink);
-            }
-        }
-        this.moveBox.setPosition(x + (this.width), y + (this.height));
+        moveBox.setPosition(x + this.width, y + this.height);
     }
+
 
     public void setZ(float z)
     {
