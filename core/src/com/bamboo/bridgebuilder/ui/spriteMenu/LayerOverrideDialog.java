@@ -4,10 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.bamboo.bridgebuilder.commands.LayerOverride;
@@ -75,6 +72,11 @@ public class LayerOverrideDialog extends Window
             }
         });
 
+        Label currentFrontLabel = new Label("Current front: " + (layer.overrideSprite == null ? "null" : "ID " + layer.overrideSprite.id + ", (" + layer.overrideSprite.x + ", " + layer.overrideSprite.y + ")"), skin);
+        Label currentBackLabel = new Label("Current Back: " + (layer.overrideSpriteBack == null ? "null" : "ID " + layer.overrideSpriteBack.id + ", (" + layer.overrideSpriteBack.x + ", " + layer.overrideSpriteBack.y + ")"), skin);
+
+        this.table.add(currentFrontLabel).padBottom(15).row();
+        this.table.add(currentBackLabel).padBottom(15).row();
         this.choiceTable.add(this.front).padBottom(15);
         this.choiceTable.add(this.back).padBottom(15);
         this.table.add(this.choiceTable).row();

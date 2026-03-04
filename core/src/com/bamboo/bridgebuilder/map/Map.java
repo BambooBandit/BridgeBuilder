@@ -214,6 +214,8 @@ public class Map implements Screen
     @Override
     public void render(float delta)
     {
+        if(Gdx.graphics.getWidth() == 0 || Gdx.graphics.getHeight() == 0)
+            return;
         Gdx.gl.glClearColor(this.r, this.g, this.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

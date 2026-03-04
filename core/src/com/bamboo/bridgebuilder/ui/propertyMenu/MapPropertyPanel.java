@@ -11,7 +11,6 @@ import com.bamboo.bridgebuilder.EditorAssets;
 import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.ColorPropertyField;
-import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.LabelFieldPropertyValuePropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.OpaqueColorPropertyField;
 import com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield.PropertyField;
 
@@ -46,26 +45,14 @@ public class MapPropertyPanel extends Group
         ColorPropertyField mapAmbientColorProperty = new ColorPropertyField(skin, menu, this.properties, false, "Ambient", 0, 0, 0, 1);
         OpaqueColorPropertyField shadowColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, "Shadows", .2f, .2f, .2f);
         OpaqueColorPropertyField fogColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, "Fog", .35f, .5f, .7f);
-
-        LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = new LabelFieldPropertyValuePropertyField("Virtual Height", "20", skin, menu, properties, false);
-
-        TextField.TextFieldFilter valueFilter = new TextField.TextFieldFilter()
-        {
-            @Override
-            public boolean acceptChar(TextField textField, char c)
-            {
-                return c == '.' || Character.isDigit(c);
-            }
-        };
-
-        mapVirtualHeightProperty.value.setTextFieldFilter(valueFilter);
+        OpaqueColorPropertyField skyFogColorProperty = new OpaqueColorPropertyField(skin, menu, this.properties, false, "Sky Fog", .8f, .675f, .4746f);
 
         this.lockedProperties = new Array<>();
         this.lockedProperties.add(mapBackgroundColorProperty);
         this.lockedProperties.add(mapAmbientColorProperty);
         this.lockedProperties.add(shadowColorProperty);
         this.lockedProperties.add(fogColorProperty);
-        this.lockedProperties.add(mapVirtualHeightProperty);
+        this.lockedProperties.add(skyFogColorProperty);
         this.properties = new Array<>();
 
         this.apply = new TextButton("Apply", skin);
@@ -82,7 +69,7 @@ public class MapPropertyPanel extends Group
         this.table.add(mapAmbientColorProperty).padBottom(1).row();
         this.table.add(shadowColorProperty).padBottom(1).row();
         this.table.add(fogColorProperty).padBottom(1).row();
-        this.table.add(mapVirtualHeightProperty).padBottom(1).row();
+        this.table.add(skyFogColorProperty).padBottom(1).row();
         this.table.add(this.apply).padBottom(1).row();
 
         this.stack.add(this.background);
@@ -122,8 +109,8 @@ public class MapPropertyPanel extends Group
         menu.map.g = mapBackgroundColorProperty.getG();
         menu.map.b = mapBackgroundColorProperty.getB();
 
-        LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = Utils.getLockedPropertyField(lockedProperties, "Virtual Height");
-        menu.map.virtualHeight = Float.parseFloat(mapVirtualHeightProperty.value.getText());
+//        LabelFieldPropertyValuePropertyField mapVirtualHeightProperty = Utils.getLockedPropertyField(lockedProperties, "Virtual Height");
+        menu.map.virtualHeight = 20;
         menu.map.virtualWidth = menu.map.virtualHeight * Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
         menu.map.camera.viewportWidth = menu.map.virtualWidth;
         menu.map.camera.viewportHeight = menu.map.virtualHeight;
