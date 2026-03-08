@@ -37,24 +37,28 @@ public class ObjectLayerData extends LayerData
                 this.grid.add(new CellData(objectLayer.spriteGrid.grid.get(i), mapData));
 
             CellData lastCell = null;
-            for(int i = 0; i < grid.size(); i ++)
+            int write = 0;
+            for (int read = 0; read < grid.size(); read++)
             {
-                CellData cell = grid.get(i);
-                if(cell.skip == 0 && cell.t == -1 && cell.c == 0 && ((cell.f == 0 && !mapData.footstepHeavy) || (cell.f == 1 && mapData.footstepHeavy)))
+                CellData cell = grid.get(read);
+                if (cell.skip == 0 && cell.t == -1 && cell.c == 0 && ((cell.f == 0 && !mapData.footstepHeavy) || (cell.f == 1 && mapData.footstepHeavy)))
                 {
-                    if(lastCell == null)
-                        lastCell = cell;
-                    else
+                    if (lastCell == null)
                     {
-                        grid.remove(i);
-                        i--;
+                        lastCell = cell;
+                        grid.set(write++, cell);
                     }
-                    lastCell.skip ++;
-
+                    else
+                        lastCell.skip++;
                 }
                 else
+                {
                     lastCell = cell;
+                    grid.set(write++, cell);
+                }
             }
+
+            grid.subList(write, grid.size()).clear();
         }
     }
 }
