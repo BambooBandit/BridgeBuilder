@@ -653,7 +653,7 @@ public class MapInput implements InputProcessor
             if (distance2 < 1f)
                 angle *= distance2;
 
-            this.rotateMapSprites.update((angle / map.camera.zoom));
+            this.rotateMapSprites.update((angle * .35f));
         }
         else if(this.scaleMapSprites != null)
         {
