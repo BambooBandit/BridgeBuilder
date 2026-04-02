@@ -67,6 +67,7 @@ public class DeleteMapObjects implements Command
                                 int idx = from.toBranchIds.indexOf(mp.id);
                                 if(idx >= 0) from.toBranchIds.removeIndex(idx);
                             }
+                            Map.branchVersion ++;
                         }
                     }
 
@@ -77,7 +78,10 @@ public class DeleteMapObjects implements Command
                             MapPoint to = mp.toBranchPoints.get(k);
                             if(to == null) continue;
                             if(to.fromBranchPoints != null)
+                            {
+                                Map.branchVersion ++;
                                 to.fromBranchPoints.removeValue(mp, true);
+                            }
                         }
                     }
                 }
@@ -176,7 +180,10 @@ public class DeleteMapObjects implements Command
                             if(to == null) continue;
                             if(to.fromBranchPoints == null) to.fromBranchPoints = new Array<>();
                             if(!to.fromBranchPoints.contains(mp, true))
+                            {
+                                Map.branchVersion ++;
                                 to.fromBranchPoints.add(mp);
+                            }
                         }
                     }
                 }

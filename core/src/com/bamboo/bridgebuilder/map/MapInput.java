@@ -84,11 +84,11 @@ public class MapInput implements InputProcessor
 
     private void handleEdgeSnapKeyDown(int keycode)
     {
-        if(map.selectedObjects.size > 0 && map.selectedSprites.size > 0)
-            return;
         if(!(keycode == Input.Keys.ALT_LEFT && (map.selectedSprites.size == 1 || map.selectedObjects.size == 1) && map.editor.fileMenu.toolPane.select.selected))
             return;
-        if(this.map.selectedSprites.size == 1)
+        if(this.map.selectedSprites.size == 1 && this.map.selectedObjects.size == 1)
+            snapFromThisObject = map.selectedObjects.first();
+        else if(this.map.selectedSprites.size == 1)
             snapFromThisObject = map.selectedSprites.first();
         else
             snapFromThisObject = map.selectedObjects.first();

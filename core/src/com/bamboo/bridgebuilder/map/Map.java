@@ -130,6 +130,7 @@ public class Map implements Screen
     public LayerChild doubleClickCandidate;
     public float doubleClickTimer;
     public final float doubleClickTimerThreshold = .25f;
+    public static int branchVersion;
 
     public Map(BridgeBuilder editor, String name)
     {
@@ -531,36 +532,53 @@ public class Map implements Screen
         editor.shapeRenderer.circle(input.currentPos.x - cameraX, input.currentPos.y - cameraY, editor.fileMenu.buttonPane.thinDialog.getRadius(), 20);
     }
 
+    static Array<MapPoint> allBranchPointsCache = new Array<>();
     private void drawSnap()
     {
-        for(int i = 0; i < layers.size; i ++)
+        allBranchPointsCache.clear();
+        for (int i = 0; i < layers.size; i++)
         {
             Layer layer = layers.get(i);
-            if(layer instanceof SpriteLayer)
+            if (layer instanceof SpriteLayer)
             {
                 SpriteLayer spriteLayer = (SpriteLayer) layer;
-                for(int k = 0; k < spriteLayer.children.size; k ++)
+                for (int k = 0; k < spriteLayer.children.size; k++)
                 {
                     MapSprite from = spriteLayer.children.get(k);
                     drawSnapEdge(from);
                     drawSnapFlicker(from);
+                    if (from.attachedMapObjects != null)
+                    {
+                        for (int s = 0; s < from.attachedMapObjects.size; s++)
+                        {
+                            MapObject fromO = from.attachedMapObjects.get(s);
+                            if (spriteLayer.layerField.attachedVisibleImg.isVisible())
+                            {
+                                drawSnapFlicker(fromO);
+                                if (fromO instanceof MapPoint)
+                                    allBranchPointsCache.add((MapPoint) fromO);
+                            }
+                        }
+                    }
                 }
             }
-            else if(layer instanceof ObjectLayer)
+            else if (layer instanceof ObjectLayer)
             {
                 ObjectLayer objectLayer = (ObjectLayer) layer;
                 objects:
-                for(int k = 0; k < objectLayer.children.size; k ++)
+                for (int k = 0; k < objectLayer.children.size; k++)
                 {
-                    if(!objectLayer.layerField.visibleImg.isVisible())
+                    if (!objectLayer.layerField.visibleImg.isVisible())
                         continue objects;
                     MapObject from = objectLayer.children.get(k);
                     drawSnapFlicker(from);
-                    if(from instanceof MapPoint)
-                        drawSnapBranch((MapPoint) from);
+                    if (from instanceof MapPoint)
+                        allBranchPointsCache.add((MapPoint) from);
                 }
             }
         }
+
+        drawAllSnapBranches(allBranchPointsCache);
     }
 
     private void drawC()
@@ -647,106 +665,155 @@ public class Map implements Screen
         }
     }
 
-    private void drawSnapBranch(MapPoint mapPoint)
+    private void drawAllSnapBranches(Array<MapPoint> allPoints)
     {
-        MapPoint from = mapPoint;
-        if((from.toBranchPoints == null))
-            return;
-
-        objects:
-        for(int k = 0; k < mapPoint.layer.children.size; k ++)
-        {
-            Object fromPoint = mapPoint.layer.children.get(k);
-            if(fromPoint instanceof MapPoint)
-                ((MapPoint) fromPoint).visited = false;
-        }
-
-        MapPoint first = mapPoint;
-        while(first.fromBranchPoints != null && first.fromBranchPoints.size > 0)
-        {
-            if(first.visited)
-                break;
-            first.visited = true;
-            first = first.fromBranchPoints.first();
-        }
-        boolean blocked = Utils.containsProperty(first.properties, "blocked");
-        boolean doubleSided = Utils.containsProperty(first.properties, "doubleSided");
-
         editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
-        for(int i = 0; i < from.toBranchPoints.size; i ++)
+
+        for(int i = 0; i < layers.size; i ++)
         {
-            MapPoint to = from.toBranchPoints.get(i);
-            if(blocked)
+            Layer layer = layers.get(i);
+            if(layer instanceof ObjectLayer)
             {
-                editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
-
-                editor.shapeRenderer.setColor(Color.RED);
-                editor.shapeRenderer.line(from.x - cameraX,
-                        from.y - cameraY,
-                        to.x - cameraX,
-                        to.y - cameraY);
-                editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Filled);
-
-            }
-            else
-            {
-                editor.shapeRenderer.setColor(Color.ROYAL);
-                editor.shapeRenderer.rectLine(from.x - cameraX,
-                        from.y - cameraY,
-                        to.x - cameraX,
-                        to.y - cameraY,
-                        camera.zoom * .1f);
-            }
-
-            if(blocked)
-                editor.shapeRenderer.setColor(Color.FIREBRICK);
-            else
-                editor.shapeRenderer.setColor(Color.NAVY);
-            double dy = to.y - from.y;
-            double dx = to.x - from.x;
-            double theta = Math.atan2(dy, dx);
-            float barb = (.6f + (.6f * camera.zoom)) / 2f;
-            double phi = Math.toRadians(20);
-            double x, y, rho = theta + phi;
-            for(int j = 0; j < 2; j++)
-            {
-                x = to.x - barb * Math.cos(rho);
-                y = to.y - barb * Math.sin(rho);
-
-                editor.shapeRenderer.rectLine(to.x - cameraX,
-                        to.y - cameraY,
-                        (float)x - cameraX,
-                        (float)y - cameraY,
-                        camera.zoom * .1f);
-                rho = theta - phi;
-            }
-
-            if(blocked) // draw mid blocked arrow
-            {
-                editor.shapeRenderer.setColor(Color.RED);
-                drawBlockedArrow(from, to, MathUtils.PI / 2f, doubleSided);
-                if(doubleSided)
-                    drawBlockedArrow(from, to, -MathUtils.PI / 2f, doubleSided);
+                ObjectLayer objectLayer = (ObjectLayer) layer;
+                for (int k = 0; k < objectLayer.children.size; k++)
+                {
+                    Object fromPoint = objectLayer.children.get(k);
+                    if (fromPoint instanceof MapPoint)
+                        ((MapPoint) fromPoint).visited = false;
+                }
             }
         }
+
+        for (int p = 0; p < allPoints.size; p++)
+        {
+            MapPoint mapPoint = allPoints.get(p);
+            if (mapPoint.toBranchPoints == null) continue;
+
+            resetVisited(mapPoint);
+
+            MapPoint first = getCachedRoot(mapPoint);
+            boolean blocked    = Utils.containsProperty(first.properties, "blocked");
+            boolean doubleSided = Utils.containsProperty(first.properties, "doubleSided");
+
+            float zoom = camera.zoom;
+            float lineWidth = zoom * 0.1f;
+            boolean drawArrows = zoom < 50;
+            float barb = (0.6f + (0.6f * zoom)) / 2f;
+
+            float fromXWorld = mapPoint.point.getTransformedX();
+            float fromYWorld = mapPoint.point.getTransformedY();
+            float fromX = fromXWorld - cameraX;
+            float fromY = fromYWorld - cameraY;
+
+            if (!blocked || zoom >= 50)
+            {
+                if(!blocked)
+                    editor.shapeRenderer.setColor(Color.ROYAL);
+                else
+                    editor.shapeRenderer.setColor(Color.RED);
+                for (int i = 0; i < mapPoint.toBranchPoints.size; i++)
+                {
+                    MapPoint to = mapPoint.toBranchPoints.get(i);
+                    float toX = to.point.getTransformedX() - cameraX;
+                    float toY = to.point.getTransformedY() - cameraY;
+                    editor.shapeRenderer.rectLine(fromX, fromY, toX, toY, lineWidth);
+                }
+            }
+
+            if (drawArrows)
+            {
+                for (int i = 0; i < mapPoint.toBranchPoints.size; i++)
+                {
+                    MapPoint to = mapPoint.toBranchPoints.get(i);
+
+                    float toXWorld = to.point.getTransformedX();
+                    float toYWorld = to.point.getTransformedY();
+                    float toX = toXWorld - cameraX;
+                    float toY = toYWorld - cameraY;
+
+                    editor.shapeRenderer.setColor(blocked ? Color.FIREBRICK : Color.NAVY);
+
+                    double dx    = toXWorld - fromXWorld;
+                    double dy    = toYWorld - fromYWorld;
+                    double theta = Math.atan2(dy, dx);
+                    double phi   = Math.toRadians(20);
+                    double rho   = theta + phi;
+
+                    for (int j = 0; j < 2; j++)
+                    {
+                        float x = (float)(toXWorld - barb * Math.cos(rho)) - cameraX;
+                        float y = (float)(toYWorld - barb * Math.sin(rho)) - cameraY;
+                        editor.shapeRenderer.rectLine(toX, toY, x, y, lineWidth);
+                        rho = theta - phi;
+                    }
+
+                    if (blocked)
+                    {
+                        editor.shapeRenderer.setColor(Color.RED);
+                        drawBlockedArrow(mapPoint, to, MathUtils.PI / 2f, doubleSided);
+                        if (doubleSided)
+                            drawBlockedArrow(mapPoint, to, -MathUtils.PI / 2f, doubleSided);
+                    }
+                }
+            }
+        }
+
+        boolean anyBlocked = false;
+        for (int p = 0; p < allPoints.size; p++)
+        {
+            MapPoint mapPoint = allPoints.get(p);
+            if (mapPoint.toBranchPoints == null) continue;
+            if (Utils.containsProperty(getCachedRoot(mapPoint).properties, "blocked"))
+            {
+                anyBlocked = true;
+                break;
+            }
+        }
+
+        if (anyBlocked && zoom < 50)
+        {
+            editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
+
+            for (int p = 0; p < allPoints.size; p++)
+            {
+                MapPoint mapPoint = allPoints.get(p);
+                if (mapPoint.toBranchPoints == null) continue;
+
+                MapPoint first = getCachedRoot(mapPoint);
+                if (!Utils.containsProperty(first.properties, "blocked")) continue;
+
+                float fromX = mapPoint.point.getTransformedX() - cameraX;
+                float fromY = mapPoint.point.getTransformedY() - cameraY;
+
+                editor.shapeRenderer.setColor(Color.RED);
+                for (int i = 0; i < mapPoint.toBranchPoints.size; i++)
+                {
+                    MapPoint to = mapPoint.toBranchPoints.get(i);
+                    float toX = to.point.getTransformedX() - cameraX;
+                    float toY = to.point.getTransformedY() - cameraY;
+                    editor.shapeRenderer.line(fromX, fromY, toX, toY);
+                }
+            }
+        }
+
         editor.shapeRenderer.set(BBShapeRenderer.ShapeType.Line);
     }
 
     private void drawBlockedArrow(MapPoint from, MapPoint to, float angle, boolean doubleSided)
     {
-        float dy = to.y - from.y;
-        float dx = to.x - from.x;
+        float dy = to.point.getTransformedY() - from.point.getTransformedY();
+        float dx = to.point.getTransformedX() - from.point.getTransformedX();
         float theta = MathUtils.atan2(dy, dx) + angle;
         float barb = (.6f + (.6f * camera.zoom)) / 2f;
         float phi = MathUtils.degreesToRadians * 20;
-        if(doubleSided)
+        if (doubleSided)
         {
             barb /= 2.75f;
             phi *= 2.5f;
         }
-        float midX = (from.x + to.x) / 2f;
-        float midY = (from.y + to.y) / 2f;
-        if(!doubleSided)
+        float midX = (from.point.getTransformedX() + to.point.getTransformedX()) / 2f;
+        float midY = (from.point.getTransformedY() + to.point.getTransformedY()) / 2f;
+        if (!doubleSided)
         {
             midX += (Math.cos(theta) * barb) / 2f;
             midY += (Math.sin(theta) * barb) / 2f;
@@ -756,7 +823,6 @@ public class Map implements Screen
         {
             float x = midX - barb * MathUtils.cos(rho);
             float y = midY - barb * MathUtils.sin(rho);
-
             editor.shapeRenderer.rectLine(
                     midX - cameraX,
                     midY - cameraY,
@@ -764,9 +830,43 @@ public class Map implements Screen
                     y - cameraY,
                     camera.zoom * .1f
             );
-
             rho = theta - phi;
         }
+    }
+
+    private void resetVisited(MapPoint mapPoint)
+    {
+        if (mapPoint.attachedSprite != null)
+        {
+            for (int k = 0; k < mapPoint.attachedSprite.attachedMapObjects.size; k++)
+            {
+                Object fromPoint = mapPoint.attachedSprite.attachedMapObjects.get(k);
+                if (fromPoint instanceof MapPoint)
+                    ((MapPoint) fromPoint).visited = false;
+            }
+        }
+//        else
+//        {
+//            for (int k = 0; k < mapPoint.layer.children.size; k++)
+//            {
+//                Object fromPoint = mapPoint.layer.children.get(k);
+//                if (fromPoint instanceof MapPoint)
+//                    ((MapPoint) fromPoint).visited = false;
+//            }
+//        }
+    }
+
+    private MapPoint getCachedRoot(MapPoint mapPoint)
+    {
+        if (mapPoint.cachedRoot == null || mapPoint.cachedVersion != branchVersion)
+        {
+            MapPoint first = mapPoint;
+            while (first.fromBranchPoints != null && first.fromBranchPoints.size > 0)
+                first = first.fromBranchPoints.first();
+            mapPoint.cachedRoot = first;
+            mapPoint.cachedVersion = branchVersion;
+        }
+        return mapPoint.cachedRoot;
     }
 
     private static Color cacheColor = new Color();
@@ -1988,6 +2088,40 @@ public class Map implements Screen
                             }
                         }
                     }
+
+                    // attached Branch
+                    branch:
+                    for (int s = 0; s < layer.children.size; s++)
+                    {
+                        MapSprite mapSprite = (MapSprite) layer.children.get(s);
+                        if(mapSprite.attachedMapObjects != null)
+                        {
+                            branch2:
+                            for(int r = 0; r < mapSprite.attachedMapObjects.size; r ++)
+                            {
+                                MapObject mapObject = (MapObject) mapSprite.attachedMapObjects.get(r);
+                                if (!(mapObject instanceof MapPoint))
+                                    continue branch2;
+                                MapPoint mapPoint = (MapPoint) mapObject;
+                                if (mapPoint.toBranchIds == null || mapPoint.toBranchIds.size == 0)
+                                    continue branch2;
+                                branch3:
+                                for (int m = 0; m < mapSprite.attachedMapObjects.size; m++)
+                                {
+                                    MapObject mapObject2 = (MapObject) mapSprite.attachedMapObjects.get(m);
+                                    if (!(mapObject2 instanceof MapPoint))
+                                        continue branch3;
+                                    MapPoint branch = (MapPoint) mapObject2;
+                                    long id = branch.id;
+                                    if (mapPoint.toBranchIds.contains(id))
+                                    {
+                                        SnapMapPointBranch snapMapSpriteFlicker = new SnapMapPointBranch(mapPoint, branch);
+                                        executeCommand(snapMapSpriteFlicker);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 else if(layer instanceof ObjectLayer)
                 {
@@ -2403,6 +2537,13 @@ public class Map implements Screen
                     MapPointData mapPointData = (MapPointData) mapObjectData;
                     MapPoint mapPoint = new MapPoint(this, mapPointData.x, mapPointData.y);
                     mapObject = mapPoint;
+
+                    if(mapPointData.bId != null)
+                    {
+                        mapPoint.toBranchIds = new LongArray();
+                        for(int r = 0; r < mapPointData.bId.size(); r ++)
+                            mapPoint.toBranchIds.add(mapPointData.bId.get(r));
+                    }
                 }
                 mapObject.flickerId = mapObjectData.fId;
                 mapObject.setID(mapObjectData.i);

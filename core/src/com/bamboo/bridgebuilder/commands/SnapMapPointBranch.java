@@ -1,6 +1,7 @@
 package com.bamboo.bridgebuilder.commands;
 
 import com.badlogic.gdx.utils.Array;
+import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.map.MapPoint;
 
 public class SnapMapPointBranch implements Command
@@ -38,6 +39,8 @@ public class SnapMapPointBranch implements Command
             if (this.toPoint.fromBranchPoints == null)
                 this.toPoint.fromBranchPoints = new Array<>();
             this.toPoint.fromBranchPoints.add(this.fromPoint);
+
+            Map.branchVersion ++;
         }
     }
 
@@ -49,5 +52,6 @@ public class SnapMapPointBranch implements Command
             this.fromPoint.toBranchPoints.addAll(this.oldToPoints);
         if(this.toPoint != null)
             this.toPoint.fromBranchPoints.removeValue(this.fromPoint, true);
+        Map.branchVersion ++;
     }
 }
