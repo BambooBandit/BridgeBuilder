@@ -691,7 +691,7 @@ public class Map implements Screen
 
             resetVisited(mapPoint);
 
-            MapPoint first = getCachedRoot(mapPoint);
+            MapPoint first = getCachedRoot(mapPoint, allPoints);
             boolean blocked    = Utils.containsProperty(first.properties, "blocked");
             boolean doubleSided = Utils.containsProperty(first.properties, "doubleSided");
 
@@ -763,7 +763,7 @@ public class Map implements Screen
         {
             MapPoint mapPoint = allPoints.get(p);
             if (mapPoint.toBranchPoints == null) continue;
-            if (Utils.containsProperty(getCachedRoot(mapPoint).properties, "blocked"))
+            if (Utils.containsProperty(getCachedRoot(mapPoint, allPoints).properties, "blocked"))
             {
                 anyBlocked = true;
                 break;
@@ -779,7 +779,7 @@ public class Map implements Screen
                 MapPoint mapPoint = allPoints.get(p);
                 if (mapPoint.toBranchPoints == null) continue;
 
-                MapPoint first = getCachedRoot(mapPoint);
+                MapPoint first = getCachedRoot(mapPoint, allPoints);
                 if (!Utils.containsProperty(first.properties, "blocked")) continue;
 
                 float fromX = mapPoint.point.getTransformedX() - cameraX;
@@ -856,13 +856,21 @@ public class Map implements Screen
 //        }
     }
 
-    private MapPoint getCachedRoot(MapPoint mapPoint)
+    private MapPoint getCachedRoot(MapPoint mapPoint, Array<MapPoint> allPoints)
     {
         if (mapPoint.cachedRoot == null || mapPoint.cachedVersion != branchVersion)
         {
+            for (int k = 0; k < allPoints.size; k++)
+                allPoints.get(k).visited = false;
+
             MapPoint first = mapPoint;
             while (first.fromBranchPoints != null && first.fromBranchPoints.size > 0)
+            {
+                if (first.visited) break;
+                first.visited = true;
                 first = first.fromBranchPoints.first();
+            }
+
             mapPoint.cachedRoot = first;
             mapPoint.cachedVersion = branchVersion;
         }
