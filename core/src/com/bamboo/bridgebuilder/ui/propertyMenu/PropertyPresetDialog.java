@@ -203,12 +203,6 @@ public class PropertyPresetDialog extends Window
         addSimplePreset("Fade Limit", new SelectionType[]{SelectionType.SPRITETOOL},
                 new PropertyValue("fadeLimit", ""));
 
-        addMultiPropertyPreset("Wind Skew", new SelectionType[]{SelectionType.SPRITETOOL},
-                new PropertyValue("wind", ""),
-                new PropertyValue("skewWind", ""),
-                new PropertyValue("blowResistTop", "400"),
-                new PropertyValue("blowResist", "50"));
-
         // Multi-property presets
         addMultiPropertyPreset("Top Sprite", new SelectionType[]{SelectionType.SPRITETOOL},
                 new PropertyValue("top", "...4tree1..."),
@@ -227,6 +221,12 @@ public class PropertyPresetDialog extends Window
                 new PropertyValue("fpsWind", "Value"),
                 new PropertyValue("blowResistTop", "17.5"),
                 new PropertyValue("blowResist", "17.5"));
+
+        addMultiPropertyPreset("Wind Skew", new SelectionType[]{SelectionType.SPRITE, SelectionType.SPRITETOOL},
+                new PropertyValue("wind", ""),
+                new PropertyValue("skewWind", ""),
+                new PropertyValue("blowResistTop", "400"),
+                new PropertyValue("blowResist", "50"));
 
         addMultiPropertyPreset("Optional Dialogue", new SelectionType[]{SelectionType.POLYGON},
                 new PropertyValue("PAHRI", "Bridge//playerAsksPahriAboutBridge"),
