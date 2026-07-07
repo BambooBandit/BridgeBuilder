@@ -162,12 +162,12 @@ public class MapInput implements InputProcessor
                 }
             }
 
-            float coordsX2 = Utils.perpendicularCoordX(coords.x, coords.y, this.map);
-            float coordsY2 = Utils.perpendicularCoordY(coords.x, coords.y, this.map);
-            float coordsX3 = Utils.distanceCoordX(coordsX2, coordsY2, this.map);
-            float coordsY3 = Utils.distanceCoordY(coordsX2, coordsY2, this.map);
-            coords.x = coordsX3;
-            coords.y = coordsY3;
+            double coordsX2 = Utils.perpendicularCoordX(coords.x, coords.y, this.map);
+            double coordsY2 = Utils.perpendicularCoordY(coords.x, coords.y, this.map);
+            double coordsX3 = Utils.distanceCoordX(coordsX2, coordsY2, this.map);
+            double coordsY3 = Utils.distanceCoordY(coordsX2, coordsY2, this.map);
+            coords.x = (float) coordsX3;
+            coords.y = (float) coordsY3;
 
             this.currentPos.set(coords.x, coords.y);
             this.dragOriginPos.set(coords.x, coords.y);
@@ -274,12 +274,12 @@ public class MapInput implements InputProcessor
                     coordsY += snapSprite.height / 2f;
                 }
             }
-            float coordsX2 = Utils.perpendicularCoordX(coordsX, coordsY, this.map);
-            float coordsY2 = Utils.perpendicularCoordY(coordsX, coordsY, this.map);
-            float coordsX3 = Utils.distanceCoordX(coordsX2, coordsY2, this.map);
-            float coordsY3 = Utils.distanceCoordY(coordsX2, coordsY2, this.map);
-            coordsX = coordsX3;
-            coordsY = coordsY3;
+            double coordsX2 = Utils.perpendicularCoordX(coordsX, coordsY, this.map);
+            double coordsY2 = Utils.perpendicularCoordY(coordsX, coordsY, this.map);
+            double coordsX3 = Utils.distanceCoordX(coordsX2, coordsY2, this.map);
+            double coordsY3 = Utils.distanceCoordY(coordsX2, coordsY2, this.map);
+            coordsX = (float) coordsX3;
+            coordsY = (float) coordsY3;
 
             String xCoord = String.format("%.2f", coordsX);
             String yCoord = String.format("%.2f", coordsY);

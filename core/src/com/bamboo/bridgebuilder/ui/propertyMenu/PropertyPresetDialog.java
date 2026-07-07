@@ -170,6 +170,15 @@ public class PropertyPresetDialog extends Window
         addSimplePreset("Change Floor", new SelectionType[]{SelectionType.OBJECTLAYER},
                 new PropertyValue("changeFloor", ""));
 
+        addSimplePreset("Monument", new SelectionType[]{SelectionType.OBJECTLAYER},
+                new PropertyValue("monument", ""));
+
+        addSimplePreset("Treasure Chest", new SelectionType[]{SelectionType.OBJECTLAYER},
+                new PropertyValue("treasureChest", ""));
+
+        addSimplePreset("Great Treasure Chest", new SelectionType[]{SelectionType.OBJECTLAYER},
+                new PropertyValue("greatTreasureChest", ""));
+
         addSimplePreset("Disable Perspective", new SelectionType[]{SelectionType.SPRITELAYER},
                 new PropertyValue("disablePerspective", ""));
 
@@ -193,6 +202,12 @@ public class PropertyPresetDialog extends Window
 
         addSimplePreset("Fade Limit", new SelectionType[]{SelectionType.SPRITETOOL},
                 new PropertyValue("fadeLimit", ""));
+
+        addMultiPropertyPreset("Wind Skew", new SelectionType[]{SelectionType.SPRITETOOL},
+                new PropertyValue("wind", ""),
+                new PropertyValue("skewWind", ""),
+                new PropertyValue("blowResistTop", "400"),
+                new PropertyValue("blowResist", "50"));
 
         // Multi-property presets
         addMultiPropertyPreset("Top Sprite", new SelectionType[]{SelectionType.SPRITETOOL},

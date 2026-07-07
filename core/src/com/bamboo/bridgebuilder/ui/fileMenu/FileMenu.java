@@ -279,25 +279,30 @@ public class FileMenu extends Group
                 {
                     Gdx.app.postRunnable(() ->
                     {
-                        try
-                        {
-                            File file = chooser.getSelectedFile();
-                            String content = new Scanner(file).useDelimiter("\\Z").next();
-                            Json json = createJson();
-                            MapData mapData = json.fromJson(MapData.class, content);
-                            Map newMap = new Map(editor, mapData);
-                            newMap.file = file;
-                            editor.addToMaps(newMap);
-                            mapTabPane.lookAtMap(newMap);
-                        }
-                        catch (FileNotFoundException e)
-                        {
-                            e.printStackTrace();
-                        }
+                        File file = chooser.getSelectedFile();
+                        open(file);
                     });
                 }
             }
         }).start();
+    }
+
+    public void open(File file)
+    {
+        String content = null;
+        try
+        {
+            content = new Scanner(file).useDelimiter("\\Z").next();
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        Json json = createJson();
+        MapData mapData = json.fromJson(MapData.class, content);
+        Map newMap = new Map(editor, mapData);
+        newMap.file = file;
+        editor.addToMaps(newMap);
+        mapTabPane.lookAtMap(newMap);
     }
 
     public void newMap()

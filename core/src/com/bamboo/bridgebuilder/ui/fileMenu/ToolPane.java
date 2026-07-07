@@ -244,7 +244,7 @@ public class ToolPane extends Group
 
                 if(selectedTool == this.attachedSprites)
                 {
-                    if(this.editor.activeMap.selectedSprites.size == 1)
+                    if(this.editor.activeMap.selectedSprites.size == 1 && this.editor.activeMap.selectedSprites.first().parentSprite == null)
                         this.editor.activeMap.selectedSprites.first().enableEditAttachedSpritesMode();
                     else
                         selectedTool.unselect();

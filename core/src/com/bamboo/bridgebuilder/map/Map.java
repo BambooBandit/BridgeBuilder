@@ -105,8 +105,8 @@ public class Map implements Screen
 
     public MapSprite lastFencePlaced;
     public MapPoint lastBranchPlaced;
-    public float lastFencePlacedDistance;
-    public float lastFencePlacedAngle;
+    public double lastFencePlacedDistance;
+    public double lastFencePlacedAngle;
 
     public ObjectLayer groupPolygons; // Each group of map sprites has a polygon associated with it in this layer. Used for making multiple sprites do something when entering a polygon
     public Array<MapObject> mergedPolygonPreview = null;

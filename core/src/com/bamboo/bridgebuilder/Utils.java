@@ -5,7 +5,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.RandomXS128;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
@@ -352,6 +355,12 @@ public class Utils
         return (float) Math.hypot(x1-x2, y1-y2);
     }
 
+    public static double getDistanceDouble(double x1, double x2, double y1, double y2)
+    {
+        return Math.hypot(x1-x2, y1-y2);
+    }
+
+
     public static boolean canBuildFenceFromSelectedSpriteTools(Map map)
     {
         boolean hasFencePost = false;
@@ -538,43 +547,37 @@ public class Utils
         return closestChild;
     }
 
-    public static float perpendicularCoordX(float coordsX, float coordsY, Map map)
+    public static double perpendicularCoordX(double coordsX, double coordsY, Map map)
     {
-        if(!Gdx.input.isKeyPressed(Input.Keys.A))
+        if (!Gdx.input.isKeyPressed(Input.Keys.A))
             return coordsX;
-        if(map.lastFencePlaced == null)
+        if (map.lastFencePlaced == null)
             return coordsX;
-        float lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
-        float lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
-        float lastAngle = MathUtils.degreesToRadians * map.lastFencePlacedAngle;
 
-        // Direction vector of the last placed segment
-        float dirX = (float) Math.cos(lastAngle);
-        float dirY = (float) Math.sin(lastAngle);
+        double lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
+        double lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
+        double lastAngle = Math.toRadians(map.lastFencePlacedAngle);
 
-        // Perpendicular vector to the direction (90 degrees rotation)
-        float perpX = -dirY;
-        float perpY = dirX;
+        double dirX = Math.cos(lastAngle);
+        double dirY = Math.sin(lastAngle);
 
-        // Vector from last placed point to current point
-        float vecX = coordsX - lastPlacedX;
-        float vecY = coordsY - lastPlacedY;
+        double perpX = -dirY;
+        double perpY = dirX;
 
-        // Projection onto the perpendicular direction
-        float dotProductPerpendicular = vecX * perpX + vecY * perpY;
-        float closestPerpX = lastPlacedX + dotProductPerpendicular * perpX;
-        float closestPerpY = lastPlacedY + dotProductPerpendicular * perpY;
+        double vecX = coordsX - lastPlacedX;
+        double vecY = coordsY - lastPlacedY;
 
-        // Projection onto the parallel direction (0° or 180°)
-        float dotProductParallel = vecX * dirX + vecY * dirY;
-        float closestParallelX = lastPlacedX + dotProductParallel * dirX;
-        float closestParallelY = lastPlacedY + dotProductParallel * dirY;
+        double dotProductPerpendicular = vecX * perpX + vecY * perpY;
+        double closestPerpX = lastPlacedX + dotProductPerpendicular * perpX;
+        double closestPerpY = lastPlacedY + dotProductPerpendicular * perpY;
 
-        // Calculate the distances to the current point
-        float distancePerpendicular = getDistance(coordsX, closestPerpX, coordsY, closestPerpY);
-        float distanceParallel = getDistance(coordsX, closestParallelX, coordsY, closestParallelY);
+        double dotProductParallel = vecX * dirX + vecY * dirY;
+        double closestParallelX = lastPlacedX + dotProductParallel * dirX;
+        double closestParallelY = lastPlacedY + dotProductParallel * dirY;
 
-        // Return the X coordinate of the closest point
+        double distancePerpendicular = getDistanceDouble(coordsX, closestPerpX, coordsY, closestPerpY);
+        double distanceParallel = getDistanceDouble(coordsX, closestParallelX, coordsY, closestParallelY);
+
         if (distancePerpendicular < distanceParallel) {
             return closestPerpX;
         } else {
@@ -582,43 +585,37 @@ public class Utils
         }
     }
 
-    public static float perpendicularCoordY(float coordsX, float coordsY, Map map)
+    public static double perpendicularCoordY(double coordsX, double coordsY, Map map)
     {
-        if(!Gdx.input.isKeyPressed(Input.Keys.A))
+        if (!Gdx.input.isKeyPressed(Input.Keys.A))
             return coordsY;
-        if(map.lastFencePlaced == null)
+        if (map.lastFencePlaced == null)
             return coordsY;
-        float lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
-        float lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
-        float lastAngle = MathUtils.degreesToRadians * map.lastFencePlacedAngle;
 
-        // Direction vector of the last placed segment
-        float dirX = (float) Math.cos(lastAngle);
-        float dirY = (float) Math.sin(lastAngle);
+        double lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
+        double lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
+        double lastAngle = Math.toRadians(map.lastFencePlacedAngle);
 
-        // Perpendicular vector to the direction (90 degrees rotation)
-        float perpX = -dirY;
-        float perpY = dirX;
+        double dirX = Math.cos(lastAngle);
+        double dirY = Math.sin(lastAngle);
 
-        // Vector from last placed point to current point
-        float vecX = coordsX - lastPlacedX;
-        float vecY = coordsY - lastPlacedY;
+        double perpX = -dirY;
+        double perpY = dirX;
 
-        // Projection onto the perpendicular direction
-        float dotProductPerpendicular = vecX * perpX + vecY * perpY;
-        float closestPerpX = lastPlacedX + dotProductPerpendicular * perpX;
-        float closestPerpY = lastPlacedY + dotProductPerpendicular * perpY;
+        double vecX = coordsX - lastPlacedX;
+        double vecY = coordsY - lastPlacedY;
 
-        // Projection onto the parallel direction (0° or 180°)
-        float dotProductParallel = vecX * dirX + vecY * dirY;
-        float closestParallelX = lastPlacedX + dotProductParallel * dirX;
-        float closestParallelY = lastPlacedY + dotProductParallel * dirY;
+        double dotProductPerpendicular = vecX * perpX + vecY * perpY;
+        double closestPerpX = lastPlacedX + dotProductPerpendicular * perpX;
+        double closestPerpY = lastPlacedY + dotProductPerpendicular * perpY;
 
-        // Calculate the distances to the current point
-        float distancePerpendicular = getDistance(coordsX, closestPerpX, coordsY, closestPerpY);
-        float distanceParallel = getDistance(coordsX, closestParallelX, coordsY, closestParallelY);
+        double dotProductParallel = vecX * dirX + vecY * dirY;
+        double closestParallelX = lastPlacedX + dotProductParallel * dirX;
+        double closestParallelY = lastPlacedY + dotProductParallel * dirY;
 
-        // Return the X coordinate of the closest point
+        double distancePerpendicular = getDistanceDouble(coordsX, closestPerpX, coordsY, closestPerpY);
+        double distanceParallel = getDistanceDouble(coordsX, closestParallelX, coordsY, closestParallelY);
+
         if (distancePerpendicular < distanceParallel) {
             return closestPerpY;
         } else {
@@ -626,34 +623,46 @@ public class Utils
         }
     }
 
-    public static float distanceCoordX(float coordsX, float coordsY, Map map)
+    public static double distanceCoordX(double coordsX, double coordsY, Map map)
     {
         if (!Gdx.input.isKeyPressed(Input.Keys.W))
             return coordsX;
-        if(map.lastFencePlaced == null)
+        if (map.lastFencePlaced == null)
             return coordsX;
 
-        float lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
-        float lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
-        float angle = MathUtils.degreesToRadians * Utils.getAngleDegree(lastPlacedX, lastPlacedY, coordsX, coordsY);
-        float lastDistance = map.lastFencePlacedDistance;
+        double lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
+        double lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
+        double lastDistance = map.lastFencePlacedDistance;
 
-        return lastPlacedX + (MathUtils.cos(angle) * lastDistance);
+        double dx = coordsX - lastPlacedX;
+        double dy = coordsY - lastPlacedY;
+        double len = Math.sqrt(dx * dx + dy * dy);
+
+        if (len < 0.0001f)
+            return lastPlacedX;
+
+        return (lastPlacedX + (dx / len) * lastDistance);
     }
 
-    public static float distanceCoordY(float coordsX, float coordsY, Map map)
+    public static double distanceCoordY(double coordsX, double coordsY, Map map)
     {
         if (!Gdx.input.isKeyPressed(Input.Keys.W))
             return coordsY;
-        if(map.lastFencePlaced == null)
+        if (map.lastFencePlaced == null)
             return coordsY;
 
-        float lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
-        float lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
-        float angle = MathUtils.degreesToRadians * Utils.getAngleDegree(lastPlacedX, lastPlacedY, coordsX, coordsY);
-        float lastDistance = map.lastFencePlacedDistance;
+        double lastPlacedX = map.lastFencePlaced.x + map.lastFencePlaced.width / 2f;
+        double lastPlacedY = map.lastFencePlaced.y + map.lastFencePlaced.height / 2f;
+        double lastDistance = map.lastFencePlacedDistance;
 
-        return lastPlacedY + (MathUtils.sin(angle) * lastDistance);
+        double dx = coordsX - lastPlacedX;
+        double dy = coordsY - lastPlacedY;
+        double len = Math.sqrt(dx * dx + dy * dy);
+
+        if (len < 0.0001f)
+            return lastPlacedY;
+
+        return (lastPlacedY + (dy / len) * lastDistance);
     }
 
     public LightPropertyField getLockedLightField(Array<PropertyField> lockedProperties)
@@ -740,6 +749,12 @@ public class Utils
     public static float getAngleDegree(float originX, float originY, float targetX, float targetY)
     {
         return Utils.degreeAngleFix((float) Math.toDegrees((float) Math.atan2((targetY - originY), (targetX - originX))));
+    }
+
+    public static double getAngleDegreeDouble(float originX, float originY, float targetX, float targetY)
+    {
+        return Math.toDegrees(
+                        Math.atan2(targetY - originY, targetX - originX));
     }
 
     public static boolean containsEquivalentPropertyField (Array<PropertyField> propertyFields, PropertyField propertyField) {

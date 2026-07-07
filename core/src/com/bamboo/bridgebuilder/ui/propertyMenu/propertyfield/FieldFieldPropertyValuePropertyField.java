@@ -1,5 +1,7 @@
 package com.bamboo.bridgebuilder.ui.propertyMenu.propertyfield;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -12,6 +14,10 @@ import com.bamboo.bridgebuilder.Utils;
 import com.bamboo.bridgebuilder.commands.RemoveProperty;
 import com.bamboo.bridgebuilder.map.Map;
 import com.bamboo.bridgebuilder.ui.propertyMenu.PropertyMenu;
+
+import java.io.File;
+
+import static com.bamboo.bridgebuilder.BridgeBuilder.prefs;
 
 public class FieldFieldPropertyValuePropertyField extends PropertyField
 {
@@ -53,6 +59,28 @@ public class FieldFieldPropertyValuePropertyField extends PropertyField
             } else
                 addLockedListener();
         }
+
+        TextField thisValue = this.value;
+        this.value.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked (InputEvent event, float x, float y)
+            {
+                if(Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT))
+                {
+                    if (property.contains("changeMap"))
+                    {
+                        String path = prefs.getString("lastSave", "null");
+                        if (!path.equals("null"))
+                        {
+                            File file = new File(path);
+                            File otherFile = new File(file.getParentFile(), thisValue.getText() + ".bbm");
+                            menu.map.editor.fileMenu.open(otherFile);
+                        }
+                    }
+                }
+            }
+        });
 
         addActor(this.table);
     }

@@ -19,8 +19,8 @@ public class DrawFence implements Command
     private float x;
     private float y;
     private MapSprite lastFencePlacedOld;
-    private float lastFenceDistanceOld;
-    private float lastFenceAngleOld;
+    private double lastFenceDistanceOld;
+    private double lastFenceAngleOld;
 
     private Array<DrawFence> chainedCommands; // Used for adding multiple mapsprites in one execution
 
@@ -79,8 +79,8 @@ public class DrawFence implements Command
         {
             lastFenceDistanceOld = map.lastFencePlacedDistance;
             lastFenceAngleOld = map.lastFencePlacedAngle;
-            map.lastFencePlacedDistance = Utils.getDistance(map.lastFencePlaced.x, lastFencePlacedOld.x, map.lastFencePlaced.y, lastFencePlacedOld.y);
-            map.lastFencePlacedAngle = Utils.getAngleDegree(lastFencePlacedOld.x, lastFencePlacedOld.y, map.lastFencePlaced.x, map.lastFencePlaced.y);
+            map.lastFencePlacedDistance = Utils.getDistanceDouble(map.lastFencePlaced.x, lastFencePlacedOld.x, map.lastFencePlaced.y, lastFencePlacedOld.y);
+            map.lastFencePlacedAngle = Utils.getAngleDegreeDouble(lastFencePlacedOld.x, (lastFencePlacedOld.y), map.lastFencePlaced.x, map.lastFencePlaced.y);
             map.editor.fenceDistanceTooltip.label.setText("(Fence Distance) last: " + (Math.round(map.lastFencePlacedDistance * 100.0) / 100.0) + ". current: 0");
         }
 
@@ -197,6 +197,7 @@ public class DrawFence implements Command
 
     private void createConnectorForFence(MapSprite fromFence, MapSprite toFence, float fromX, float fromY, float toX, float toY, int stack)
     {
+        float oldY = fromY;
         boolean allSelectedArePosts = true;
         for(int i = 0; i < map.spriteMenu.selectedSpriteTools.size; i ++)
         {
